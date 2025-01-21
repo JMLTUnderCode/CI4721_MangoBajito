@@ -3,35 +3,22 @@
 Repositorio asociado a la creación de un lenguaje de programación "Mango Bajito". Este proyecto nace bajo un ambiente académico proporcionado por la Universidad Simón Bolívar durante el trimestre Enero Marzo 2025 bajo la tutela del Prof. Ricardo Monascal en la materia CI4721 - Lenguajes de Programación II.
 ### Integrantes
 * Astrid Alvarado, 18-10938
-* Kenny Rojas, 
+* Kenny Rojas 18-10595, 
 * Jhonaiker Blanco, 
 * Junior Lara, 17-10303
 
 ## Índice
-- [Preámbulo](#Preámbulo)
-- [Definición](#Definición)
-  - [Tipos de Datos](#Tipos-de-Datos)
-    - [Escalares](#Escalares)
-    - [Compuestos](#Compuestos)
-    - [Void](#Void)
-    - [Operaciones entre tipos de datos](#Operaciones-entre-tipos-de-datos)
-    - [](#)
-  - [Mecanismos](#Mecanismos)
-    - [Instrucción](#Instrucción)
-    - [Asignación](#Asignación)
-    - [Declaración](#Declaración)
-    - [Selección](#Selección)
-    - [Repetición](#Repetición)
-    - [](#)
-  - [Subrutinas](#Subrutinas)
-    - [Procedimientos](#Procedimientos)
-      - [Procedimientos del Lenguaje](#Procedimientos-del-Lenguaje)
-    - [Funciones](#Funciones)
-    - [Recursión](#Recursión)
-    - [](#)
-  - [Manejo de Errores](#Manejo-de-Errores)
-- [Ejemplos](#Ejemplos)
-- [](#)
+- [CI4721 - Lenguajes de Programación II - Mango Bajito](#ci4721---lenguajes-de-programación-ii---mango-bajito)
+    - [Descripción](#descripción)
+    - [Integrantes](#integrantes)
+  - [Índice](#índice)
+  - [Preámbulo](#preámbulo)
+  - [Definición](#definición)
+    - [Tipos de Datos](#tipos-de-datos)
+    - [Mecanismos](#mecanismos)
+    - [Subrutinas](#subrutinas)
+    - [Manejo de Errores](#manejo-de-errores)
+  - [Ejemplos](#ejemplos)
 
 ## Preámbulo
 
@@ -44,97 +31,114 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 ### Tipos de Datos
 * #### Escalares
   - #### Caracteres
-    Se define con la palabra clave "chamo".
+    Se define con la palabra clave "`negro`".
     
   - #### Enteros
-    Se define con la palabra clave "mango".
+    Se define con la palabra clave "`mango`".
 
   - #### Flotantes:
-    Se define con la palabra clave "manguita".
+    Se define con la palabra clave "`manguita`".
     
   - #### Double
-    Se define con la palabra clave "manguangua".
+    Se define con la palabra clave "`manguangua`".
     
   - #### Booleanos
-    Se define con la palabra clave "tas_claro". Cuyos valores son "Sisa" para True y "Nolsa" para False.
+    Se define con la palabra clave "`tas_claro`". Cuyos valores son "`Sisa`" para True y "`Nolsa`" para False.
 
 * #### Compuestos
   - #### Arreglos
-    Se define con la palabra clave "ta_cuadrao"
+    Se define con el tipo de todos los elementos que estaran en el array seguido de []. Ejemplo:
+
+    arr1: mango[]  = [1, 2, 3, 4]
+    arr2: higuerote[] = ["hola", "chamo"]
     
   - #### Registros
-    Se define con la palabra clave "arroz_con_mango".
+    Se define con la palabra clave "`arroz_con_mango`".
     
   - #### Cadena de Caracteres
-    Se define con la palabra clave "guarimba".
+    Se define con la palabra clave "`higuerote`".
     
   - #### Variantes
-    (uniones)
-    
+    `vaina`
+    `coroto`
+    `negriados`
   - #### Apuntadores
-    (sólo al heap)
+    Se define con la palabra clave "`ahi_ta`". (sólo al heap)
     
 * #### Void
-  Se define con la palabra clave "un_coño".
+  Se define con la palabra clave "`un_coño`".
 
 * #### Operadores
   * #### Lógicos
     - Equal
-      Se define con la palabra clave "igualito".
+      Se define con la palabra clave "`igualito`".
+      
     - NotEqual
-      Se define con la palabra clave "negriado".
+      Se define con la palabra clave "`nie`".
+
     - And
-      Se define con la palabra clave "gua".
+      Se define con la palabra clave "`yunta`".
+
     - Or
-      Se define con la palabra clave "".
+      Se define con la palabra clave "`o_sea`". (DEBATIBLE)
+
     - Not
-      Se define con la palabra clave "nie".
+      Se define con la palabra clave "`nelson`".
+
   * #### Aritméticos
-    - Suma
+    - Suma (+)
       
-    - Resta
+    - Resta (-)
       
-    - Multiplicación
+    - Multiplicación (*)
       
     - División
-      - Entera
+      - Entera (//)
         
-      - Decimal
+      - Decimal (/)
         
-    - Potenciación
+    - Potenciación (**)
       
-  * #### 
+  * #### Cadenas de Caracteres
+    - Concatenación: Se tiene sobrecarga sobre el operador `+`.
+    - Repetición: Se tiene sobrecarga sobre el operador `*`.
 
 * #### Operaciones entre tipos de datos
-
+  
   
 ### Mecanismos
 * #### Instrucción
-
+    Como operedor de secuenciación se utilizara el simbolo `;`. 
   
 * #### Asignación
 
+  Se utilizara el simbolo de `=` para asignarle un valor a una variable o una constante.
 
 * #### Declaración
+  * ##### Var
+    Se define con la palabra clave "`culito`"
+
+  * ##### Val
+    Se define con la palabra clave "`jeva`"
 
     
 * #### Selección
-  Se define con la palabra "si_no_es"/"entonces_es"/"sino_esta".
+  Se define con la palabra "`si_es_asi`"/"`sino`"/"`nojoda`".
   ```
-  si_no_es Condicion {
+  si_es_asi Condicion {
     Instrucciones
-  } entonces_es Condicion {
+  } sino Condicion {
     Instrucciones
-  } sino_esta {
+  } nojoda {
     Instrucciones
   }
   ```
   
 * #### Repetición
   * #### For
-    Se define con la palabra clave "repite_burda"/"entre"/"hasta". (Determinada)
+    Se define con la palabra clave "`repite_burda`"/"`entre`"/"`hasta`". (Determinada)
     ```
-    repite_burda [var] entre [cota_inf] hasta [cota_sup] {
+    repite_burda [var] entre [cota_inf] hasta [cota_sup] con_flow [mango]{
       Instrucciones
     }
     ```
@@ -142,10 +146,12 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
     * var pertenece a
     * cota_inf pertenece a
     * cota_sup pertenece a
+  
+  En este caso caso el rango en el que trabajara el `repite_burda` 
     
     
   * #### While
-    Se define con la palabra clave "echale_bolas_hasta". (Intederminada)
+    Se define con la palabra clave "`echale_bolas_hasta`". (Intederminada)
     ```
     echale_bolas_hasta Condicion {
       Instrucciones
@@ -157,25 +163,32 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
   Se define como ...
 
   * #### Procedimientos del Lenguaje
-    * que_monda_ejesa(type var)
-      Permite retornar el tipo de dato que representa "var". Se caracteriza
+    * `que_monda_ejesa(type var)`
+      Permite retornar el tipo de dato que representa "`var`". Se caracteriza
       
-    * Ah_vaina(type guarimba)
+    * `Ah_vaina(type guarimba)`
       Permite retornar un error con el contenido de "guarimba".
 
 * #### Funciones
   (retornos escalares)
+
+  ```
+  echar_cuento <nombre>(<parametros>) lanza <type> {
+    '''Codigo'''
+  }
+  ```
   * #### Pasaje de parámetros
     * #### Por valor
-   
+    Los tipos de datos basicos Caracteres, Enteros, Flotantes, Double y Booleanos se pasaran a las funciones por valor, así como las Cadena de Caracteres
       
     * #### Por referencia
    
       
 * #### Recursión
+  "`bochinche`"
 
 ### Manejo de Errores
-Se define con el conjunto de palabras clave "meando"/"fuera_del_perol".
+Se define con el conjunto de palabras clave "`meando`"/"`fuera_del_perol`".
 ```
 meando {
   Instrucciones
