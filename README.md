@@ -166,8 +166,8 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
     * `que_monda_ejesa(type var)`
       Permite retornar el tipo de dato que representa "`var`". Se caracteriza
       
-    * `Ah_vaina(type guarimba)`
-      Permite retornar un error con el contenido de "guarimba".
+    * `ah_vaina(type higuerote)`
+      Permite retornar un error con el contenido de "higuerote".
 
 * #### Funciones
   (retornos escalares)
@@ -193,7 +193,7 @@ Se define con el conjunto de palabras clave "`meando`"/"`fuera_del_perol`".
 meando {
   Instrucciones
 } fuera_del_perol {
-  Ah_vaina(type guarimba)
+  Ah_vaina(type higuerote)
 }
 ```
 

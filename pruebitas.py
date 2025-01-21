@@ -71,4 +71,24 @@ for i in range(filas_A):
         for k in range(columnas_A):
             C[i][j] += A[i][k] * B[k][j]
 
+# jeva filas_A: mango = largo(A)
+# jeva columnas_A: mango = largo(A[0])
+# jeva filas_B: mango = largo(B)
+# jeva columnas_B: mango = largo(B[0])
+
+# si_es_asi (columnas_A igualito filas_A) yunta (columnas_B igualito filas_B) yunta (columnas_A igualito columnas_B) {
+#   ah_vaina("El número de columnas de A debe ser igual al número de filas de B")     
+#}
+
+# jeva C: mango[filas_A][columnas_B]
+
+# repite_burda i entre 0 hasta filas_A {
+#     repite_burda j entre 0 hasta columnas_B {
+#        C[i][j] = 0
+
+# repite_burda i entre 0 hasta filas_A {
+#     repite_burda j entre 0 hasta columnas_B {
+#         repite_burda k entre 0 hasta columnas_A {
+#             C[i][j] += A[i][k] * B[k][j]
+
 
