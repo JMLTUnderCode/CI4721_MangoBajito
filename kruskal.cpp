@@ -142,7 +142,23 @@ void kruskal(Graph& g) {
         }
     }
 
-    // Imprimir el resultado
+    try {
+        if (mstSize != g.vertexCount - 1) {
+            throw runtime_error("No se pudo encontrar un MST (el grafo no es conexo).");
+        }
+
+        // Si no se lanza la excepción, se imprime el MST
+        cout << "MST encontrado:\n";
+        for (int i = 0; i < mstSize; i++) {
+            cout << "Arista: " << mst[i].src << " -> " << mst[i].dest << ", Peso: " << mst[i].weight << "\n";
+        }
+        cout << "Peso total del MST: " << totalWeight << "\n";
+    } catch (const runtime_error& e) {
+        // Capturamos la excepción y mostramos el mensaje de error
+        cout << e.what() << "\n";
+    }
+
+    /* // Imprimir el resultado: Version if/else
     if (mstSize == g.vertexCount - 1) {
         cout << "MST encontrado:\n";
         for (int i = 0; i < mstSize; i++) {
@@ -151,14 +167,14 @@ void kruskal(Graph& g) {
         cout << "Peso total del MST: " << totalWeight << "\n";
     } else {
         cout << "No se pudo encontrar un MST (el grafo no es conexo).\n";
-    }
+    } */
 
     delete[] mst;
 }
 
 int main() {
     Graph g;
-    initialize(g, 5, 7); // 4 vértices, 5 aristas
+    initialize(g, 5, 7); // 5 vértices, 7 aristas
 
     g.edges[0] = {0, 1, 4};
     g.edges[1] = {1, 2, 2};
@@ -169,6 +185,17 @@ int main() {
     g.edges[6] = {3, 4, 9};
 
     kruskal(g);
+    cout<<endl;
 
+    Graph g2;
+    initialize(g2, 6, 4); // 6 vértices, 4 aristas
+
+    g2.edges[0] = {0, 1, 4};
+    g2.edges[1] = {1, 2, 6};
+    g2.edges[2] = {3, 4, 2};
+    g2.edges[3] = {4, 5, 1};
+
+    kruskal(g2);
+    
     return 0;
 }
