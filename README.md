@@ -12,7 +12,31 @@ Prof. Ricardo Monascal en la materia CI4721 - Lenguajes de Programación II.
 * Junior Lara, 17-10303
 
 ## Índice
-
+- [Preámbulo](#preámbulo)
+- [Definición](#definición)
+  - [Características](#características)
+    - [Mecanismos](#mecanismos)
+    - [Subrutinas](#subrutinas)
+    - [Manejo de Errores](#manejo-de-errores)
+	- [Tipos de Datos](#tipos-de-datos)
+		- [Escalares](#escalares)
+    		- [Caracteres](#caracteres-negro)
+    		- [Enteros](#enteros-mango)
+    		- [Flotantes](#flotantes-manguita)
+    		- [Doubles](#doubles-manguangua)
+    		- [Booleanos](#booleanos-tas_claro)
+		- [Compuestos](#compuestos)
+    		- [Cadenas de Caracteres](#cadena-de-caracteres-higuerote)
+    		- [Arreglos](#arreglos)
+    		- [Registros](#registros-arroz_con_mango)
+    		- [Variantes](#variantescoliao)
+    		- [Apuntadores](#apuntadores-ahi_ta)
+    	- [Void](#void-un_coño)
+    	- [Operadores](#operadores)
+        	- [Lógicos](#lógicos)
+        	- [Aritméticos](#aritméticos)
+        	- [Caracteres](#caracteres)
+        - [Operaciones entre Tipos de Datos](#operaciones-entre-tipos-de-datos)
 
 ## Preámbulo
 Hace no mucho tiempo, en una oficina calurosa donde el aire acondicionado estaba "puro tirar frío pa' la calle", 
