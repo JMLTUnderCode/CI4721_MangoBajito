@@ -56,167 +56,6 @@ El lenguaje utiliza un modelo de alcance léxico estático, donde las variables 
 * Implementa un sistema de tipos fuertes, donde las operaciones entre tipos incompatibles son prevenidas por el lenguaje, evitando errores en tiempo de ejecución relacionados con conversiones implícitas o mal manejo de datos. Además, la verificación de tipos se realiza de forma estática, durante la fase de compilación, garantizando que el código sea consistente y seguro antes de ser ejecutado.
 
 * Aunque no es estrictamente técnico, la sintaxis de Mango Bajito es intencionadamente sencilla y coloquial, con palabras clave diseñadas para ser intuitivas y fáciles de recordar. Esto hace que el lenguaje sea accesible para programadores principiantes sin sacrificar las capacidades necesarias para desarrollos complejos.
-
-### Tipos de Datos
-
-#### Escalares
-  - #### Caracteres (`negro`)
-    El tipo `negro` se utiliza para almacenar caracteres individuales, como letras, dígitos o símbolos. Es equivalente al tipo `char` en otros lenguajes de programación. Los valores deben definirse entre comillas simples.
-	
-	**Ejemplo:**
-    ```
-    negro letra = 'A';
-    negro simbolo = '$';
-    ```
-
-  - #### Enteros (`mango`)
-	El tipo `mango` representa números enteros, positivos o negativos, dentro de un rango dependiente de la implementación del lenguaje (normalmente 32 bits). Es ideal para contadores, índices y cálculos discretos.
-	
-	**Ejemplo:**
-	```
-	mango edad = 25;
-	mango contador = -10;
-	```
-
-  - #### Flotantes (`manguita`)
-	El tipo `manguita` se utiliza para representar números en coma flotante de precisión simple, adecuados para cálculos donde no se requiere una precisión extremadamente alta.
-	
-	**Ejemplo:**
-	```
-	manguita temperatura = 36.7;
-	manguita precio = 12.50;
-	```
-    
-  - #### Dobles (`manguangua`)
-	El tipo `manguangua` se utiliza para números en coma flotante con doble precisión, siendo más adecuado para cálculos científicos o situaciones que requieren alta precisión en operaciones decimales.
-	
-	**Ejemplo:**
-	```
-	manguangua pi = 3.14159265359;
-	manguangua distancia = 1.989e30;
-	```
-
-  - #### Booleanos (`tas_claro`)
-	El tipo `tas_claro` representa valores lógicos, con dos valores posibles: Sisa (equivalente a True) y Nolsa (equivalente a False). Este tipo es ampliamente utilizado en estructuras condicionales y bucles para controlar el flujo del programa.
-	
-	**Ejemplo:**
-	```
-	tas_claro esMayor = Sisa;
-	tas_claro esPar = Nolsa;
-	```
-	> [!IMPORTANT]IMPORTANTE
-	> - Mango Bajito no realiza conversiones implícitas entre tipos de datos escalares. Por ejemplo, no se puede asignar un manguangua a un mango sin una conversión explícita. Esto refuerza su sistema de tipos fuertes.
-	> - Los valores por defecto al declarar variables sin inicializar son:
-	>    - `negro`: '\0' (carácter nulo)
-	>    - `mango`: 0
-	>    - `manguita` y `manguangua`: 0.0
-	>    - `tas_claro`: Nolsa
- 
-* #### Compuestos
-  - #### Cadena de Caracteres (`higuerote`)
-  	El tipo `higuerote` se utiliza para representar cadenas de texto. Una cadena es un arreglo inmutable de caracteres (de tipo `negro`), ideal para manejar palabras, frases o cualquier dato textual.
-	
-	**Ejemplo:**
-  	```
-  	higuerote saludo = "Hola, chamo";
-  	higuerote mensaje = "Esto es Mango Bajito";
-	```
-  - #### Arreglos
-	Los arreglos permiten almacenar múltiples elementos del mismo tipo en una estructura indexada. Se definen utilizando el tipo de los elementos seguido de [].
-	
-	**Ejemplo:**
-	```
-	mango[] numeros = [1, 2, 3, 4];
-	higuerote[] saludos = ["Hola", "Chamo", "Mango Bajito"];
-	```
-	Los arreglos pueden ser de tamaño fijo o dinámico, dependiendo de la implementación. Los índices comienzan en 0, y es posible acceder y modificar elementos usando corchetes:
-	```
-	numeros[0] = 10;  // Cambia el primer elemento del arreglo a 10
-	mango numero = numeros[0];    // Extraer el primer elemento del arrglo.
-	```
-    
-  - #### Registros (`arroz_con_mango`)
-	El tipo `arroz_con_mango` es una estructura que permite agrupar múltiples variables de diferentes tipos bajo un mismo nombre. Es útil para representar objetos o datos relacionados.
-
-	**Ejemplo:**
-	```
-	arroz_con_mango Persona {
-  		higuerote nombre;
-  		mango edad;
-  		tas_claro estudiante;
-	}
-
-	Persona juan = { "Juan Pérez", 25, Sisa };
-	rescata juan.nombre;  // Imprime: Juan Pérez
-	```
-	>[!NOTE] En caso de duda con `rescata`
-	Ver definicion de [rescata](#Procedimientos-del-Lenguaje).
-    
-  - #### Variantes
-    `vaina`
-    `coroto`
-    `negriados`
-
-  - #### Apuntadores (`ahi_ta`)
-	Los apuntadores (`ahi_ta`) permiten hacer referencia a valores en memoria dinámica (heap). Se usan para manejar estructuras dinámicas o referencias indirectas. Mango Bajito abstrae la complejidad del manejo de memoria para facilitar su uso.
-	
-	**Ejemplo:**
-	```
-	ahi_ta mango* numero = nuevo mango(10);
-	rescata *numero;  // Imprime: 10
-	```
-	>[!NOTE] Mango Bajito no permite aritmética de apuntadores para mantener la seguridad de memoria.
-    
-* #### Void (`un_coño`)
-	El tipo `un_coño` indica que una función no retorna ningún valor. Es equivalente al tipo void en otros lenguajes. Se utiliza principalmente para procedimientos o funciones que ejecutan acciones sin devolver datos.
-
-	**Ejemplo:**
-	```
-	un_coño saluda() {
-		rescata "Hola, chamo!";
-	}
-	```
-	>[!NOTE] Dudas
-	> * En caso de duda con `rescata` vea su definición en [rescata](#procedimientos-del-lenguaje).
-	> * En caso de duda con se definen las funciones vaya a [funciones](#funciones)
-
-* #### Operadores
-  * #### Lógicos
-    - Equal
-      Se define con la palabra clave "`igualito`".
-      
-    - NotEqual
-      Se define con la palabra clave "`nie`".
-
-    - And
-      Se define con la palabra clave "`yunta`".
-
-    - Or
-      Se define con la palabra clave "`o_sea`". (DEBATIBLE)
-
-    - Not
-      Se define con la palabra clave "`nelson`".
-
-  * #### Aritméticos
-    - Suma (+)
-      
-    - Resta (-)
-      
-    - Multiplicación (*)
-      
-    - División
-      - Entera (//)
-        
-      - Decimal (/)
-        
-    - Potenciación (**)
-      
-  * #### Cadenas de Caracteres
-    - Concatenación: Se tiene sobrecarga sobre el operador `+`.
-    - Repetición: Se tiene sobrecarga sobre el operador `*`.
-
-* #### Operaciones entre tipos de datos
-  
   
 ### Mecanismos
 * #### Instrucción
@@ -281,7 +120,7 @@ El lenguaje utiliza un modelo de alcance léxico estático, donde las variables 
     * `que_monda_ejesa(type var)`
 		Permite retornar el tipo de dato que representa "`var`". Se caracteriza
       
-    * `ah_vaina(type higuerote)`
+    * `ah_vaina(message)`
 		Permite retornar un error con el contenido de "higuerote".
 
 * #### Funciones
@@ -289,7 +128,7 @@ El lenguaje utiliza un modelo de alcance léxico estático, donde las variables 
 
   ```
   echar_cuento <nombre>(<parametros>) lanza <type> {
-    '''Codigo'''
+    // Codigo
   }
   ```
   * #### Pasaje de parámetros
@@ -311,6 +150,166 @@ meando {
   Ah_vaina(type higuerote)
 }
 ```
+### Tipos de Datos
+
+#### Escalares
+  - #### Caracteres (`negro`)
+    El tipo `negro` se utiliza para almacenar caracteres individuales, como letras, dígitos o símbolos. Es equivalente al tipo `char` en otros lenguajes de programación. Los valores deben definirse entre comillas simples.
+	
+	**Ejemplo:**
+    ```
+    jeva letra: negro = 'A';
+    culito simbolo: negro = '$';
+    ```
+
+  - #### Enteros (`mango`)
+	El tipo `mango` representa números enteros, positivos o negativos, dentro de un rango dependiente de la implementación del lenguaje (normalmente 32 bits). Es ideal para contadores, índices y cálculos discretos.
+	
+	**Ejemplo:**
+	```
+	culito edad: mango = 25;
+	culito contador: mango = -10;
+	```
+
+  - #### Flotantes (`manguita`)
+	El tipo `manguita` se utiliza para representar números en coma flotante de precisión simple, adecuados para cálculos donde no se requiere una precisión extremadamente alta.
+	
+	**Ejemplo:**
+	```
+	culito temperatura: maguita = 36.7;
+	jeva precio: manguita = 12.50;
+	```
+    
+  - #### Dobles (`manguangua`)
+	El tipo `manguangua` se utiliza para números en coma flotante con doble precisión, siendo más adecuado para cálculos científicos o situaciones que requieren alta precisión en operaciones decimales.
+	
+	**Ejemplo:**
+	```
+	jeva pi: manguangua = 3.14159265359;
+	culito distancia: manguangua = 1.989e30;
+	```
+
+  - #### Booleanos (`tas_claro`)
+	El tipo `tas_claro` representa valores lógicos, con dos valores posibles: Sisa (equivalente a True) y Nolsa (equivalente a False). Este tipo es ampliamente utilizado en estructuras condicionales y bucles para controlar el flujo del programa.
+	
+	**Ejemplo:**
+	```
+	culito esMayor: tas_claro = Sisa;
+	culito esPar: tas_claro = Nolsa;
+	```
+	> [!IMPORTANT]
+	> - Mango Bajito no realiza conversiones implícitas entre tipos de datos escalares. Por ejemplo, no se puede asignar un manguangua a un mango sin una conversión explícita. Esto refuerza su sistema de tipos fuertes.
+	> - Los valores por defecto al declarar variables sin inicializar son:
+	>    - `negro`: '\0' (carácter nulo)
+	>    - `mango`: 0
+	>    - `manguita` y `manguangua`: 0.0
+	>    - `tas_claro`: Nolsa
+ 
+* #### Compuestos
+  - #### Cadena de Caracteres (`higuerote`)
+  	El tipo `higuerote` se utiliza para representar cadenas de texto. Una cadena es un arreglo inmutable de caracteres (de tipo `negro`), ideal para manejar palabras, frases o cualquier dato textual.
+	
+	**Ejemplo:**
+  	```
+  	jeva saludo: higuerote = "Hola, chamo";
+  	jeva mensaje: higuerote = "Esto es Mango Bajito";
+	```
+  - #### Arreglos
+	Los arreglos permiten almacenar múltiples elementos del mismo tipo en una estructura indexada. Se definen utilizando el tipo de los elementos seguido de [].
+	
+	**Ejemplo:**
+	```
+	culito numeros: mango[] = [1, 2, 3, 4];
+	culito saludos: higuerote[] = ["Hola", "Mango", "Bajito"];
+	```
+	Los arreglos son de tamaño fijo y los índices comienzan en 0, siendo posible acceder y modificar elementos usando corchetes:
+	```
+	numeros[0] = 10;  // Cambia el primer elemento del arreglo a 10
+	mango numero = numeros[0];    // Extraer el primer elemento del arrglo.
+	```
+    
+  - #### Registros (`arroz_con_mango`)
+	El tipo `arroz_con_mango` es una estructura que permite agrupar múltiples variables de diferentes tipos bajo un mismo nombre. Es útil para representar objetos o datos relacionados.
+
+	**Ejemplo:**
+	```
+	arroz_con_mango Persona {
+  		jeva nombre: higuerote;
+  		culito edad: mangi;
+  		culito estudiante: tas_claro;
+	}
+
+	Persona juan = { "Juan Pérez", 25, Sisa };
+	rescata(juan.nombre);  // Imprime: Juan Pérez
+	```
+	>[!NOTE] En caso de duda con `rescata`
+	Ver definicion de [rescata](#Procedimientos-del-Lenguaje).
+    
+  - #### Variantes
+    `vaina`
+    `coroto`
+    `negriados`
+
+  - #### Apuntadores (`ahi_ta`)
+	Los apuntadores (`ahi_ta`) permiten hacer referencia a valores en memoria dinámica (heap). Se usan para manejar estructuras dinámicas o referencias indirectas. Mango Bajito abstrae la complejidad del manejo de memoria para facilitar su uso.
+	
+	**Ejemplo:**
+	```
+	ahi_ta numero: mango = virgo mango(10);
+	rescata(numero);  // Imprime: 10
+	```
+	>[!NOTE] Mango Bajito no permite aritmética de apuntadores para mantener la seguridad de memoria.
+    
+* #### Void (`un_coño`)
+	El tipo `un_coño` indica que una función no retorna ningún valor. Es equivalente al tipo void en otros lenguajes. Se utiliza principalmente para procedimientos o funciones que ejecutan acciones sin devolver datos.
+
+	**Ejemplo:**
+	```
+	echar_cuento saluda() lanza un_coño{
+		rescata("Hola, chamo!");
+	}
+	```
+	>[!NOTE] 
+  > Dudas
+	> * En caso de duda con `rescata` vea su definición en [rescata](#procedimientos-del-lenguaje).
+	> * En caso de duda con se definen las funciones vaya a [funciones](#funciones)
+
+* #### Operadores
+  * #### Lógicos
+    - Equal
+      Se define con la palabra clave "`igualito`".
+      
+    - NotEqual
+      Se define con la palabra clave "`nie`".
+
+    - And
+      Se define con la palabra clave "`yunta`".
+
+    - Or
+      Se define con la palabra clave "`o_sea`". (DEBATIBLE)
+
+    - Not
+      Se define con la palabra clave "`nelson`".
+
+  * #### Aritméticos
+    - Suma (+)
+      
+    - Resta (-)
+      
+    - Multiplicación (*)
+      
+    - División
+      - Entera (//)
+        
+      - Decimal (/)
+        
+    - Potenciación (**)
+      
+  * #### Cadenas de Caracteres
+    - Concatenación: Se tiene sobrecarga sobre el operador `+`.
+    - Repetición: Se tiene sobrecarga sobre el operador `*`.
+
+* #### Operaciones entre tipos de datos
 
 ## Ejemplos
 
