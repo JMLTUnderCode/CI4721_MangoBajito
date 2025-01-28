@@ -1,28 +1,18 @@
 # CI4721 - Lenguajes de Programación II - Mango Bajito
-### Descripción
+
+## Descripción
 Repositorio asociado a la creación de un lenguaje de programación "Mango Bajito". Este proyecto nace bajo un ambiente 
 académico proporcionado por la Universidad Simón Bolívar durante el trimestre Enero Marzo 2025 bajo la tutela del 
 Prof. Ricardo Monascal en la materia CI4721 - Lenguajes de Programación II.
-### Integrantes
+
+## Integrantes
 * Astrid Alvarado, 18-10938
 * Kenny Rojas 18-10595, 
-* Jhonaiker Blanco, 
+* Jhonaiker Blanco, 18-10
 * Junior Lara, 17-10303
 
 ## Índice
-- [CI4721 - Lenguajes de Programación II - Mango Bajito](#ci4721---lenguajes-de-programación-ii---mango-bajito)
-		- [Descripción](#descripción)
-		- [Integrantes](#integrantes)
-	- [Índice](#índice)
-- [Preámbulo](#preámbulo)
-- [Definición](#definición)
-	- [Características](#características)
-		- [Tipos de Datos](#tipos-de-datos)
-			- [Escalares](#escalares)
-		- [Mecanismos](#mecanismos)
-		- [Subrutinas](#subrutinas)
-		- [Manejo de Errores](#manejo-de-errores)
-	- [Ejemplos](#ejemplos)
+
 
 ## Preámbulo
 Hace no mucho tiempo, en una oficina calurosa donde el aire acondicionado estaba "puro tirar frío pa' la calle", 
@@ -263,15 +253,15 @@ meando {
 	rescata(juan.nombre);  # Imprime: Juan Pérez
 	```
 
-  - #### Variantes(`bojote`) zaperoco coliao
-	El tipo `bojote` en Mango Bajito representa una estructura de datos que puede contener valores de distintos tipos, 
-	**uno a la vez**, reutilizando el mismo espacio de memoria. Un `bojote` se define especificando los miembros de los
+  - #### Variantes(`coliao`)
+	El tipo `coliao` en Mango Bajito representa una estructura de datos que puede contener valores de distintos tipos, 
+	**uno a la vez**, reutilizando el mismo espacio de memoria. Un `coliao` se define especificando los miembros de los
 	distintos tipos de datos que puede contener separados por punto y coma. Este enfoque permite manejar datos que 
 	pueden variar en tipo, pero sin desperdiciar memoria. 
 	
 	**Ejemplo:**
 	```
-	bojote MiBojote {
+	coliao zaperoco {
 		a : mango;
 		b : manguita;
 		c : manguangua;
@@ -280,14 +270,14 @@ meando {
 		d : mango[5];
 	}
 	```
-	El acceso al valor almacenado en el `bojote` debe hacerse con precaución, verificando qué tipo está actualmente activo.
+	El acceso al valor almacenado en el `coliao` debe hacerse con precaución, verificando qué tipo está actualmente activo.
 	```
 	arroz_con_mango Persona {
 		jeva nombre : higuerote;
 		culito edad : mango;
 	};
 
-	bojote MiVariante {
+	coliao MiVariante {
 		a : mango;
 		p : Persona;
 	};
@@ -303,7 +293,7 @@ meando {
 	Persona alguien = { "Juan Pérez", 25 };
 	datos = alguien;
 
-	# Accedemos al registro dentro del `bojote`
+	# Accedemos al registro dentro del `coliao`
 	rescata(datos.p.nombre);  # Resultado: Juan Pérez
 	rescata(datos.p.edad);    # Resultado: 25
 	```
