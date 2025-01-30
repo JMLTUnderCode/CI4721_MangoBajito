@@ -16,10 +16,10 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 	- [**Descripción**](#descripción)
 	- [**Integrantes**](#integrantes)
 	- [**Índice**](#índice)
-	- [**Preámbulo**](#preámbulo)
-	- [**Definición**](#definición)
-	- [**Características**](#características)
-	- [**Mecanismos**](#mecanismos)
+	- [🥭**Preámbulo**](#preámbulo)
+	- [🥭**Definición**](#definición)
+	- [🥭**Características**](#características)
+	- [🥭**Mecanismos**](#mecanismos)
 		- [**Instrucción**](#instrucción)
 		- [**Declaración**](#declaración)
 			- [*Reglas para nombres de variables y constantes*](#reglas-para-nombres-de-variables-y-constantes)
@@ -30,7 +30,8 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 		- [**Repetición**](#repetición)
 			- [*Bucle for (`repite_burda`)*](#bucle-for-repite_burda)
 			- [*Bucle while (`echale_bolas_hasta`)*](#bucle-while-echale_bolas_hasta)
-	- [**Tipos de Datos**](#tipos-de-datos)
+			- [*Control del flujo en Bucles*](#control-del-flujo-en-bucles)
+	- [🥭**Tipos de Datos**](#tipos-de-datos)
 		- [**Escalares**](#escalares)
 			- [*Caracteres* (`negro`)](#caracteres-negro)
 			- [*Enteros* (`mango`)](#enteros-mango)
@@ -48,7 +49,7 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 			- [*Asignación de Memoria y Creación de Apuntadores* (`cero_km`)](#asignación-de-memoria-y-creación-de-apuntadores-cero_km)
 			- [*Acceso* (`aki_toy`)](#acceso-aki_toy)
 			- [*Liberación de Memoría* (`borradol`)](#liberación-de-memoría-borradol)
-	- [**Procedimientos y Funciones**](#procedimientos-y-funciones)
+	- [🥭**Procedimientos y Funciones**](#procedimientos-y-funciones)
 		- [**Función sin retorno (Procedimiento)**](#función-sin-retorno-procedimiento)
 		- [**Pasaje de parámetros**](#pasaje-de-parámetros)
 			- [*Por valor*](#por-valor)
@@ -58,8 +59,8 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 			- [*Manipulación de Tipos*](#manipulación-de-tipos)
 			- [*Excepciones*](#excepciones)
 			- [*Manipulación de Cadenas*](#manipulación-de-cadenas)
-	- [**Manejo de Errores**](#manejo-de-errores)
-	- [**Operadores**](#operadores)
+	- [🥭**Manejo de Errores**](#manejo-de-errores)
+	- [🥭**Operadores**](#operadores)
 		- [**Lógicos**](#lógicos)
 			- [*Equal* (`igualito`)](#equal-igualito)
 			- [*NotEqual* (`nie`)](#notequal-nie)
@@ -75,29 +76,29 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 			- [*Potenciación* (\*\*)](#potenciación-)
 			- [*Incremento* (++)](#incremento-)
 			- [*Asignación aditiva* (+=)](#asignación-aditiva-)
-	- [**Operaciones entre tipos de datos**](#operaciones-entre-tipos-de-datos)
+	- [🥭**Operaciones entre tipos de datos**](#operaciones-entre-tipos-de-datos)
 		- [**Conversión de mango a manguita o manguangua**](#conversión-de-mango-a-manguita-o-manguangua)
 		- [**Conversión del `negro` (carácter) a `mango` (entero)**](#conversión-del-negro-carácter-a-mango-entero)
 
-## **Preámbulo**
+## 🥭**Preámbulo**
 
-Hace no mucho tiempo, en una oficina calurosa donde el aire acondicionado estaba "puro tirar frío pa' la calle", un grupo de programadores venezolanos, después de tres empanadas de pabellón y un par de jugos de guanábana, decidieron que ya estaba bueno de tanto sufrir con lenguajes de programación complicados. Que si Java, que si Python, que si C++. "¡Qué manguangua tan seria pa' entender esas vainas!", dijeron. Fue allí cuando uno de ellos, con el cerebro medio adormecido por el tequeño que se acababa de comer, soltó:
+Hace no mucho tiempo, en una oficina calurosa donde el aire acondicionado estaba "puro tirar frío pa' la calle", un grupo de programadores venezolanos, después de tres empanadas de pabellón y un par de jugos de guanábana, decidieron que ya estaba bueno de tanto sufrir con lenguajes de programación complicados. Que si Java, que si Python, que si C++. "¡Qué manguangua tan seria pa' entender esas vainas!", dijeron. Fue allí cuando uno de ellos, con el cerebro medio fundio' por el tequeño que se acababa de comer, soltó:
 
 "¡Chamos, necesitamos un lenguaje que sea puro mango bajito! Algo que hasta el pana más nuevón pueda entender y no le dé dolor de cabeza ni le salga una 'luz roja' en el cerebro cada vez que quiera hacer un 'hola mundo'".
 
-Y así nació Mango Bajito, el lenguaje que promete ser la arepa pelada del desarrollo. ¿La idea? Hacer que programar sea tan fácil como pedir un kilo de queso rallado en la bodega de la esquina. Todas las palabras clave del lenguaje están inspiradas en la jerga venezolana para que hasta tu abuela diga: "Ah, bueno, esto sí lo entiendo".
+Y así nació Mango Bajito, el lenguaje que promete ser la arepa pelada del desarrollo. ¿La idea? Hacer que programar sea tan fácil como pedir un kilo de queso rallado en la bodega de la señora Ramona. Todas las palabras clave del lenguaje están inspiradas en la jerga venezolana para que hasta tu abuela diga: "Ah, bueno, esto sí lo entiendo".
 
 Pero eso no es todo. Mango Bajito tiene su propio debugger que no te manda errores, te manda reclamos: 
 
 "¡Chamo, revisa el código, que aquí metiste un peo!" O el compilador que, cuando terminas el código sin errores, te dice: "¡Esa es la actitud, mi rey!"
 
-Entonces, ¿por qué deberías elegir Mango Bajito? Fácil: porque la vida ya tiene suficientes compliqueos. Deja la amargura y vente a la fiesta. ¡Mango Bajito, el lenguaje que no es paja! 👌
+Entonces, ¿por qué deberías elegir Mango Bajito? Fácil: porque la vida ya tiene suficientes peos. Deja la acidez y vente pa' la rumba. ¡Mango Bajito, el lenguaje que no es paja! 👌
 
-## **Definición**
+## 🥭**Definición**
 
-Mango Bajito es un lenguaje de programación imperativo, diseñado para facilitar la creación de software mediante un enfoque intuitivo y accesible. Este lenguaje se caracteriza por su simplicidad en la sintaxis, inspirada en la jerga venezolana, y por su diseño estructurado, enfocado en reducir la complejidad del desarrollo. A continuación, se detallan sus principales características computacionales:
+Mango Bajito es un lenguaje de programación imperativo, diseñado para facilitar la creación de software mediante un enfoque intuitivo y accesible. Este lenguaje se caracteriza por su simplicidad en la sintaxis, inspirada en la jerga venezolana, y por su diseño estructurado, enfocado en reducir la complejidad del desarrollo.
 
-## **Características**
+## 🥭**Características**
 
 * Se basa en el paradigma de programación imperativa, donde el flujo del programa se controla mediante declaraciones explícitas que modifican el estado del sistema.
 
@@ -105,9 +106,9 @@ Mango Bajito es un lenguaje de programación imperativo, diseñado para facilita
 
 * Implementa un sistema de tipos fuertes, donde las operaciones entre tipos incompatibles son prevenidas por el lenguaje, evitando errores en tiempo de ejecución relacionados con conversiones implícitas o mal manejo de datos. Además, la verificación de tipos se realiza de forma estática, durante la fase de compilación, garantizando que el código sea consistente y seguro antes de ser ejecutado.
 
-* Aunque no es estrictamente técnico, la sintaxis de Mango Bajito es intencionadamente sencilla y coloquial, con palabras clave diseñadas para ser intuitivas y fáciles de recordar. Esto hace que el lenguaje sea accesible para programadores principiantes sin sacrificar las capacidades necesarias para desarrollos complejos.
+* Aunque no es estrictamente técnico, la sintaxis de Mango Bajito es intencionadamente sencilla y coloquial, con palabras clave diseñadas para ser intuitivas y fáciles de recordar. Esto hace que el lenguaje sea accesible para programadores hartos de lenguajes formales sin sacrificar las capacidades necesarias para desarrollos complejos.
 
-## **Mecanismos**
+## 🥭**Mecanismos**
 
 ### **Instrucción**
 
@@ -121,7 +122,7 @@ Instruccion_1;
 Instruccion_2;
 ```
 >[!IMPORTANT] IMPORTANTE
-> Si se omite el `;`, el compilador generará un error de sintaxis.
+> Si se omite el `;`, el compilador generará un error de sintaxis. ¡No busques peos!
 
 ### **Declaración**
 La declaración en Mango Bajito es el proceso mediante el cual se introduce una nueva variable o constante en el programa. Cada variable o constante tiene un identificador único que sigue un conjunto de reglas sintácticas y semánticas para garantizar la claridad y consistencia del código.
@@ -155,13 +156,13 @@ En Mango Bajito, los identificadores (`nombres de variables` y `constantes`) deb
 	✅ Válido: valor123, edad9.
 
 * Deben ser únicas dentro de su ámbito:
-	No se pueden declarar dos variables con el mismo nombre en el mismo bloque de código.
+	No se pueden declarar dos variables con el mismo nombre en el mismo alcance de código.
 
 * Deben evitar colisión con palabras clave del lenguaje:
 	No se puede declarar una variable con un nombre reservado como `culito`, `jeva`, `rescata`, `si_es_asi`, etc.
 
 #### *Variable*
-Las variables en Mango Bajito son identificadores que pueden cambiar su valor durante la ejecución del programa. Se declaran usando la palabra clave `culito`, seguida del nombre de la variable, tipo y valor que es opcional.
+Las variables en Mango Bajito son identificadores que pueden cambiar su valor durante la ejecución del programa. Se declaran usando la palabra clave `culito`, seguida del nombre de la variable y el tipo. Establecer un valor en la declaración es opcional.
 
 **Sintaxis:**
 ```
@@ -171,7 +172,7 @@ culito <nombre de variable> : tipo = valor;
 >[!IMPORTANT] Reglas para las variables
 > * Pueden cambiar de valor mediante asignación.
 > * Deben ser declaradas antes de su uso.
-> * No pueden cambiar de tipo después de declaradas.
+> * No pueden cambiar de tipo después de declaradas en el mismo alcance.
 
 #### *Constante*
 Las constantes son identificadores cuyo valor no puede ser modificado después de su declaración. Se declaran con la palabra clave `jeva`, seguida del nombre, tipo y su valor obligatorio.
@@ -193,13 +194,13 @@ La asignación en Mango Bajito se realiza con el operador `=`. Se usa para almac
 ```
 
 ### **Selección**
-La estructura de `selección` en Mango Bajito permite ejecutar diferentes bloques de código en función de condiciones `booleanas`. Se utiliza la palabra clave `si_es_asi`, junto con `0_asi` para manejar condiciones alternativas y `nojoda` para el caso por defecto.
+La estructura de `selección` en Mango Bajito permite ejecutar diferentes bloques de código en función de condiciones `booleanas`. Se utiliza la palabra clave `si_es_asi`, junto con `o_asi` para manejar condiciones alternativas y `nojoda` para el caso por defecto.
 
 **Sintaxis:**
 ```
 si_es_asi <Condicion_1> {
 	Instrucciones;
-} 0_asi <Condicion_2> {
+} o_asi <Condicion_2> {
 	Instrucciones;
 } nojoda {
 	Instrucciones;
@@ -207,7 +208,7 @@ si_es_asi <Condicion_1> {
 ```
 >[!NOTE] Consideraciones
 > * `si_es_asi`: Evalúa una condición. Si es `Sisa` (verdadero), ejecuta el bloque de código.
-> * `0_asi`: (Opcional) Se usa para evaluar una segunda condición si la primera es `Nolsa` (falsa).
+> * `o_asi`: (Opcional) Se usa para evaluar una segunda condición si la primera es `Nolsa` (falsa).
 > * `nojoda`: (Opcional) Se ejecuta solo si todas las condiciones anteriores son `Nolsa`.
 
 ### **Repetición**
@@ -216,11 +217,17 @@ En Mango Bajito, las estructuras de repetición permiten ejecutar un bloque de c
 * Bucle indeterminado (`echale_bolas_hasta`) → Se ejecuta mientras una condición sea `Sisa`.
 
 #### *Bucle for (`repite_burda`)*
-Se usa para repetir un bloque de código un número específico de veces. Se define con las palabras clave `repite_burda`/`entre`/`hasta`/`con_flow`.
+Se usa para repetir un bloque de código un número específico de veces. Se define con las palabras clave `repite_burda`/`entre`/`hasta`. Si se quiere que el bucle itere en un paso en concreto, se debe usar la instrucción `repite_burda`/`entre`/`hasta`/`con_flow`.
 
 **Sintaxis:**
 ```
-repite_burda [variable : mango] entre [inicio : mango] hasta [fin : mango] con_flow [incremento : mango] {
+# Ciclo determinado con paso 1 (por defecto)
+repite_burda [variable : mango] entre [inicio : mango] hasta [fin : mango] {
+    Instrucciones;
+}
+
+# Ciclo determinado con paso especificado 
+repite_burda [variable : mango] entre [inicio : mango] hasta [fin : mango] con_flow [paso : mango] {
     Instrucciones;
 }
 ```
@@ -228,6 +235,7 @@ repite_burda [variable : mango] entre [inicio : mango] hasta [fin : mango] con_f
 > * `variable`: Es el contador del bucle.
 > * `entre` y `hasta`: Especifican el rango del bucle (incluye el valor inicial, excluye el final).
 > * `con_flow`: Define el incremento en cada iteración (puede ser negativo para iterar en reversa).
+> 	* Si se quiere hacer una iteración en reversa, entonces el valor especificado en `entre` debe ser mayor que el especificado en `hasta` 
 
 #### *Bucle while (`echale_bolas_hasta`)*
 Se usa cuando el número de iteraciones es desconocido y depende de una condición booleana.
@@ -240,12 +248,58 @@ echale_bolas_hasta <Condicion> {
 ```
 El bloque se ejecuta mientras la condición sea `Sisa`. Si la condición es `Nolsa` desde el inicio, el bucle nunca se ejecuta.
 
-## **Tipos de Datos**
+#### *Control del flujo en Bucles*
+Mango Bajito proporciona dos palabras clave para controlar el flujo de ejecución dentro de los bucles:
+
+* **Salir de un Bucle (`uy_kieto`)**
+  
+	🔹 `uy_kieto` finaliza inmediatamente la ejecución del bucle en curso.
+
+	🔹 No se ejecutarán más iteraciones, aunque la condición del bucle aún sea `Sisa`
+
+	**Sintaxis:**
+	```
+	# Para ciclo `echale_bolas_hasta`
+	echale_bolas_hasta <Condicion> {
+		Instrucciones;
+		uy_kieto;	# Con esto se sale del ciclo
+	}
+
+	# Para ciclo `repite_burda`
+	repite_burda [variable : mango] entre [inicio : mango] hasta [fin : mango] {
+    	Instrucciones;
+		uy_kieto;	# Con esto se sale del ciclo
+	}
+	```
+* **Saltar una Iteración (`rotalo`)**
+
+	🔹 `rotalo` salta la iteración actual y continúa con la siguiente.
+	
+	🔹 Se usa cuando queremos omitir ciertos valores dentro de un bucle sin interrumpir su ejecución completa.
+
+	**Sintaxis:**
+	```
+	# Para ciclo `echale_bolas_hasta`
+	echale_bolas_hasta <Condicion> {
+		Instrucciones1;
+		rotalo;		# Con esto se avanca a la siguiente iteracion ignorando Instrucciones2
+		Instrucciones2;
+	}
+
+	# Para ciclo `repite_burda`
+	repite_burda [variable : mango] entre [inicio : mango] hasta [fin : mango] {
+    	Instrucciones1;
+		rotalo;		# Con esto se avanca a la siguiente iteracion ignorando Instrucciones2
+		Instrucciones2;
+	}
+	```
+
+## 🥭**Tipos de Datos**
 
 ### **Escalares**
 
 #### *Caracteres* (`negro`)
-El tipo `negro` se utiliza para almacenar caracteres individuales, como letras, dígitos o símbolos. Es equivalente al tipo `char` en otros lenguajes de programación. Los valores deben definirse entre comillas simples.
+El tipo `negro` se utiliza para almacenar caracteres individuales, como letras, dígitos o símbolos. Es equivalente al tipo `char` en otros lenguajes de programación.
 
 **Ejemplo:**
 ```
@@ -254,7 +308,7 @@ culito simbolo: negro = '$';
 ```
 
 #### *Enteros* (`mango`)
-El tipo `mango` representa números enteros, positivos o negativos, dentro de un rango dependiente de la implementación del lenguaje (normalmente 32 bits). Es ideal para contadores, índices y cálculos discretos.
+El tipo `mango` representa números enteros, positivos o negativos, dentro de un rango de 32 bits (números entre -2.147.483.648 y 2.147.483.647). Es ideal para contadores, índices y cálculos discretos.
 
 **Ejemplo:**
 ```
@@ -263,7 +317,7 @@ culito contador: mango = -10;
 ```
 
 #### *Flotantes* (`manguita`)
-El tipo `manguita` se utiliza para representar números en coma flotante de precisión simple, adecuados para cálculos donde no se requiere una precisión extremadamente alta.
+El tipo `manguita` se utiliza para representar números en coma flotante de precisión simple entre 1.18e-38 hasta 3.40e38, adecuados para cálculos donde no se requiere una precisión extremadamente alta.
 
 **Ejemplo:**
 ```
@@ -272,7 +326,7 @@ jeva precio: manguita = 12.50;
 ```
 
 #### *Doubles* (`manguangua`)
-El tipo `manguangua` se utiliza para números en coma flotante con doble precisión, siendo más adecuado para cálculos científicos o situaciones que requieren alta precisión en operaciones decimales.
+El tipo `manguangua` se utiliza para números en coma flotante con doble precisión entre 2.23e-308 hasta 1.79e308, siendo más adecuado para cálculos científicos o situaciones que requieren alta precisión en operaciones decimales.
 
 **Ejemplo:**
 ```
@@ -281,7 +335,7 @@ culito distancia: manguangua = 1.989e30;
 ```
 
 #### *Booleanos* (`tas_claro`)
-El tipo `tas_claro` representa valores lógicos, con dos valores posibles: Sisa (equivalente a True) y Nolsa (equivalente a False).
+El tipo `tas_claro` representa valores lógicos, con dos valores posibles: `Sisa` (equivalente a `True`) y `Nolsa` (equivalente a `False`).
 Este tipo es ampliamente utilizado en estructuras condicionales y bucles para controlar el flujo del programa.
 
 **Ejemplo:**
@@ -290,8 +344,8 @@ culito esMayor: tas_claro = Sisa;
 culito esPar: tas_claro = Nolsa;
 ```
 > [!IMPORTANT] IMPORTANTE
-> - Mango Bajito no realiza conversiones implícitas entre tipos de datos escalares. Por ejemplo, no se puede asignar un manguangua 
-a un mango sin una conversión explícita. Esto refuerza su sistema de tipos fuertes.
+> - Mango Bajito **NO** realiza conversiones implícitas entre tipos de datos escalares. Por ejemplo, no se puede asignar un `manguangua` 
+a un `mango` sin una conversión explícita. Esto refuerza su sistema de tipos fuertes.
 > - Los valores por defecto al declarar variables sin inicializar son:
 >    - `negro`: '\0' (carácter nulo)
 >    - `mango`: 0
@@ -301,15 +355,15 @@ a un mango sin una conversión explícita. Esto refuerza su sistema de tipos fue
 ### **Compuestos**
 
 #### *Cadena de Caracteres* (`higuerote`)
-El tipo `higuerote` se utiliza para representar cadenas de texto. Una cadena es un arreglo inmutable de caracteres (de tipo `negro`), ideal para manejar palabras, frases o cualquier dato textual. 
+El tipo `higuerote` se utiliza para representar cadenas de texto. Una cadena es un arreglo de caracteres (de tipo `negro`) mutables en tamaño y caracteres de la cadena, ideal para manejar palabras, frases o cualquier dato textual. 
 
 **Ejemplo:**
 ```
 jeva saludo: higuerote = "Hola, chamo";
-jeva mensaje: higuerote = "Esto es Mango Bajito";
+culito mensaje: higuerote = "Esto es Mango Bajito";
 ```
 #### *Arreglos*
-Los arreglos permiten almacenar múltiples elementos del mismo tipo en una estructura indexada. Se definen utilizando el tipo de los elementos seguido de [tamaño] en corchetes, donde `tamaño : mango` es el número de elementos en el arreglo y debe ser estrictamente positivo.
+Los arreglos permiten almacenar múltiples elementos del mismo tipo en una estructura indexada. Se definen utilizando el tipo de los elementos seguido de `[tamaño]` en corchetes, donde `tamaño : mango` es el número de elementos en el arreglo y debe ser estrictamente positivo.
 
 **Ejemplo:**
 ```
@@ -328,9 +382,9 @@ El tipo `arroz_con_mango` es una estructura que permite agrupar múltiples varia
 **Ejemplo:**
 ```
 arroz_con_mango Persona {
-jeva nombre: higuerote;
-culito edad: mango;
-culito estudiante: tas_claro;
+	jeva nombre: higuerote;
+	culito edad: mango;
+	culito estudiante: tas_claro;
 }
 
 culito juan : Persona = { "Juan Pérez", 25, Sisa };
@@ -338,7 +392,7 @@ rescata(juan.nombre);  # Imprime: Juan Pérez
 ```
 
 #### *Variantes* (`coliao`)
-El tipo `coliao` en Mango Bajito representa una estructura de datos que puede contener valores de distintos tipos, **uno a la vez**, reutilizando el mismo espacio de memoria. Un `coliao` se define especificando los miembros de los distintos tipos de datos que puede contener separados por punto y coma. Este enfoque permite manejar datos que pueden variar en tipo, pero sin desperdiciar memoria. 
+El tipo `coliao` en Mango Bajito representa una estructura de datos que puede contener valores de distintos tipos, **uno a la vez**, reutilizando el mismo espacio de memoria. Un `coliao` se define especificando los miembros de los distintos tipos de datos que puede contener separados por punto y coma (`;`). Este enfoque permite manejar datos que pueden variar en tipo, pero sin desperdiciar memoria. 
 
 **Ejemplo:**
 ```
@@ -373,7 +427,7 @@ rescata(datos.a);  # Resultado: 42
 Persona alguien = { "Juan Pérez", 25 };
 datos = alguien;
 
-# Accedemos al registro dentro del `coliao`
+# Accedemos al registro dentro del coliao
 rescata(datos.p.nombre);  # Resultado: Juan Pérez
 rescata(datos.p.edad);    # Resultado: 25
 ```
@@ -398,14 +452,14 @@ En Mango Bajito existen errores predefinidos y una definición previa de código
 |     94       | Escribe bien esa vaina | No sigue las reglas gramaticales del lenguaje.           |
 |     58       | Te patina el coco      | Realizar una operación con tipos de datos incompatibles. |
 |     85       | Divideme esta          | Cuando se trata de dividir por 0.                        | 
-|     67       | No hay más pa ti       | El sistema de memoria está agotado.                      |
+|     67       | No hay más pa' ti      | El sistema de memoria está agotado.                      |
 |     76       | Pelaste el hueco       | Acceder a índices fuera del rango.                       |
 |    139       | Leete esta             | Intentar abrir un archivo que no existe.                 |
 |    193       | Apunta bien vale       | Referencias a punteros nulos o None.                     |
 |    391       | No la veo wn           | Usar una variable antes de declararla.                   |
-|    913       | Llamando a tu novia    | Llamar a una función inexistente.                        |
-|    931       | Te pasaste loco        | Desbordamiento numérico (overflow).                      |
-|    148       | Libera al preso        | No haber liberado memoria (`borradol`) a un `cero_km`.   |
+|    319       | Llamando a tu novia    | Llamar a una función inexistente.                        |
+|    913       | Te pasaste loco        | Desbordamiento numérico (overflow).                      |
+|    931       | Libera al preso        | No haber liberado memoria (`borradol`) a un `cero_km`.   |
 
 ### **Apuntadores**
 
@@ -415,12 +469,14 @@ Los apuntadores (`ahi_ta`) permiten hacer referencia a valores en memoria dinám
 
 **Sintaxis:**
 ```
-ahi_ta <nombre de apuntador> : <tipo> = cero_km <tipo>(valor);
+ahi_ta <nombre de apuntador> : <tipo> = cero_km <tipo>(valor);	# Asignacion de valor a la direccion de memoria directamente
+ahi_ta <nombre de apuntador> : <tipo> = cero_km <tipo>;			# Solo reservacion de memoria
+ahi_ta <nombre de apuntador> : <tipo> = cero_km <tipo>[tamaño];	# Solo reservacion de memoria (arreglos)
 ```
 
 >[!NOTE] NOTA
 > * `cero_km` devuelve un apuntador (`ahi_ta`) que referencia el espacio de memoria asignado.
-> * Mango Bajito no permite aritmética de apuntadores para mantener la seguridad de memoria.
+> * Mango Bajito <u><strong>NO</strong></u> permite aritmética de apuntadores para mantener la seguridad de memoria.
 > * Las reglas para `nombre de apuntador` son las mismas que [Reglas para nombres de variables](#reglas-para-nombres-de-variables-y-constantes)
 
 #### *Acceso* (`aki_toy`)
@@ -430,8 +486,9 @@ Para acceder al valor almacenado en la memoria referenciada por un `ahi_ta`, se 
 **Sintaxis:**
 ```
 aki_toy <nombre de apuntador>;
+aki_toy <nombre de apuntador>.<atributo>;	# En caso de arroz_con_mango o coliao
 ```
-
+ 
 #### *Liberación de Memoría* (`borradol`)
 
 La palabra clave `borradol` se usa para liberar la memoria previamente reservada con `cero_km`, evitando fugas de memoria. Es equivalente a `free` o `delete` en otros lenguajes.
@@ -439,25 +496,26 @@ La palabra clave `borradol` se usa para liberar la memoria previamente reservada
 **Sintaxis:**
 ```
 borradol <nombre de apuntador>;
+borradol <nombre de apuntador>.<atributo>;
 ```
 > [!IMPORTANT]⚠️IMPORTANTE
-> Intentar acceder a `aki_toy <nombre de apuntador>` después de liberar la memoría resultará en un error.
+> Intentar acceder a `aki_toy <nombre de apuntador>` después de liberar la memoría resultará en un error "Apunta bien vale"
 
-## **Procedimientos y Funciones**
+## 🥭**Procedimientos y Funciones**
 Las funciones permiten recibir parámetros y retornar un valor (opcional). Se definen con la palabra clave `echar_cuento`, seguida del nombre, los parámetros y el tipo de retorno usando `lanza`. Para devolver el valor se utiliza la palabra clave `lanzate`.
 
 **Sintaxis:**
 ```
 echar_cuento <nombre de funcion>(<lista de parametros>) lanza <tipo> {
     Instrucciones;
-    lanzate valor;
+    lanzate <valor de retorno>;
 }
 ```
 > [!IMPORTANT] IMPORTANTE
 > * `nombre de funcion`: Nombre único de la función. Este nombre sigue
 > * `lista de parametros`: Lista de valores que recibe la función separados por coma y cada uno con su tipo.
 > * `tipo`: Define el tipo de dato que devuelve la función.
-> * `lanzate valor`: Retorna un valor del tipo especificado.
+> * `lanzate <valor de retorno>`: Retorna un valor del tipo especificado.
 
 ### **Función sin retorno (Procedimiento)**
 Si la función no necesita devolver nada, se usa utiliza `un_coño` como tipo de retorno:
@@ -469,7 +527,16 @@ echar_cuento <nombre de funcion>(<lista de parametros>) lanza un_coño {
 }
 ```
 > [!NOTE] Nota
-> Si se trata de un procedimiento, no es necesario el `lanzate valor`, de lo contrario habrá un error.
+> Si se trata de un procedimiento, no es necesario el `lanzate <valor de retorno>`, de lo contrario habrá un error. Sin embargo se
+> puede usar `lanzate` para cortar el flujo de la función:
+>
+> ```
+> echar_cuento <nombre de funcion>(<lista de parametros>) lanza un_coño {
+>	Instrucciones1;
+>	lanzate;	# Detiene el flujo del procedimiento, ignorando Instrucciones2
+>	Instrucciones2;
+> }
+> ```
 
 ### **Pasaje de parámetros**
 
@@ -493,7 +560,7 @@ echar_cuento <nombre de funcion>(<aki_toy param_1 : tipo_1>, ...) lanza <tipo> {
 }
 ```
 > [!IMPORTANT] Reglas para el pasaje por referencia:
-> * Solo se puede usar con variables (culito), no con constantes (jeva).
+> * Solo se puede usar con variables (`culito`), no con constantes (`jeva`).
 > * No se puede pasar expresiones o valores literales
 > ```
 > incrementar(aki_toy 5);  # ❌ Error: no se puede pasar un literal
@@ -505,100 +572,101 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 #### *Entrada y Salida*
 * `rescata`
 
-Imprime el valor de una variable o constante en la consola.
+	Imprime el valor de una variable o constante en la consola.
 
-**Definición:**
-```
-rescata (<variable o constante>) lanza un_coño;
-```
+	**Definición:**
+	```
+	rescata (<variable o constante>) lanza un_coño;
+	```
 
-**Sintaxis:**
-```
-rescata(<variable o constante>);
-```
+	**Sintaxis:**
+	```
+	rescata(<variable o constante>);
+	```
 
 * `hablame`
 
-Permite recibir entrada desde el usuario con posibilidad(opcional) de mostrar un mensaje.
+	Permite recibir entrada desde el usuario con posibilidad (opcional) de mostrar un mensaje.
 
-**Definición:**
-```
-hablame (mensage : higuerote) lanza higuerote;
-```
+	**Definición:**
+	```
+	hablame (mensage : higuerote) lanza higuerote;
+	```
 
-**Sintaxis:**
-```
-<`culito` o `jeva`> <nombre de variable> : higuerote = hablame("Texto");
-```
+	**Sintaxis:**
+	```
+	<`culito` o `jeva`> <nombre de variable> : higuerote = hablame("Texto");
+	```
 
 #### *Manipulación de Tipos*
 
 * `que_monda_ejesa`
 
-Devuelve el tipo de dato de una variable en formato de texto.
+	Devuelve el tipo de dato de una variable en formato de texto.
 
-**Definición:**
-```
-que_monda_ejesa (param : <tipo>) lanza higuerote;
-```
+	**Definición:**
+	```
+	que_monda_ejesa (param : <tipo>) lanza higuerote;
+	```
 
-**Sintaxis:**
-```
-<`culito` o `jeva`> <nombre de variable> : higuerote = que_monda_ejesa(<variable o constante>);
-```
+	**Sintaxis:**
+	```
+	<`culito` o `jeva`> <nombre de variable> : higuerote = que_monda_ejesa(<variable o constante>);
+	```
 
 #### *Excepciones*
 
 * `ah_vaina`
-Genera un error con un mensaje personalizado.
 
-**Definición:**
-```
-ah_vaina (param : higuerote) lanza caramba_ñero;
-```
+	Genera un error con un mensaje personalizado.
 
-**Sintaxis:**
-```
-ah_vaina("texto personalizado");
-```
+	**Definición:**
+	```
+	ah_vaina (param : higuerote) lanza caramba_ñero;
+	```
+
+	**Sintaxis:**
+	```
+	ah_vaina("texto personalizado");
+	```
 
 #### *Manipulación de Cadenas*
 
 * `pegao`
 
-Concatena dos cadenas de caracteres (`higuerote`) y forma una nueva.
+	Concatena dos cadenas de caracteres (`higuerote`) y forma una nueva.
 
-**Definición:**
-```
-pegao(aki_toy cadena_1 : higuerote, aki_toy cadena_2 : higuerote) lanza higuerote;
-```
-**Sintaxis:**
-```
-<culito o jeva> <nombre de variable> : higuerote = pegao(cadena_1, cadena_2);
-```
+	**Definición:**
+	```
+	pegao(aki_toy cadena_1 : higuerote, aki_toy cadena_2 : higuerote) lanza higuerote;
+	```
+	**Sintaxis:**
+	```
+	<culito o jeva> <nombre de variable> : higuerote = pegao(cadena_1, cadena_2);
+	```
 
 * `maelo`
 
-Repite una cadena de caracteres (`higuerote`) un número de veces indicado. (Referencia a 'Otra vez Maelo Ruiz')
+	Repite una cadena de caracteres (`higuerote`) un número de veces indicado. (Referencia a 'Otra vez Maelo Ruiz')
 
-**Definición:**
-```
-maelo(cadena : higuerote, repetidor : mango) lanza higuerote;
-```
+	**Definición:**
+	```
+	maelo(cadena : higuerote, repetidor : mango) lanza higuerote;
+	```
 
-**Sintaxis:**
-```
-<culito o jeva> <nombre de variable> : higuerote = maelo(cadena, repetidor);
-```
+	**Sintaxis:**
+	```
+	<culito o jeva> <nombre de variable> : higuerote = maelo(cadena, repetidor);
+	```
 
-## **Manejo de Errores**
+## 🥭**Manejo de Errores**
 En Mango Bajito, el manejo de errores se implementa mediante los bloques `meando` y `fuera_del_perol`, que permiten capturar y gestionar excepciones de manera estructurada.
 ```
 meando {
 	Instrucciones;
+	ah_vaina("Mensaje personalizado");
 } fuera_del_perol (error : caramba_ñero) {
 	Instrucciones;
-	ah_vaina("Mensaje personalizado");
 }
 ```
 >[!NOTE] Nota
@@ -607,7 +675,7 @@ meando {
 > * `error`: Variable de tipo `caramba_ñero` que contiene detalles del error capturado. Para mas informacion ver [Error](#error-caramba_ñero)
 > * `ah_vaina`: Función para generar errores personalizados. Para mas información ver [Excepciones](#excepciones).
 
-## **Operadores**
+## 🥭**Operadores**
 
 ### **Lógicos**
 Los operadores lógicos en Mango Bajito permiten realizar comparaciones y operaciones booleanas de manera expresiva y directa:
@@ -747,7 +815,7 @@ numero += 3;  # Resultado: 8
 rescata(numero); # Imprime: 8
 ```
 
-## **Operaciones entre tipos de datos**
+## 🥭**Operaciones entre tipos de datos**
 Mango Bajito permite conversiones explícitas entre tipos para garantizar que las operaciones sean claras y controladas. Algunas de las operaciones soportadas incluyen:
 
 ### **Conversión de mango a manguita o manguangua**
@@ -755,7 +823,7 @@ Mango Bajito permite conversiones explícitas entre tipos para garantizar que la
 Los números enteros pueden convertirse explícitamente a tipos en coma flotante:
 
 **Ejemplo:**
-```<!--  -->
+```
 culito entero : mango = 5;
 culito decimal : manguita = (manguita)entero; # Resultado: 5.0
 culito doble : manguangua = (manguangua)entero; # Resultado: 5.0
