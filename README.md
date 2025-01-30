@@ -394,18 +394,18 @@ En Mango Bajito existen errores predefinidos y una definición previa de código
 
 |    Codigo    |         Nombre         |                        Descripción                       |
 | :----------: | :--------------------: | :------------------------------------------------------: |
-|     69       | Pal pana               | El usuario puede personalizar el error con un mensaje.   |
-|      1       | Escribe bien esa vaina | No sigue las reglas gramaticales del lenguaje.           |
-|      2       | Te patina el coco      | Realizar una operación con tipos de datos incompatibles. |
-|      3       | Divideme esta          | Cuando se trata de dividir por 0.                        | 
-|      4       | No hay más pa ti       | El sistema de memoria está agotado.                      |
-|      5       | Pelaste el hueco       | Acceder a índices fuera del rango.                       |
-|      6       | Leete esta             | Intentar abrir un archivo que no existe.                 |
-|      7       | Apunta bien vale       | Referencias a punteros nulos o None.                     |
-|      8       | No la veo wn           | Usar una variable antes de declararla.                   |
-|      9       | Llamando a tu ex       | Llamar a una función inexistente.                        |
-|     10       | Te pasaste loco        | Desbordamiento numérico (overflow).                      |
-|     11       | Libera al preso        | No haber liberado memoria (`borradol`) a un `cero_km`.   |
+|     49       | Pal pana               | El usuario puede personalizar el error con un mensaje.   |
+|     94       | Escribe bien esa vaina | No sigue las reglas gramaticales del lenguaje.           |
+|     58       | Te patina el coco      | Realizar una operación con tipos de datos incompatibles. |
+|     85       | Divideme esta          | Cuando se trata de dividir por 0.                        | 
+|     67       | No hay más pa ti       | El sistema de memoria está agotado.                      |
+|     76       | Pelaste el hueco       | Acceder a índices fuera del rango.                       |
+|    139       | Leete esta             | Intentar abrir un archivo que no existe.                 |
+|    193       | Apunta bien vale       | Referencias a punteros nulos o None.                     |
+|    391       | No la veo wn           | Usar una variable antes de declararla.                   |
+|    913       | Llamando a tu novia    | Llamar a una función inexistente.                        |
+|    931       | Te pasaste loco        | Desbordamiento numérico (overflow).                      |
+|    148       | Libera al preso        | No haber liberado memoria (`borradol`) a un `cero_km`.   |
 
 ### **Apuntadores**
 
