@@ -13,72 +13,75 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 
 ## **Índice**
 - [**CI4721 - Lenguajes de Programación II - Mango Bajito**](#ci4721---lenguajes-de-programación-ii---mango-bajito)
-  - [**Descripción**](#descripción)
-  - [**Integrantes**](#integrantes)
-  - [**Índice**](#índice)
-  - [🥭**Preámbulo**](#preámbulo)
-  - [🥭**Definición**](#definición)
-  - [🥭**Características**](#características)
-  - [🥭**Mecanismos**](#mecanismos)
-    - [**Instrucción**](#instrucción)
-    - [**Declaración**](#declaración)
-      - [*Reglas para nombres de variables y constantes*](#reglas-para-nombres-de-variables-y-constantes)
-      - [*Variable*](#variable)
-      - [*Constante*](#constante)
-    - [**Asignación**](#asignación)
-    - [**Selección**](#selección)
-    - [**Repetición**](#repetición)
-      - [*Bucle for (`repite_burda`)*](#bucle-for-repite_burda)
-      - [*Bucle while (`echale_bolas_si`)*](#bucle-while-echale_bolas_si)
-      - [*Control del flujo en Bucles*](#control-del-flujo-en-bucles)
-  - [🥭**Tipos de Datos**](#tipos-de-datos)
-    - [**Escalares**](#escalares)
-      - [*Caracteres* (`negro`)](#caracteres-negro)
-      - [*Enteros* (`mango`)](#enteros-mango)
-      - [*Flotantes* (`manguita`)](#flotantes-manguita)
-      - [*Doubles* (`manguangua`)](#doubles-manguangua)
-      - [*Booleanos* (`tas_claro`)](#booleanos-tas_claro)
-    - [**Compuestos**](#compuestos)
-      - [*Cadena de Caracteres* (`higuerote`)](#cadena-de-caracteres-higuerote)
-      - [*Arreglos*](#arreglos)
-      - [*Registros* (`arroz_con_mango`)](#registros-arroz_con_mango)
-      - [*Variantes* (`coliao`)](#variantes-coliao)
-    - [**Void** (`un_coño`)](#void-un_coño)
-    - [**Error** (`caramba_ñero`)](#error-caramba_ñero)
-    - [**Apuntadores**](#apuntadores)
-      - [*Asignación de Memoria y Creación de Apuntadores* (`cero_km`)](#asignación-de-memoria-y-creación-de-apuntadores-cero_km)
-      - [*Acceso* (`aki_toy`)](#acceso-aki_toy)
-      - [*Liberación de Memoría* (`borradol`)](#liberación-de-memoría-borradol)
-  - [🥭**Procedimientos y Funciones**](#procedimientos-y-funciones)
-    - [**Función sin retorno (Procedimiento)**](#función-sin-retorno-procedimiento)
-    - [**Pasaje de parámetros**](#pasaje-de-parámetros)
-      - [*Por valor*](#por-valor)
-      - [*Por referencia*](#por-referencia)
-    - [**Procedimientos y Funciones del Lenguaje**](#procedimientos-y-funciones-del-lenguaje)
-      - [*Entrada y Salida*](#entrada-y-salida)
-      - [*Manipulación de Tipos*](#manipulación-de-tipos)
-      - [*Excepciones*](#excepciones)
-      - [*Manipulación de Cadenas*](#manipulación-de-cadenas)
-  - [🥭**Manejo de Errores**](#manejo-de-errores)
-  - [🥭**Operadores**](#operadores)
-    - [**Lógicos**](#lógicos)
-      - [*Equal* (`igualito`)](#equal-igualito)
-      - [*NotEqual* (`nie`)](#notequal-nie)
-      - [*And* (`yunta`)](#and-yunta)
-      - [*Or* (`o_sea`)](#or-o_sea)
-      - [*Not* (`nelson`)](#not-nelson)
-    - [**Aritméticos**](#aritméticos)
-      - [*Suma* (+)](#suma-)
-      - [*Resta* (-)\*\*](#resta--)
-      - [*Multiplicación* (\*)\*\*](#multiplicación-)
-      - [*División Entera* (//)\*\*](#división-entera-)
-      - [*División Decimal* (/)\*\*](#división-decimal-)
-      - [*Potenciación* (\*\*)](#potenciación-)
-      - [*Incremento* (++)](#incremento-)
-      - [*Asignación aditiva* (+=)](#asignación-aditiva-)
-  - [🥭**Operaciones entre tipos de datos**](#operaciones-entre-tipos-de-datos)
-    - [**Conversión de mango a manguita o manguangua**](#conversión-de-mango-a-manguita-o-manguangua)
-    - [**Conversión del `negro` (carácter) a `mango` (entero)**](#conversión-del-negro-carácter-a-mango-entero)
+	- [**Descripción**](#descripción)
+	- [**Integrantes**](#integrantes)
+	- [**Índice**](#índice)
+	- [🥭**Preámbulo**](#preámbulo)
+	- [🥭**Definición**](#definición)
+	- [🥭**Características**](#características)
+	- [🥭**Mecanismos**](#mecanismos)
+		- [**Instrucción**](#instrucción)
+		- [**Declaración**](#declaración)
+			- [*Reglas para nombres de variables y constantes*](#reglas-para-nombres-de-variables-y-constantes)
+			- [*Variable*](#variable)
+			- [*Constante*](#constante)
+		- [**Asignación**](#asignación)
+		- [**Selección**](#selección)
+		- [**Repetición**](#repetición)
+			- [*Bucle for (`repite_burda`)*](#bucle-for-repite_burda)
+			- [*Bucle while (`echale_bolas_si`)*](#bucle-while-echale_bolas_si)
+			- [*Control del flujo en Bucles*](#control-del-flujo-en-bucles)
+	- [🥭**Tipos de Datos**](#tipos-de-datos)
+		- [**Escalares**](#escalares)
+			- [*Caracteres* (`negro`)](#caracteres-negro)
+			- [*Enteros* (`mango`)](#enteros-mango)
+			- [*Flotantes* (`manguita`)](#flotantes-manguita)
+			- [*Doubles* (`manguangua`)](#doubles-manguangua)
+			- [*Booleanos* (`tas_claro`)](#booleanos-tas_claro)
+		- [**Compuestos**](#compuestos)
+			- [*Cadena de Caracteres* (`higuerote`)](#cadena-de-caracteres-higuerote)
+			- [*Arreglos*](#arreglos)
+			- [*Registros* (`arroz_con_mango`)](#registros-arroz_con_mango)
+			- [*Variantes* (`coliao`)](#variantes-coliao)
+		- [**Void** (`un_coño`)](#void-un_coño)
+		- [**Error** (`caramba_ñero`)](#error-caramba_ñero)
+		- [**Apuntadores**](#apuntadores)
+			- [*Asignación de Memoria y Creación de Apuntadores* (`cero_km`)](#asignación-de-memoria-y-creación-de-apuntadores-cero_km)
+			- [*Acceso* (`aki_toy`)](#acceso-aki_toy)
+			- [*Liberación de Memoría* (`borradol`)](#liberación-de-memoría-borradol)
+	- [🥭**Procedimientos y Funciones**](#procedimientos-y-funciones)
+		- [**Función sin retorno (Procedimiento)**](#función-sin-retorno-procedimiento)
+		- [**Pasaje de parámetros**](#pasaje-de-parámetros)
+			- [*Por valor*](#por-valor)
+			- [*Por referencia*](#por-referencia)
+		- [**Procedimientos y Funciones del Lenguaje**](#procedimientos-y-funciones-del-lenguaje)
+			- [*Entrada y Salida*](#entrada-y-salida)
+			- [*Manipulación de Tipos*](#manipulación-de-tipos)
+			- [*Excepciones*](#excepciones)
+			- [*Manipulación de Arreglos y Cadenas*](#manipulación-de-arreglos-y-cadenas)
+	- [🥭**Manejo de Errores**](#manejo-de-errores)
+	- [🥭**Operadores**](#operadores)
+		- [**Lógicos**](#lógicos)
+			- [*Equal* (`igualito`)](#equal-igualito)
+			- [*NotEqual* (`nie`)](#notequal-nie)
+			- [*And* (`yunta`)](#and-yunta)
+			- [*Or* (`o_sea`)](#or-o_sea)
+			- [*Not* (`nelson`)](#not-nelson)
+		- [**Aritméticos**](#aritméticos)
+			- [*Suma* (+)](#suma-)
+			- [*Resta* (-)\*\*](#resta--)
+			- [*Multiplicación* (\*)\*\*](#multiplicación-)
+			- [*División Entera* (//)\*\*](#división-entera-)
+			- [*División Decimal* (/)\*\*](#división-decimal-)
+			- [*Potenciación* (\*\*)](#potenciación-)
+			- [*Incremento* (++)](#incremento-)
+			- [*Decremento* (--)](#decremento---)
+			- [*Asignación aditiva* (+=)](#asignación-aditiva-)
+			- [*Asignación sustractiva* (-=)](#asignación-sustractiva--)
+			- [*Asignación multiplicativa* (\*=)](#asignación-multiplicativa-)
+	- [🥭**Operaciones entre tipos de datos**](#operaciones-entre-tipos-de-datos)
+		- [**Conversión de mango a manguita o manguangua**](#conversión-de-mango-a-manguita-o-manguangua)
+		- [**Conversión del `negro` (carácter) a `mango` (entero)**](#conversión-del-negro-carácter-a-mango-entero)
 
 ## 🥭**Preámbulo**
 
@@ -86,7 +89,7 @@ Hace no mucho tiempo, en una oficina calurosa donde el aire acondicionado estaba
 
 "¡Chamos, necesitamos un lenguaje que sea puro mango bajito! Algo que hasta el pana más nuevón pueda entender y no le dé dolor de cabeza ni le salga una 'luz roja' en el cerebro cada vez que quiera hacer un 'hola mundo'".
 
-Y así nació Mango Bajito, el lenguaje que promete ser la arepa pelada del desarrollo. ¿La idea? Hacer que programar sea tan fácil como pedir un kilo de queso rallado en la bodega de la señora Ramona. Todas las palabras clave del lenguaje están inspiradas en la jerga venezolana para que hasta tu abuela diga: "Ah, bueno, esto sí lo entiendo".
+Y así nació Mango Bajito, el lenguaje que promete ser la arepa pelada del desarrollo. ¿La idea? Hacer que programar sea tan fácil como pedir un kilo de queso rallado donde *el portu*. Todas las palabras clave del lenguaje están inspiradas en la jerga venezolana para que hasta tu abuela diga: "Ah, bueno, esto sí lo entiendo".
 
 Pero eso no es todo. Mango Bajito tiene su propio debugger que no te manda errores, te manda reclamos: 
 
@@ -630,7 +633,7 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	ah_vaina("texto personalizado");
 	```
 
-#### *Manipulación de Cadenas*
+#### *Manipulación de Arreglos y Cadenas*
 
 * `pegao`
 
@@ -642,7 +645,7 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	```
 	**Sintaxis:**
 	```
-	<culito o jeva> <nombre de variable> : higuerote = pegao(cadena_1, cadena_2);
+	<culito o jeva> <nombre de variable> : higuerote = pegao(aki_toy cadena_1, aki_toy cadena_2);
 	```
 
 * `maelo`
@@ -651,14 +654,43 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 
 	**Definición:**
 	```
-	maelo(cadena : higuerote, repetidor : mango) lanza higuerote;
+	maelo(aki_toy cadena : higuerote, repetidor : mango) lanza higuerote;
 	```
 
 	**Sintaxis:**
 	```
-	<culito o jeva> <nombre de variable> : higuerote = maelo(cadena, repetidor);
+	<culito o jeva> <nombre de variable> : higuerote = maelo(aki_toy cadena, repetidor);
 	```
+* `me_mide`
 
+	Devuelve la longitud de una cadena de caracteres (`higuerote`)
+
+	**Definición**
+	```
+	me_mide(aki_toy cadena: higuerote) lanza mango;
+	```
+	**Sintaxis**
+	```
+	<culito o jeva> <nombre de la variable> : mango = me_mide(aki_toy cadena);
+	```
+* `rellenamelo`
+
+	Inicializa un arreglo con elementos de un valor determinado.
+
+	**Definición**
+	```
+	rellenamelo(aki_toy arreglo: <tipo>[tamaño], valor: <tipo>) lanza un_coño;
+	```
+	**Sintaxis**
+	```
+	# Todos los elementos del arreglo serán inicializados como <valor>
+
+	culito <nombre de la variable> : <tipo>[tamaño]; 
+	
+	rellenamelo(aki_toy <arreglo>, <valor>);
+	```
+	> [!IMPORTANT] ⚠️IMPORTANTE
+	> Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
 ## 🥭**Manejo de Errores**
 En Mango Bajito, el manejo de errores se implementa mediante los bloques `meando` y `fuera_del_perol`, que permiten capturar y gestionar excepciones de manera estructurada.
 ```
@@ -804,6 +836,16 @@ culito numero : mango = 5;
 numero++;
 rescata(numero);  # Imprime: 6
 ```
+#### *Decremento* (--)
+
+Disminuye el valor de una variable en 1.
+
+**Ejemplo:**
+```
+culito numero : mango = 5;
+numero--;
+rescata(numero);  # Imprime: 4
+```
 #### *Asignación aditiva* (+=)
 
 Suma un valor al existente en la variable.
@@ -814,7 +856,26 @@ culito numero : mango = 5;
 numero += 3;  # Resultado: 8
 rescata(numero); # Imprime: 8
 ```
+#### *Asignación sustractiva* (-=)
 
+Resta un valor al existente en la variable.
+
+**Ejemplo:**
+```
+culito numero : mango = 5;
+numero -= 3;  # Resultado: 2
+rescata(numero); # Imprime: 2
+```
+#### *Asignación multiplicativa* (*=)
+
+Multiplica un valor al existente en la variable.
+
+**Ejemplo:**
+```
+culito numero : mango = 5;
+numero *= 3;  # Resultado: 15
+rescata(numero); # Imprime: 15
+```
 ## 🥭**Operaciones entre tipos de datos**
 Mango Bajito permite conversiones explícitas entre tipos para garantizar que las operaciones sean claras y controladas. Algunas de las operaciones soportadas incluyen:
 
