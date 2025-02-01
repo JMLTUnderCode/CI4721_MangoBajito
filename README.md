@@ -13,72 +13,72 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 
 ## **Índice**
 - [**CI4721 - Lenguajes de Programación II - Mango Bajito**](#ci4721---lenguajes-de-programación-ii---mango-bajito)
-	- [**Descripción**](#descripción)
-	- [**Integrantes**](#integrantes)
-	- [**Índice**](#índice)
-	- [🥭**Preámbulo**](#preámbulo)
-	- [🥭**Definición**](#definición)
-	- [🥭**Características**](#características)
-	- [🥭**Mecanismos**](#mecanismos)
-		- [**Instrucción**](#instrucción)
-		- [**Declaración**](#declaración)
-			- [*Reglas para nombres de variables y constantes*](#reglas-para-nombres-de-variables-y-constantes)
-			- [*Variable*](#variable)
-			- [*Constante*](#constante)
-		- [**Asignación**](#asignación)
-		- [**Selección**](#selección)
-		- [**Repetición**](#repetición)
-			- [*Bucle for (`repite_burda`)*](#bucle-for-repite_burda)
-			- [*Bucle while (`echale_bolas_hasta`)*](#bucle-while-echale_bolas_hasta)
-			- [*Control del flujo en Bucles*](#control-del-flujo-en-bucles)
-	- [🥭**Tipos de Datos**](#tipos-de-datos)
-		- [**Escalares**](#escalares)
-			- [*Caracteres* (`negro`)](#caracteres-negro)
-			- [*Enteros* (`mango`)](#enteros-mango)
-			- [*Flotantes* (`manguita`)](#flotantes-manguita)
-			- [*Doubles* (`manguangua`)](#doubles-manguangua)
-			- [*Booleanos* (`tas_claro`)](#booleanos-tas_claro)
-		- [**Compuestos**](#compuestos)
-			- [*Cadena de Caracteres* (`higuerote`)](#cadena-de-caracteres-higuerote)
-			- [*Arreglos*](#arreglos)
-			- [*Registros* (`arroz_con_mango`)](#registros-arroz_con_mango)
-			- [*Variantes* (`coliao`)](#variantes-coliao)
-		- [**Void** (`un_coño`)](#void-un_coño)
-		- [**Error** (`caramba_ñero`)](#error-caramba_ñero)
-		- [**Apuntadores**](#apuntadores)
-			- [*Asignación de Memoria y Creación de Apuntadores* (`cero_km`)](#asignación-de-memoria-y-creación-de-apuntadores-cero_km)
-			- [*Acceso* (`aki_toy`)](#acceso-aki_toy)
-			- [*Liberación de Memoría* (`borradol`)](#liberación-de-memoría-borradol)
-	- [🥭**Procedimientos y Funciones**](#procedimientos-y-funciones)
-		- [**Función sin retorno (Procedimiento)**](#función-sin-retorno-procedimiento)
-		- [**Pasaje de parámetros**](#pasaje-de-parámetros)
-			- [*Por valor*](#por-valor)
-			- [*Por referencia*](#por-referencia)
-		- [**Procedimientos y Funciones del Lenguaje**](#procedimientos-y-funciones-del-lenguaje)
-			- [*Entrada y Salida*](#entrada-y-salida)
-			- [*Manipulación de Tipos*](#manipulación-de-tipos)
-			- [*Excepciones*](#excepciones)
-			- [*Manipulación de Cadenas*](#manipulación-de-cadenas)
-	- [🥭**Manejo de Errores**](#manejo-de-errores)
-	- [🥭**Operadores**](#operadores)
-		- [**Lógicos**](#lógicos)
-			- [*Equal* (`igualito`)](#equal-igualito)
-			- [*NotEqual* (`nie`)](#notequal-nie)
-			- [*And* (`yunta`)](#and-yunta)
-			- [*Or* (`o_sea`)](#or-o_sea)
-			- [*Not* (`nelson`)](#not-nelson)
-		- [**Aritméticos**](#aritméticos)
-			- [*Suma* (+)](#suma-)
-			- [*Resta* (-)\*\*](#resta--)
-			- [*Multiplicación* (\*)\*\*](#multiplicación-)
-			- [*División Entera* (//)\*\*](#división-entera-)
-			- [*División Decimal* (/)\*\*](#división-decimal-)
-			- [*Potenciación* (\*\*)](#potenciación-)
-			- [*Incremento* (++)](#incremento-)
-			- [*Asignación aditiva* (+=)](#asignación-aditiva-)
-	- [🥭**Operaciones entre tipos de datos**](#operaciones-entre-tipos-de-datos)
-		- [**Conversión de mango a manguita o manguangua**](#conversión-de-mango-a-manguita-o-manguangua)
-		- [**Conversión del `negro` (carácter) a `mango` (entero)**](#conversión-del-negro-carácter-a-mango-entero)
+  - [**Descripción**](#descripción)
+  - [**Integrantes**](#integrantes)
+  - [**Índice**](#índice)
+  - [🥭**Preámbulo**](#preámbulo)
+  - [🥭**Definición**](#definición)
+  - [🥭**Características**](#características)
+  - [🥭**Mecanismos**](#mecanismos)
+    - [**Instrucción**](#instrucción)
+    - [**Declaración**](#declaración)
+      - [*Reglas para nombres de variables y constantes*](#reglas-para-nombres-de-variables-y-constantes)
+      - [*Variable*](#variable)
+      - [*Constante*](#constante)
+    - [**Asignación**](#asignación)
+    - [**Selección**](#selección)
+    - [**Repetición**](#repetición)
+      - [*Bucle for (`repite_burda`)*](#bucle-for-repite_burda)
+      - [*Bucle while (`echale_bolas_si`)*](#bucle-while-echale_bolas_si)
+      - [*Control del flujo en Bucles*](#control-del-flujo-en-bucles)
+  - [🥭**Tipos de Datos**](#tipos-de-datos)
+    - [**Escalares**](#escalares)
+      - [*Caracteres* (`negro`)](#caracteres-negro)
+      - [*Enteros* (`mango`)](#enteros-mango)
+      - [*Flotantes* (`manguita`)](#flotantes-manguita)
+      - [*Doubles* (`manguangua`)](#doubles-manguangua)
+      - [*Booleanos* (`tas_claro`)](#booleanos-tas_claro)
+    - [**Compuestos**](#compuestos)
+      - [*Cadena de Caracteres* (`higuerote`)](#cadena-de-caracteres-higuerote)
+      - [*Arreglos*](#arreglos)
+      - [*Registros* (`arroz_con_mango`)](#registros-arroz_con_mango)
+      - [*Variantes* (`coliao`)](#variantes-coliao)
+    - [**Void** (`un_coño`)](#void-un_coño)
+    - [**Error** (`caramba_ñero`)](#error-caramba_ñero)
+    - [**Apuntadores**](#apuntadores)
+      - [*Asignación de Memoria y Creación de Apuntadores* (`cero_km`)](#asignación-de-memoria-y-creación-de-apuntadores-cero_km)
+      - [*Acceso* (`aki_toy`)](#acceso-aki_toy)
+      - [*Liberación de Memoría* (`borradol`)](#liberación-de-memoría-borradol)
+  - [🥭**Procedimientos y Funciones**](#procedimientos-y-funciones)
+    - [**Función sin retorno (Procedimiento)**](#función-sin-retorno-procedimiento)
+    - [**Pasaje de parámetros**](#pasaje-de-parámetros)
+      - [*Por valor*](#por-valor)
+      - [*Por referencia*](#por-referencia)
+    - [**Procedimientos y Funciones del Lenguaje**](#procedimientos-y-funciones-del-lenguaje)
+      - [*Entrada y Salida*](#entrada-y-salida)
+      - [*Manipulación de Tipos*](#manipulación-de-tipos)
+      - [*Excepciones*](#excepciones)
+      - [*Manipulación de Cadenas*](#manipulación-de-cadenas)
+  - [🥭**Manejo de Errores**](#manejo-de-errores)
+  - [🥭**Operadores**](#operadores)
+    - [**Lógicos**](#lógicos)
+      - [*Equal* (`igualito`)](#equal-igualito)
+      - [*NotEqual* (`nie`)](#notequal-nie)
+      - [*And* (`yunta`)](#and-yunta)
+      - [*Or* (`o_sea`)](#or-o_sea)
+      - [*Not* (`nelson`)](#not-nelson)
+    - [**Aritméticos**](#aritméticos)
+      - [*Suma* (+)](#suma-)
+      - [*Resta* (-)\*\*](#resta--)
+      - [*Multiplicación* (\*)\*\*](#multiplicación-)
+      - [*División Entera* (//)\*\*](#división-entera-)
+      - [*División Decimal* (/)\*\*](#división-decimal-)
+      - [*Potenciación* (\*\*)](#potenciación-)
+      - [*Incremento* (++)](#incremento-)
+      - [*Asignación aditiva* (+=)](#asignación-aditiva-)
+  - [🥭**Operaciones entre tipos de datos**](#operaciones-entre-tipos-de-datos)
+    - [**Conversión de mango a manguita o manguangua**](#conversión-de-mango-a-manguita-o-manguangua)
+    - [**Conversión del `negro` (carácter) a `mango` (entero)**](#conversión-del-negro-carácter-a-mango-entero)
 
 ## 🥭**Preámbulo**
 
@@ -214,7 +214,7 @@ si_es_asi <Condicion_1> {
 ### **Repetición**
 En Mango Bajito, las estructuras de repetición permiten ejecutar un bloque de código múltiples veces. Existen dos tipos:
 * Bucle determinado (`repite_burda`) → Se usa cuando se conoce la cantidad exacta de iteraciones.
-* Bucle indeterminado (`echale_bolas_hasta`) → Se ejecuta mientras una condición sea `Sisa`.
+* Bucle indeterminado (`echale_bolas_si`) → Se ejecuta mientras una condición sea `Sisa`.
 
 #### *Bucle for (`repite_burda`)*
 Se usa para repetir un bloque de código un número específico de veces. Se define con las palabras clave `repite_burda`/`entre`/`hasta`. Si se quiere que el bucle itere en un paso en concreto, se debe usar la instrucción `repite_burda`/`entre`/`hasta`/`con_flow`.
@@ -237,12 +237,12 @@ repite_burda [variable : mango] entre [inicio : mango] hasta [fin : mango] con_f
 > * `con_flow`: Define el incremento en cada iteración (puede ser negativo para iterar en reversa).
 > 	* Si se quiere hacer una iteración en reversa, entonces el valor especificado en `entre` debe ser mayor que el especificado en `hasta` 
 
-#### *Bucle while (`echale_bolas_hasta`)*
+#### *Bucle while (`echale_bolas_si`)*
 Se usa cuando el número de iteraciones es desconocido y depende de una condición booleana.
 
 **Sintaxis:**
 ```
-echale_bolas_hasta <Condicion> {
+echale_bolas_si <Condicion> {
 	Instrucciones;
 }
 ```
@@ -259,8 +259,8 @@ Mango Bajito proporciona dos palabras clave para controlar el flujo de ejecució
 
 	**Sintaxis:**
 	```
-	# Para ciclo `echale_bolas_hasta`
-	echale_bolas_hasta <Condicion> {
+	# Para ciclo `echale_bolas_si`
+	echale_bolas_si <Condicion> {
 		Instrucciones;
 		uy_kieto;	# Con esto se sale del ciclo
 	}
@@ -279,8 +279,8 @@ Mango Bajito proporciona dos palabras clave para controlar el flujo de ejecució
 
 	**Sintaxis:**
 	```
-	# Para ciclo `echale_bolas_hasta`
-	echale_bolas_hasta <Condicion> {
+	# Para ciclo `echale_bolas_si`
+	echale_bolas_si <Condicion> {
 		Instrucciones1;
 		rotalo;		# Con esto se avanca a la siguiente iteracion ignorando Instrucciones2
 		Instrucciones2;
