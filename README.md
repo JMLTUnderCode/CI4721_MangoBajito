@@ -931,7 +931,10 @@ Mango Bajito permite conversiones explícitas entre tipos para garantizar que la
 (<tipo>)<nombre de variable>
 ```
 > [!NOTE]
-> Para el campo `<nombre de variable>` se pueden usar expresión literales(un `mango`, `manguangua`, etc) Ej. `(higuerote)123 -> "123"`.
+> Consideraciones
+> * Para el campo `<nombre de variable>` se pueden usar expresión literales(un `mango`, `manguangua`, etc) Ej. `(higuerote)123 -> "123"`.
+> * Mango Bajito no permite conversiones implícitas que puedan dar lugar a pérdida de datos o ambigüedad. 
+> 	*	Por ejemplo, convertir un manguangua a un mango requiere una conversión explícita para evitar errores inesperados.
 
 Conversiones soportadas:
 * **De `negro` hacia:** 
@@ -953,8 +956,3 @@ Conversiones soportadas:
   * `mango`: Siempre y cuando la cadena sea el formato del número esperado. (Ej. "123")
   * `manguita`: Siempre y cuando la cadena sea el formato del número esperado. (Ej. "1.23")
   * `manguangua`: Simpre y cuando la cadena sea el formato del numero esperado. (Ej. "1.23e-10")
-
->[!NOTE]
-> Consideraciones
-> Mango Bajito no permite conversiones implícitas que puedan dar lugar a pérdida de datos o ambigüedad. 
-> Por ejemplo, convertir un manguangua a un mango requiere una conversión explícita para evitar errores inesperados.
