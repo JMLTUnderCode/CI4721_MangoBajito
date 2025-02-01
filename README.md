@@ -381,7 +381,8 @@ culito numero : mango = numeros[0];    # Extraer el primer elemento del arrglo.
 
 #### *Registros* (`arroz_con_mango`)
 El tipo `arroz_con_mango` es una estructura que permite agrupar múltiples variables de diferentes tipos bajo un mismo nombre. Es útil para representar objetos o datos relacionados. Se define utilizando la palabra clave `arroz_con_mango` seguida de una lista de pares de nombre y tipo dentro de llaves. El acceso a los atributos de este registro es mediante el simbolo punto `.`. 
-
+> [!IMPORTANT] Importante
+> 
 **Ejemplo:**
 ```
 arroz_con_mango Persona {
@@ -645,7 +646,7 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	```
 	**Sintaxis:**
 	```
-	<culito o jeva> <nombre de variable> : higuerote = pegao(aki_toy cadena_1, aki_toy cadena_2);
+	<culito o jeva> <nombre de variable> : higuerote = pegao(cadena_1, cadena_2);
 	```
 
 * `maelo`
@@ -659,7 +660,7 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 
 	**Sintaxis:**
 	```
-	<culito o jeva> <nombre de variable> : higuerote = maelo(aki_toy cadena, repetidor);
+	<culito o jeva> <nombre de variable> : higuerote = maelo(cadena, repetidor);
 	```
 * `me_mide`
 
@@ -671,7 +672,7 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	```
 	**Sintaxis**
 	```
-	<culito o jeva> <nombre de la variable> : mango = me_mide(aki_toy cadena);
+	<culito o jeva> <nombre de la variable> : mango = me_mide(cadena);
 	```
 * `rellenamelo`
 
@@ -685,12 +686,13 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	```
 	# Todos los elementos del arreglo serán inicializados como <valor>
 
-	culito <nombre de la variable> : <tipo>[tamaño]; 
+	culito <nombre_arreglo> : <tipo>[tamaño]; 
 	
-	rellenamelo(aki_toy <arreglo>, <valor>);
+	rellenamelo(<nombre_arreglo>, <valor>);
 	```
 	> [!IMPORTANT] ⚠️IMPORTANTE
-	> Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
+	> - Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
+	> - El `<valor>` para inicializar debe ser correspondiente con el `<tipo>` declarado del arreglo.
 ## 🥭**Manejo de Errores**
 En Mango Bajito, el manejo de errores se implementa mediante los bloques `meando` y `fuera_del_perol`, que permiten capturar y gestionar excepciones de manera estructurada.
 ```
