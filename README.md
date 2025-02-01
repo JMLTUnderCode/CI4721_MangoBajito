@@ -70,10 +70,10 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 			- [*Not* (`nelson`)](#not-nelson)
 		- [**Aritméticos**](#aritméticos)
 			- [*Suma* (+)](#suma-)
-			- [*Resta* (-)\*\*](#resta--)
-			- [*Multiplicación* (\*)\*\*](#multiplicación-)
-			- [*División Entera* (//)\*\*](#división-entera-)
-			- [*División Decimal* (/)\*\*](#división-decimal-)
+			- [*Resta* (-)](#resta--)
+			- [*Multiplicación* (\*)](#multiplicación-)
+			- [*División Entera* (//)](#división-entera-)
+			- [*División Decimal* (/)](#división-decimal-)
 			- [*Potenciación* (\*\*)](#potenciación-)
 			- [*Incremento* (++)](#incremento-)
 			- [*Decremento* (--)](#decremento---)
@@ -187,7 +187,7 @@ Las constantes son identificadores cuyo valor no puede ser modificado después d
 jeva <nombre de variable> : tipo = valor;
 ```
 >[!IMPORTANT]
-> Reglas para las constantes:
+> Reglas para las constantes
 > * Deben ser inicializadas en el momento de su declaración.
 > * No pueden ser modificadas posteriormente.
 
@@ -402,22 +402,23 @@ rescata(juan.nombre);  # Imprime: Juan Pérez
 
 > [!IMPORTANT]
 > Consideraciones
+> 
 > Cuando un miembro de un `arroz_con_mango` es un `ahi_ta` a otro registro, se debe utilizar `->` en lugar de `.` para acceder a los atributos del apuntador.
 > 
 > **Ejemplo:**
 > ```
 > arroz_con_mango Persona {
->    jeva nombre: higuerote;
->    culito edad: mango;
+> 	jeva nombre : higuerote;
+> 	culito edad : mango;
 > }
 >
 > arroz_con_mango Nodo {
-> 	 ahi_ta datos: Persona;
-> 	 ahi_ta siguiente: Nodo;
+> 	ahi_ta jeva datos : Persona;
+> 	ahi_ta culito siguiente : Nodo;
 > }
 >
 > # Declaración e inicialización
-> ahi_ta nodo: Nodo = cero_km Nodo;
+> ahi_ta nodo : Nodo = cero_km Nodo;
 > nodo->datos = cero_km Persona("Juan", 25);
 >
 > # Acceso a miembros del registro a través del puntero
@@ -733,7 +734,7 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	rellenamelo(<nombre_arreglo>, <valor>);
 	```
 	> [!IMPORTANT]
-	> ⚠️Consideraciones
+	> Consideraciones
 	> - Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
 	> - El `<valor>` para inicializar debe ser correspondiente con el `<tipo>` declarado del arreglo.
 
@@ -747,7 +748,8 @@ meando {
 	Instrucciones;
 }
 ```
->[!NOTE] Nota
+>[!NOTE]
+> Consideraciones
 > * `meando`: Bloque de código que se ejecutará normalmente, pero que puede lanzar errores.
 > * `fuera_del_perol`: Bloque de código que se ejecuta si ocurre un error dentro de meando.
 > * `error`: Variable de tipo `caramba_ñero` que contiene detalles del error capturado. Para mas informacion ver [Error](#error-caramba_ñero)
@@ -817,7 +819,7 @@ culito resultado2 : manguita = 1.29 + 0.71;  # Resultado: 2.0
 culito resultado3 : manguangua = 1.989e30 + 1.502e29 = 2.1392e30
 ```
 
-#### *Resta* (-)**
+#### *Resta* (-)
 
 Realiza la resta de dos valores numéricos.
 
@@ -828,7 +830,7 @@ culito resultado2 : manguita = 1.29 - 0.71;  # Resultado: 0.58
 culito resultado3 : manguangua = 1.989e30 - 1.502e29 = 1.8388e30
 ```
 
-#### *Multiplicación* (*)**
+#### *Multiplicación* (*)
 
 Realiza la multiplicación de dos valores numéricos.
 
@@ -839,7 +841,7 @@ culito resultado2 : manguita = 1.29 * 0.71;  # Resultado: 0.9159
 culito resultado3 : manguangua = 1.989e30 * 1.502e29 # Resultado: 2.987478e59
 ```
 
-#### *División Entera* (//)**
+#### *División Entera* (//)
 
 Realiza la división entre dos valores, truncando el resultado a un entero.
 
@@ -850,7 +852,7 @@ culito resultado2 : mango = 10 // 2.5; # Resultado: 4
 culito resultado3 : mango = 1.989e30 // 1.502e29 # Resultado: 13
 ```
 
-#### *División Decimal* (/)**
+#### *División Decimal* (/)
 
 Realiza la división entre dos valores, retornando un resultado en coma flotante.
 
