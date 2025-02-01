@@ -731,10 +731,10 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	
 	rellenamelo(<nombre_arreglo>, <valor>);
 	```
-    > [!IMPORTANT]
-    > Consideraciones
-    > * Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
-    > * El `<valor>` para inicializar debe ser correspondiente con el `<tipo>` declarado del arreglo.
+> [!IMPORTANT]
+> Consideraciones
+> * Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
+> * El `<valor>` para inicializar debe ser correspondiente con el `<tipo>` declarado del arreglo.
 
 ## 🥭**Manejo de Errores**
 En Mango Bajito, el manejo de errores se implementa mediante los bloques `meando` y `fuera_del_perol`, que permiten capturar y gestionar excepciones de manera estructurada.
