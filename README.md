@@ -49,6 +49,7 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 			- [*Asignación de Memoria y Creación de Apuntadores* (`cero_km`)](#asignación-de-memoria-y-creación-de-apuntadores-cero_km)
 			- [*Acceso* (`aki_toy`)](#acceso-aki_toy)
 			- [*Liberación de Memoría* (`borradol`)](#liberación-de-memoría-borradol)
+			- [*Valor NULL*](#valor-null)
 	- [🥭**Procedimientos y Funciones**](#procedimientos-y-funciones)
 		- [**Función sin retorno (Procedimiento)**](#función-sin-retorno-procedimiento)
 		- [**Pasaje de parámetros**](#pasaje-de-parámetros)
@@ -381,8 +382,7 @@ culito numero : mango = numeros[0];    # Extraer el primer elemento del arrglo.
 
 #### *Registros* (`arroz_con_mango`)
 El tipo `arroz_con_mango` es una estructura que permite agrupar múltiples variables de diferentes tipos bajo un mismo nombre. Es útil para representar objetos o datos relacionados. Se define utilizando la palabra clave `arroz_con_mango` seguida de una lista de pares de nombre y tipo dentro de llaves. El acceso a los atributos de este registro es mediante el simbolo punto `.`. 
-> [!IMPORTANT] Importante
-> 
+
 **Ejemplo:**
 ```
 arroz_con_mango Persona {
@@ -394,6 +394,31 @@ arroz_con_mango Persona {
 culito juan : Persona = { "Juan Pérez", 25, Sisa };
 rescata(juan.nombre);  # Imprime: Juan Pérez
 ```
+
+> [!IMPORTANT] IMPORTANTE
+> Cuando un miembro de un `arroz_con_mango` es un `ahi_ta` a otro registro, se debe utilizar `->` en lugar de `.` para acceder a los atributos del apuntador.
+> 
+> **Ejemplo:**
+> ```
+> arroz_con_mango Persona {
+>    jeva nombre: higuerote;
+>    culito edad: mango;
+> }
+>
+> arroz_con_mango Nodo {
+> 	 ahi_ta datos: Persona;
+> 	 ahi_ta siguiente: Nodo;
+> }
+>
+> # Declaración e inicialización
+> ahi_ta nodo: Nodo = cero_km Nodo;
+> nodo->datos = cero_km Persona("Juan", 25);
+>
+> # Acceso a miembros del registro a través del puntero
+> rescata(nodo->datos->nombre);  # Correcto
+> rescata(nodo->datos->edad);    # Correcto
+> ```
+> Ver [Apuntadores](#apuntadores)
 
 #### *Variantes* (`coliao`)
 El tipo `coliao` en Mango Bajito representa una estructura de datos que puede contener valores de distintos tipos, **uno a la vez**, reutilizando el mismo espacio de memoria. Un `coliao` se define especificando los miembros de los distintos tipos de datos que puede contener separados por punto y coma (`;`). Este enfoque permite manejar datos que pueden variar en tipo, pero sin desperdiciar memoria. 
@@ -504,6 +529,14 @@ borradol <nombre de apuntador>.<atributo>;
 ```
 > [!IMPORTANT]⚠️IMPORTANTE
 > Intentar acceder a `aki_toy <nombre de apuntador>` después de liberar la memoría resultará en un error "Apunta bien vale"
+
+#### *Valor NULL*
+El valor NULL se representa mediante la palabra clave `pelabola`. Esta constante especial indica que un apuntador (`ahi_ta`) no está asignado a ninguna dirección de memoria válida. Intentar acceder a un `ahi_ta` que contiene `pelabola` generará un error de ejecución.
+
+**Sintaxis:**
+```
+ahi_ta <nombre de apuntador>: <tipo> = no_hay_mango;  # Apuntador sin asignar
+```
 
 ## 🥭**Procedimientos y Funciones**
 Las funciones permiten recibir parámetros y retornar un valor (opcional). Se definen con la palabra clave `echar_cuento`, seguida del nombre, los parámetros y el tipo de retorno usando `lanza`. Para devolver el valor se utiliza la palabra clave `lanzate`.
@@ -693,6 +726,7 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	> [!IMPORTANT] ⚠️IMPORTANTE
 	> - Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
 	> - El `<valor>` para inicializar debe ser correspondiente con el `<tipo>` declarado del arreglo.
+
 ## 🥭**Manejo de Errores**
 En Mango Bajito, el manejo de errores se implementa mediante los bloques `meando` y `fuera_del_perol`, que permiten capturar y gestionar excepciones de manera estructurada.
 ```
