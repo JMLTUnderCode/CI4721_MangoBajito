@@ -125,7 +125,7 @@ Para separar instrucciones dentro de un bloque de código, se utiliza el operado
 Instruccion_1;
 Instruccion_2;
 ```
->[!IMPORTANT] IMPORTANTE
+>[!IMPORTANT]
 > Si se omite el `;`, el compilador generará un error de sintaxis. ¡No busques peos!
 
 ### **Declaración**
@@ -173,7 +173,8 @@ Las variables en Mango Bajito son identificadores que pueden cambiar su valor du
 culito <nombre de variable> : tipo;
 culito <nombre de variable> : tipo = valor;
 ```
->[!IMPORTANT] Reglas para las variables
+>[!IMPORTANT]
+> Reglas para las variables
 > * Pueden cambiar de valor mediante asignación.
 > * Deben ser declaradas antes de su uso.
 > * No pueden cambiar de tipo después de declaradas en el mismo alcance.
@@ -185,7 +186,8 @@ Las constantes son identificadores cuyo valor no puede ser modificado después d
 ```
 jeva <nombre de variable> : tipo = valor;
 ```
->[!IMPORTANT] Reglas para las constantes:
+>[!IMPORTANT]
+> Reglas para las constantes:
 > * Deben ser inicializadas en el momento de su declaración.
 > * No pueden ser modificadas posteriormente.
 
@@ -210,7 +212,8 @@ si_es_asi <Condicion_1> {
 	Instrucciones;
 }
 ```
->[!NOTE] Consideraciones
+>[!NOTE]
+> Consideraciones
 > * `si_es_asi`: Evalúa una condición. Si es `Sisa` (verdadero), ejecuta el bloque de código.
 > * `o_asi`: (Opcional) Se usa para evaluar una segunda condición si la primera es `Nolsa` (falsa).
 > * `nojoda`: (Opcional) Se ejecuta solo si todas las condiciones anteriores son `Nolsa`.
@@ -235,7 +238,8 @@ repite_burda [variable : mango] entre [inicio : mango] hasta [fin : mango] con_f
     Instrucciones;
 }
 ```
->[!NOTE] Nota
+>[!NOTE]
+> Consideraciones
 > * `variable`: Es el contador del bucle.
 > * `entre` y `hasta`: Especifican el rango del bucle (incluye el valor inicial, excluye el final).
 > * `con_flow`: Define el incremento en cada iteración (puede ser negativo para iterar en reversa).
@@ -347,7 +351,8 @@ Este tipo es ampliamente utilizado en estructuras condicionales y bucles para co
 culito esMayor: tas_claro = Sisa;
 culito esPar: tas_claro = Nolsa;
 ```
-> [!IMPORTANT] IMPORTANTE
+> [!IMPORTANT]
+> Consideraciones
 > - Mango Bajito **NO** realiza conversiones implícitas entre tipos de datos escalares. Por ejemplo, no se puede asignar un `manguangua` 
 a un `mango` sin una conversión explícita. Esto refuerza su sistema de tipos fuertes.
 > - Los valores por defecto al declarar variables sin inicializar son:
@@ -395,7 +400,8 @@ culito juan : Persona = { "Juan Pérez", 25, Sisa };
 rescata(juan.nombre);  # Imprime: Juan Pérez
 ```
 
-> [!IMPORTANT] IMPORTANTE
+> [!IMPORTANT]
+> Consideraciones
 > Cuando un miembro de un `arroz_con_mango` es un `ahi_ta` a otro registro, se debe utilizar `->` en lugar de `.` para acceder a los atributos del apuntador.
 > 
 > **Ejemplo:**
@@ -503,7 +509,8 @@ ahi_ta <nombre de apuntador> : <tipo> = cero_km <tipo>;			# Solo reservacion de 
 ahi_ta <nombre de apuntador> : <tipo> = cero_km <tipo>[tamaño];	# Solo reservacion de memoria (arreglos)
 ```
 
->[!NOTE] NOTA
+>[!NOTE]
+> Consideraciones
 > * `cero_km` devuelve un apuntador (`ahi_ta`) que referencia el espacio de memoria asignado.
 > * Mango Bajito <u><strong>NO</strong></u> permite aritmética de apuntadores para mantener la seguridad de memoria.
 > * Las reglas para `nombre de apuntador` son las mismas que [Reglas para nombres de variables](#reglas-para-nombres-de-variables-y-constantes)
@@ -527,8 +534,8 @@ La palabra clave `borradol` se usa para liberar la memoria previamente reservada
 borradol <nombre de apuntador>;
 borradol <nombre de apuntador>.<atributo>;
 ```
-> [!IMPORTANT]⚠️IMPORTANTE
-> Intentar acceder a `aki_toy <nombre de apuntador>` después de liberar la memoría resultará en un error "Apunta bien vale"
+> [!IMPORTANT]
+> ⚠️Intentar acceder a `aki_toy <nombre de apuntador>` después de liberar la memoría resultará en un error "Apunta bien vale"
 
 #### *Valor NULL*
 El valor NULL se representa mediante la palabra clave `pelabola`. Esta constante especial indica que un apuntador (`ahi_ta`) no está asignado a ninguna dirección de memoria válida. Intentar acceder a un `ahi_ta` que contiene `pelabola` generará un error de ejecución.
@@ -548,7 +555,8 @@ echar_cuento <nombre de funcion>(<lista de parametros>) lanza <tipo> {
     lanzate <valor de retorno>;
 }
 ```
-> [!IMPORTANT] IMPORTANTE
+> [!IMPORTANT]
+> Consideraciones
 > * `nombre de funcion`: Nombre único de la función. Este nombre sigue
 > * `lista de parametros`: Lista de valores que recibe la función separados por coma y cada uno con su tipo.
 > * `tipo`: Define el tipo de dato que devuelve la función.
@@ -563,7 +571,7 @@ echar_cuento <nombre de funcion>(<lista de parametros>) lanza un_coño {
     Instrucciones;
 }
 ```
-> [!NOTE] Nota
+> [!NOTE]
 > Si se trata de un procedimiento, no es necesario el `lanzate <valor de retorno>`, de lo contrario habrá un error. Sin embargo se
 > puede usar `lanzate` para cortar el flujo de la función:
 >
@@ -596,7 +604,8 @@ echar_cuento <nombre de funcion>(<aki_toy param_1 : tipo_1>, ...) lanza <tipo> {
 	Instrucciones;
 }
 ```
-> [!IMPORTANT] Reglas para el pasaje por referencia:
+> [!IMPORTANT]
+> Reglas para el pasaje por referencia:
 > * Solo se puede usar con variables (`culito`), no con constantes (`jeva`).
 > * No se puede pasar expresiones o valores literales
 > ```
@@ -723,7 +732,8 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	
 	rellenamelo(<nombre_arreglo>, <valor>);
 	```
-	> [!IMPORTANT] ⚠️IMPORTANTE
+	> [!IMPORTANT]
+	> ⚠️Consideraciones
 	> - Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
 	> - El `<valor>` para inicializar debe ser correspondiente con el `<tipo>` declarado del arreglo.
 
@@ -937,6 +947,7 @@ culito numero : negro = '4';
 culito valorASCIIletra : mango = (mango)letra; # Resultado: 65
 culuto valorNumero : mango = (mango)numero; # Resultado: 4
 ```
->[!NOTE] 
+>[!NOTE]
+> Consideraciones
 > Mango Bajito no permite conversiones implícitas que puedan dar lugar a pérdida de datos o ambigüedad. 
 > Por ejemplo, convertir un manguangua a un mango requiere una conversión explícita para evitar errores inesperados.
