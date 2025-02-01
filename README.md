@@ -80,9 +80,7 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 			- [*Asignación aditiva* (+=)](#asignación-aditiva-)
 			- [*Asignación sustractiva* (-=)](#asignación-sustractiva--)
 			- [*Asignación multiplicativa* (\*=)](#asignación-multiplicativa-)
-	- [🥭**Operaciones entre tipos de datos**](#operaciones-entre-tipos-de-datos)
-		- [**Conversión de mango a manguita o manguangua**](#conversión-de-mango-a-manguita-o-manguangua)
-		- [**Conversión del `negro` (carácter) a `mango` (entero)**](#conversión-del-negro-carácter-a-mango-entero)
+	- [🥭**Conversión de Tipos de Datos**](#conversión-de-tipos-de-datos)
 
 ## 🥭**Preámbulo**
 
@@ -734,6 +732,7 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	rellenamelo(<nombre_arreglo>, <valor>);
 	```
 	> [!IMPORTANT]
+	> 
 	> Consideraciones
 	> - Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
 	> - El `<valor>` para inicializar debe ser correspondiente con el `<tipo>` declarado del arreglo.
@@ -924,31 +923,37 @@ culito numero : mango = 5;
 numero *= 3;  # Resultado: 15
 rescata(numero); # Imprime: 15
 ```
-## 🥭**Operaciones entre tipos de datos**
-Mango Bajito permite conversiones explícitas entre tipos para garantizar que las operaciones sean claras y controladas. Algunas de las operaciones soportadas incluyen:
+## 🥭**Conversión de Tipos de Datos**
+Mango Bajito permite conversiones explícitas entre tipos para garantizar que las operaciones sean claras y controladas.
 
-### **Conversión de mango a manguita o manguangua**
-
-Los números enteros pueden convertirse explícitamente a tipos en coma flotante:
-
-**Ejemplo:**
+**Sintaxis:**
 ```
-culito entero : mango = 5;
-culito decimal : manguita = (manguita)entero; # Resultado: 5.0
-culito doble : manguangua = (manguangua)entero; # Resultado: 5.0
+(<tipo>)<nombre de variable>
 ```
+> [!NOTE]
+> Para el campo `<nombre de variable>` se pueden usar expresión literales(un `mango`, `manguangua`, etc) Ej. `(higuerote)123 -> "123"`.
 
-### **Conversión del `negro` (carácter) a `mango` (entero)**
+Conversiones soportadas:
+* **De `negro` hacia:** 
+  * `mango`: Si es del '0' a '9' conversion literal, cualquier otro simbolo será su numero en sistema ASCII.
+* **De `mango` hacia:**
+  * `manguita`
+  * `manguangua`
+  * `higuerote`
+  * `negro`: Si se habla de los números de un dígito (0 al 9).
+* **De `manguita` hacia:**
+  * `mango`
+  * `manguangua`
+  * `higuerote`
+* **De `manguangua` hacia:**
+  * `mango`
+  * `manguita`
+  * `higuerote`
+* **De `higuerote` hacia:**
+  * `mango`: Siempre y cuando la cadena sea el formato del número esperado. (Ej. "123")
+  * `manguita`: Siempre y cuando la cadena sea el formato del número esperado. (Ej. "1.23")
+  * `manguangua`: Simpre y cuando la cadena sea el formato del numero esperado. (Ej. "1.23e-10")
 
-El valor ASCII de un carácter puede obtenerse explícitamente:
-
-**Ejemplo:**
-```
-culito letra : negro = 'A';
-culito numero : negro = '4';
-culito valorASCIIletra : mango = (mango)letra; # Resultado: 65
-culuto valorNumero : mango = (mango)numero; # Resultado: 4
-```
 >[!NOTE]
 > Consideraciones
 > Mango Bajito no permite conversiones implícitas que puedan dar lugar a pérdida de datos o ambigüedad. 
