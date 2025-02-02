@@ -371,19 +371,16 @@ Los arreglos permiten almacenar múltiples elementos del mismo `tipo` en una est
 
 **Sintaxis:**
 ```
+# Forma 1 de declarar arreglos: Ideal para tamaños conocidos 
 <culito o jeva> <nombre de arreglo> : <tipo de elementos>[<tamaño>];
+<culito o jeva> <nombre de arreglo> : <tipo de elementos>[<tamaño>] = [<lista de valores>];
 
+# Forma 2 de declarar arreglos: Ideal para tamaños dinámicos
 ahi_ta <culito o jeva> <nombre de arreglo> : <tipo de elementos>;
 <nombre de arreglo> = cero_km <tipo de elementos>[<tamaño>];
-
-ahi_ta culito hola : mango;
-hola = cero_km mango[4];
-
-
-<culito o jeva> <nombre de arreglo> : <tipo de elementos>[<tamaño>] = [<lista de valores>]
 ```
 >[!IMPORTANT]
-> * El componente `<tamaño>` debe ser un valor fijo constante (`jeva`) o literal (`mango`). No se admiten variables.
+> * El componente `<tamaño>` debe ser un valor fijo constante (`jeva`) o literal (`mango`). <u><strong>NO se admiten variables</strong></u>.
 > * La lista de valores debe estar separada por coma `,`.
 
 **Ejemplo:**
@@ -427,11 +424,6 @@ arroz_con_mango Persona {
 
 culito juan : Persona = { "Juan Pérez", 25, Sisa };
 culito juan : Persona = cero_km Persona;
-
-culito juan : Persona[1][3] = [[1, 2, 3]];
-
-culito juan : Persona = cero_km Persona[tamanio][tamanio];
-
 
 rescata(juan.nombre);  # Imprime: Juan Pérez
 ```
@@ -496,8 +488,8 @@ datos.a = 42;
 rescata(datos.a);  # Resultado: 42
 
 # Ahora asignamos un registro del tipo `Persona`
-Persona alguien = { "Juan Pérez", 25 };
-datos = alguien;
+culito alguien : Persona = { "Juan Pérez", 25 };
+datos.p = alguien;
 
 # Accedemos al registro dentro del coliao
 rescata(datos.p.nombre);  # Resultado: Juan Pérez
@@ -775,20 +767,33 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 > * El `<valor>` para inicializar debe ser correspondiente con el `<tipo>` declarado del arreglo.
 
 ## 🥭**Manejo de Errores**
-En Mango Bajito, el manejo de errores se implementa mediante los bloques `meando` y `fuera_del_perol`, que permiten capturar y gestionar excepciones de manera estructurada.
+En Mango Bajito, el manejo de errores se implementa mediante la instrucción `meando`/`fuera_del_perol`, que permiten capturar y gestionar excepciones de manera estructurada. 
+
+Es posible, además, capturar el error con `meando`/`fuera_del_perol como <nombre de variable>`, pudiendo acceder a los atributos de `caramba_ñero` (Para más información ver [Error](#error-caramba_ñero))
 ```
+# Sin captura explicita del error
 meando {
 	Instrucciones;
 	ah_vaina("Mensaje personalizado");
-} fuera_del_perol (error : caramba_ñero) {
+} fuera_del_perol {
 	Instrucciones;
+}
+
+# Con captura explicita del error
+meando {
+	Instrucciones;
+	ah_vaina("Mensaje personalizado");
+} fuera_del_perol como <variable>{
+	Instrucciones;
+
+	# Las instrucciones pueden trabajar
+	# con la informacion de <variable>
 }
 ```
 >[!NOTE]
 > Consideraciones
 > * `meando`: Bloque de código que se ejecutará normalmente, pero que puede lanzar errores.
-> * `fuera_del_perol`: Bloque de código que se ejecuta si ocurre un error dentro de meando.
-> * `error`: Variable de tipo `caramba_ñero` que contiene detalles del error capturado. Para mas informacion ver [Error](#error-caramba_ñero)
+> * `fuera_del_perol [como <variable>]`: Bloque de código que se ejecuta si ocurre un error dentro de `meando`. El error puede ser capturado en `<variable>` (opcional)
 > * `ah_vaina`: Función para generar errores personalizados. Para mas información ver [Excepciones](#excepciones).
 
 ## 🥭**Operadores**
