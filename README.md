@@ -41,6 +41,7 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 		- [**Compuestos**](#compuestos)
 			- [*Cadena de Caracteres* (`higuerote`)](#cadena-de-caracteres-higuerote)
 			- [*Arreglos*](#arreglos)
+				- [*Matrices*](#matrices)
 			- [*Registros* (`arroz_con_mango`)](#registros-arroz_con_mango)
 			- [*Variantes* (`coliao`)](#variantes-coliao)
 		- [**Void** (`un_coño`)](#void-un_coño)
@@ -202,9 +203,9 @@ La estructura de `selección` en Mango Bajito permite ejecutar diferentes bloque
 
 **Sintaxis:**
 ```
-si_es_asi <Condicion_1> {
+si_es_asi (<Condicion_1>) {
 	Instrucciones;
-} o_asi <Condicion_2> {
+} o_asi (<Condicion_2>) {
 	Instrucciones;
 } nojoda {
 	Instrucciones;
@@ -248,7 +249,7 @@ Se usa cuando el número de iteraciones es desconocido y depende de una condici�
 
 **Sintaxis:**
 ```
-echale_bolas_si <Condicion> {
+echale_bolas_si (<Condicion>) {
 	Instrucciones;
 }
 ```
@@ -258,35 +259,31 @@ El bloque se ejecuta mientras la condición sea `Sisa`. Si la condición es `Nol
 Mango Bajito proporciona dos palabras clave para controlar el flujo de ejecución dentro de los bucles:
 
 * **Salir de un Bucle (`uy_kieto`)**
-  
-	🔹 `uy_kieto` finaliza inmediatamente la ejecución del bucle en curso.
-
-	🔹 No se ejecutarán más iteraciones, aunque la condición del bucle aún sea `Sisa`
+	Para finalizar inmediatamente la ejecución del bucle en curso se usa la palabra reservada `uy_kieto`. No se ejecutarán más iteraciones, aunque la condición del bucle aún sea `Sisa`.
 
 	**Sintaxis:**
 	```
 	# Para ciclo `echale_bolas_si`
-	echale_bolas_si <Condicion> {
-		Instrucciones;
+	echale_bolas_si (<Condicion>) {
+		Instrucciones1;
 		uy_kieto;	# Con esto se sale del ciclo
+		Instrucciones2;
 	}
 
 	# Para ciclo `repite_burda`
 	repite_burda [variable : mango] entre [inicio : mango] hasta [fin : mango] {
-    	Instrucciones;
+    	Instrucciones1;
 		uy_kieto;	# Con esto se sale del ciclo
+		Instrucciones2;
 	}
 	```
 * **Saltar una Iteración (`rotalo`)**
-
-	🔹 `rotalo` salta la iteración actual y continúa con la siguiente.
-	
-	🔹 Se usa cuando queremos omitir ciertos valores dentro de un bucle sin interrumpir su ejecución completa.
+	Para saltar la iteración actual y continuar con la siguiente iteración se utilizada la palabra reservada `rotalo`. Se usa cuando queremos omitir ciertos valores dentro de un bucle sin interrumpir su ejecución completa.
 
 	**Sintaxis:**
 	```
 	# Para ciclo `echale_bolas_si`
-	echale_bolas_si <Condicion> {
+	echale_bolas_si (<Condicion>) {
 		Instrucciones1;
 		rotalo;		# Con esto se avanca a la siguiente iteracion ignorando Instrucciones2
 		Instrucciones2;
@@ -309,8 +306,8 @@ El tipo `negro` se utiliza para almacenar caracteres individuales, como letras, 
 
 **Ejemplo:**
 ```
-jeva letra: negro = 'A';
-culito simbolo: negro = '$';
+jeva letra : negro = 'A';
+culito simbolo : negro = '$';
 ```
 
 #### *Enteros* (`mango`)
@@ -318,8 +315,8 @@ El tipo `mango` representa números enteros, positivos o negativos, dentro de un
 
 **Ejemplo:**
 ```
-culito edad: mango = 25;
-culito contador: mango = -10;
+culito edad : mango = 25;
+culito contador : mango = -10;
 ```
 
 #### *Flotantes* (`manguita`)
@@ -327,8 +324,8 @@ El tipo `manguita` se utiliza para representar números en coma flotante de prec
 
 **Ejemplo:**
 ```
-culito temperatura: manguita = 36.7;
-jeva precio: manguita = 12.50;
+culito temperatura : manguita = 36.7;
+jeva precio : manguita = 12.50;
 ```
 
 #### *Doubles* (`manguangua`)
@@ -336,8 +333,8 @@ El tipo `manguangua` se utiliza para números en coma flotante con doble precisi
 
 **Ejemplo:**
 ```
-jeva pi: manguangua = 3.14159265359;
-culito distancia: manguangua = 1.989e30;
+jeva pi : manguangua = 3.14159265359;
+culito distancia : manguangua = 1.989e30;
 ```
 
 #### *Booleanos* (`tas_claro`)
@@ -346,8 +343,8 @@ Este tipo es ampliamente utilizado en estructuras condicionales y bucles para co
 
 **Ejemplo:**
 ```
-culito esMayor: tas_claro = Sisa;
-culito esPar: tas_claro = Nolsa;
+culito esMayor : tas_claro = Sisa;
+culito esPar : tas_claro = Nolsa;
 ```
 > [!IMPORTANT]
 > Consideraciones
@@ -362,20 +359,37 @@ a un `mango` sin una conversión explícita. Esto refuerza su sistema de tipos f
 ### **Compuestos**
 
 #### *Cadena de Caracteres* (`higuerote`)
-El tipo `higuerote` se utiliza para representar cadenas de texto. Una cadena es un arreglo de caracteres (de tipo `negro`) mutables en tamaño y caracteres de la cadena, ideal para manejar palabras, frases o cualquier dato textual. 
+El tipo `higuerote` se utiliza para representar cadenas de texto. Una cadena es un arreglo de caracteres (de tipo `negro`) mutables en tamaño y caracteres de la cadena, a excepción de constantes (`jeva`). Es ideal para manejar palabras, frases o cualquier dato textual. 
 
 **Ejemplo:**
 ```
-jeva saludo: higuerote = "Hola, chamo";
-culito mensaje: higuerote = "Esto es Mango Bajito";
+jeva saludo : higuerote = "Hola, chamo";
+culito mensaje : higuerote = "Esto es Mango Bajito";
 ```
 #### *Arreglos*
-Los arreglos permiten almacenar múltiples elementos del mismo tipo en una estructura indexada. Se definen utilizando el tipo de los elementos seguido de `[tamaño]` en corchetes, donde `tamaño : mango` es el número de elementos en el arreglo y debe ser estrictamente positivo.
+Los arreglos permiten almacenar múltiples elementos del mismo `tipo` en una estructura indexada. Se definen utilizando el tipo de los elementos seguido de `[tamaño]` en corchetes, donde `tamaño : mango` es el número de elementos en el arreglo y debe ser estrictamente positivo.
+
+**Sintaxis:**
+```
+<culito o jeva> <nombre de arreglo> : <tipo de elementos>[<tamaño>];
+
+ahi_ta <culito o jeva> <nombre de arreglo> : <tipo de elementos>;
+<nombre de arreglo> = cero_km <tipo de elementos>[<tamaño>];
+
+ahi_ta culito hola : mango;
+hola = cero_km mango[4];
+
+
+<culito o jeva> <nombre de arreglo> : <tipo de elementos>[<tamaño>] = [<lista de valores>]
+```
+>[!IMPORTANT]
+> * El componente `<tamaño>` debe ser un valor fijo constante (`jeva`) o literal (`mango`). No se admiten variables.
+> * La lista de valores debe estar separada por coma `,`.
 
 **Ejemplo:**
 ```
-culito numeros: mango[4] = [1, 2, 3, 4];
-culito saludos: higuerote[3] = ["Hola", "Mango", "Bajito"];
+culito numeros : mango[4] = [1, 2, 3, 4];
+culito saludos : higuerote[3] = ["Hola", "Mango", "Bajito"];
 ```
 Los arreglos son de tamaño fijo y los índices comienzan en 0, siendo posible acceder y modificar elementos usando corchetes:
 ```
@@ -383,18 +397,42 @@ numeros[0] = 10;  # Cambia el primer elemento del arreglo a 10
 culito numero : mango = numeros[0];    # Extraer el primer elemento del arrglo.
 ```
 
+##### *Matrices*
+Las matrices son arreglos de arreglos. Se definen de manera similar a los arrreglos solamente que difiere en la sintaxis del tamaño.
+
+**Sintaxis:**
+```
+<culito o jeva> <nombre de matriz> : <tipo de elementos>[<tamaño>][<tamaño>];
+```
+
 #### *Registros* (`arroz_con_mango`)
-El tipo `arroz_con_mango` es una estructura que permite agrupar múltiples variables de diferentes tipos bajo un mismo nombre. Es útil para representar objetos o datos relacionados. Se define utilizando la palabra clave `arroz_con_mango` seguida de una lista de pares de nombre y tipo dentro de llaves. El acceso a los atributos de este registro es mediante el simbolo punto `.`. 
+El tipo `arroz_con_mango` es una estructura que permite agrupar múltiples variables y/o constantes de diferentes tipos bajo un mismo nombre. Es útil para representar objetos o datos relacionados. Se define utilizando la palabra clave `arroz_con_mango` seguida de una lista de pares de nombre y tipo dentro de llaves. El acceso a los atributos de este registro es mediante el simbolo punto `.`. 
+
+**Sintaxis:**
+```
+arroz_con_mango <nombre de registro> {
+	<culito o jeva> <nombre de atributo1> : <tipo de atributo1>;
+	<culito o jeva> <nombre de atributo2> : <tipo de atributo2>;
+	...
+}
+```
 
 **Ejemplo:**
 ```
 arroz_con_mango Persona {
-	jeva nombre: higuerote;
-	culito edad: mango;
-	culito estudiante: tas_claro;
+	jeva nombre : higuerote;
+	culito edad : mango;
+	culito estudiante : tas_claro;
 }
 
 culito juan : Persona = { "Juan Pérez", 25, Sisa };
+culito juan : Persona = cero_km Persona;
+
+culito juan : Persona[1][3] = [[1, 2, 3]];
+
+culito juan : Persona = cero_km Persona[tamanio][tamanio];
+
+
 rescata(juan.nombre);  # Imprime: Juan Pérez
 ```
 
