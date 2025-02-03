@@ -375,17 +375,12 @@ Los arreglos permiten almacenar múltiples elementos del mismo `tipo` en una est
 
 **Sintaxis:**
 ```
-# Forma 1 de declarar arreglos: Ideal para tamaños conocidos 
 <culito o jeva> <nombre de arreglo> : <tipo de elementos>[<tamaño>];
 <culito o jeva> <nombre de arreglo> : <tipo de elementos>[<tamaño>] = [<lista de valores>];
-
-# Forma 2 de declarar arreglos: Ideal para tamaños dinámicos
-ahi_ta <culito o jeva> <nombre de arreglo> : <tipo de elementos>;
-<nombre de arreglo> = cero_km <tipo de elementos>[<tamaño>];
 ```
+
 >[!IMPORTANT]
-> * El componente `<tamaño>` debe ser un valor fijo constante (`jeva`) o literal (`mango`). <u><strong>NO se admiten variables</strong></u>.
-> * La lista de valores debe estar separada por coma `,` y la cantidad debe ser igual al tamaño del arreglo.
+> La lista de valores debe estar separada por coma `,` y la cantidad debe ser igual al tamaño del arreglo.
 
 **Ejemplo:**
 ```
@@ -544,7 +539,7 @@ Los apuntadores (`ahi_ta`) permiten hacer referencia a valores en memoria dinám
 ```
 ahi_ta <nombre de apuntador> : <tipo> = cero_km <tipo>(valor);	# Asignacion de valor a la direccion de memoria directamente
 ahi_ta <nombre de apuntador> : <tipo> = cero_km <tipo>;			# Solo reservacion de memoria
-ahi_ta <nombre de apuntador> : <tipo> = cero_km <tipo>[tamaño];	# Solo reservacion de memoria (arreglos)
+ahi_ta <nombre de apuntador> : <tipo>[tamaño] = cero_km <tipo>[tamaño];	# Solo reservacion de memoria (arreglos)
 ```
 
 >[!NOTE]
@@ -560,9 +555,10 @@ Para acceder al valor almacenado en la memoria referenciada por un `ahi_ta`, se 
 **Sintaxis:**
 ```
 aki_toy <nombre de apuntador>;
-aki_toy <nombre de apuntador>.<atributo>;	# En caso de arroz_con_mango o coliao
+aki_toy <nombre de apuntador>.<atributo>;	# En caso de arroz_con_mango o coliao y atributo no sea apuntador.
+aki_toy <nombre de apuntador>-><atributo>;	# En caso de arroz_con_mango o coliao y atributo sea apuntador.
 ```
- 
+
 #### *Liberación de Memoría* (`borradol`)
 
 La palabra clave `borradol` se usa para liberar la memoria previamente reservada con `cero_km`, evitando fugas de memoria. Es equivalente a `free` o `delete` en otros lenguajes.
@@ -1029,7 +1025,7 @@ Conversiones soportadas:
   * `manguita`
   * `manguangua`
   * `higuerote`
-  * `negro`: Si se habla de los números de un dígito (0 al 9).
+  * `negro`: Si se habla de los números de un dígito (0 al 9). En cualquier otro caso será su versión ASCII.
 * **De `manguita` hacia:**
   * `mango`
   * `manguangua`
