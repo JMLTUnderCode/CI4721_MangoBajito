@@ -381,7 +381,7 @@ ahi_ta <culito o jeva> <nombre de arreglo> : <tipo de elementos>;
 ```
 >[!IMPORTANT]
 > * El componente `<tamaño>` debe ser un valor fijo constante (`jeva`) o literal (`mango`). <u><strong>NO se admiten variables</strong></u>.
-> * La lista de valores debe estar separada por coma `,`.
+> * La lista de valores debe estar separada por coma `,` y la cantidad debe ser igual al tamaño del arreglo.
 
 **Ejemplo:**
 ```
@@ -390,7 +390,7 @@ culito saludos : higuerote[3] = ["Hola", "Mango", "Bajito"];
 ```
 Los arreglos son de tamaño fijo y los índices comienzan en 0, siendo posible acceder y modificar elementos usando corchetes:
 ```
-numeros[0] = 10;  # Cambia el primer elemento del arreglo a 10
+numeros[0] = 10;  # Cambia el primer elemento del arreglo a 10 ([1, 2, 3, 4] -> [10, 2, 3, 4])
 culito numero : mango = numeros[0];    # Extraer el primer elemento del arrglo.
 ```
 
@@ -399,11 +399,16 @@ Las matrices son arreglos de arreglos. Se definen de manera similar a los arrreg
 
 **Sintaxis:**
 ```
+# Forma 1 de declarar matriz: Ideal para tamaños conocidos 
 <culito o jeva> <nombre de matriz> : <tipo de elementos>[<tamaño>][<tamaño>];
+
+# Forma 2 de declarar matriz: Ideal para tamaños dinámicos
+ahi_ta <culito o jeva> <nombre de matriz> : <tipo de elementos>;
+<nombre de matriz> = cero_km <tipo de elementos>[<tamaño>][<tamaño>];
 ```
 
 #### *Registros* (`arroz_con_mango`)
-El tipo `arroz_con_mango` es una estructura que permite agrupar múltiples variables y/o constantes de diferentes tipos bajo un mismo nombre. Es útil para representar objetos o datos relacionados. Se define utilizando la palabra clave `arroz_con_mango` seguida de una lista de pares de nombre y tipo dentro de llaves. El acceso a los atributos de este registro es mediante el simbolo punto `.`. 
+El tipo `arroz_con_mango` es una estructura que permite agrupar múltiples variables, constantes y apuntadores de diferentes tipos bajo un mismo nombre. Es útil para representar objetos o datos relacionados. Se define utilizando la palabra clave `arroz_con_mango` seguida de una lista de pares de nombre y tipo dentro de llaves. El acceso a los atributos de este registro es mediante el simbolo punto `.`. 
 
 **Sintaxis:**
 ```
@@ -460,7 +465,7 @@ El tipo `coliao` en Mango Bajito representa una estructura de datos que puede co
 
 **Ejemplo:**
 ```
-coliao zaperoco {
+coliao MiVariante {
 	a : mango;
 	b : manguita;
 	c : manguangua;
@@ -571,7 +576,7 @@ El valor NULL se representa mediante la palabra clave `pelabola`. Esta constante
 
 **Sintaxis:**
 ```
-ahi_ta <nombre de apuntador>: <tipo> = no_hay_mango;  # Apuntador sin asignar
+ahi_ta <nombre de apuntador>: <tipo> = pelabola;  # Apuntador sin asignar
 ```
 
 ## 🥭**Procedimientos y Funciones**
@@ -586,8 +591,8 @@ echar_cuento <nombre de funcion>(<lista de parametros>) lanza <tipo> {
 ```
 > [!IMPORTANT]
 > Consideraciones
-> * `nombre de funcion`: Nombre único de la función. Este nombre sigue
-> * `lista de parametros`: Lista de valores que recibe la función separados por coma y cada uno con su tipo.
+> * `nombre de funcion`: Nombre único de la función. Este nombre sigue las mismas que [Reglas para nombres de variables](#reglas-para-nombres-de-variables-y-constantes).
+> * `lista de parametros`: Lista de valores que recibe la función separados por coma y cada uno con su tipo. (Ej. `param1 : <tipo>, param2 : <tipo>, ...`).
 > * `tipo`: Define el tipo de dato que devuelve la función.
 > * `lanzate <valor de retorno>`: Retorna un valor del tipo especificado.
 
@@ -601,9 +606,7 @@ echar_cuento <nombre de funcion>(<lista de parametros>) lanza un_coño {
 }
 ```
 > [!NOTE]
-> Si se trata de un procedimiento, no es necesario el `lanzate <valor de retorno>`, de lo contrario habrá un error. Sin embargo se
-> puede usar `lanzate` para cortar el flujo de la función:
->
+> Si se trata de un procedimiento, no es necesario el `lanzate <valor de retorno>`, de lo contrario habrá un error. Sin embargo se puede usar `lanzate` para cortar el flujo de la función:
 > ```
 > echar_cuento <nombre de funcion>(<lista de parametros>) lanza un_coño {
 >	Instrucciones1;
@@ -709,20 +712,20 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 
 * `pegao`
 
-	Concatena dos cadenas de caracteres (`higuerote`) y forma una nueva.
+	Concatena dos o mas cadenas de caracteres (`higuerote`), esta función recibe una lista de `higuerotes` separada por coma y forma una nueva.
 
 	**Definición:**
 	```
-	pegao(aki_toy cadena_1 : higuerote, aki_toy cadena_2 : higuerote) lanza higuerote;
+	pegao(aki_toy cadena_1 : higuerote, aki_toy cadena_2 : higuerote, ...) lanza higuerote;
 	```
 	**Sintaxis:**
 	```
-	<culito o jeva> <nombre de variable> : higuerote = pegao(cadena_1, cadena_2);
+	<culito o jeva> <nombre de variable> : higuerote = pegao(cadena_1, cadena_2, ...);
 	```
 
 * `maelo`
 
-	Repite una cadena de caracteres (`higuerote`) un número de veces indicado. (Referencia a 'Otra vez Maelo Ruiz')
+	Repite una cadena de caracteres (`higuerote`) un número de veces indicado. (Referencia a 'Otra vez Maelo Ruiz').
 
 	**Definición:**
 	```
@@ -735,7 +738,7 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	```
 * `me_mide`
 
-	Devuelve la longitud de una cadena de caracteres (`higuerote`)
+	Devuelve la longitud de una cadena de caracteres (`higuerote`).
 
 	**Definición**
 	```
@@ -753,6 +756,7 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	```
 	rellenamelo(aki_toy arreglo: <tipo>[tamaño], valor: <tipo>) lanza un_coño;
 	```
+
 	**Sintaxis**
 	```
 	# Todos los elementos del arreglo serán inicializados como <valor>
@@ -781,10 +785,10 @@ meando {
 
 # Con captura explicita del error
 meando {
-	Instrucciones;
-	ah_vaina("Mensaje personalizado");
+	Instruccion; # Instruccion que posiblemente retorne un error.
+	ah_vaina("Mensaje personalizado"); # Levantar un error personalizado.
 } fuera_del_perol como <variable>{
-	Instrucciones;
+	Instrucciones; # Manejar el error segun sea necesario.
 
 	# Las instrucciones pueden trabajar
 	# con la informacion de <variable>
@@ -965,6 +969,7 @@ culito numero : mango = 5;
 numero *= 3;  # Resultado: 15
 rescata(numero); # Imprime: 15
 ```
+
 ## 🥭**Conversión de Tipos de Datos**
 Mango Bajito permite conversiones explícitas entre tipos para garantizar que las operaciones sean claras y controladas.
 
