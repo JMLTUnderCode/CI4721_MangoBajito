@@ -522,12 +522,13 @@ En Mango Bajito existen errores predefinidos y una definición previa de código
 |     85       | Divideme esta          | Cuando se trata de dividir por 0.                        | 
 |     67       | No hay más pa' ti      | El sistema de memoria está agotado.                      |
 |     76       | Pelaste el hueco       | Acceder a índices fuera del rango.                       |
-|    139       | Leete esta             | Intentar abrir un archivo que no existe.                 |
+|	 139	   | Sapegato Garabato	    | Intentar aplicar `borradol` a un atributo de un registro o indice de un arreglo. |
 |    193       | Apunta bien vale       | Referencias a punteros nulos o None.                     |
 |    391       | No la veo wn           | Usar una variable antes de declararla.                   |
 |    319       | Llamando a tu novia    | Llamar a una función inexistente.                        |
 |    913       | Te pasaste loco        | Desbordamiento numérico (overflow).                      |
 |    931       | Libera al preso        | No haber liberado memoria (`borradol`) a un `cero_km`.   |
+|    229       | Piaso e' loco			| Intentar aplicar `borradol` a un tipo atómico.		   |
 
 ### **Apuntadores**
 
