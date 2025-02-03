@@ -64,11 +64,15 @@ Repositorio asociado a la creación de un lenguaje de programación "Mango Bajit
 	- [🥭**Manejo de Errores**](#manejo-de-errores)
 	- [🥭**Operadores**](#operadores)
 		- [**Lógicos**](#lógicos)
-			- [*Equal* (`igualito`)](#equal-igualito)
-			- [*NotEqual* (`nie`)](#notequal-nie)
-			- [*And* (`yunta`)](#and-yunta)
-			- [*Or* (`o_sea`)](#or-o_sea)
-			- [*Not* (`nelson`)](#not-nelson)
+			- [*Igual* (`igualito`)](#igual-igualito)
+			- [*No Igual* (`nie`)](#no-igual-nie)
+			- [*Mayor o Igual* (`mayol`)](#mayor-o-igual-mayol)
+			- [*Mayor que* (`lidel`)](#mayor-que-lidel)
+			- [*Menor o Igual* (`menol`)](#menor-o-igual-menol)
+			- [*Menor que* (`peluche`)](#menor-que-peluche)
+			- [*Conjunción* (`yunta`)](#conjunción-yunta)
+			- [*Disyunción* (`o_sea`)](#disyunción-o_sea)
+			- [*Negación* (`nelson`)](#negación-nelson)
 		- [**Aritméticos**](#aritméticos)
 			- [*Suma* (+)](#suma-)
 			- [*Resta* (-)](#resta--)
@@ -649,17 +653,21 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 
 #### *Entrada y Salida*
 * `rescata`
-
-	Imprime el valor de una variable o constante en la consola.
+	El procedimiento `rescata` es utilizado para imprimir una lista de cadenas de caracteres (`higuerote`) en la salida estándar. Cualquier elemento que no sea un `higuerote` será convertido explícitamente a `higuerote` antes de ser impreso.
 
 	**Definición:**
 	```
-	rescata (<variable o constante>) lanza un_coño;
+	rescata (cadena1 : higuerote, cadena2 : higuerote, ...) lanza un_coño;
 	```
 
 	**Sintaxis:**
 	```
-	rescata(<variable o constante>);
+	rescata(<variable o constante>, <variable o constante>, ...);
+	```
+
+	**Ejemplo:**
+	```
+	rescata("Hola", "Mundo", (higuerote)123, (higuerote)456.789);
 	```
 
 * `hablame`
@@ -805,7 +813,7 @@ meando {
 ### **Lógicos**
 Los operadores lógicos en Mango Bajito permiten realizar comparaciones y operaciones booleanas de manera expresiva y directa:
 
-#### *Equal* (`igualito`)
+#### *Igual* (`igualito`)
 
 El operador `igualito` compara si dos valores son iguales. Retorna `Sisa` si los valores son iguales y `Nolsa` en caso contrario.
 
@@ -814,7 +822,7 @@ El operador `igualito` compara si dos valores son iguales. Retorna `Sisa` si los
 culito esIgual : tas_claro = 5 igualito 5;  # Resultado: Sisa
 ```
 
-#### *NotEqual* (`nie`)
+#### *No Igual* (`nie`)
 
 El operador `nie` compara si dos valores son diferentes. Retorna `Sisa` si los valores son distintos y `Nolsa` en caso contrario.
 
@@ -823,7 +831,38 @@ El operador `nie` compara si dos valores son diferentes. Retorna `Sisa` si los v
 culito esDistinto : tas_claro = 5 nie 3;  # Resultado: Sisa
 ```
 
-#### *And* (`yunta`)
+#### *Mayor o Igual* (`mayol`)
+El operador `mayol` compara si un valor es mayor o igual que otro. Retorna `Sisa` si el primer valor es mayor o igual al segundo, y `Nolsa` en caso contrario.
+
+**Ejemplo:**
+```
+culito resultado : tas_claro = 5 mayol 3;  # Resultado: Sisa
+```
+
+#### *Mayor que* (`lidel`)
+El operador `lidel` compara si un valor es estrictamente mayor que otro. Retorna `Sisa` si el primer valor es mayor que el segundo, y `Nolsa` en caso contrario.
+
+**Ejemplo:**
+```
+culito resultado : tas_claro = 5 lidel 5;  # Resultado: Nolsa
+```
+
+#### *Menor o Igual* (`menol`)
+El operador menol compara si un valor es menor o igual que otro. Retorna `Sisa` si el primer valor es menor o igual al segundo, y `Nolsa` en caso contrario.
+
+**Ejemplo:**
+```
+culito resultado : tas_claro = 3 menol 3;  # Resultado: Sisa
+```
+
+#### *Menor que* (`peluche`)
+El operador peluche compara si un valor es estrictamente menor que otro. Retorna `Sisa` si el primer valor es menor que el segundo, y `Nolsa` en caso contrario.
+
+```
+culito resultado : tas_claro = 2 peluche 5;  # Resultado: Sisa
+```
+
+#### *Conjunción* (`yunta`)
 
 El operador `yunta` retorna Sisa si ambos operandos son Sisa; de lo contrario, retorna `Nolsa`.
 
@@ -832,7 +871,7 @@ El operador `yunta` retorna Sisa si ambos operandos son Sisa; de lo contrario, r
 culito esVerdad : tas_claro = (5 igualito 5) yunta (3 nie 4);  # Resultado: Sisa
 ```
 
-#### *Or* (`o_sea`)
+#### *Disyunción* (`o_sea`)
 
 El operador `o_sea` retorna Sisa si al menos uno de los operandos es Sisa; de lo contrario, retorna `Nolsa`.
 
@@ -841,7 +880,7 @@ El operador `o_sea` retorna Sisa si al menos uno de los operandos es Sisa; de lo
 culito esCierto : tas_claro  = (5 nie 5) o_sea (3 igualito 4);  # Resultado: Nolsa
 ```
 
-#### *Not* (`nelson`)
+#### *Negación* (`nelson`)
 
 El operador `nelson` invierte el valor lógico de un operando.
 
