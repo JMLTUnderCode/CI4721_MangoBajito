@@ -1,20 +1,44 @@
 # **CI4721 - Lenguajes de Programación II - Mango Bajito**
 
-## **Descripción**
-Repositorio asociado a la creación de un lenguaje de programación "Mango Bajito". Este proyecto nace bajo un ambiente académico proporcionado por la Universidad Simón Bolívar durante el trimestre Enero Marzo 2025 bajo la tutela del Prof. Ricardo Monascal en la materia CI4721 - Lenguajes de Programación II.
+## **Descripción e Integrantes**
 
-## **Integrantes**
-|   Integrantes    |  Carnet  |
-| :--------------: | :------: |
-| Astrid Alvarado  | 18-10938 |
-|   Kenny Rojas    | 18-10595 |
-| Jhonaiker Blanco | 18-10784 |
-|   Junior Lara    | 17-10303 |
+<table>
+  <tr>
+    <td>
+      <table>
+        <tr>
+          <th> Integrantes </th>
+          <th> Carnet </th>
+        </tr>
+        <tr>
+          <td align="center"> Astrid Alvarado </td>
+          <td align="center"> 18-10938 </td>
+        </tr>
+        <tr>
+          <td align="center"> Kenny Rojas </td>
+          <td align="center"> 18-10595 </td>
+        </tr>
+		 <tr>
+          <td align="center"> Jhonaiker Blanco </td>
+          <td align="center"> 18-10784 </td>
+        </tr>
+		 <tr>
+          <td align="center"> Junior Lara </td>
+          <td align="center"> 17-10303 </td>
+        </tr>
+      </table>
+    </td>
+    <td>
+      <p>
+        Repositorio asociado a la creación de un lenguaje de programación "Mango Bajito". Este proyecto nace bajo un ambiente académico proporcionado por la Universidad Simón Bolívar durante el trimestre Enero Marzo 2025 bajo la tutela del Prof. Ricardo Monascal en la materia CI4721 - Lenguajes de Programación II.
+      </p>
+    </td>
+  </tr>
+</table>
 
 ## **Índice**
 - [**CI4721 - Lenguajes de Programación II - Mango Bajito**](#ci4721---lenguajes-de-programación-ii---mango-bajito)
-	- [**Descripción**](#descripción)
-	- [**Integrantes**](#integrantes)
+	- [**Descripción e Integrantes**](#descripción-e-integrantes)
 	- [**Índice**](#índice)
 	- [🥭**Preámbulo**](#preámbulo)
 	- [🥭**Definición**](#definición)
