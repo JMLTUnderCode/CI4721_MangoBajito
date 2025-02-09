@@ -89,10 +89,10 @@
 		- [**Lógicos**](#lógicos)
 			- [*Igual* (`igualito`)](#igual-igualito)
 			- [*No Igual* (`nie`)](#no-igual-nie)
-			- [*Mayor o Igual* (`mayol`)](#mayor-o-igual-mayol)
-			- [*Mayor que* (`lidel`)](#mayor-que-lidel)
-			- [*Menor o Igual* (`menol`)](#menor-o-igual-menol)
-			- [*Menor que* (`peluche`)](#menor-que-peluche)
+			- [*Mayor o Igual* (`lidel`)](#mayor-o-igual-lidel)
+			- [*Mayor que* (`mayol`)](#mayor-que-mayol)
+			- [*Menor o Igual* (`peluche`)](#menor-o-igual-peluche)
+			- [*Menor que* (`menol`)](#menor-que-menol)
 			- [*Conjunción* (`yunta`)](#conjunción-yunta)
 			- [*Disyunción* (`o_sea`)](#disyunción-o_sea)
 			- [*Negación* (`nelson`)](#negación-nelson)
@@ -102,6 +102,7 @@
 			- [*Multiplicación* (\*)](#multiplicación-)
 			- [*División Entera* (//)](#división-entera-)
 			- [*División Decimal* (/)](#división-decimal-)
+		- [*Modulo* (%)](#modulo-)
 			- [*Potenciación* (\*\*)](#potenciación-)
 			- [*Incremento* (++)](#incremento-)
 			- [*Decremento* (--)](#decremento---)
@@ -455,33 +456,6 @@ culito juan : Persona = cero_km Persona;
 rescata(juan.nombre);  # Imprime: Juan Pérez
 ```
 
-> [!IMPORTANT]
-> Consideraciones
-> 
-> Cuando un miembro de un `arroz_con_mango` es un `ahi_ta` a otro registro, se debe utilizar `->` en lugar de `.` para acceder a los atributos del apuntador.
-> 
-> **Ejemplo:**
-> ```
-> arroz_con_mango Persona {
-> 	jeva nombre : higuerote;
-> 	culito edad : mango;
-> }
->
-> arroz_con_mango Nodo {
-> 	ahi_ta jeva datos : Persona;
-> 	ahi_ta culito siguiente : Nodo;
-> }
->
-> # Declaración e inicialización
-> ahi_ta nodo : Nodo = cero_km Nodo;
-> nodo->datos = cero_km Persona("Juan", 25);
->
-> # Acceso a miembros del registro a través del puntero
-> rescata(nodo->datos->nombre);  # Correcto
-> rescata(nodo->datos->edad);    # Correcto
-> ```
-> Ver [Apuntadores](#apuntadores)
-
 #### *Variantes* (`coliao`)
 El tipo `coliao` en Mango Bajito representa una estructura de datos que puede contener valores de distintos tipos, **uno a la vez**, reutilizando el mismo espacio de memoria. Un `coliao` se define especificando los miembros de los distintos tipos de datos que puede contener separados por punto y coma (`;`). Este enfoque permite manejar datos que pueden variar en tipo, pero sin desperdiciar memoria. 
 
@@ -579,9 +553,11 @@ Para acceder al valor almacenado en la memoria referenciada por un `ahi_ta`, se 
 **Sintaxis:**
 ```
 aki_toy <nombre de apuntador>;
-aki_toy <nombre de apuntador>.<atributo>;	# En caso de arroz_con_mango o coliao y atributo no sea apuntador.
-aki_toy <nombre de apuntador>-><atributo>;	# En caso de arroz_con_mango o coliao y atributo sea apuntador.
+aki_toy <nombre de apuntador>.<atributo>;	# En caso de arroz_con_mango o coliao.
 ```
+> [!IMPORTANT]
+> En caso de tener una variable que almacene un apuntador hacia un registro o variante, se puede usar el operador `->`, 
+> el cual es lo mismo que hacer `aki_toy <nombre de variable>.<atributo>`;
 
 #### *Liberación de Memoría* (`borradol`)
 
@@ -789,7 +765,7 @@ El operador `nie` compara si dos valores son diferentes. Retorna `Sisa` si los v
 culito esDistinto : tas_claro = 5 nie 3;  # Resultado: Sisa
 ```
 
-#### *Mayor o Igual* (`mayol`)
+#### *Mayor o Igual* (`lidel`)
 El operador `mayol` compara si un valor es mayor o igual que otro. Retorna `Sisa` si el primer valor es mayor o igual al segundo, y `Nolsa` en caso contrario.
 
 **Ejemplo:**
@@ -797,7 +773,7 @@ El operador `mayol` compara si un valor es mayor o igual que otro. Retorna `Sisa
 culito resultado : tas_claro = 5 mayol 3;  # Resultado: Sisa
 ```
 
-#### *Mayor que* (`lidel`)
+#### *Mayor que* (`mayol`)
 El operador `lidel` compara si un valor es estrictamente mayor que otro. Retorna `Sisa` si el primer valor es mayor que el segundo, y `Nolsa` en caso contrario.
 
 **Ejemplo:**
@@ -805,7 +781,7 @@ El operador `lidel` compara si un valor es estrictamente mayor que otro. Retorna
 culito resultado : tas_claro = 5 lidel 5;  # Resultado: Nolsa
 ```
 
-#### *Menor o Igual* (`menol`)
+#### *Menor o Igual* (`peluche`)
 El operador menol compara si un valor es menor o igual que otro. Retorna `Sisa` si el primer valor es menor o igual al segundo, y `Nolsa` en caso contrario.
 
 **Ejemplo:**
@@ -813,7 +789,7 @@ El operador menol compara si un valor es menor o igual que otro. Retorna `Sisa` 
 culito resultado : tas_claro = 3 menol 3;  # Resultado: Sisa
 ```
 
-#### *Menor que* (`peluche`)
+#### *Menor que* (`menol`)
 El operador peluche compara si un valor es estrictamente menor que otro. Retorna `Sisa` si el primer valor es menor que el segundo, y `Nolsa` en caso contrario.
 
 ```
@@ -905,6 +881,17 @@ culito resultado2 : manguita = 10 / 2.5; # Resultado: 4.0
 culito resultado3 : manguita = 1.989e30 / 1.502e29 # Resultado: 13.249
 ```
 
+### *Modulo* (%)
+
+Realiza la operación de módulo entre dos valores numéricos.
+
+**Ejemplo:**
+```
+culito resultado1 : mango = 10 % 3;  # Resultado: 1
+culito resultado2 : manguita = 10.5 % 2.5;  # Resultado: 0.5
+```
+
+
 #### *Potenciación* (**)
 
 Eleva un valor a la potencia especificada.
@@ -982,12 +969,12 @@ Mango Bajito permite conversiones explícitas entre tipos para garantizar que la
 
 Conversiones soportadas:
 * **De `negro` hacia:** 
-  * `mango`: Si es del '0' a '9' conversion literal, cualquier otro simbolo será su numero en sistema ASCII.
+  * `mango`: Se tomara la representación ASCII del `negro`.
 * **De `mango` hacia:**
   * `manguita`
   * `manguangua`
   * `higuerote`
-  * `negro`: Si se habla de los números de un dígito (0 al 9). En cualquier otro caso será su versión ASCII.
+  * `negro`: Se retornara el `negro` relacionado con el valor ASCII del `mango`.
 * **De `manguita` hacia:**
   * `mango`
   * `manguangua`
