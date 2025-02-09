@@ -158,17 +158,6 @@ void kruskal(Graph& g) {
         cout << e.what() << "\n";
     }
 
-    /* // Imprimir el resultado: Version if/else
-    if (mstSize == g.vertexCount - 1) {
-        cout << "MST encontrado:\n";
-        for (int i = 0; i < mstSize; i++) {
-            cout << "Arista: " << mst[i].src << " -> " << mst[i].dest << ", Peso: " << mst[i].weight << "\n";
-        }
-        cout << "Peso total del MST: " << totalWeight << "\n";
-    } else {
-        cout << "No se pudo encontrar un MST (el grafo no es conexo).\n";
-    } */
-
     delete[] mst;
 }
 
