@@ -45,6 +45,7 @@
 	- [🥭**Características**](#características)
 	- [🥭**Mecanismos**](#mecanismos)
 		- [**Instrucción**](#instrucción)
+			- [**Main (Versión no Oficial)**](#main-versión-no-oficial)
 		- [**Declaración**](#declaración)
 			- [*Reglas para nombres de variables y constantes*](#reglas-para-nombres-de-variables-y-constantes)
 			- [*Variable*](#variable)
@@ -155,6 +156,15 @@ Instruccion_2;
 >[!IMPORTANT]
 > Si se omite el `;`, el compilador generará un error de sintaxis. ¡No busques peos!
 
+#### **Main (Versión no Oficial)**
+La función `main` es esencial para los programas en MangoBajito. Con esta, se le indica a la computadora dónde empezar a ejecutar el programa. 
+
+**Sintaxis:**
+```
+se_prende(){
+	Instrucciones;
+}
+```
 ### **Declaración**
 La declaración en Mango Bajito es el proceso mediante el cual se introduce una nueva variable o constante en el programa. Cada variable o constante tiene un identificador único que sigue un conjunto de reglas sintácticas y semánticas para garantizar la claridad y consistencia del código.
 
@@ -526,6 +536,8 @@ En Mango Bajito existen errores predefinidos y una definición previa de código
 |    913       | Te pasaste loco        | Desbordamiento numérico (overflow).                      |
 |    931       | Libera al preso        | No haber liberado memoria (`borradol`) a un `cero_km`.   |
 |    229       | Piaso e' loco			| Intentar aplicar `borradol` a un tipo atómico.		   |
+|    292       | Sapo envidioso			| Intentar definir una función con un nombre reservado.	   |
+|    724       | Piaso e' copión		| Intentar redefinir variables en el mismo alcance.		   |
 
 ### **Apuntadores**
 
