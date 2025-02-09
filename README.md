@@ -84,7 +84,6 @@
 			- [*Entrada y Salida*](#entrada-y-salida)
 			- [*Manipulación de Tipos*](#manipulación-de-tipos)
 			- [*Excepciones*](#excepciones)
-			- [*Manipulación de Arreglos y Cadenas*](#manipulación-de-arreglos-y-cadenas)
 	- [🥭**Manejo de Errores**](#manejo-de-errores)
 	- [🥭**Operadores**](#operadores)
 		- [**Lógicos**](#lógicos)
@@ -736,68 +735,6 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	```
 	ah_vaina("texto personalizado");
 	```
-
-#### *Manipulación de Arreglos y Cadenas*
-
-* `pegao`
-
-	Concatena dos o mas cadenas de caracteres (`higuerote`), esta función recibe una lista de `higuerotes` separada por coma y forma una nueva.
-
-	**Definición:**
-	```
-	pegao(aki_toy cadena_1 : higuerote, aki_toy cadena_2 : higuerote, ...) lanza higuerote;
-	```
-	**Sintaxis:**
-	```
-	<culito o jeva> <nombre de variable> : higuerote = pegao(cadena_1, cadena_2, ...);
-	```
-
-* `maelo`
-
-	Repite una cadena de caracteres (`higuerote`) un número de veces indicado. (Referencia a 'Otra vez Maelo Ruiz').
-
-	**Definición:**
-	```
-	maelo(aki_toy cadena : higuerote, repetidor : mango) lanza higuerote;
-	```
-
-	**Sintaxis:**
-	```
-	<culito o jeva> <nombre de variable> : higuerote = maelo(cadena, repetidor);
-	```
-* `me_mide`
-
-	Devuelve la longitud de una cadena de caracteres (`higuerote`).
-
-	**Definición**
-	```
-	me_mide(aki_toy cadena: higuerote) lanza mango;
-	```
-	**Sintaxis**
-	```
-	<culito o jeva> <nombre de la variable> : mango = me_mide(cadena);
-	```
-* `rellenamelo`
-
-	Inicializa un arreglo con elementos de un valor determinado.
-
-	**Definición**
-	```
-	rellenamelo(aki_toy arreglo: <tipo>[tamaño], valor: <tipo>) lanza un_coño;
-	```
-
-	**Sintaxis**
-	```
-	# Todos los elementos del arreglo serán inicializados como <valor>
-
-	culito <nombre_arreglo> : <tipo>[tamaño]; 
-	
-	rellenamelo(<nombre_arreglo>, <valor>);
-	```
-> [!IMPORTANT]
-> Consideraciones
-> * Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
-> * El `<valor>` para inicializar debe ser correspondiente con el `<tipo>` declarado del arreglo.
 
 ## 🥭**Manejo de Errores**
 En Mango Bajito, el manejo de errores se implementa mediante la instrucción `meando`/`fuera_del_perol`, que permiten capturar y gestionar excepciones de manera estructurada. 
