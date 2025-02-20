@@ -835,34 +835,34 @@ culito esDistinto : tas_claro = 5 nie 3;  # Resultado: Sisa
 ```
 
 #### *Mayor o Igual* (`lidel`)
-El operador `mayol` compara si un valor es mayor o igual que otro. Retorna `Sisa` si el primer valor es mayor o igual al segundo, y `Nolsa` en caso contrario.
+El operador `lidel` compara si un valor es mayor o igual que otro. Retorna `Sisa` si el primer valor es mayor o igual al segundo, y `Nolsa` en caso contrario.
 
 **Ejemplo:**
 ```
-culito resultado : tas_claro = 5 mayol 3;  # Resultado: Sisa
+culito resultado : tas_claro = 5 lidel 3;  # Resultado: Sisa
 ```
 
 #### *Mayor que* (`mayol`)
-El operador `lidel` compara si un valor es estrictamente mayor que otro. Retorna `Sisa` si el primer valor es mayor que el segundo, y `Nolsa` en caso contrario.
+El operador `mayol` compara si un valor es estrictamente mayor que otro. Retorna `Sisa` si el primer valor es mayor que el segundo, y `Nolsa` en caso contrario.
 
 **Ejemplo:**
 ```
-culito resultado : tas_claro = 5 lidel 5;  # Resultado: Nolsa
+culito resultado : tas_claro = 5 mayol 5;  # Resultado: Nolsa
 ```
 
 #### *Menor o Igual* (`peluche`)
-El operador menol compara si un valor es menor o igual que otro. Retorna `Sisa` si el primer valor es menor o igual al segundo, y `Nolsa` en caso contrario.
+El operador `peluche` compara si un valor es menor o igual que otro. Retorna `Sisa` si el primer valor es menor o igual al segundo, y `Nolsa` en caso contrario.
 
 **Ejemplo:**
 ```
-culito resultado : tas_claro = 3 menol 3;  # Resultado: Sisa
+culito resultado : tas_claro = 3 peluche 3;  # Resultado: Sisa
 ```
 
 #### *Menor que* (`menol`)
-El operador peluche compara si un valor es estrictamente menor que otro. Retorna `Sisa` si el primer valor es menor que el segundo, y `Nolsa` en caso contrario.
+El operador `menol` compara si un valor es estrictamente menor que otro. Retorna `Sisa` si el primer valor es menor que el segundo, y `Nolsa` en caso contrario.
 
 ```
-culito resultado : tas_claro = 2 peluche 5;  # Resultado: Sisa
+culito resultado : tas_claro = 2 menol 5;  # Resultado: Sisa
 ```
 
 #### *Conjunción* (`yunta`)
