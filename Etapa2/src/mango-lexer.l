@@ -1,0 +1,109 @@
+%{
+#include <iostream>
+#include <string>
+#include "build/mango-parser.tab.hpp"
+
+using namespace std;
+%}
+
+%option header="build/mango-lexer.yy.hpp"
+%option noyywrap
+
+/* Definición de patrones para tokens */
+MANGO         [0-9]+
+MANGUITA      [0-9]+\.[0-9]+
+MANGUANGUA    [0-9]+\.[0-9]+[eE][-+]?[0-9]+
+NEGRO         '\.'
+HIGUEROTE     \"[^\"]*\"
+IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
+
+%%
+"se_prende"      return T_SE_PRENDE;
+
+"="              return T_ASIGNACION;
+":"              return T_DOSPUNTOS;
+";"              return T_PUNTOCOMA;
+"."              return T_PUNTO;
+","              return T_COMA;
+
+"si_es_asi"      return T_SIESASI;
+"o_asi"          return T_OASI;
+"nojoda"         return T_NOJODA;
+
+"repite_burda"    return T_REPITEBURDA;
+"entre"           return T_ENTRE;
+"hasta"           return T_HASTA;
+"con_flow"        return T_CONFLOW;
+
+"echale_bolas_si" return T_ECHALEBOLAS;
+
+"rotalo"          return T_ROTALO;
+"uy_kieto"        return T_KIETO;
+
+"culito"          return T_CULITO;
+"jeva"            return T_JEVA;
+
+"mango"           return T_MANGO;
+"manguita"        return T_MANGUITA;
+"manguangua"      return T_MANGUANGUA;
+"negro"           return T_NEGRO;
+"higuerote"       return T_HIGUEROTE;
+"tas_claro"       return T_TASCLARO;
+"Sisa"            return T_SISA;
+"Nolsa"           return T_NOLSA;
+"arroz_con_mango" return T_ARROZCONMANGO;
+"coliao"          return T_COLIAO;
+
+"ahi_ta"          return T_AHITA;
+"aki_toy"         return T_AKITOY;
+"cero_km"         return T_CEROKM;
+"borradol"        return T_BORRADOL;
+"pelabola"        return T_PELABOLA;
+
+"un_coño"         return T_UNCONO;
+
+"echar_cuento"    return T_ECHARCUENTO;
+"lanza"           return T_LANZA;
+"lanzate"         return T_LANZATE;
+
+"rescata"         return T_RESCATA;
+"hablame"         return T_HABLAME;
+
+"meando"          return T_T_MEANDO;
+"fuera_del_perol" return T_FUERADELPEROL;
+"como"            return T_COMO;
+
+"+"               return T_OPSUMA;
+"++"              return T_OPINCREMENTO;
+"+="              return T_OPASIGSUMA;
+"-"               return T_OPRESTA;
+"--"              return T_OPDECREMENTO;
+"-="              return T_OPASIGRESTA;
+"*"               return T_OPMULT;
+"*="              return T_OPASIGMULT;
+"/"               return T_OPDIVDECIMAL;
+"//"              return T_OPDIVENTERA;
+"%"               return T_OPMOD;
+"igualito"        return T_OPIGUAL;
+"nie"             return T_OPDIFERENTE;
+"lidel"           return T_OPMAYORIGUAL;
+"mayol"           return T_OPMAYOR;
+"peluche"         return T_OPMENORIGUAL;
+"menol"           return T_OPMENOR;
+"yunta"           return T_YUNTA;
+"o_sea"           return T_OSEA;
+"nelson"          return T_NELSON;
+
+{MANGO}          { cout << "Mango: " << yytext() << endl; return T_MANGO; }
+{MANGUITA}       { cout << "Manguita: " << yytext() << endl; return T_MANGUITA; }
+{MANGUANGUA}     { cout << "Manguangua: " << yytext() << endl; return T_MANGUANGUA; }
+{NEGRO}          { cout << "Negro: " << yytext() << endl; return T_NEGRO; }
+{HIGUEROTE}      { cout << "Higuerote: " << yytext() << endl; return T_HIGUEROTE; }
+{IDENTIFICADOR}  { cout << "ID: " << yytext() << endl; return T_IDENTIFICADOR; }
+
+[ \t\n]+         ;  /* Ignora espacios */
+"#".*            ;  /* Comentarios de una línea */
+
+.                { cerr << "Error léxico: " << yytext << endl; }
+
+%%
