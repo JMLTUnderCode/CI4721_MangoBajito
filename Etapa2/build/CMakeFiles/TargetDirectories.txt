@@ -1,3 +1,0 @@
-/home/jmltundercode/CI4721_MangoBajito/Etapa2/build/CMakeFiles/mango_bajito.dir
-/home/jmltundercode/CI4721_MangoBajito/Etapa2/build/CMakeFiles/edit_cache.dir
-/home/jmltundercode/CI4721_MangoBajito/Etapa2/build/CMakeFiles/rebuild_cache.dir

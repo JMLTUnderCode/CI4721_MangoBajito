@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/mango_bajito.dir/src/main.cpp.o "CMakeFiles/mango_bajito.dir/mango-lexer.cpp.o" "CMakeFiles/mango_bajito.dir/mango-parser.cpp.o" -o mango_bajito 
