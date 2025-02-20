@@ -32,45 +32,48 @@ extern int yylineno;
 %token T_OPMULT T_OPASIGMULT T_OPDIVDECIMAL T_OPDIVENTERA T_OPMOD
 %token T_OPIGUAL T_OPDIFERENTE T_OPMAYORIGUAL T_OPMAYOR T_OPMENORIGUAL T_OPMENOR
 %token T_YUNTA T_OSEA T_NELSON
-%token T_IDENTIFICADOR
+%token T_IDENTIFICADOR T_VALUE
+%token T_IZQPAREN T_DERPAREN T_IZQLLAVE T_DERLLAVE T_IZQCORCHE T_DERCORCHE
 
 %start programa
 %%
 
 programa:
-    T_SE_PRENDE declaraciones bloque { cout << "Programa válido." << endl; }
+    instrucciones main
+    | main
     ;
 
-declaraciones:
-    | declaraciones declaracion
-    ;
-
-declaracion:
-    tipo T_IDENTIFICADOR T_PUNTOCOMA
-    ;
-
-tipo:
-    T_MANGO | T_MANGUITA | T_MANGUANGUA | T_NEGRO | T_HIGUEROTE
-    ;
-
-bloque:
-    T_AHITA instrucciones T_AKITOY
+main:
+    T_SE_PRENDE T_IZQPAREN T_DERPAREN T_IZQLLAVE instrucciones T_DERLLAVE { cout << "Programa válido." << endl; } 
     ;
 
 instrucciones:
-    | instrucciones instruccion
+    | instrucciones instruccion T_PUNTOCOMA
     ;
 
 instruccion:
-    asignacion | condicion | bucle | entrada_salida
+    declaraciones | asignacion | condicion | bucle | entrada_salida | funcion | manejo_error 
+    ;
+
+declaraciones:
+    tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipo_valor
+    | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipo_valor T_ASIGNACION expresion
+    ;
+
+tipo_declaracion:
+    T_CULITO | T_JEVA
+    ;
+
+tipo_valor:
+    T_MANGO | T_MANGUITA | T_MANGUANGUA | T_NEGRO | T_HIGUEROTE
     ;
 
 asignacion:
-    T_IDENTIFICADOR T_ASIGNACION expresion T_PUNTOCOMA
+    T_IDENTIFICADOR T_ASIGNACION expresion
     ;
 
 expresion:
-    T_IDENTIFICADOR | T_MANGO | T_MANGUITA | T_MANGUANGUA | T_NEGRO | T_HIGUEROTE
+    T_IDENTIFICADOR | T_MANGO | T_MANGUITA | T_MANGUANGUA | T_NEGRO | T_HIGUEROTE | T_VALUE
     | expresion operador expresion
     ;
 
@@ -79,21 +82,36 @@ operador:
     ;
 
 condicion:
-    T_SIESASI expresion bloque alternativa
+    T_SIESASI T_IZQPAREN expresion T_DERPAREN T_IZQLLAVE instrucciones T_DERLLAVE alternativa
     ;
 
 alternativa:
-    | T_OASI bloque | T_NOJODA bloque
+    | T_OASI T_IZQPAREN expresion T_DERPAREN T_IZQLLAVE instrucciones T_DERLLAVE
+    | T_NOJODA T_IZQLLAVE instrucciones T_DERLLAVE
     ;
 
 bucle:
-    T_REPITEBURDA T_ENTRE expresion T_HASTA expresion T_CONFLOW bloque
+    indeterminado | determinado
+    ;
+
+indeterminado:
+    T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN T_IZQLLAVE instrucciones T_DERLLAVE
+    ;
+
+determinado:
+    T_REPITEBURDA T_IDENTIFICADOR T_ENTRE T_VALUE T_HASTA T_VALUE T_IZQLLAVE instrucciones T_DERLLAVE
+    | T_REPITEBURDA T_IDENTIFICADOR T_ENTRE T_VALUE T_HASTA T_VALUE T_CONFLOW T_VALUE T_IZQLLAVE instrucciones T_DERLLAVE
     ;
 
 entrada_salida:
-    T_ECHARCUENTO T_IDENTIFICADOR T_PUNTOCOMA
-    | T_LANZA T_HIGUEROTE T_PUNTOCOMA
     ;
+
+funcion:
+    ;
+
+manejo_error:
+    ;
+    
 %%
 
 void yyerror(const char *s) {

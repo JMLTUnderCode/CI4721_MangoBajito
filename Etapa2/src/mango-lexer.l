@@ -1,7 +1,7 @@
 %{
 #include <iostream>
 #include <string>
-#include "build/mango-parser.tab.hpp"
+#include "mango-parser.tab.hpp"
 
 using namespace std;
 %}
@@ -94,16 +94,21 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 "o_sea"           return T_OSEA;
 "nelson"          return T_NELSON;
 
-{MANGO}          { cout << "Mango: " << yytext() << endl; return T_MANGO; }
-{MANGUITA}       { cout << "Manguita: " << yytext() << endl; return T_MANGUITA; }
-{MANGUANGUA}     { cout << "Manguangua: " << yytext() << endl; return T_MANGUANGUA; }
-{NEGRO}          { cout << "Negro: " << yytext() << endl; return T_NEGRO; }
-{HIGUEROTE}      { cout << "Higuerote: " << yytext() << endl; return T_HIGUEROTE; }
-{IDENTIFICADOR}  { cout << "ID: " << yytext() << endl; return T_IDENTIFICADOR; }
+{MANGO}          { cout << "Mango: " << yytext << endl; return T_VALUE; }
+{MANGUITA}       { cout << "Manguita: " << yytext << endl; return T_VALUE; }
+{MANGUANGUA}     { cout << "Manguangua: " << yytext << endl; return T_VALUE; }
+{NEGRO}          { cout << "Negro: " << yytext << endl; return T_VALUE; }
+{HIGUEROTE}      { cout << "Higuerote: " << yytext << endl; return T_VALUE; }
+{IDENTIFICADOR}  { cout << "ID: " << yytext << endl; return T_IDENTIFICADOR; }
 
 [ \t\n]+         ;  /* Ignora espacios */
 "#".*            ;  /* Comentarios de una línea */
-
+"("               return T_IZQPAREN;
+")"               return T_DERPAREN;
+"{"               return T_IZQLLAVE;
+"}"               return T_DERLLAVE;
+"["               return T_IZQCORCHE;
+"]"               return T_DERCORCHE;
 .                { cerr << "Error léxico: " << yytext << endl; }
 
 %%
