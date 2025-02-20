@@ -1,1 +1,4 @@
-culito var : mango = 3;
+culito a: mango = 100;
+se_prende(){
+	culito b: mango = 100;
+}
