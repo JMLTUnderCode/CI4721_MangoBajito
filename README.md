@@ -104,7 +104,7 @@
 			- [*Multiplicación* (\*)](#multiplicación-)
 			- [*División Entera* (//)](#división-entera-)
 			- [*División Decimal* (/)](#división-decimal-)
-		- [*Modulo* (%)](#modulo-)
+			- [*Modulo* (%)](#modulo-)
 			- [*Potenciación* (\*\*)](#potenciación-)
 			- [*Incremento* (++)](#incremento-)
 			- [*Decremento* (--)](#decremento---)
@@ -950,7 +950,7 @@ culito resultado2 : manguita = 10 / 2.5; # Resultado: 4.0
 culito resultado3 : manguita = 1.989e30 / 1.502e29 # Resultado: 13.249
 ```
 
-### *Modulo* (%)
+#### *Modulo* (%)
 
 Realiza la operación de módulo entre dos valores numéricos.
 

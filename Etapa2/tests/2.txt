@@ -1,0 +1,9 @@
+se_prende(){
+	coliao MiVariante {
+		a : mango;
+		b : manguita;
+		c : manguangua;
+		d : tas_claro;
+		e : mango[5]
+	};
+}
