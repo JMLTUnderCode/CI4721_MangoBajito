@@ -104,12 +104,21 @@ determinado:
     ;
 
 entrada_salida:
+    T_RESCATA T_IZQPAREN secuencia T_DERPAREN
+    | T_HABLAME T_IZQPAREN secuencia T_DERPAREN
+    ;
+
+secuencia:
+    | expresion | expresion T_COMA secuencia
     ;
 
 funcion:
+    T_ECHARCUENTO T_IDENTIFICADOR T_IZQPAREN secuencia T_DERPAREN T_LANZA tipo T_IZQLLAVE instrucciones T_DERLLAVE
     ;
 
 manejo_error:
+    T_T_MEANDO T_IZQLLAVE instrucciones T_DERLLAVE
+    | T_T_MEANDO T_IZQLLAVE instrucciones T_DERLLAVE T_FUERADELPEROL T_IZQLLAVE instrucciones T_DERLLAVE
     ;
     
 %%
