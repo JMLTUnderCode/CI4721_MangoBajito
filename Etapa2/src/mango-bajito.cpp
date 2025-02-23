@@ -14,8 +14,7 @@ void SymbolTable::open_scope() {
 }
 
 void SymbolTable::close_scope() {
-	this->scopes.pop();
-	this->current_scope = this->scopes.top().first;
+	this->scopes.top().second = true;
 }
 
 bool SymbolTable::insert_symbol(string symbol_name, Attributes &attr) {
