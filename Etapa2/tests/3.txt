@@ -1,0 +1,7 @@
+se_prende(){
+	culito suma: mango = 0;
+	culito n: mango;
+	echale_bolas_si(Sisa){
+		n = 1;
+	};
+}
