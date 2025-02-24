@@ -8,4 +8,4 @@ se_prende(){
     culito p5: higuerote[1] = 5;
     culito p6: tas_claro[2] = Sisa;
     culito p7: tas_claro[3] = Nolsa;
-}
+};

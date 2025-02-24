@@ -6,4 +6,4 @@ se_prende(){
 		d : tas_claro;
 		e : mango[5]
 	};
-}
+};

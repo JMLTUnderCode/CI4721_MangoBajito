@@ -4,4 +4,4 @@ se_prende(){
 	echale_bolas_si(Sisa){
 		n = 1;
 	};
-}
+};
