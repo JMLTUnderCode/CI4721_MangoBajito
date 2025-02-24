@@ -1,12 +1,15 @@
 %{
 #include <iostream>
 #include <cstdlib>
+#include "mango-bajito.hpp"
 
 using namespace std;
 
 void yyerror(const char *s);
 int yylex();
 extern int yylineno;
+
+SymbolTable symbolTable = SymbolTable();
 %}
 
 %union {
@@ -44,7 +47,7 @@ programa:
     ;
 
 main:
-    T_SE_PRENDE T_IZQPAREN T_DERPAREN T_IZQLLAVE instrucciones T_DERLLAVE { cout << "Programa válido." << endl; } 
+    T_SE_PRENDE T_IZQPAREN T_DERPAREN T_IZQLLAVE instrucciones T_DERLLAVE { cout << "Programa válido." << endl; symbolTable.print_table(); } 
     ;
 
 instrucciones:

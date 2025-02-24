@@ -1,3 +1,6 @@
+#ifndef MANGO_BAJITO_HPP
+#define MANGO_BAJITO_HPP
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -9,6 +12,7 @@
 using namespace std;
 
 struct RecursiveArray; // Declaración adelantada
+class SymbolTable;
 
 // Definicion de tipo Information para almacenar la informacion de los atributos
 typedef variant<string, int, bool> Information;
@@ -58,10 +62,11 @@ struct Attributes {
 	Values value = nullptr;
 };
 
-// funcion auxiliar para verificar si una key esta en un map
-bool contains_key(unordered_map<string, vector<Attributes>> &table, string key) {
-	return table.count(key) > 0;
-}
+// Arreglo de tipos de datos predefinidos
+extern string predef_types[7];
+
+// Arreglo de funciones predefinidas
+extern string predef_func[2];
 
 // Implementacion Tabla de Simbolos Le-Blanc Cook
 class SymbolTable {
@@ -73,8 +78,11 @@ class SymbolTable {
 	public:
 		SymbolTable();
 		~SymbolTable() = default;
+		void print_table();											//Imprimir tabla de simbolos
 		void open_scope();											//Abrir nuevo scope
 		void close_scope();											//Cerrar scope 
 		bool insert_symbol(string symbol_name, Attributes &attr);	//Insertar simbolo en la tabla
 		Attributes* search_symbol(string symbol_name);				//Buscar simbolo en la tabla
+		bool contains_key(string symbol_table);
 };
+#endif

@@ -20,5 +20,8 @@ ADD_FLEX_BISON_DEPENDENCY(Lexer Parser)
 # Directorio de inclusión para los archivos generados por FLEX y BISON
 include_directories(${CMAKE_BINARY_DIR})
 
+# Agregar el directorio src a las rutas de inclusión
+include_directories(${CMAKE_SOURCE_DIR}/src)
+
 # Crear el ejecutable
-add_executable(mango_bajito src/main.cpp ${FLEX_Lexer_OUTPUTS} ${BISON_Parser_OUTPUTS})
+add_executable(mango_bajito src/main.cpp ${FLEX_Lexer_OUTPUTS} ${BISON_Parser_OUTPUTS} src/mango-bajito.cpp)
