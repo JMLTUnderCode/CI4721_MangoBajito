@@ -1,7 +1,8 @@
 culito a: mango = 100;
 se_prende(){
-	culito b: mango = 100;
-	culito p1: mango = 1;
+    3 + 2;
+	culito b: mango = 100 + 8;
+    culito p1: mango = 1; 
     culito p2: manguita = 2;
     culito p3: manguangua = 3;
     culito p4: negro = 4;

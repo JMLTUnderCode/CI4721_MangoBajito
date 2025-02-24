@@ -14,9 +14,17 @@ SymbolTable symbolTable = SymbolTable();
 
 %union {
     int ival;
+    float fval;
     double dval;
-    char *sval;
+    char cval;
+    char* sval;
 }
+
+%token <ival> T_MANGO       // Token para int
+%token <fval> T_MANGUITA    // Token para float
+%token <dval> T_MANGUANGUA    // Token para double
+%token <cval> T_NEGRO  // Token para caracter
+%token <sval> T_HIGUEROTE   // Token para string
 
 %token T_SE_PRENDE T_ASIGNACION T_DOSPUNTOS T_PUNTOCOMA T_COMA
 %token T_SIESASI T_OASI T_NOJODA
@@ -24,7 +32,6 @@ SymbolTable symbolTable = SymbolTable();
 %token T_ECHALEBOLAS
 %token T_ROTALO T_KIETO
 %token T_CULITO T_JEVA
-%token T_MANGO T_MANGUITA T_MANGUANGUA T_NEGRO T_HIGUEROTE
 %token T_TASCLARO T_SISA T_NOLSA T_ARROZCONMANGO T_COLIAO T_PUNTO
 %token T_AHITA T_AKITOY T_CEROKM T_BORRADOL T_PELABOLA T_FLECHA
 %token T_UNCONO
@@ -65,7 +72,7 @@ programa:
     ;
 
 main:
-    T_SE_PRENDE T_IZQPAREN T_DERPAREN T_IZQLLAVE instruccionesopt T_DERLLAVE T_PUNTOCOMA { cout << "Programa válido." << endl; symbolTable.print_table(); } 
+    T_SE_PRENDE T_IZQPAREN T_DERPAREN T_IZQLLAVE instruccionesopt T_DERLLAVE T_PUNTOCOMA { cout << "Programa válido." << endl; } 
     ;
 
 instrucciones:
@@ -77,7 +84,8 @@ instruccionesopt:
     ;
 
 instruccion:
-    declaracion 
+    T_VALUE T_OPSUMA T_VALUE
+    | declaracion 
     | asignacion 
     | condicion 
     | bucle 
@@ -161,7 +169,7 @@ expresion:
     | T_NELSON expresion
     | T_OPRESTA expresion %prec T_SIGNO_MENOS
     | expresion T_FLECHA expresion
-    | expresion T_OPSUMA expresion
+    | expresion T_OPSUMA expresion 
     | expresion T_OPRESTA expresion
     | expresion T_OPMULT expresion
     | expresion T_OPDIVDECIMAL expresion
@@ -195,7 +203,7 @@ bucle:
     ;
 
 indeterminado:
-    T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN T_IZQLLAVE instrucciones T_DERLLAVE
+    T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN T_IZQLLAVE instrucciones T_DERLLAVE 
     ;
 
 determinado:

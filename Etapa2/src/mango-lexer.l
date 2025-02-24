@@ -96,14 +96,46 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 "o_sea"           return T_OSEA;
 "nelson"          return T_NELSON;
 
-{MANGO}          { cout << "Mango: " << yytext << endl; return T_VALUE; }
-{MANGUITA}       { cout << "Manguita: " << yytext << endl; return T_VALUE; }
-{MANGUANGUA}     { cout << "Manguangua: " << yytext << endl; return T_VALUE; }
-{NEGRO}          { cout << "Negro: " << yytext << endl; return T_VALUE; }
-{HIGUEROTE}      { cout << "Higuerote: " << yytext << endl; return T_VALUE; }
-{IDENTIFICADOR}  { cout << "ID: " << yytext << endl; return T_IDENTIFICADOR; }
+{MANGO} {
+    yylval.ival = atoi(yytext);
+    cout << "Entero: " << yytext << endl;
+    return T_VALUE;  // Token específico para enteros
+}
 
-[ \t\n]+         ;  /* Ignora espacios */
+{MANGUITA} {
+    yylval.fval = strtof(yytext, nullptr);
+    cout << "Float: " << yytext << endl;
+    return T_VALUE;  // Token específico para floats
+}
+
+{MANGUANGUA} {
+    yylval.dval = strtod(yytext, nullptr);
+    cout << "Double: " << yytext << endl;
+    return T_VALUE;  // Token específico para doubles
+}
+
+{NEGRO} {
+    yylval.cval = yytext[1];  // Extrae el carácter (ignora las comillas)
+    cout << "Carácter: " << yytext << endl;
+    return T_VALUE;  // Token específico para caracteres
+}
+
+{HIGUEROTE} {
+    // Elimina las comillas y guarda el string
+    yylval.sval = strdup(yytext + 1);
+    yylval.sval[strlen(yylval.sval) - 1] = '\0';
+    cout << "String: " << yylval.sval << endl;
+    return T_VALUE;  // Token específico para strings
+}
+
+{IDENTIFICADOR} {
+    yylval.sval = strdup(yytext);
+    cout << "ID: " << yytext << endl;
+    return T_IDENTIFICADOR;
+}
+
+
+[ \t\r\n]+         ;  /* Ignora espacios */
 "#".*            ;  /* Comentarios de una línea */
 "("               return T_IZQPAREN;
 ")"               return T_DERPAREN;
