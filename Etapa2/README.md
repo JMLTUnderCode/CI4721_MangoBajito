@@ -37,9 +37,7 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 	```
 	Para volver a recompilar solo hace falta ejecutar `make` estando en `build`. En caso de cambios con `CMakeLists.txt` o si hay problemas con dependencias, puedes limpiar el proyecto y recompilar con:
 	```
-	rm -rf build/*
-	cmake ..
-	make
+	rm -rf ../build/*; cmake ..; make
 	```
   - Para Ejecutar el proyecto (se debe estar en la carpeta `build/`)
 	```
