@@ -17,7 +17,7 @@ SymbolTable::SymbolTable() {
 	}
 
 	// Agregamos las funciones predefinidas
-	for (int i = 0; i < 2; i++){
+	for (int i = 0; i < 3; i++){
 		Attributes attr = {this->predef_func[i], FUNCTION, 0, nullptr};
 		if (this->insert_symbol(predef_func[i], attr)) {
             cout << "Insertada función predefinida: " << predef_func[i] << endl;

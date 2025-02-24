@@ -24,6 +24,7 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 ":"              return T_DOSPUNTOS;
 ";"              return T_PUNTOCOMA;
 "."              return T_PUNTO;
+"->"			 return T_FLECHA;
 ","              return T_COMA;
 
 "si_es_asi"      return T_SIESASI;
@@ -84,6 +85,7 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 "/"               return T_OPDIVDECIMAL;
 "//"              return T_OPDIVENTERA;
 "%"               return T_OPMOD;
+"**"			  return T_OPEXP;
 "igualito"        return T_OPIGUAL;
 "nie"             return T_OPDIFERENTE;
 "lidel"           return T_OPMAYORIGUAL;

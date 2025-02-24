@@ -26,18 +26,36 @@ SymbolTable symbolTable = SymbolTable();
 %token T_CULITO T_JEVA
 %token T_MANGO T_MANGUITA T_MANGUANGUA T_NEGRO T_HIGUEROTE
 %token T_TASCLARO T_SISA T_NOLSA T_ARROZCONMANGO T_COLIAO T_PUNTO
-%token T_AHITA T_AKITOY T_CEROKM T_BORRADOL T_PELABOLA
+%token T_AHITA T_AKITOY T_CEROKM T_BORRADOL T_PELABOLA T_FLECHA
 %token T_UNCONO
 %token T_ECHARCUENTO T_LANZA T_LANZATE
 %token T_RESCATA T_HABLAME
 %token T_T_MEANDO T_FUERADELPEROL T_COMO
 %token T_OPSUMA T_OPRESTA T_OPINCREMENTO T_OPDECREMENTO T_OPASIGRESTA T_OPASIGSUMA T_OPASIGMULT
-%token T_OPMULT T_OPDIVDECIMAL T_OPDIVENTERA T_OPMOD
+%token T_OPMULT T_OPDIVDECIMAL T_OPDIVENTERA T_OPMOD T_OPEXP
 %token T_OPIGUAL T_OPDIFERENTE T_OPMAYORIGUAL T_OPMAYOR T_OPMENORIGUAL T_OPMENOR
 %token T_YUNTA T_OSEA T_NELSON
 %token T_IDENTIFICADOR T_VALUE
 %token T_IZQPAREN T_DERPAREN T_IZQLLAVE T_DERLLAVE T_IZQCORCHE T_DERCORCHE
 
+// Declaracion de precedencia y asociatividad de Operadores
+// Asignacion
+%right T_ASIGNACION 
+
+// Logicos y comparativos
+%left T_OSEA
+%left T_YUNTA
+%nonassoc T_OPIGUAL T_OPDIFERENTE T_OPMAYOR T_OPMENOR T_OPMAYORIGUAL T_OPMENORIGUAL
+
+// Aritmeticos
+%left T_OPSUMA T_OPRESTA 
+%left T_OPMULT T_OPDIVENTERA T_OPDIVDECIMAL T_OPMOD
+%right T_OPEXP
+
+// Operaciones unarias
+%left T_OPINCREMENTO T_OPDECREMENTO
+%right T_SIGNO_MENOS T_NELSON
+%left T_FLECHA
 %start programa
 %%
 
@@ -47,11 +65,15 @@ programa:
     ;
 
 main:
-    T_SE_PRENDE T_IZQPAREN T_DERPAREN T_IZQLLAVE instrucciones T_DERLLAVE { cout << "Programa válido." << endl; symbolTable.print_table(); } 
+    T_SE_PRENDE T_IZQPAREN T_DERPAREN T_IZQLLAVE instruccionesopt T_DERLLAVE T_PUNTOCOMA { cout << "Programa válido." << endl; symbolTable.print_table(); } 
     ;
 
 instrucciones:
-    | instrucciones instruccion T_PUNTOCOMA
+    instruccion T_PUNTOCOMA | instrucciones instruccion T_PUNTOCOMA
+    ;
+
+instruccionesopt:
+    instrucciones |
     ;
 
 instruccion:
@@ -66,7 +88,8 @@ instruccion:
     | variante
     | T_KIETO 
     | T_ROTALO
-    | T_IDENTIFICADOR operadores_sufijo 
+    | T_IDENTIFICADOR T_OPDECREMENTO
+    | T_IDENTIFICADOR T_OPINCREMENTO
     | T_LANZATE expresion
     | T_BORRADOL T_IDENTIFICADOR 
     | declaracion T_ASIGNACION expresion
@@ -74,7 +97,7 @@ instruccion:
     ;
 
 declaracion:
-    tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipo_valor
+    tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos
     ;
 
 declaracion_aputador:
@@ -86,16 +109,18 @@ tipo_declaracion:
     | declaracion_aputador T_JEVA
     ;
 
-tipo_valor_arreglo:
-    | T_IZQCORCHE expresion T_DERCORCHE
+tipos:
+    tipo_valor 
+    | tipos T_IZQCORCHE expresion T_DERCORCHE
     ;
+
 tipo_valor:
-    T_MANGO tipo_valor_arreglo
-    | T_MANGUITA tipo_valor_arreglo
-    | T_MANGUANGUA tipo_valor_arreglo
-    | T_NEGRO tipo_valor_arreglo
-    | T_HIGUEROTE tipo_valor_arreglo
-    | T_TASCLARO tipo_valor_arreglo
+    T_MANGO 
+    | T_MANGUITA 
+    | T_MANGUANGUA 
+    | T_NEGRO 
+    | T_HIGUEROTE 
+    | T_TASCLARO 
     ;
 
 operadores_asginacion:
@@ -121,8 +146,8 @@ expresion_apuntador:
     ;
 
 expresion_nuevo:
-    T_CEROKM tipo_valor T_IZQPAREN T_VALUE T_DERPAREN
-    | T_CEROKM tipo_valor T_IZQCORCHE T_VALUE T_DERCORCHE
+    T_CEROKM tipos
+    | expresion_nuevo T_IZQPAREN expresion T_DERPAREN
     ;
 
 expresion:
@@ -133,45 +158,26 @@ expresion:
     | expresion_apuntador 
     | expresion_nuevo
     | arreglo
-    | operadores_unario expresion
-    | expresion operador_binario expresion
-    ;
-
-operadores_aritmeticos:
-    T_OPSUMA 
-    | T_OPRESTA 
-    | T_OPMULT 
-    | T_OPDIVDECIMAL 
-    | T_OPDIVENTERA 
-    | T_OPMOD
-    ;
-
-operadores_comparacion:
-    T_OPIGUAL 
-    | T_OPDIFERENTE 
-    | T_OPMAYOR 
-    | T_OPMAYORIGUAL 
-    | T_OPMENOR 
-    | T_OPMENORIGUAL
-    ;
-
-operadores_booleanos:
-    T_YUNTA | T_OSEA
-    ;
-
-operadores_unario:
-    T_NELSON
-    ;
-
-operador_binario:
-    operadores_aritmeticos 
-    | operadores_comparacion 
-    | operadores_booleanos
-    ;
-
-operadores_sufijo:
-    T_OPINCREMENTO
-    | T_OPDECREMENTO
+    | T_NELSON expresion
+    | T_OPRESTA expresion %prec T_SIGNO_MENOS
+    | expresion T_FLECHA expresion
+    | expresion T_OPSUMA expresion
+    | expresion T_OPRESTA expresion
+    | expresion T_OPMULT expresion
+    | expresion T_OPDIVDECIMAL expresion
+    | expresion T_OPDIVENTERA expresion
+    | expresion T_OPMOD expresion
+    | expresion T_OPEXP expresion
+    | expresion T_OPIGUAL expresion
+    | expresion T_OPDIFERENTE expresion
+    | expresion T_OPMAYOR expresion
+    | expresion T_OPMAYORIGUAL expresion
+    | expresion T_OPMENOR expresion
+    | expresion T_OPMENORIGUAL expresion
+    | expresion T_OSEA expresion
+    | expresion T_YUNTA expresion
+    | expresion T_OPDECREMENTO
+    | expresion T_OPINCREMENTO
     ;
 
 condicion:
@@ -208,8 +214,8 @@ secuencia:
     ;
 
 secuencia_declaraciones:
-    | secuencia_declaraciones T_PUNTOCOMA T_IDENTIFICADOR T_DOSPUNTOS tipo_valor 
-    | T_IDENTIFICADOR T_DOSPUNTOS tipo_valor 
+    | secuencia_declaraciones T_PUNTOCOMA T_IDENTIFICADOR T_DOSPUNTOS tipos 
+    | T_IDENTIFICADOR T_DOSPUNTOS tipos 
     ;
 
 variante: 
@@ -225,7 +231,7 @@ firma_funcion:
     ;
 
 tipo_funcion:
-    tipo_valor 
+    tipos 
     | T_UNCONO
     ;
 

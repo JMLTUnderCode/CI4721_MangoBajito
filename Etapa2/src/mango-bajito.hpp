@@ -70,7 +70,7 @@ class SymbolTable {
 		int current_scope;							//Scope actual
 		int next_scope;								//Proximo scope
 		string predef_types[7] = {"mango", "manguita", "manguangua", "negro", "higuerote", "tas_claro", "un_coño"};
-		string predef_func[2] = {"rescata", "hablame"};
+		string predef_func[3] = {"rescata", "hablame", "se_prende"};
 	public:
 		SymbolTable();
 		~SymbolTable() = default;
