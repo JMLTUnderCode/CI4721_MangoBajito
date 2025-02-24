@@ -5,12 +5,15 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 - Lexer
 - Parser (Sin Árbol Sintáctico Abstracto)
 - Tabla de Símbolos LeBlanc-Cook
-- Manejo de errores a nivel Lexicográfico.
+- Manejo de errores a nivel Sintáctico y Semántico.
+	- Todos los errores de lexer.
+	- El primer error de parser.
+	- Todos los errores de tabla de símbolos menos errores de tipos.
 
 ## Guias
 - Para preparar el ambiente de trabajo donde se pueda utilizar los elementos del Lexer, Parser y tabla de Simbolo se quiere instalar:
-  - Flex: Generador de analizadores léxicos.
-  - Bison: Generador de analizadores sintácticos.
+  - [Flex](https://westes.github.io/flex/manual/): Generador de analizadores léxicos.
+  - [Bison](https://www.gnu.org/software/bison/manual/): Generador de analizadores sintácticos.
   - CMake: Para compilar y gestionar el proyecto.
 
 	```
@@ -18,7 +21,9 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 	```
 
 - Para compilar y ejecutar el proyecto:
-  - Creacion de carpeta Build
+  
+  Estando en la carpeta `Etapa2/` realizar los siguientes pasos:
+  - Creación de carpeta Build
 	```
 	mkdir build && cd build
 	```
@@ -36,7 +41,7 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 	cmake ..
 	make
 	```
-  - Para Ejecutar el proyecto
+  - Para Ejecutar el proyecto (se debe estar en la carpeta `build/`)
 	```
-	./mango_bajito <archivo de prueba>
+	./mango_bajito ../tests/<archivo de prueba>
 	```
