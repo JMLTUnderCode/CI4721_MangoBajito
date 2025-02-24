@@ -12,7 +12,8 @@ FLEX_TARGET(Lexer src/mango-lexer.l ${CMAKE_BINARY_DIR}/mango-lexer.cpp
 
 # Configuración de BISON para el parser, usando la opción -d para generar el header
 BISON_TARGET(Parser src/mango-parser.y ${CMAKE_BINARY_DIR}/mango-parser.cpp 
-    DEFINES_FILE ${CMAKE_BINARY_DIR}/mango-parser.tab.hpp)
+    DEFINES_FILE ${CMAKE_BINARY_DIR}/mango-parser.tab.hpp
+    COMPILE_FLAGS "-Wcounterexamples -Wconflicts-sr -d")
 
 # Aseguramos que FLEX se ejecute antes de BISON
 ADD_FLEX_BISON_DEPENDENCY(Lexer Parser)
