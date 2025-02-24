@@ -69,8 +69,8 @@ class SymbolTable {
 		stack<pair<int, bool> > scopes;				//Pila de scopes
 		int current_scope;							//Scope actual
 		int next_scope;								//Proximo scope
-		string predef_types[7] = {"mango", "manguita", "manguangua", "negro", "higuerote", "tas_claro", "un_coño"};
-		string predef_func[3] = {"rescata", "hablame", "se_prende"};
+		vector<string> predef_types = {"mango", "manguita", "manguangua", "negro", "higuerote", "tas_claro", "un_coño"};
+		vector<string> predef_func = {"rescata", "hablame", "se_prende"};
 	public:
 		SymbolTable();
 		~SymbolTable() = default;

@@ -7,23 +7,15 @@ SymbolTable::SymbolTable() {
 	this->scopes.push({this->current_scope, false});
 
 	// Agregamos los simbolos predefinidos
-	for (int i = 0; i < 7; i++){
-		Attributes attr = {this->predef_types[i], TYPE, 0, nullptr};
-		if (this->insert_symbol(predef_types[i], attr)) {
-            cout << "Insertado tipo predefinido: " << predef_types[i] << endl;
-        } else {
-            cout << "Error al insertar tipo predefinido: " << predef_types[i] << endl;
-        }
+	for (auto& type : predef_types){
+		Attributes attr = {type, TYPE, 0, nullptr};
+		this->insert_symbol(type, attr);
 	}
 
 	// Agregamos las funciones predefinidas
-	for (int i = 0; i < 3; i++){
-		Attributes attr = {this->predef_func[i], FUNCTION, 0, nullptr};
-		if (this->insert_symbol(predef_func[i], attr)) {
-            cout << "Insertada función predefinida: " << predef_func[i] << endl;
-        } else {
-            cout << "Error al insertar función predefinida: " << predef_func[i] << endl;
-        }
+	for (auto& func : predef_func){
+		Attributes attr = {func, FUNCTION, 0, nullptr};
+		this->insert_symbol(func, attr);
 	}
 
 }
