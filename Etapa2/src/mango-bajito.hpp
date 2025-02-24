@@ -62,12 +62,6 @@ struct Attributes {
 	Values value = nullptr;
 };
 
-// Arreglo de tipos de datos predefinidos
-extern string predef_types[7];
-
-// Arreglo de funciones predefinidas
-extern string predef_func[2];
-
 // Implementacion Tabla de Simbolos Le-Blanc Cook
 class SymbolTable {
 	protected:
@@ -75,6 +69,8 @@ class SymbolTable {
 		stack<pair<int, bool> > scopes;				//Pila de scopes
 		int current_scope;							//Scope actual
 		int next_scope;								//Proximo scope
+		string predef_types[7] = {"mango", "manguita", "manguangua", "negro", "higuerote", "tas_claro", "un_coño"};
+		string predef_func[2] = {"rescata", "hablame"};
 	public:
 		SymbolTable();
 		~SymbolTable() = default;

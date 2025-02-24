@@ -1,19 +1,5 @@
 #include "mango-bajito.hpp"
 
-string predef_types[7] = {
-	"mango",
-	"manguita",
-	"manguangua",
-	"negro",
-	"higuerote",
-	"tas_clarp",
-	"un_coño",
-};
-string predef_func[2] = {
-	"hablame",
-	"rescata"
-};
-
 // Implementacion de la clase SymbolTable
 SymbolTable::SymbolTable() {
 	this->current_scope = 0;
@@ -22,7 +8,7 @@ SymbolTable::SymbolTable() {
 
 	// Agregamos los simbolos predefinidos
 	for (int i = 0; i < 7; i++){
-		Attributes attr = {predef_types[i], TYPE, 0, nullptr};
+		Attributes attr = {this->predef_types[i], TYPE, 0, nullptr};
 		if (this->insert_symbol(predef_types[i], attr)) {
             cout << "Insertado tipo predefinido: " << predef_types[i] << endl;
         } else {
@@ -32,7 +18,7 @@ SymbolTable::SymbolTable() {
 
 	// Agregamos las funciones predefinidas
 	for (int i = 0; i < 2; i++){
-		Attributes attr = {predef_func[i], FUNCTION, 0, nullptr};
+		Attributes attr = {this->predef_func[i], FUNCTION, 0, nullptr};
 		if (this->insert_symbol(predef_func[i], attr)) {
             cout << "Insertada función predefinida: " << predef_func[i] << endl;
         } else {
