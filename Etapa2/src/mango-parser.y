@@ -26,6 +26,7 @@ SymbolTable symbolTable = SymbolTable();
 %token <cval> T_NEGRO  // Token para caracter
 %token <sval> T_HIGUEROTE   // Token para string
 
+%token T_ERROR
 %token T_SE_PRENDE T_ASIGNACION T_DOSPUNTOS T_PUNTOCOMA T_COMA
 %token T_SIESASI T_OASI T_NOJODA
 %token T_REPITEBURDA T_ENTRE T_HASTA T_CONFLOW
@@ -101,7 +102,8 @@ instruccion:
     | T_LANZATE expresion
     | T_BORRADOL T_IDENTIFICADOR 
     | declaracion T_ASIGNACION expresion
-    | T_BORRADOL T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR 
+    | T_BORRADOL T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR
+    | error
     ;
 
 declaracion:

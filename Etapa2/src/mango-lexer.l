@@ -182,6 +182,6 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
                     cerr << "Error léxico en línea " << yylloc.first_line 
                      << ", columna " << yylloc.first_column 
                      << ": Carácter inválido '" << yytext << "'" << endl;  
-                     continue;}
+                     continue; }
 
 %%
