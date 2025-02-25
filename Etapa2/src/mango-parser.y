@@ -2,15 +2,27 @@
 #include <iostream>
 #include <cstdlib>
 #include "mango-bajito.hpp"
+#include <cstring>
 
 using namespace std;
+
+// Importar la estructura YYLTYPE desde el lexer
+typedef struct YYLTYPE {
+    int first_line;
+    int first_column;
+    int last_line;
+    int last_column;
+} YYLTYPE;
 
 void yyerror(const char *s);
 int yylex();
 extern int yylineno;
+extern YYLTYPE yylloc;  // Declaración externa de la variable yylloc del lexer
 
 SymbolTable symbolTable = SymbolTable();
 %}
+
+%define parse.error verbose
 
 %union {
     int ival;
@@ -265,5 +277,23 @@ manejo_error:
 %%
 
 void yyerror(const char *s) {
-    cerr << "Error sintáctico en línea " << yylineno << ": " << s << endl;
+    extern char* yytext;
+    
+    cerr << "\nError sintáctico en línea " << yylineno 
+         << ", columna " << yylloc.first_column << ":" << endl;
+    
+    // Extraer más información del mensaje de error
+    if (strstr(s, "syntax error, unexpected") != nullptr) {
+        cerr << "  Token inesperado: '" << yytext << "'" << endl;
+        
+        // Intenta extraer los tokens esperados del mensaje
+        const char* expected = strstr(s, "expecting");
+        if (expected) {
+            cerr << "  " << expected << endl;
+        } else {
+            cerr << "  Revise la sintaxis alrededor de este token" << endl;
+        }
+    } else {
+        cerr << "  " << s << endl;
+    }
 }

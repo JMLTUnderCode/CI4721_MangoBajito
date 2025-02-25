@@ -42,9 +42,8 @@ HIGUEROTE     \"[^\"]*\"
 IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 
 %%
-
-\n              { current_column = 1; }  // Reinicia columna al inicio de línea
-[ \t]+          { current_column += yyleng; }  // Actualiza columna para espacios/tabs
+[ \t]+        { current_column += yyleng; }  // Espacios/tabs
+\r?\n         { current_column = 1; }  // Saltos de línea
 
 "se_prende"     { UPDATE_LOC return T_SE_PRENDE; }
 
@@ -127,28 +126,28 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 {MANGO} {
     UPDATE_LOC
     yylval.ival = atoi(yytext);
-    cout << "Entero: " << yytext << endl;
+    // cout << "Entero: " << yytext << endl;
     return T_VALUE;
 }
 
 {MANGUITA} {
     UPDATE_LOC
     yylval.fval = strtof(yytext, nullptr);
-    cout << "Float: " << yytext << endl;
+    // cout << "Float: " << yytext << endl;
     return T_VALUE;
 }
 
 {MANGUANGUA} {
     UPDATE_LOC
     yylval.dval = strtod(yytext, nullptr);
-    cout << "Double: " << yytext << endl;
+    // cout << "Double: " << yytext << endl;
     return T_VALUE;
 }
 
 {NEGRO} {
     UPDATE_LOC
     yylval.cval = yytext[1];  // Extrae el carácter
-    cout << "Carácter: " << yytext << endl;
+    // cout << "Carácter: " << yytext << endl;
     return T_VALUE;
 }
 
@@ -156,20 +155,17 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
     UPDATE_LOC
     yylval.sval = strdup(yytext + 1);
     yylval.sval[strlen(yylval.sval) - 1] = '\0';
-    cout << "String: " << yylval.sval << endl;
+    // cout << "String: " << yylval.sval << endl;
     return T_VALUE;
 }
 
 {IDENTIFICADOR} {
     UPDATE_LOC
     yylval.sval = strdup(yytext);
-    cout << "ID: " << yytext << endl;
+    // cout << "ID: " << yytext << endl;
     return T_IDENTIFICADOR;
 }
 
-
-[ \t]+        { current_column += yyleng; }  // Espacios/tabs
-\r?\n         { yylineno++; current_column = 1; }  // Saltos de línea
 "#".*            ;  /* Comentarios de una línea */
 "("           { UPDATE_LOC return T_IZQPAREN; }
 ")"           { UPDATE_LOC return T_DERPAREN; }
