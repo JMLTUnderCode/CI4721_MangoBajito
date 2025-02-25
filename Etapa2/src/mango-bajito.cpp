@@ -1,10 +1,67 @@
 #include "mango-bajito.hpp"
 
+void print_info(vector<pair<Information, Attributes*> > informations){
+	for (auto &info : informations){
+		if (holds_alternative<int>(info.first)) {
+			cout << get<int>(info.first) << " ";
+		} else if (holds_alternative<string>(info.first)){
+			cout << (get<string>(info.first)) << " ";
+		} else {
+			cout << (get<bool>(info.first) ? "true" : "false") << " ";
+		}
+	}
+}
+
+void print_values(Values x){
+	visit([](auto&& arg) {
+		using T = decay_t<decltype(arg)>;
+		if constexpr (is_same_v<T, nullptr_t>) cout << "null";
+		else if constexpr (is_same_v<T, int>) cout << arg;
+		else if constexpr (is_same_v<T, bool>) cout << (arg ? "true" : "false");
+		else if constexpr (is_same_v<T, float>) cout << arg;
+		else if constexpr (is_same_v<T, double>) cout << arg;
+		else if constexpr (is_same_v<T, string>) cout << arg;
+		else if constexpr (is_same_v<T, int*>) cout << *arg;
+		else if constexpr (is_same_v<T, double*>) cout << *arg;
+		else if constexpr (is_same_v<T, string*>) cout << *arg;
+		else if constexpr (is_same_v<T, vector<int>>) {
+			cout << "[";
+			for (const auto& v : arg) cout << v << " ";
+			cout << "]";
+		}
+		else if constexpr (is_same_v<T, vector<float>>) {
+			cout << "[";
+			for (const auto& v : arg) cout << v << " ";
+			cout << "]";
+		}
+		else if constexpr (is_same_v<T, vector<double>>) {
+			cout << "[";
+			for (const auto& v : arg) cout << v << " ";
+			cout << "]";
+		}
+		else if constexpr (is_same_v<T, vector<string>>) {
+			cout << "[";
+			for (const auto& v : arg) cout << v << " ";
+			cout << "]";
+		}
+		else if constexpr (is_same_v<T, vector<RecursiveArray>>) {
+			cout << "[";
+			for (const auto& v : arg) {
+				cout << "{";
+				for (const auto& val : v.data) print_values(val);
+				cout << "} ";
+			}
+			cout << "]";
+		}
+	}, x);
+}
+
 // Implementacion de la clase SymbolTable
 SymbolTable::SymbolTable() {
 	this->current_scope = 0;
 	this->next_scope = 1;
-	this->scopes.push({this->current_scope, false});
+	this->prev_scope = 0;
+	this->scopes.push_back({this->current_scope, false});
 
 	// Agregamos los simbolos predefinidos
 	for (auto& type : predef_types){
@@ -21,13 +78,18 @@ SymbolTable::SymbolTable() {
 }
 
 void SymbolTable::open_scope() {
+	this->prev_scope = this->current_scope;
 	this->current_scope = this->next_scope;
 	this->next_scope++;
-	this->scopes.push({this->current_scope, false});
+	this->scopes.push_back({this->current_scope, false});
 }
 
 void SymbolTable::close_scope() {
-	this->scopes.top().second = true;
+	this->scopes[this->current_scope].second = true;
+	this->current_scope = this->prev_scope;
+	if (this->prev_scope > 0) {
+		this->prev_scope = this->scopes[this->prev_scope - 1].first;
+	}
 }
 
 // funcion auxiliar para verificar si una key esta en un map
@@ -54,7 +116,7 @@ bool SymbolTable::insert_symbol(string symbol_name, Attributes &attr) {
 
 Attributes* SymbolTable::search_symbol(string symbol_name) {
 	Attributes *predef_symbol, *best_option = nullptr;
-	stack<pair<int, bool> > scopes_aux = this->scopes;
+	vector<pair<int, bool> > scopes_aux = this->scopes;
 	int scope_value;
 
 	auto symbols = this->table.find(symbol_name);
@@ -63,19 +125,15 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 			if (symbol.symbol_name != symbol_name) continue;
 			if (symbol.scope == 0) { predef_symbol = &symbol; break; }
 			
-			while (!scopes_aux.empty()) {
-				scope_value = scopes_aux.top().first;
+			for(int i = scopes_aux.size() - 1; i >= 0; i--){
+				if (scopes_aux[i].second) break; // No puede ver al padre
 				
-				if (symbol.scope == scope_value) {
+				if (symbol.scope == scopes_aux[i].first) {
 					best_option = &symbol;		// El scope mas cercano
 					break;
-				} else if (best_option != nullptr && scope_value == best_option->scope) {
+				} else if (best_option != nullptr && scopes_aux[i].first == best_option->scope) {
 					break;						// No se encontrara un scope mas cercano
 				}
-
-				if (scopes_aux.top().second) break;	  // No puede ver al padre
-				
-				scopes_aux.pop();
 			}
 		}
 
@@ -87,7 +145,7 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 			return nullptr;
 		}
 	}
-
+	return nullptr;
 }
 
 void SymbolTable::print_table() {
@@ -97,7 +155,10 @@ void SymbolTable::print_table() {
         for (Attributes &attr : symbol.second) {
             cout << "  Símbolo: " << attr.symbol_name 
                  << ", Categoría: " << attr.category 
-                 << ", Scope: " << attr.scope << endl;
+                 << ", Scope: " << attr.scope 
+				 << ", Type: "<< (attr.type != nullptr ? attr.type->symbol_name : "")
+			     <<  ", Informacion: "; print_info(attr.info); 
+				 cout << ", Value: "; print_values(attr.value); cout << endl;
         }
     }
 }
