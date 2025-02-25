@@ -13,9 +13,10 @@ se_prende(){
 			a = 100;
 		};
 	};
-	culito c: mango;
+	culito miau: mango;
+	culito se_potea: mango;
 	echar_cuento funcion(d : mango) lanza mango{
-			c = 4;
+			se_potea = 4;
 			lanzate a + c; 
 	};
 };

@@ -111,30 +111,29 @@ instruccion:
 
 declaracion:
     tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos {
-        Attributes attributes = Attributes();
+        Attributes *attributes = new Attributes();
 
         if (symbolTable.search_symbol($4) == nullptr){
             yyerror("Tipo no definido en el lenguaje");
             exit(1);
         };
 
-        attributes.symbol_name = $2;
-        attributes.scope = symbolTable.current_scope;
-        attributes.info = {{"-", nullptr}};
-        attributes.type = symbolTable.search_symbol($4);
-        //attributes.value = nullptr;
+        attributes->symbol_name = $2;
+        attributes->scope = symbolTable.current_scope;
+        attributes->info = {{"-", nullptr}};
+        attributes->type = symbolTable.search_symbol($4);
 
         if (strcmp($1, "POINTER_V") == 0){
-            attributes.category = POINTER_V;
+            attributes->category = POINTER_V;
         } else if (strcmp($1, "POINTER_C") == 0){
-            attributes.category = POINTER_C;
+            attributes->category = POINTER_C;
         } else if (strcmp($1, "VARIABLE") == 0){
-            attributes.category = VARIABLE;
+            attributes->category = VARIABLE;
         } else if (strcmp($1, "CONSTANTE") == 0){
-            attributes.category = CONSTANT;
+            attributes->category = CONSTANT;
         };
 
-        if (!symbolTable.insert_symbol($2, attributes)){
+        if (!symbolTable.insert_symbol($2, *attributes)){
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
@@ -179,18 +178,9 @@ asignacion:
             yyerror("Variable no definida");
             exit(1);
         };
-        cout << attr_var->symbol_name <<  attr_var->info.size() << endl;
-        /* if (holds_alternative<int>(attr_var->info[0].first)) {
-            cout << "a";
-			cout << get<int>(attr_var->info[0].first) << " " << endl;
-		} else if (holds_alternative<string>(attr_var->info[0].first)){
-            cout << "b";
-			cout << (get<string>(attr_var->info[0].first)) << " " << endl;
-		} else if (holds_alternative<bool>(attr_var->info[0].first)){
-            cout << "c";
-			cout << (get<bool>(attr_var->info[0].first) ? "true" : "false") << " " << endl;
-		} */
-        //symbolTable.print_table();
+        cout << symbolTable.current_scope << endl;
+        cout << attr_var->symbol_name << " " << attr_var->info.size() << endl;
+        
         string info_var = get<string>(attr_var->info[0].first);
         if (strcmp(info_var.c_str(), "CICLO FOR") == 0){
             yyerror("No se puede modificar una variable en un ciclo determinado");
@@ -271,15 +261,15 @@ var_ciclo_determinado:
             exit(1);
         };
 
-        Attributes attributes = Attributes();
-        attributes.symbol_name = $1;
-        attributes.scope = symbolTable.current_scope;
-        attributes.info = {{"CICLO FOR", nullptr}};
-        attributes.type = symbolTable.search_symbol("mango");
-        attributes.category = VARIABLE;
-        attributes.value = $3;
+        Attributes *attributes = new Attributes();
+        attributes->symbol_name = $1;
+        attributes->scope = symbolTable.current_scope;
+        attributes->info = {{"CICLO FOR", nullptr}};
+        attributes->type = symbolTable.search_symbol("mango");
+        attributes->category = VARIABLE;
+        attributes->value = $3;
 
-        if (!symbolTable.insert_symbol($1, attributes)){
+        if (!symbolTable.insert_symbol($1, *attributes)){
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
@@ -320,15 +310,14 @@ firma_funcion:
             exit(1);
         };
 
-        Attributes attributes = Attributes();
-        attributes.symbol_name = $2;
-        attributes.scope = symbolTable.current_scope;
-        attributes.info = {{"FUNCION", nullptr}};
-        //attributes.type = symbolTable.search_symbol("mango");
-        attributes.category = FUNCTION;
-        attributes.value = nullptr;
+        Attributes *attributes = new Attributes();
+        attributes->symbol_name = $2;
+        attributes->scope = symbolTable.current_scope;
+        attributes->info = {{"FUNCION", nullptr}};
+        attributes->category = FUNCTION;
+        attributes->value = nullptr;
 
-        if (!symbolTable.insert_symbol($2, attributes)){
+        if (!symbolTable.insert_symbol($2, *attributes)){
             yyerror("Función ya declarada en este alcance");
             exit(1);
         };
@@ -348,15 +337,15 @@ secuencia_parametros:
             exit(1);
         };
 
-        Attributes attributes = Attributes();
-        attributes.symbol_name = $2;
-        attributes.scope = symbolTable.current_scope;
-        attributes.info = {{"PARAMETRO", nullptr}};
-        attributes.type = symbolTable.search_symbol($4);
-        attributes.category = POINTER_V;
-        attributes.value = nullptr;
+        Attributes *attributes = new Attributes();
+        attributes->symbol_name = $2;
+        attributes->scope = symbolTable.current_scope;
+        attributes->info = {{"PARAMETRO", nullptr}};
+        attributes->type = symbolTable.search_symbol($4);
+        attributes->category = POINTER_V;
+        attributes->value = nullptr;
 
-        if (!symbolTable.insert_symbol($2, attributes)){
+        if (!symbolTable.insert_symbol($2, *attributes)){
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
@@ -367,15 +356,15 @@ secuencia_parametros:
             exit(1);
         };
 
-        Attributes attributes = Attributes();
-        attributes.symbol_name = $1;
-        attributes.scope = symbolTable.current_scope;
-        attributes.info = {{"PARAMETRO", nullptr}};
-        attributes.type = symbolTable.search_symbol($3);
-        attributes.category = VARIABLE;
-        attributes.value = nullptr;
+        Attributes *attributes = new Attributes();
+        attributes->symbol_name = $1;
+        attributes->scope = symbolTable.current_scope;
+        attributes->info = {{"PARAMETRO", nullptr}};
+        attributes->type = symbolTable.search_symbol($3);
+        attributes->category = VARIABLE;
+        attributes->value = nullptr;
 
-        if (!symbolTable.insert_symbol($1, attributes)){
+        if (!symbolTable.insert_symbol($1, *attributes)){
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
