@@ -1,6 +1,5 @@
 culito a: mango = 100;
 se_prende(){
-    3 + 2;
 	culito b: mango = 100 + 8;
     culito p1: mango = 1; 
     culito p2: manguita = 2;
