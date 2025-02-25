@@ -277,23 +277,15 @@ manejo_error:
 %%
 
 void yyerror(const char *s) {
-    extern char* yytext;
+    static bool first_error = true;
     
-    cerr << "\nError sintáctico en línea " << yylineno 
-         << ", columna " << yylloc.first_column << ":" << endl;
-    
-    // Extraer más información del mensaje de error
-    if (strstr(s, "syntax error, unexpected") != nullptr) {
-        cerr << "  Token inesperado: '" << yytext << "'" << endl;
+    // Solo mostrar el primer error
+    if (first_error) {
+        extern char* yytext;
         
-        // Intenta extraer los tokens esperados del mensaje
-        const char* expected = strstr(s, "expecting");
-        if (expected) {
-            cerr << "  " << expected << endl;
-        } else {
-            cerr << "  Revise la sintaxis alrededor de este token" << endl;
-        }
-    } else {
-        cerr << "  " << s << endl;
+        cerr << "\nError sintáctico en línea " << yylineno 
+             << ", columna " << yylloc.first_column << ": '" << yytext << "'"<< endl << endl;
+        
+        first_error = false;
     }
 }
