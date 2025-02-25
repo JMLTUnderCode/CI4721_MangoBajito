@@ -4,10 +4,34 @@
 #include "mango-parser.tab.hpp"
 
 using namespace std;
+
+// Define la estructura de ubicación
+typedef struct YYLTYPE {
+    int first_line;
+    int first_column;
+    int last_line;
+    int last_column;
+} YYLTYPE;
+
+// Declara la variable global de ubicación
+YYLTYPE yylloc;
+
+// Variables para seguimiento de ubicación
+extern YYLTYPE yylloc;  // Declaración externa de Bison
+int current_column = 1;   // Lleva el seguimiento de la columna actual
+
+// Macro para actualizar ubicación
+#define UPDATE_LOC \
+    yylloc.first_line = yylineno; \
+    yylloc.first_column = current_column; \
+    yylloc.last_line = yylineno; \
+    yylloc.last_column = current_column + yyleng - 1; \
+    current_column += yyleng;
 %}
 
 %option header="build/mango-lexer.yy.hpp"
 %option noyywrap
+%option yylineno
 
 /* Definición de patrones para tokens */
 MANGO         [0-9]+
@@ -18,99 +42,142 @@ HIGUEROTE     \"[^\"]*\"
 IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 
 %%
-"se_prende"      return T_SE_PRENDE;
+[ \t]+        { current_column += yyleng; }  // Espacios/tabs
+\r?\n         { current_column = 1; }  // Saltos de línea
 
-"="              return T_ASIGNACION;
-":"              return T_DOSPUNTOS;
-";"              return T_PUNTOCOMA;
-"."              return T_PUNTO;
-"->"			 return T_FLECHA;
-","              return T_COMA;
+"se_prende"     { UPDATE_LOC return T_SE_PRENDE; }
 
-"si_es_asi"      return T_SIESASI;
-"o_asi"          return T_OASI;
-"nojoda"         return T_NOJODA;
+"="              { UPDATE_LOC return T_ASIGNACION; }
+":"              { UPDATE_LOC return T_DOSPUNTOS; }
+";"              { UPDATE_LOC return T_PUNTOCOMA; }
+"."              { UPDATE_LOC return T_PUNTO; }
+"->"             { UPDATE_LOC return T_FLECHA; }
+","              { UPDATE_LOC return T_COMA; }
 
-"repite_burda"    return T_REPITEBURDA;
-"entre"           return T_ENTRE;
-"hasta"           return T_HASTA;
-"con_flow"        return T_CONFLOW;
+"si_es_asi"      { UPDATE_LOC return T_SIESASI; }
+"o_asi"          { UPDATE_LOC return T_OASI; }
+"nojoda"         { UPDATE_LOC return T_NOJODA; }
 
-"echale_bolas_si" return T_ECHALEBOLAS;
+"repite_burda"   { UPDATE_LOC return T_REPITEBURDA; }
+"entre"          { UPDATE_LOC return T_ENTRE; }
+"hasta"          { UPDATE_LOC return T_HASTA; }
+"con_flow"       { UPDATE_LOC return T_CONFLOW; }
 
-"rotalo"          return T_ROTALO;
-"uy_kieto"        return T_KIETO;
+"echale_bolas_si" { UPDATE_LOC return T_ECHALEBOLAS; }
 
-"culito"          return T_CULITO;
-"jeva"            return T_JEVA;
+"rotalo"         { UPDATE_LOC return T_ROTALO; }
+"uy_kieto"       { UPDATE_LOC return T_KIETO; }
 
-"mango"           return T_MANGO;
-"manguita"        return T_MANGUITA;
-"manguangua"      return T_MANGUANGUA;
-"negro"           return T_NEGRO;
-"higuerote"       return T_HIGUEROTE;
-"tas_claro"       return T_TASCLARO;
-"Sisa"            return T_SISA;
-"Nolsa"           return T_NOLSA;
-"arroz_con_mango" return T_ARROZCONMANGO;
-"coliao"          return T_COLIAO;
+"culito"         { UPDATE_LOC return T_CULITO; }
+"jeva"           { UPDATE_LOC return T_JEVA; }
 
-"ahi_ta"          return T_AHITA;
-"aki_toy"         return T_AKITOY;
-"cero_km"         return T_CEROKM;
-"borradol"        return T_BORRADOL;
-"pelabola"        return T_PELABOLA;
+"mango"          { UPDATE_LOC return T_MANGO; }
+"manguita"       { UPDATE_LOC return T_MANGUITA; }
+"manguangua"     { UPDATE_LOC return T_MANGUANGUA; }
+"negro"          { UPDATE_LOC return T_NEGRO; }
+"higuerote"      { UPDATE_LOC return T_HIGUEROTE; }
+"tas_claro"      { UPDATE_LOC return T_TASCLARO; }
+"Sisa"           { UPDATE_LOC return T_SISA; }
+"Nolsa"          { UPDATE_LOC return T_NOLSA; }
+"arroz_con_mango" { UPDATE_LOC return T_ARROZCONMANGO; }
+"coliao"         { UPDATE_LOC return T_COLIAO; }
 
-"un_coño"         return T_UNCONO;
+"ahi_ta"         { UPDATE_LOC return T_AHITA; }
+"aki_toy"        { UPDATE_LOC return T_AKITOY; }
+"cero_km"        { UPDATE_LOC return T_CEROKM; }
+"borradol"       { UPDATE_LOC return T_BORRADOL; }
+"pelabola"       { UPDATE_LOC return T_PELABOLA; }
 
-"echar_cuento"    return T_ECHARCUENTO;
-"lanza"           return T_LANZA;
-"lanzate"         return T_LANZATE;
+"un_coño"        { UPDATE_LOC return T_UNCONO; }
 
-"rescata"         return T_RESCATA;
-"hablame"         return T_HABLAME;
+"echar_cuento"   { UPDATE_LOC return T_ECHARCUENTO; }
+"lanza"          { UPDATE_LOC return T_LANZA; }
+"lanzate"        { UPDATE_LOC return T_LANZATE; }
 
-"meando"          return T_T_MEANDO;
-"fuera_del_perol" return T_FUERADELPEROL;
-"como"            return T_COMO;
+"rescata"        { UPDATE_LOC return T_RESCATA; }
+"hablame"        { UPDATE_LOC return T_HABLAME; }
 
-"+"               return T_OPSUMA;
-"++"              return T_OPINCREMENTO;
-"+="              return T_OPASIGSUMA;
-"-"               return T_OPRESTA;
-"--"              return T_OPDECREMENTO;
-"-="              return T_OPASIGRESTA;
-"*"               return T_OPMULT;
-"*="              return T_OPASIGMULT;
-"/"               return T_OPDIVDECIMAL;
-"//"              return T_OPDIVENTERA;
-"%"               return T_OPMOD;
-"**"			  return T_OPEXP;
-"igualito"        return T_OPIGUAL;
-"nie"             return T_OPDIFERENTE;
-"lidel"           return T_OPMAYORIGUAL;
-"mayol"           return T_OPMAYOR;
-"peluche"         return T_OPMENORIGUAL;
-"menol"           return T_OPMENOR;
-"yunta"           return T_YUNTA;
-"o_sea"           return T_OSEA;
-"nelson"          return T_NELSON;
+"meando"         { UPDATE_LOC return T_T_MEANDO; }
+"fuera_del_perol" { UPDATE_LOC return T_FUERADELPEROL; }
+"como"           { UPDATE_LOC return T_COMO; }
 
-{MANGO}          { cout << "Mango: " << yytext << endl; return T_VALUE; }
-{MANGUITA}       { cout << "Manguita: " << yytext << endl; return T_VALUE; }
-{MANGUANGUA}     { cout << "Manguangua: " << yytext << endl; return T_VALUE; }
-{NEGRO}          { cout << "Negro: " << yytext << endl; return T_VALUE; }
-{HIGUEROTE}      { cout << "Higuerote: " << yytext << endl; return T_VALUE; }
-{IDENTIFICADOR}  { cout << "ID: " << yytext << endl; return T_IDENTIFICADOR; }
+"+"              { UPDATE_LOC return T_OPSUMA; }
+"++"             { UPDATE_LOC return T_OPINCREMENTO; }
+"+="             { UPDATE_LOC return T_OPASIGSUMA; }
+"-"              { UPDATE_LOC return T_OPRESTA; }
+"--"             { UPDATE_LOC return T_OPDECREMENTO; }
+"-="             { UPDATE_LOC return T_OPASIGRESTA; }
+"*"              { UPDATE_LOC return T_OPMULT; }
+"*="             { UPDATE_LOC return T_OPASIGMULT; }
+"/"              { UPDATE_LOC return T_OPDIVDECIMAL; }
+"//"             { UPDATE_LOC return T_OPDIVENTERA; }
+"%"              { UPDATE_LOC return T_OPMOD; }
+"**"             { UPDATE_LOC return T_OPEXP; }
+"igualito"       { UPDATE_LOC return T_OPIGUAL; }
+"nie"            { UPDATE_LOC return T_OPDIFERENTE; }
+"lidel"          { UPDATE_LOC return T_OPMAYORIGUAL; }
+"mayol"          { UPDATE_LOC return T_OPMAYOR; }
+"peluche"        { UPDATE_LOC return T_OPMENORIGUAL; }
+"menol"          { UPDATE_LOC return T_OPMENOR; }
+"yunta"          { UPDATE_LOC return T_YUNTA; }
+"o_sea"          { UPDATE_LOC return T_OSEA; }
+"nelson"         { UPDATE_LOC return T_NELSON; }
 
-[ \t\n]+         ;  /* Ignora espacios */
+{MANGO} {
+    UPDATE_LOC
+    yylval.ival = atoi(yytext);
+    // cout << "Entero: " << yytext << endl;
+    return T_VALUE;
+}
+
+{MANGUITA} {
+    UPDATE_LOC
+    yylval.fval = strtof(yytext, nullptr);
+    // cout << "Float: " << yytext << endl;
+    return T_VALUE;
+}
+
+{MANGUANGUA} {
+    UPDATE_LOC
+    yylval.dval = strtod(yytext, nullptr);
+    // cout << "Double: " << yytext << endl;
+    return T_VALUE;
+}
+
+{NEGRO} {
+    UPDATE_LOC
+    yylval.cval = yytext[1];  // Extrae el carácter
+    // cout << "Carácter: " << yytext << endl;
+    return T_VALUE;
+}
+
+{HIGUEROTE} {
+    UPDATE_LOC
+    yylval.sval = strdup(yytext + 1);
+    yylval.sval[strlen(yylval.sval) - 1] = '\0';
+    // cout << "String: " << yylval.sval << endl;
+    return T_VALUE;
+}
+
+{IDENTIFICADOR} {
+    UPDATE_LOC
+    yylval.sval = strdup(yytext);
+    // cout << "ID: " << yytext << endl;
+    return T_IDENTIFICADOR;
+}
+
 "#".*            ;  /* Comentarios de una línea */
-"("               return T_IZQPAREN;
-")"               return T_DERPAREN;
-"{"               return T_IZQLLAVE;
-"}"               return T_DERLLAVE;
-"["               return T_IZQCORCHE;
-"]"               return T_DERCORCHE;
-.                { cerr << "Error léxico: " << yytext << endl; }
+"("           { UPDATE_LOC return T_IZQPAREN; }
+")"           { UPDATE_LOC return T_DERPAREN; }
+"{"           { UPDATE_LOC return T_IZQLLAVE; }
+"}"           { UPDATE_LOC return T_DERLLAVE; }
+"["           { UPDATE_LOC return T_IZQCORCHE; }
+"]"           { UPDATE_LOC return T_DERCORCHE; }
+
+.                {  UPDATE_LOC
+                    cerr << "Error léxico en línea " << yylloc.first_line 
+                     << ", columna " << yylloc.first_column 
+                     << ": Carácter inválido '" << yytext << "'" << endl;  
+                     continue; }
 
 %%

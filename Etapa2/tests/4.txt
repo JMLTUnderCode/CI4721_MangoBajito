@@ -1,0 +1,10 @@
+var@nombre = 42;                 
+v@alor = 'A;
+7mangos = 10;                     
+mensaje = "Hola, mundo;          
+precio = 12..34;                 
+si_es_asi x != 5 {;               
+suma = _#var + 5;                
+caracter = 'abc';               
+x := 10;
+cientifico = 3.5e2.1;
