@@ -124,6 +124,7 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 "nelson"         { UPDATE_LOC return T_NELSON; }
 
 {MANGO} {
+	cout << "mango " << yytext << endl;
     UPDATE_LOC
     yylval.att_val->type = ExpresionAttribute::INT;
     yylval.att_val->ival = atoi(yytext);
@@ -131,6 +132,7 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 }
 
 {MANGUITA} {
+	cout << "manguita " << yytext << endl;
     UPDATE_LOC
     yylval.att_val->type = ExpresionAttribute::FLOAT;
     yylval.att_val->fval = strtof(yytext, nullptr);
@@ -138,6 +140,7 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 }
 
 {MANGUANGUA} {
+	cout << "manguangua " << yytext << endl;
     UPDATE_LOC
     yylval.att_val->type = ExpresionAttribute::FLOAT;  // O podrías definir un tipo DOUBLE si lo necesitas
     yylval.att_val->dval = strtod(yytext, nullptr);
@@ -145,6 +148,7 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 }
 
 {NEGRO} {
+	cout << "negro " << yytext << endl;
     UPDATE_LOC
     yylval.att_val->type = ExpresionAttribute::INT;  // O podrías definir un tipo CHAR
     yylval.att_val->cval = yytext[1];
@@ -152,16 +156,18 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 }
 
 {HIGUEROTE} {
+	cout << "higuerote " << yytext << endl;
     UPDATE_LOC
     yylval.att_val->type = ExpresionAttribute::STRING;
-    yylval.att_val->sval = new std::string(yytext + 1);
+    yylval.att_val->sval = new std::string(yytext);
     //yylval.att_val.sval[strlen(yylval.att_val.sval) - 1] = '\0';
     return T_VALUE;
 }
 
 {IDENTIFICADOR} {
+	cout << "ID " << yytext << endl;
     UPDATE_LOC
-    yylval.sval = new std::string(yytext + 1);
+    yylval.sval = new std::string(yytext);
     // cout << "ID: " << yytext << endl;
     return T_IDENTIFICADOR;
 }

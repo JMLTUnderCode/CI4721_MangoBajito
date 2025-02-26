@@ -175,12 +175,12 @@ declaracion:
     }
     | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
         Attributes *attributes = new Attributes();
-
+		cout << "$4: " << *$4 << endl;
         if (symbolTable.search_symbol(*$4) == nullptr){
             yyerror("Tipo no definido en el lenguaje");
             exit(1);
         };
-
+		cout << "$2: " << *$2 << endl;
         attributes->symbol_name = *$2;
         attributes->scope = symbolTable.current_scope;
         attributes->info.push_back({"-", nullptr});
