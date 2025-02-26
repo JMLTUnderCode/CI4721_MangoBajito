@@ -56,11 +56,23 @@ void print_values(Values x){
 	}, x);
 }
 
+void SymbolTable::finding_variables_in_scope(int scope){
+	cout << "Variables en el scope " << scope << ":" << endl;
+	for (auto& symbol : table){
+		for (Attributes &attr : symbol.second){
+			if (attr.scope == scope){
+				cout << "  * " << attr.symbol_name << endl;
+			}
+		}
+	}
+	cout << "***************************************************************" << endl;
+}
+
 // Implementacion de la clase SymbolTable
 SymbolTable::SymbolTable() {
 	this->current_scope = 0;
 	this->next_scope = 1;
-	this->prev_scope = 0;
+	this->prev_scope = {};
 	this->scopes.push_back({this->current_scope, false});
 
 	// Agregamos los simbolos predefinidos
@@ -78,7 +90,11 @@ SymbolTable::SymbolTable() {
 }
 
 void SymbolTable::open_scope() {
-	this->prev_scope = this->current_scope;
+	/* cout << "Previo " << this->prev_scope.top() << endl;
+	cout << "Actual " << this->current_scope << endl;
+	cout << "Abriendo " << this->next_scope << endl; */
+	this->finding_variables_in_scope(this->current_scope);
+	this->prev_scope.push(this->current_scope);
 	this->current_scope = this->next_scope;
 	this->next_scope++;
 	this->scopes.push_back({this->current_scope, false});
@@ -86,10 +102,8 @@ void SymbolTable::open_scope() {
 
 void SymbolTable::close_scope() {
 	this->scopes[this->current_scope].second = true;
-	this->current_scope = this->prev_scope;
-	if (this->prev_scope > 0) {
-		this->prev_scope = this->scopes[this->prev_scope - 1].first;
-	}
+	this->current_scope = this->prev_scope.top();
+	this->prev_scope.pop();
 }
 
 // funcion auxiliar para verificar si una key esta en un map

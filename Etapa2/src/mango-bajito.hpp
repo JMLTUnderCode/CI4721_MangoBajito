@@ -66,7 +66,6 @@ struct Attributes {
 };
 
 void print_info(vector<pair<Information, Attributes*> > informations);
-
 // Implementacion Tabla de Simbolos Le-Blanc Cook
 class SymbolTable {
 	protected:
@@ -77,7 +76,7 @@ class SymbolTable {
 	public:
 		int current_scope;							//Scope actual
 		int next_scope;								//Proximo scope
-		int prev_scope;								//Scope antiguo
+		stack<int> prev_scope;								//Scope antiguo
 		SymbolTable();
 		~SymbolTable() = default;
 		void print_table();											//Imprimir tabla de simbolos
@@ -86,5 +85,6 @@ class SymbolTable {
 		bool insert_symbol(string symbol_name, Attributes &attr);	//Insertar simbolo en la tabla
 		Attributes* search_symbol(string symbol_name);				//Buscar simbolo en la tabla
 		bool contains_key(string key);						        //Verifica si la tabla contiene el simbolo
+		void finding_variables_in_scope(int scope);
 };
 #endif

@@ -137,6 +137,8 @@ declaracion:
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
+
+        //cout << symbolTable.search_symbol($2)->symbol_name << "->" << get<string>(symbolTable.search_symbol($2)->info[0].first)  << endl;
     }
     ;
 
