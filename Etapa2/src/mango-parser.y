@@ -320,23 +320,23 @@ var_ciclo_determinado:
         attributes->category = VARIABLE;
     switch($3.type) {
         case ExpresionAttribute::INT:
-            attr_var->value = $3.ival;
+            attributes->value = $3.ival;
             break;
         case ExpresionAttribute::FLOAT:
-            attr_var->value = $3.fval;
+            attributes->value = $3.fval;
             break;
         case ExpresionAttribute::BOOL:
-            attr_var->value = (bool)$3.ival; // Asumiendo que se almacena en ival
+            attributes->value = (bool)$3.ival; // Asumiendo que se almacena en ival
             break;
         case ExpresionAttribute::STRING:
-            attr_var->value = string($3.sval); // Convierte a std::string
+            attributes->value = string($3.sval); // Convierte a std::string
             break;
         case ExpresionAttribute::POINTER:
             // Manejar punteros según sea necesario
-            attr_var->value = nullptr; // O el valor adecuado
+            attributes->value = nullptr; // O el valor adecuado
             break;
         default:
-            attr_var->value = nullptr;
+            attributes->value = nullptr;
     }
 
         if (!symbolTable.insert_symbol($1, *attributes)){
