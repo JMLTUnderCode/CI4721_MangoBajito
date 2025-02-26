@@ -120,7 +120,8 @@ declaracion:
 
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
-        attributes->info = {{"-", nullptr}};
+        //attributes->info.clear();
+        attributes->info.push_back({"-", nullptr});
         attributes->type = symbolTable.search_symbol($4);
 
         if (strcmp($1, "POINTER_V") == 0){
@@ -191,7 +192,7 @@ asignacion:
             exit(1);
         }
 
-        symbolTable.search_symbol($1)->value = $3;
+        attr_var->value = $3;
     }
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asginacion expresion
     ;
@@ -268,7 +269,8 @@ var_ciclo_determinado:
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $1;
         attributes->scope = symbolTable.current_scope;
-        attributes->info = {{"CICLO FOR", nullptr}};
+        //attributes->info.clear();
+        attributes->info.push_back({"CICLO FOR", nullptr});
         attributes->type = symbolTable.search_symbol("mango");
         attributes->category = VARIABLE;
         attributes->value = $3;
@@ -317,7 +319,8 @@ firma_funcion:
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
-        attributes->info = {{"FUNCION", nullptr}};
+        //attributes->info.clear();
+        attributes->info.push_back({"FUNCION", nullptr});
         attributes->category = FUNCTION;
         attributes->value = nullptr;
 
@@ -344,7 +347,8 @@ secuencia_parametros:
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
-        attributes->info = {{"PARAMETRO", nullptr}};
+        //attributes->info.clear();
+        attributes->info.push_back({"PARAMETRO", nullptr});
         attributes->type = symbolTable.search_symbol($4);
         attributes->category = POINTER_V;
         attributes->value = nullptr;
@@ -363,7 +367,8 @@ secuencia_parametros:
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $1;
         attributes->scope = symbolTable.current_scope;
-        attributes->info = {{"PARAMETRO", nullptr}};
+        //attributes->info.clear();
+        attributes->info.push_back({"PARAMETRO", nullptr});
         attributes->type = symbolTable.search_symbol($3);
         attributes->category = VARIABLE;
         attributes->value = nullptr;
@@ -372,7 +377,6 @@ secuencia_parametros:
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
-        //cout << symbolTable.search_symbol($1)->symbol_name << get<string>(symbolTable.search_symbol($1)->info[0].first)  << endl;
     }
     ;
 

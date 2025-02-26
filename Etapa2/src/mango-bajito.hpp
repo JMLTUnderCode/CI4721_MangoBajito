@@ -61,7 +61,7 @@ struct Attributes {
 	Category category;
 	int scope;
 	Attributes *type;
-	vector<pair<Information, Attributes*> > info = {{"-", nullptr}}; // Informacion de los atributos (depende de Category)
+	vector<pair<Information, Attributes*> > info; // Informacion de los atributos (depende de Category)
 	Values value = nullptr;
 };
 

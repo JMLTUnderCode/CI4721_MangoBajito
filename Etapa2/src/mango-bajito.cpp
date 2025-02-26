@@ -97,6 +97,7 @@ void SymbolTable::open_scope() {
 	this->current_scope = this->next_scope;
 	this->next_scope++;
 	this->scopes.push_back({this->current_scope, false});
+	cout << "Open scope: " << this->scopes.size() << endl;
 }
 
 void SymbolTable::close_scope() {
@@ -130,24 +131,27 @@ bool SymbolTable::insert_symbol(string symbol_name, Attributes &attr) {
 
 Attributes* SymbolTable::search_symbol(string symbol_name) {
 	Attributes *predef_symbol, *best_option = nullptr;
-	vector<pair<int, bool> > scopes_aux = this->scopes;
+	//vector<pair<int, bool> > scopes_aux = this->scopes;
 	int scope_value;
 	cout << "Start seach " << symbol_name << endl;
 	auto symbols = this->table.find(symbol_name);
 	if (symbols != this->table.end()) {
 		cout << "if start" << endl;
 		for (Attributes &symbol : symbols->second) {
+			cout << "Inicio for 1" << endl;
 			if (symbol.symbol_name != symbol_name) continue;
 			if (symbol.scope == 0) { predef_symbol = &symbol; break; }
-			
-			for(int i = scopes_aux.size() - 1; i >= 0; i--){
-				if (scopes_aux[i].second) break; // No puede ver al padre
-				
-				if (symbol.scope == scopes_aux[i].first) {
+			cout << "For Symbol: "<< symbol.symbol_name << endl;
+			cout << "For Scope: "<< symbol.scope << endl;
+			for(int i = this->scopes.size() - 1; i >= 0; i--){
+				cout << "Inicio for 2" << endl;
+				if (this->scopes[i].second) break; // No puede ver al padre
+				cout << "For interno>> Scope: "<< this->scopes[i].first<< endl;
+				if (symbol.scope == this->scopes[i].first) {
 					cout << "best option: " << symbol.scope << endl;
 					best_option = &symbol;		// El scope mas cercano
 					break;
-				} else if (best_option != nullptr && scopes_aux[i].first == best_option->scope) {
+				} else if (best_option != nullptr && this->scopes[i].first == best_option->scope) {
 					break;						// No se encontrara un scope mas cercano
 				}
 			}
