@@ -206,12 +206,12 @@ asignacion:
             exit(1);
         };
                 
-        /* string info_var = get<string>(attr_var->info[0].first);
+        string info_var = get<string>(attr_var->info[0].first);
         if (strcmp(info_var.c_str(), "CICLO FOR") == 0){
             yyerror("No se puede modificar una variable en un ciclo determinado");
             exit(1);
         }
- */
+
     switch($3.type) {
         case ExpresionAttribute::INT:
             attr_var->value = $3.ival;
@@ -395,8 +395,11 @@ tipo_funcion:
     ;
 
 secuencia_parametros:
-    | secuencia_parametros T_COMA secuencia_parametros
-    | T_AKITOY T_IDENTIFICADOR T_DOSPUNTOS tipos{
+    | secuencia_parametros T_COMA parametro
+    | parametro
+    ;
+parametro:
+    T_AKITOY T_IDENTIFICADOR T_DOSPUNTOS tipos{
         if (symbolTable.search_symbol($2) != nullptr){
             yyerror("Variable ya declarada anteriormente");
             exit(1);
