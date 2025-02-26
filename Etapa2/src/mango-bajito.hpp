@@ -53,6 +53,7 @@ enum Category{
 	TYPE,
 	POINTER_C, 
 	POINTER_V,
+	UNKNOWN
 };
 
 // Implementacion de la estructura de Atributos
@@ -62,7 +63,9 @@ struct Attributes {
 	int scope;
 	Attributes *type;
 	vector<pair<Information, Attributes*> > info; // Informacion de los atributos (depende de Category)
-	Values value = nullptr;
+	Values value;
+
+	Attributes() : symbol_name(""), category(UNKNOWN), scope(0), type(nullptr), info({}), value(nullptr) {}
 };
 
 void print_info(vector<pair<Information, Attributes*> > informations);
