@@ -104,7 +104,7 @@ programa:
     ;
 
 main:
-    T_SE_PRENDE abrir_scope T_IZQPAREN T_DERPAREN T_IZQLLAVE instruccionesopt T_DERLLAVE T_PUNTOCOMA cerrar_scope { cout << "Programa válido." << endl; symbolTable.print_table(); } 
+    T_SE_PRENDE abrir_scope T_IZQPAREN T_DERPAREN T_IZQLLAVE instruccionesopt T_DERLLAVE T_PUNTOCOMA cerrar_scope { symbolTable.print_table(); cout << "Programa válido." << endl; } 
     ;
 
 instrucciones:
@@ -164,8 +164,6 @@ declaracion:
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
-
-        //cout << symbolTable.search_symbol($2)->symbol_name << "->" << get<string>(symbolTable.search_symbol($2)->info[0].first)  << endl;
     }
     ;
 
@@ -202,16 +200,12 @@ operadores_asginacion:
 
 asignacion:
     T_IDENTIFICADOR operadores_asginacion expresion { 
-        cout << "Scope: " << symbolTable.current_scope << endl;
-		cout << "Symbol: " << $1 << endl;
 		Attributes *attr_var = symbolTable.search_symbol($1);
         if (attr_var == nullptr){
             yyerror("Variable no definida");
             exit(1);
         };
-        
-        cout << attr_var->symbol_name << " " << attr_var->info.size() << endl;
-        
+                
         /* string info_var = get<string>(attr_var->info[0].first);
         if (strcmp(info_var.c_str(), "CICLO FOR") == 0){
             yyerror("No se puede modificar una variable en un ciclo determinado");

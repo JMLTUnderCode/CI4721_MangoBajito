@@ -57,15 +57,16 @@ void print_values(Values x){
 }
 
 void SymbolTable::finding_variables_in_scope(int scope){
-	cout << "Variables en el scope " << scope << ":" << endl;
+	cout << " ---> Start Scope Level: " << scope << " <---" << endl;
+	int count = 1;
 	for (auto& symbol : table){
 		for (Attributes &attr : symbol.second){
 			if (attr.scope == scope){
-				cout << "  * " << attr.symbol_name << endl;
+				cout << "       " << count++ << ": " << attr.symbol_name << endl;
 			}
 		}
 	}
-	cout << "***************************************************************" << endl;
+	cout << " ---> End Scope Level: " << scope << " <---\n" << endl;
 }
 
 // Implementacion de la clase SymbolTable
@@ -90,18 +91,13 @@ SymbolTable::SymbolTable() {
 		attr->category = FUNCTION;
 		this->insert_symbol(func, *attr);
 	}
-
 }
 
 void SymbolTable::open_scope() {
-	/* cout << "Previo " << this->prev_scope.top() << endl;
-	cout << "Actual " << this->current_scope << endl;
-	cout << "Abriendo " << this->next_scope << endl; */
 	this->prev_scope.push(this->current_scope);
 	this->current_scope = this->next_scope;
 	this->next_scope++;
 	this->scopes.push_back({this->current_scope, false});
-	cout << "Open scope: " << this->scopes.size() << endl;
 }
 
 void SymbolTable::close_scope() {
@@ -137,22 +133,14 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 	Attributes *predef_symbol, *best_option = nullptr;
 	//vector<pair<int, bool> > scopes_aux = this->scopes;
 	int scope_value;
-	cout << "Start seach " << symbol_name << endl;
 	auto symbols = this->table.find(symbol_name);
 	if (symbols != this->table.end()) {
-		cout << "if start" << endl;
 		for (Attributes &symbol : symbols->second) {
-			cout << "Inicio for 1" << endl;
 			if (symbol.symbol_name != symbol_name) continue;
 			if (symbol.scope == 0) { predef_symbol = &symbol; break; }
-			cout << "For Symbol: "<< symbol.symbol_name << endl;
-			cout << "For Scope: "<< symbol.scope << endl;
 			for(int i = this->scopes.size() - 1; i >= 0; i--){
-				cout << "Inicio for 2" << endl;
 				if (this->scopes[i].second) continue; // No puede ver al padre
-				cout << "For interno>> Scope: "<< this->scopes[i].first<< endl;
 				if (symbol.scope == this->scopes[i].first) {
-					cout << "best option: " << symbol.scope << endl;
 					best_option = &symbol;		// El scope mas cercano
 					break;
 				} else if (best_option != nullptr && this->scopes[i].first == best_option->scope) {
@@ -162,30 +150,28 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 		}
 		
 		if (best_option != nullptr){
-			cout << "Retornando " << symbol_name << " en el scope " << best_option->scope << endl;
 			return best_option;
 		}else if (predef_symbol != nullptr){
 			return predef_symbol;
 		}else{
-			cout << "No se encontro " << symbol_name << endl;
 			return nullptr;
 		}
 	}
-	cout << "No se encontro " << symbol_name << endl;
 	return nullptr;
 }
 
 void SymbolTable::print_table() {
-    cout << "Tabla de Simbolos:" << endl;
+    cout << "                          ---> Tabla de Simbolos <---" << endl;
+	int count = 1;
     for (auto& symbol : this->table) {
-        cout << "Clave: " << symbol.first << endl;
+        cout << "    Clave: " << count++ << ": " << symbol.first << endl;
         for (Attributes &attr : symbol.second) {
-            cout << "  Símbolo: " << attr.symbol_name 
+            cout << "       Símbolo: " << attr.symbol_name 
                  << ", Categoría: " << attr.category 
                  << ", Scope: " << attr.scope 
 				 << ", Type: "<< (attr.type != nullptr ? attr.type->symbol_name : "")
 			     <<  ", Informacion: "; print_info(attr.info); 
-				 cout << ", Value: "; print_values(attr.value); cout << endl;
+				 cout << ", Value: "; print_values(attr.value); cout << "\n\n";
         }
     }
 }
