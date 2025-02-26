@@ -13,11 +13,36 @@ extern int yylineno;
 SymbolTable symbolTable = SymbolTable();
 %}
 
+%code requires {
+  struct ExpresionAttribute {
+    enum Type { INT, FLOAT, BOOL, STRING, POINTER } type;
+    union {
+    int ival;
+    float fval;
+    double dval;
+    char cval;
+    char* sval;
+    };
+  };
+}
+
+%union {
+  ExpresionAttribute att_val; // Usa el struct definido
+}  
+
 %union {
     int ival;
+    float fval;
     double dval;
-    char *sval;
+    char cval;
+    char* sval;
 }
+
+%token <ival> T_MANGO       // Token para int
+%token <fval> T_MANGUITA    // Token para float
+%token <dval> T_MANGUANGUA    // Token para double
+%token <cval> T_NEGRO  // Token para caracter
+%token <sval> T_HIGUEROTE   // Token para string
 
 %token T_SE_PRENDE T_ASIGNACION T_DOSPUNTOS T_PUNTOCOMA T_COMA
 %token T_SIESASI T_OASI T_NOJODA
@@ -25,7 +50,6 @@ SymbolTable symbolTable = SymbolTable();
 %token T_ECHALEBOLAS
 %token T_ROTALO T_KIETO
 %token T_CULITO T_JEVA
-%token T_MANGO T_MANGUITA T_MANGUANGUA T_NEGRO T_HIGUEROTE
 %token T_TASCLARO T_SISA T_NOLSA T_ARROZCONMANGO T_COLIAO T_PUNTO
 %token T_AHITA T_AKITOY T_CEROKM T_BORRADOL T_PELABOLA T_FLECHA
 %token T_UNCONO
@@ -37,11 +61,13 @@ SymbolTable symbolTable = SymbolTable();
 %token T_OPIGUAL T_OPDIFERENTE T_OPMAYORIGUAL T_OPMAYOR T_OPMENORIGUAL T_OPMENOR
 %token T_YUNTA T_OSEA T_NELSON
 %token <sval> T_IDENTIFICADOR 
-%token <sval> T_VALUE
+%token <att_val> T_VALUE
 %token T_IZQPAREN T_DERPAREN T_IZQLLAVE T_DERLLAVE T_IZQCORCHE T_DERCORCHE
 
+
 // Declaracion de tipos de retorno para las producciones 
-%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion expresion
+%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion 
+%type <att_val> expresion
 
 // Declaracion de precedencia y asociatividad de Operadores
 // Asignacion
