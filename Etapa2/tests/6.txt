@@ -1,6 +1,12 @@
 se_prende(){
 	si_es_asi (Sisa){
+		arroz_con_mango Persona {
+			nombre : higuerote;
+			edad : mango;
+			estudiante : tas_claro;
+		};
 		culito a: mango = 100;
+
 	}o_asi (Sisa){
 		culito b: mango;
 		jeva mi_array: mango[5];
@@ -16,7 +22,7 @@ se_prende(){
 	};
 	culito miau: mango;
 	miau = 32;
-	culito se_potea: mango;
+	culito se_potea: mango!;
 	se_potea = 999;
 	se_potea = 8;
 	echar_cuento funcion(d : mango) lanza mango{

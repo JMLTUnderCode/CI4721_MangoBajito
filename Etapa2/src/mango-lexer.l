@@ -32,6 +32,7 @@ int current_column = 1;   // Lleva el seguimiento de la columna actual
 
 %option header="build/mango-lexer.yy.hpp"
 %option noyywrap
+%option yylineno
 
 /* Definición de patrones para tokens */
 MANGO         [0-9]+

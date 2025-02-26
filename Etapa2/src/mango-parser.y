@@ -19,6 +19,7 @@ extern int yylineno;
 extern YYLTYPE yylloc;
 
 SymbolTable symbolTable = SymbolTable();
+char* current_struct_name = nullptr;
 %}
 
 %code requires {
@@ -125,7 +126,8 @@ instruccionesopt:
 
 instruccion:
     declaracion 
-    | asignacion 
+    | asignacion
+    | struct
     | condicion 
     | bucle 
     | entrada_salida 
@@ -425,8 +427,63 @@ secuencia:
     ;
 
 secuencia_declaraciones:
-    | secuencia_declaraciones T_PUNTOCOMA T_IDENTIFICADOR T_DOSPUNTOS tipos 
-    | T_IDENTIFICADOR T_DOSPUNTOS tipos 
+    | secuencia_declaraciones T_PUNTOCOMA T_IDENTIFICADOR T_DOSPUNTOS tipos{
+        if (current_struct_name == nullptr) {
+            yyerror("Error interno: no hay estructura actual");
+            exit(1);
+        }
+        Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
+        
+        if (struct_attr == nullptr) {
+            yyerror("Error interno: no se encontró la estructura");
+            exit(1);
+        }
+        
+        // Crear y registrar el atributo de estructura
+        Attributes *attr = new Attributes();
+        attr->symbol_name = $3;
+        attr->scope = symbolTable.current_scope;
+        attr->category = STRUCT_ATTRIBUTE;
+        attr->type = symbolTable.search_symbol($5);
+        attr->value = nullptr;
+        
+        // Guardar el atributo en la tabla de símbolos
+        if (!symbolTable.insert_symbol($3, *attr)) {
+            yyerror("Atributo ya declarado en esta estructura");
+            exit(1);
+        }
+        
+        // Agregar el atributo a la información de la estructura
+        struct_attr->info.push_back({string($3), attr});
+        cout << "  Agregando atributo: " << $3 << " a estructura: " << current_struct_name << endl;
+    }
+    | T_IDENTIFICADOR T_DOSPUNTOS tipos {
+        if (current_struct_name == nullptr) {
+            yyerror("Error interno: no hay estructura actual");
+            exit(1);
+        }
+        Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
+        
+        if (struct_attr == nullptr) {
+            yyerror("Error interno: no se encontró la estructura");
+            exit(1);
+        }
+        
+        Attributes *attr = new Attributes();
+        attr->symbol_name = $1;
+        attr->scope = symbolTable.current_scope;
+        attr->category = STRUCT_ATTRIBUTE;
+        attr->type = symbolTable.search_symbol($3);
+        attr->value = nullptr;
+        
+        if (!symbolTable.insert_symbol($1, *attr)) {
+            yyerror("Atributo ya declarado en esta estructura");
+            exit(1);
+        }
+        
+        struct_attr->info.push_back({string($1), attr});
+        cout << "  Agregando atributo: " << $1 << " a estructura: " << current_struct_name << endl;
+    }
     ;
 
 variante: 
@@ -434,7 +491,29 @@ variante:
     ;
 
 struct: 
-    T_ARROZCONMANGO T_IDENTIFICADOR abrir_scope T_IZQLLAVE secuencia_declaraciones T_DERLLAVE cerrar_scope
+    T_ARROZCONMANGO T_IDENTIFICADOR abrir_scope  {
+        Attributes *attributes = new Attributes();
+        attributes->symbol_name = $2;
+        attributes->scope = symbolTable.current_scope - 1;
+        attributes->category = STRUCT;
+        attributes->info.push_back({"ESTRUCTURA", nullptr});
+        attributes->value = nullptr;
+        
+        current_struct_name = strdup($2);
+        
+        if (!symbolTable.insert_symbol($2, *attributes)){
+            yyerror("Estructura ya declarada en este alcance");
+            exit(1);
+        };
+        
+        cout << "Definiendo estructura: " << $2 << endl;
+    } T_IZQLLAVE secuencia_declaraciones T_PUNTOCOMA T_DERLLAVE cerrar_scope {
+        // Liberar memoria
+        if (current_struct_name) {
+            free(current_struct_name);
+            current_struct_name = nullptr;
+        }
+    }
     ;
 
 firma_funcion: 

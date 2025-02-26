@@ -53,6 +53,7 @@ enum Category{
 	TYPE,
 	POINTER_C, 
 	POINTER_V,
+	STRUCT_ATTRIBUTE,
 	UNKNOWN
 };
 
