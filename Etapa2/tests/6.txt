@@ -23,4 +23,10 @@ se_prende(){
 			se_potea = 4;
 			lanzate a + c; 
 	};
+
+	meando{
+		culito ayuda: higuerote;
+	} fuera_del_perol como e{
+		miau = 50;
+	};
 };

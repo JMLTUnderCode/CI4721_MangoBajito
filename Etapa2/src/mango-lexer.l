@@ -154,8 +154,8 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 {HIGUEROTE} {
     UPDATE_LOC
     yylval.att_val.type = ExpresionAttribute::STRING;
-    yylval.att_val.sval = strdup(yytext + 1);
-    yylval.att_val.sval[strlen(yylval.att_val.sval) - 1] = '\0';
+    yylval.att_val.sval = std::string(yytext + 1);
+    //yylval.att_val.sval[strlen(yylval.att_val.sval) - 1] = '\0';
     return T_VALUE;
 }
 

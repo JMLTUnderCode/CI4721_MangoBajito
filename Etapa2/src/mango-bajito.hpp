@@ -74,7 +74,7 @@ class SymbolTable {
 	protected:
 		unordered_map<string, vector<Attributes> > table;	//Tabla de simbolos
 		vector<pair<int, bool> > scopes;					//Pila de scopes
-		vector<string> predef_types = {"mango", "manguita", "manguangua", "negro", "higuerote", "tas_claro", "un_coño", "array$"};
+		vector<string> predef_types = {"mango", "manguita", "manguangua", "negro", "higuerote", "tas_claro", "un_coño", "array$", "funcion$", "error$"};
 		vector<string> predef_func = {"rescata", "hablame", "se_prende"};
 	public:
 		int current_scope;							//Scope actual

@@ -22,35 +22,30 @@ SymbolTable symbolTable = SymbolTable();
 %}
 
 %code requires {
-  struct ExpresionAttribute {
-    enum Type { INT, FLOAT, BOOL, STRING, POINTER } type;
-    union {
-    int ival;
-    float fval;
-    double dval;
-    char cval;
-    char* sval;
+    #include <string>
+    using namespace std;
+    struct ExpresionAttribute {
+        enum Type { INT, FLOAT, BOOL, STRING, POINTER } type;
+        union {
+            int ival;
+            float fval;
+            double dval;
+            char cval;
+            string sval;
+        };
     };
-  };
 }
 
 %union {
-  ExpresionAttribute att_val; // Usa el struct definido
-}  
-
-%union {
+    ExpresionAttribute att_val; // Usa el struct definido
     int ival;
     float fval;
     double dval;
     char cval;
-    char* sval;
+    string sval;
 }
 
-%token <ival> T_MANGO       // Token para int
-%token <fval> T_MANGUITA    // Token para float
-%token <dval> T_MANGUANGUA    // Token para double
-%token <cval> T_NEGRO  // Token para caracter
-%token <sval> T_HIGUEROTE   // Token para string
+%token <sval> T_MANGO T_MANGUITA T_MANGUANGUA T_NEGRO T_HIGUEROTE
 
 %token T_SE_PRENDE T_ASIGNACION T_DOSPUNTOS T_PUNTOCOMA T_COMA
 %token T_SIESASI T_OASI T_NOJODA
@@ -74,7 +69,7 @@ SymbolTable symbolTable = SymbolTable();
 
 
 // Declaracion de tipos de retorno para las producciones 
-%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion 
+%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion parametro secuencia_parametros
 %type <att_val> expresion
 
 // Declaracion de precedencia y asociatividad de Operadores
@@ -156,13 +151,13 @@ declaracion:
         attributes->info.push_back({"-", nullptr});
         attributes->type = symbolTable.search_symbol($4);
 
-        if (strcmp($1, "POINTER_V") == 0){
+        if ($1 == "POINTER_V"){
             attributes->category = POINTER_V;
-        } else if (strcmp($1, "POINTER_C") == 0){
+        } else if ($1 == "POINTER_C"){
             attributes->category = POINTER_C;
-        } else if (strcmp($1, "VARIABLE") == 0){
+        } else if ($1 == "VARIABLE"){
             attributes->category = VARIABLE;
-        } else if (strcmp($1, "CONSTANTE") == 0){
+        } else if ($1 == "CONSTANTE"){
             attributes->category = CONSTANT;
         };
 
@@ -184,15 +179,13 @@ declaracion:
         attributes->info.push_back({"-", nullptr});
         attributes->type = symbolTable.search_symbol($4);
 
-        if (strcmp($1, "POINTER_V") == 0){
+        if ($1 == "POINTER_V"){
             attributes->category = POINTER_V;
-        } else if (strcmp($1, "POINTER_C") == 0){
+        } else if ($1 == "POINTER_C"){
             attributes->category = POINTER_C;
-        } else if (strcmp($1, "VARIABLE") == 0){
-
+        } else if ($1 == "VARIABLE"){
             attributes->category = VARIABLE;
-        } else if (strcmp($1, "CONSTANTE") == 0){
-
+        } else if ($1 == "CONSTANTE"){
             attributes->category = CONSTANT;
         };
         
@@ -238,18 +231,18 @@ declaracion:
     ;
 
 declaracion_aputador:
-    { $$ = strdup(""); }
-    | T_AHITA   { $$ = strdup("POINTER"); }
+    { $$ = ""; }
+    | T_AHITA   { $$ = "POINTER"; }
     ;
 
 tipo_declaracion:
-    declaracion_aputador T_CULITO { $$ =  strcmp($1, "POINTER") == 0 ? strdup("POINTER_V") : strdup("VARIABLE"); }
-    | declaracion_aputador T_JEVA { $$ =  strcmp($1, "POINTER") == 0 ? strdup("POINTER_C") : strdup("CONSTANTE"); }
+    declaracion_aputador T_CULITO { $$ =  $1 == "POINTER" ? "POINTER_V" : "VARIABLE"; }
+    | declaracion_aputador T_JEVA { $$ =  $1 == "POINTER" ? "POINTER_C" : "CONSTANTE"; }
     ;
 
 tipos:
     tipo_valor 
-    | tipos T_IZQCORCHE expresion T_DERCORCHE { $$ = strdup("array$"); }
+    | tipos T_IZQCORCHE expresion T_DERCORCHE { $$ = "array$"; }
     ;
 
 tipo_valor:
@@ -277,8 +270,13 @@ asignacion:
         };
                 
         string info_var = get<string>(attr_var->info[0].first);
-        if (strcmp(info_var.c_str(), "CICLO FOR") == 0){
-            yyerror("No se puede modificar una variable en un ciclo determinado");
+        if (info_var == "CICLO FOR"){
+            yyerror("No se puede modificar una variable de un ciclo determinado");
+            exit(1);
+        }
+
+        if (info_var == "MANEJO ERROR"){
+            yyerror("No se puede modificar una variable de un manejador de errores");
             exit(1);
         }
 
@@ -449,6 +447,7 @@ firma_funcion:
         attributes->scope = symbolTable.current_scope;
         //attributes->info.clear();
         attributes->info.push_back({"FUNCION", nullptr});
+        attributes->type = symbolTable.search_symbol("funcion$");
         attributes->category = FUNCTION;
         attributes->value = nullptr;
 
@@ -456,6 +455,8 @@ firma_funcion:
             yyerror("Función ya declarada en este alcance");
             exit(1);
         };
+
+        $$ = $2;
     }
     ;
 
@@ -465,8 +466,11 @@ tipo_funcion:
     ;
 
 secuencia_parametros:
-    | secuencia_parametros T_COMA parametro
-    | parametro
+    {$$ = "";}
+    | parametro T_COMA secuencia_parametros {
+        $$ = $1 + "," + $3;
+    }
+    | parametro { $$ = $1; }
     ;
 parametro:
     T_AKITOY T_IDENTIFICADOR T_DOSPUNTOS tipos{
@@ -488,6 +492,8 @@ parametro:
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
+
+        $$ = $2;
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
         if (symbolTable.search_symbol($1) != nullptr){
@@ -508,6 +514,8 @@ parametro:
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
+
+        $$ = $1;
     }
     ;
 
@@ -519,9 +527,30 @@ arreglo:
     T_IZQCORCHE secuencia T_DERCORCHE
     ;
 
+var_manejo_error:
+    T_COMO abrir_scope T_IDENTIFICADOR{
+        if (symbolTable.search_symbol($3) != nullptr){
+            yyerror("Variable ya declarada anteriormente");
+            exit(1);
+        };
+
+        Attributes *attributes = new Attributes();
+        attributes->symbol_name = $3;
+        attributes->scope = symbolTable.current_scope;
+        attributes->info.push_back({"MANEJO ERROR", nullptr});
+        attributes->type = symbolTable.search_symbol("error$");
+        attributes->category = VARIABLE;
+
+        if (!symbolTable.insert_symbol($3, *attributes)){
+            yyerror("Variable ya declarada en este alcance");
+            exit(1);
+        };
+    }
+    ;
+
 manejador:
     | T_FUERADELPEROL abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
-    | T_FUERADELPEROL T_COMO abrir_scope T_IDENTIFICADOR T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+    | T_FUERADELPEROL var_manejo_error T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
     ;
 
 manejo_error:
