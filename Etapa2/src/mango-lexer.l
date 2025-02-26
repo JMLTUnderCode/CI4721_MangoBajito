@@ -125,43 +125,43 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 
 {MANGO} {
     UPDATE_LOC
-    yylval.att_val.type = ExpresionAttribute::INT;
-    yylval.att_val.ival = atoi(yytext);
+    yylval.att_val->type = ExpresionAttribute::INT;
+    yylval.att_val->ival = atoi(yytext);
     return T_VALUE;
 }
 
 {MANGUITA} {
     UPDATE_LOC
-    yylval.att_val.type = ExpresionAttribute::FLOAT;
-    yylval.att_val.fval = strtof(yytext, nullptr);
+    yylval.att_val->type = ExpresionAttribute::FLOAT;
+    yylval.att_val->fval = strtof(yytext, nullptr);
     return T_VALUE;
 }
 
 {MANGUANGUA} {
     UPDATE_LOC
-    yylval.att_val.type = ExpresionAttribute::FLOAT;  // O podrías definir un tipo DOUBLE si lo necesitas
-    yylval.att_val.dval = strtod(yytext, nullptr);
+    yylval.att_val->type = ExpresionAttribute::FLOAT;  // O podrías definir un tipo DOUBLE si lo necesitas
+    yylval.att_val->dval = strtod(yytext, nullptr);
     return T_VALUE;
 }
 
 {NEGRO} {
     UPDATE_LOC
-    yylval.att_val.type = ExpresionAttribute::INT;  // O podrías definir un tipo CHAR
-    yylval.att_val.cval = yytext[1];
+    yylval.att_val->type = ExpresionAttribute::INT;  // O podrías definir un tipo CHAR
+    yylval.att_val->cval = yytext[1];
     return T_VALUE;
 }
 
 {HIGUEROTE} {
     UPDATE_LOC
-    yylval.att_val.type = ExpresionAttribute::STRING;
-    yylval.att_val.sval = std::string(yytext + 1);
+    yylval.att_val->type = ExpresionAttribute::STRING;
+    yylval.att_val->sval = new std::string(yytext + 1);
     //yylval.att_val.sval[strlen(yylval.att_val.sval) - 1] = '\0';
     return T_VALUE;
 }
 
 {IDENTIFICADOR} {
     UPDATE_LOC
-    yylval.sval = strdup(yytext);
+    yylval.sval = new std::string(yytext + 1);
     // cout << "ID: " << yytext << endl;
     return T_IDENTIFICADOR;
 }

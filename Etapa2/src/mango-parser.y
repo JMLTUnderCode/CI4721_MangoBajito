@@ -31,19 +31,26 @@ SymbolTable symbolTable = SymbolTable();
             float fval;
             double dval;
             char cval;
-            string sval;
+            string* sval;
         };
+        ExpresionAttribute() : type(INT), ival(0) {}
+        ~ExpresionAttribute() {
+            if (type == STRING) {
+                delete sval;
+            }
+        }
     };
 }
 
 %union {
-    ExpresionAttribute att_val; // Usa el struct definido
+    ExpresionAttribute* att_val; // Usa el struct definido
     int ival;
     float fval;
     double dval;
     char cval;
-    string sval;
+    string* sval;
 }
+
 
 %token <sval> T_MANGO T_MANGUITA T_MANGUANGUA T_NEGRO T_HIGUEROTE
 
@@ -141,27 +148,27 @@ declaracion:
     tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos {
         Attributes *attributes = new Attributes();
 
-        if (symbolTable.search_symbol($4) == nullptr){
+        if (symbolTable.search_symbol(*$4) == nullptr){
             yyerror("Tipo no definido en el lenguaje");
             exit(1);
         };
 
-        attributes->symbol_name = $2;
+        attributes->symbol_name = *$2;
         attributes->scope = symbolTable.current_scope;
         attributes->info.push_back({"-", nullptr});
-        attributes->type = symbolTable.search_symbol($4);
+        attributes->type = symbolTable.search_symbol(*$4);
 
-        if ($1 == "POINTER_V"){
+        if (*$1 == "POINTER_V"){
             attributes->category = POINTER_V;
-        } else if ($1 == "POINTER_C"){
+        } else if (*$1 == "POINTER_C"){
             attributes->category = POINTER_C;
-        } else if ($1 == "VARIABLE"){
+        } else if (*$1 == "VARIABLE"){
             attributes->category = VARIABLE;
-        } else if ($1 == "CONSTANTE"){
+        } else if (*$1 == "CONSTANTE"){
             attributes->category = CONSTANT;
         };
 
-        if (!symbolTable.insert_symbol($2, *attributes)){
+        if (!symbolTable.insert_symbol(*$2, *attributes)){
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
@@ -169,48 +176,48 @@ declaracion:
     | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
         Attributes *attributes = new Attributes();
 
-        if (symbolTable.search_symbol($4) == nullptr){
+        if (symbolTable.search_symbol(*$4) == nullptr){
             yyerror("Tipo no definido en el lenguaje");
             exit(1);
         };
 
-        attributes->symbol_name = $2;
+        attributes->symbol_name = *$2;
         attributes->scope = symbolTable.current_scope;
         attributes->info.push_back({"-", nullptr});
-        attributes->type = symbolTable.search_symbol($4);
+        attributes->type = symbolTable.search_symbol(*$4);
 
-        if ($1 == "POINTER_V"){
+        if (*$1 == "POINTER_V"){
             attributes->category = POINTER_V;
-        } else if ($1 == "POINTER_C"){
+        } else if (*$1 == "POINTER_C"){
             attributes->category = POINTER_C;
-        } else if ($1 == "VARIABLE"){
+        } else if (*$1 == "VARIABLE"){
             attributes->category = VARIABLE;
-        } else if ($1 == "CONSTANTE"){
+        } else if (*$1 == "CONSTANTE"){
             attributes->category = CONSTANT;
         };
         
         // Asignar valor según el tipo de la expresión
         
-    switch($6.type) {
+    switch($6->type) {
         case ExpresionAttribute::INT:
-            cout << "ASIGNANDO ENTERO: valor = " << $6.ival << endl;
+            cout << "ASIGNANDO ENTERO: valor = " << $6->ival << endl;
             // Asignar directamente sin usar Values como constructor
-            attributes->value = $6.ival;
+            attributes->value = $6->ival;
             break;
         
         case ExpresionAttribute::FLOAT:
-            cout << "ASIGNANDO FLOAT: valor = " << $6.fval << endl;
-            attributes->value = $6.fval;
+            cout << "ASIGNANDO FLOAT: valor = " << $6->fval << endl;
+            attributes->value = $6->fval;
             break;
         
         case ExpresionAttribute::BOOL:
-            cout << "ASIGNANDO BOOL: valor = " << ($6.ival ? "true" : "false") << endl;
-            attributes->value = static_cast<bool>($6.ival);
+            cout << "ASIGNANDO BOOL: valor = " << ($6->ival ? "true" : "false") << endl;
+            attributes->value = static_cast<bool>($6->ival);
             break;
         
         case ExpresionAttribute::STRING:
-            cout << "ASIGNANDO STRING: valor = \"" << $6.sval << "\"" << endl;
-            attributes->value = std::string($6.sval);
+            cout << "ASIGNANDO STRING: valor = \"" << $6->sval << "\"" << endl;
+            attributes->value = std::string(*$6->sval);
             break;
         
         case ExpresionAttribute::POINTER:
@@ -223,7 +230,7 @@ declaracion:
             attributes->value = nullptr;
     }
 
-        if (!symbolTable.insert_symbol($2, *attributes)){
+        if (!symbolTable.insert_symbol(*$2, *attributes)){
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
@@ -231,27 +238,26 @@ declaracion:
     ;
 
 declaracion_aputador:
-    { $$ = ""; }
-    | T_AHITA   { $$ = "POINTER"; }
+    { $$ = new string(""); }
+    | T_AHITA   { $$ = new string("POINTER"); }
     ;
 
 tipo_declaracion:
-    declaracion_aputador T_CULITO { $$ =  $1 == "POINTER" ? "POINTER_V" : "VARIABLE"; }
-    | declaracion_aputador T_JEVA { $$ =  $1 == "POINTER" ? "POINTER_C" : "CONSTANTE"; }
-    ;
+    declaracion_aputador T_CULITO { $$ =  *$1 == "POINTER" ? new string("POINTER_V") : new string("VARIABLE"); }
+    | declaracion_aputador T_JEVA { $$ =  *$1 == "POINTER" ? new string("POINTER_C") : new string("CONSTANTE"); }
 
 tipos:
     tipo_valor 
-    | tipos T_IZQCORCHE expresion T_DERCORCHE { $$ = "array$"; }
+    | tipos T_IZQCORCHE expresion T_DERCORCHE { $$ = new string("array$"); }
     ;
 
 tipo_valor:
-    T_MANGO { $$ = strdup("mango"); }
-    | T_MANGUITA { $$ = strdup("manguita"); }
-    | T_MANGUANGUA { $$ = strdup("manguangua"); }
-    | T_NEGRO { $$ = strdup("negro"); }
-    | T_HIGUEROTE { $$ = strdup("higuerote"); }
-    | T_TASCLARO { $$ = strdup("tas_claro"); }
+    T_MANGO { $$ = new string("mango"); }
+    | T_MANGUITA { $$ = new string("manguita"); }
+    | T_MANGUANGUA { $$ = new string("manguangua"); }
+    | T_NEGRO { $$ = new string("negro"); }
+    | T_HIGUEROTE { $$ = new string("higuerote"); }
+    | T_TASCLARO { $$ = new string("tas_claro"); }
     ;
 
 operadores_asginacion:
@@ -263,7 +269,7 @@ operadores_asginacion:
 
 asignacion:
     T_IDENTIFICADOR operadores_asginacion expresion { 
-		Attributes *attr_var = symbolTable.search_symbol($1);
+		Attributes *attr_var = symbolTable.search_symbol(*$1);
         if (attr_var == nullptr){
             yyerror("Variable no definida");
             exit(1);
@@ -280,18 +286,18 @@ asignacion:
             exit(1);
         }
 
-    switch($3.type) {
+    switch($3->type) {
         case ExpresionAttribute::INT:
-            attr_var->value = $3.ival;
+            attr_var->value = $3->ival;
             break;
         case ExpresionAttribute::FLOAT:
-            attr_var->value = $3.fval;
+            attr_var->value = $3->fval;
             break;
         case ExpresionAttribute::BOOL:
-            attr_var->value = (bool)$3.ival; // Asumiendo que se almacena en ival
+            attr_var->value = (bool)$3->ival; // Asumiendo que se almacena en ival
             break;
         case ExpresionAttribute::STRING:
-            attr_var->value = string($3.sval); // Convierte a std::string
+            attr_var->value = string(*$3->sval); // Convierte a std::string
             break;
         case ExpresionAttribute::POINTER:
             // Manejar punteros según sea necesario
@@ -368,30 +374,30 @@ indeterminado:
     ;
 var_ciclo_determinado:
     T_IDENTIFICADOR T_ENTRE T_VALUE T_HASTA T_VALUE {
-        if (symbolTable.search_symbol($1) != nullptr){
+        if (symbolTable.search_symbol(*$1) != nullptr){
             yyerror("Variable ya declarada anteriormente");
             exit(1);
         };
 
         Attributes *attributes = new Attributes();
-        attributes->symbol_name = $1;
+        attributes->symbol_name = *$1;
         attributes->scope = symbolTable.current_scope;
         //attributes->info.clear();
         attributes->info.push_back({"CICLO FOR", nullptr});
         attributes->type = symbolTable.search_symbol("mango");
         attributes->category = VARIABLE;
-    switch($3.type) {
+    switch($3->type) {
         case ExpresionAttribute::INT:
-            attributes->value = $3.ival;
+            attributes->value = $3->ival;
             break;
         case ExpresionAttribute::FLOAT:
-            attributes->value = $3.fval;
+            attributes->value = $3->fval;
             break;
         case ExpresionAttribute::BOOL:
-            attributes->value = (bool)$3.ival; // Asumiendo que se almacena en ival
+            attributes->value = (bool)$3->ival; // Asumiendo que se almacena en ival
             break;
         case ExpresionAttribute::STRING:
-            attributes->value = string($3.sval); // Convierte a std::string
+            attributes->value = string(*$3->sval); // Convierte a std::string
             break;
         case ExpresionAttribute::POINTER:
             // Manejar punteros según sea necesario
@@ -401,7 +407,7 @@ var_ciclo_determinado:
             attributes->value = nullptr;
     }
 
-        if (!symbolTable.insert_symbol($1, *attributes)){
+        if (!symbolTable.insert_symbol(*$1, *attributes)){
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
@@ -437,13 +443,13 @@ struct:
 
 firma_funcion: 
     T_ECHARCUENTO T_IDENTIFICADOR {
-        if (symbolTable.search_symbol($2) != nullptr){
+        if (symbolTable.search_symbol(*$2) != nullptr){
             yyerror("Función ya declarada anteriormente");
             exit(1);
         };
 
         Attributes *attributes = new Attributes();
-        attributes->symbol_name = $2;
+        attributes->symbol_name = *$2;
         attributes->scope = symbolTable.current_scope;
         //attributes->info.clear();
         attributes->info.push_back({"FUNCION", nullptr});
@@ -451,7 +457,7 @@ firma_funcion:
         attributes->category = FUNCTION;
         attributes->value = nullptr;
 
-        if (!symbolTable.insert_symbol($2, *attributes)){
+        if (!symbolTable.insert_symbol(*$2, *attributes)){
             yyerror("Función ya declarada en este alcance");
             exit(1);
         };
@@ -466,29 +472,30 @@ tipo_funcion:
     ;
 
 secuencia_parametros:
-    {$$ = "";}
+    {$$ = new string("");}
     | parametro T_COMA secuencia_parametros {
-        $$ = $1 + "," + $3;
+        $$ = new string(*$1 + "," + *$3);
     }
-    | parametro { $$ = $1; }
+    | parametro { $$ = $1;}
     ;
+
 parametro:
     T_AKITOY T_IDENTIFICADOR T_DOSPUNTOS tipos{
-        if (symbolTable.search_symbol($2) != nullptr){
+        if (symbolTable.search_symbol(*$2) != nullptr){
             yyerror("Variable ya declarada anteriormente");
             exit(1);
         };
 
         Attributes *attributes = new Attributes();
-        attributes->symbol_name = $2;
+        attributes->symbol_name = *$2;
         attributes->scope = symbolTable.current_scope;
         //attributes->info.clear();
         attributes->info.push_back({"PARAMETRO", nullptr});
-        attributes->type = symbolTable.search_symbol($4);
+        attributes->type = symbolTable.search_symbol(*$4);
         attributes->category = POINTER_V;
         attributes->value = nullptr;
 
-        if (!symbolTable.insert_symbol($2, *attributes)){
+        if (!symbolTable.insert_symbol(*$2, *attributes)){
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
@@ -496,21 +503,21 @@ parametro:
         $$ = $2;
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
-        if (symbolTable.search_symbol($1) != nullptr){
+        if (symbolTable.search_symbol(*$1) != nullptr){
             yyerror("Variable ya declarada anteriormente");
             exit(1);
         };
 
         Attributes *attributes = new Attributes();
-        attributes->symbol_name = $1;
+        attributes->symbol_name = *$1;
         attributes->scope = symbolTable.current_scope;
         //attributes->info.clear();
         attributes->info.push_back({"PARAMETRO", nullptr});
-        attributes->type = symbolTable.search_symbol($3);
+        attributes->type = symbolTable.search_symbol(*$3);
         attributes->category = VARIABLE;
         attributes->value = nullptr;
 
-        if (!symbolTable.insert_symbol($1, *attributes)){
+        if (!symbolTable.insert_symbol(*$1, *attributes)){
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
@@ -529,19 +536,19 @@ arreglo:
 
 var_manejo_error:
     T_COMO abrir_scope T_IDENTIFICADOR{
-        if (symbolTable.search_symbol($3) != nullptr){
+        if (symbolTable.search_symbol(*$3) != nullptr){
             yyerror("Variable ya declarada anteriormente");
             exit(1);
         };
 
         Attributes *attributes = new Attributes();
-        attributes->symbol_name = $3;
+        attributes->symbol_name = *$3;
         attributes->scope = symbolTable.current_scope;
         attributes->info.push_back({"MANEJO ERROR", nullptr});
         attributes->type = symbolTable.search_symbol("error$");
         attributes->category = VARIABLE;
 
-        if (!symbolTable.insert_symbol($3, *attributes)){
+        if (!symbolTable.insert_symbol(*$3, *attributes)){
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
