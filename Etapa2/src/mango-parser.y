@@ -218,7 +218,26 @@ asignacion:
             exit(1);
         }
  */
-        attr_var->value = $3;
+    switch($3.type) {
+        case ExpresionAttribute::INT:
+            attr_var->value = $3.ival;
+            break;
+        case ExpresionAttribute::FLOAT:
+            attr_var->value = $3.fval;
+            break;
+        case ExpresionAttribute::BOOL:
+            attr_var->value = (bool)$3.ival; // Asumiendo que se almacena en ival
+            break;
+        case ExpresionAttribute::STRING:
+            attr_var->value = string($3.sval); // Convierte a std::string
+            break;
+        case ExpresionAttribute::POINTER:
+            // Manejar punteros según sea necesario
+            attr_var->value = nullptr; // O el valor adecuado
+            break;
+        default:
+            attr_var->value = nullptr;
+    }
     }
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asginacion expresion
     ;
@@ -299,7 +318,26 @@ var_ciclo_determinado:
         attributes->info.push_back({"CICLO FOR", nullptr});
         attributes->type = symbolTable.search_symbol("mango");
         attributes->category = VARIABLE;
-        attributes->value = $3;
+    switch($3.type) {
+        case ExpresionAttribute::INT:
+            attr_var->value = $3.ival;
+            break;
+        case ExpresionAttribute::FLOAT:
+            attr_var->value = $3.fval;
+            break;
+        case ExpresionAttribute::BOOL:
+            attr_var->value = (bool)$3.ival; // Asumiendo que se almacena en ival
+            break;
+        case ExpresionAttribute::STRING:
+            attr_var->value = string($3.sval); // Convierte a std::string
+            break;
+        case ExpresionAttribute::POINTER:
+            // Manejar punteros según sea necesario
+            attr_var->value = nullptr; // O el valor adecuado
+            break;
+        default:
+            attr_var->value = nullptr;
+    }
 
         if (!symbolTable.insert_symbol($1, *attributes)){
             yyerror("Variable ya declarada en este alcance");
