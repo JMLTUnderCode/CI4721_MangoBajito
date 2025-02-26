@@ -77,14 +77,18 @@ SymbolTable::SymbolTable() {
 
 	// Agregamos los simbolos predefinidos
 	for (auto& type : predef_types){
-		Attributes attr = {type, TYPE, 0, nullptr};
-		this->insert_symbol(type, attr);
+		Attributes *attr = new Attributes();
+		attr->symbol_name = type;
+		attr->category = TYPE;
+		this->insert_symbol(type, *attr);
 	}
 
 	// Agregamos las funciones predefinidas
 	for (auto& func : predef_func){
-		Attributes attr = {func, FUNCTION, 0, nullptr};
-		this->insert_symbol(func, attr);
+		Attributes *attr = new Attributes();
+		attr->symbol_name = func;
+		attr->category = FUNCTION;
+		this->insert_symbol(func, *attr);
 	}
 
 }
@@ -145,7 +149,7 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 			cout << "For Scope: "<< symbol.scope << endl;
 			for(int i = this->scopes.size() - 1; i >= 0; i--){
 				cout << "Inicio for 2" << endl;
-				if (this->scopes[i].second) break; // No puede ver al padre
+				if (this->scopes[i].second) continue; // No puede ver al padre
 				cout << "For interno>> Scope: "<< this->scopes[i].first<< endl;
 				if (symbol.scope == this->scopes[i].first) {
 					cout << "best option: " << symbol.scope << endl;

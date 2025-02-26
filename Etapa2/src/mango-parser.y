@@ -186,12 +186,12 @@ asignacion:
         
         cout << attr_var->symbol_name << " " << attr_var->info.size() << endl;
         
-        string info_var = get<string>(attr_var->info[0].first);
+        /* string info_var = get<string>(attr_var->info[0].first);
         if (strcmp(info_var.c_str(), "CICLO FOR") == 0){
             yyerror("No se puede modificar una variable en un ciclo determinado");
             exit(1);
         }
-
+ */
         attr_var->value = $3;
     }
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asginacion expresion
