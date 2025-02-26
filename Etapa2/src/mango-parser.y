@@ -6,9 +6,17 @@
 
 using namespace std;
 
+typedef struct YYLTYPE {
+    int first_line;
+    int first_column;
+    int last_line;
+    int last_column;
+} YYLTYPE;
+
 void yyerror(const char *s);
 int yylex();
 extern int yylineno;
+extern YYLTYPE yylloc;
 
 SymbolTable symbolTable = SymbolTable();
 %}
