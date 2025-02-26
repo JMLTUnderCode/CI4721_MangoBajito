@@ -131,7 +131,6 @@ instruccion:
     | T_IDENTIFICADOR T_OPINCREMENTO
     | T_LANZATE expresion
     | T_BORRADOL T_IDENTIFICADOR 
-    | declaracion T_ASIGNACION expresion
     | T_BORRADOL T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR 
     ;
 
@@ -146,7 +145,6 @@ declaracion:
 
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
-        //attributes->info.clear();
         attributes->info.push_back({"-", nullptr});
         attributes->type = symbolTable.search_symbol($4);
 
@@ -159,6 +157,70 @@ declaracion:
         } else if (strcmp($1, "CONSTANTE") == 0){
             attributes->category = CONSTANT;
         };
+
+        if (!symbolTable.insert_symbol($2, *attributes)){
+            yyerror("Variable ya declarada en este alcance");
+            exit(1);
+        };
+    }
+    | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
+        Attributes *attributes = new Attributes();
+
+        if (symbolTable.search_symbol($4) == nullptr){
+            yyerror("Tipo no definido en el lenguaje");
+            exit(1);
+        };
+
+        attributes->symbol_name = $2;
+        attributes->scope = symbolTable.current_scope;
+        attributes->info.push_back({"-", nullptr});
+        attributes->type = symbolTable.search_symbol($4);
+
+        if (strcmp($1, "POINTER_V") == 0){
+            attributes->category = POINTER_V;
+        } else if (strcmp($1, "POINTER_C") == 0){
+            attributes->category = POINTER_C;
+        } else if (strcmp($1, "VARIABLE") == 0){
+
+            attributes->category = VARIABLE;
+        } else if (strcmp($1, "CONSTANTE") == 0){
+
+            attributes->category = CONSTANT;
+        };
+        
+        // Asignar valor según el tipo de la expresión
+        
+    switch($6.type) {
+        case ExpresionAttribute::INT:
+            cout << "ASIGNANDO ENTERO: valor = " << $6.ival << endl;
+            // Asignar directamente sin usar Values como constructor
+            attributes->value = $6.ival;
+            break;
+        
+        case ExpresionAttribute::FLOAT:
+            cout << "ASIGNANDO FLOAT: valor = " << $6.fval << endl;
+            attributes->value = $6.fval;
+            break;
+        
+        case ExpresionAttribute::BOOL:
+            cout << "ASIGNANDO BOOL: valor = " << ($6.ival ? "true" : "false") << endl;
+            attributes->value = static_cast<bool>($6.ival);
+            break;
+        
+        case ExpresionAttribute::STRING:
+            cout << "ASIGNANDO STRING: valor = \"" << $6.sval << "\"" << endl;
+            attributes->value = std::string($6.sval);
+            break;
+        
+        case ExpresionAttribute::POINTER:
+            cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
+            attributes->value = nullptr;
+            break;
+        
+        default:
+            cout << "TIPO DESCONOCIDO: Asignando nullptr" << endl;
+            attributes->value = nullptr;
+    }
 
         if (!symbolTable.insert_symbol($2, *attributes)){
             yyerror("Variable ya declarada en este alcance");

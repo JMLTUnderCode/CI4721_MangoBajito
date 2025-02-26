@@ -1,20 +1,24 @@
 se_prende(){
 	si_es_asi (Sisa){
-		culito a: mango;
-		a = 100;
+		culito a: mango = 100;
 	}o_asi (Sisa){
 		culito b: mango;
 		jeva mi_array: mango[5];
 	}nojoda{
 		culito a: mango;
+		a = 500;
 		culito c: mango;
+		c = 1000;
 
 		repite_burda i entre 0 hasta 3 {
 			a = 100;
 		};
 	};
 	culito miau: mango;
+	miau = 32;
 	culito se_potea: mango;
+	se_potea = 999;
+	se_potea = 8;
 	echar_cuento funcion(d : mango) lanza mango{
 			se_potea = 4;
 			lanzate a + c; 
