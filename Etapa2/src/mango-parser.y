@@ -175,12 +175,14 @@ operadores_asginacion:
 
 asignacion:
     T_IDENTIFICADOR operadores_asginacion expresion { 
-        Attributes *attr_var = symbolTable.search_symbol($1);
-        if (symbolTable.search_symbol($1) == nullptr){
+        cout << "Scope: " << symbolTable.current_scope << endl;
+		cout << "Symbol: " << $1 << endl;
+		Attributes *attr_var = symbolTable.search_symbol($1);
+        if (attr_var == nullptr){
             yyerror("Variable no definida");
             exit(1);
         };
-        cout << symbolTable.current_scope << endl;
+        
         cout << attr_var->symbol_name << " " << attr_var->info.size() << endl;
         
         string info_var = get<string>(attr_var->info[0].first);
@@ -370,7 +372,7 @@ secuencia_parametros:
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
-        cout << symbolTable.search_symbol($1)->symbol_name << get<string>(symbolTable.search_symbol($1)->info[0].first)  << endl;
+        //cout << symbolTable.search_symbol($1)->symbol_name << get<string>(symbolTable.search_symbol($1)->info[0].first)  << endl;
     }
     ;
 

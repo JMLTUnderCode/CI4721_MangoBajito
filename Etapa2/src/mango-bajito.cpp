@@ -93,7 +93,6 @@ void SymbolTable::open_scope() {
 	/* cout << "Previo " << this->prev_scope.top() << endl;
 	cout << "Actual " << this->current_scope << endl;
 	cout << "Abriendo " << this->next_scope << endl; */
-	this->finding_variables_in_scope(this->current_scope);
 	this->prev_scope.push(this->current_scope);
 	this->current_scope = this->next_scope;
 	this->next_scope++;
@@ -101,6 +100,7 @@ void SymbolTable::open_scope() {
 }
 
 void SymbolTable::close_scope() {
+	this->finding_variables_in_scope(this->current_scope);
 	this->scopes[this->current_scope].second = true;
 	this->current_scope = this->prev_scope.top();
 	this->prev_scope.pop();
@@ -132,9 +132,10 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 	Attributes *predef_symbol, *best_option = nullptr;
 	vector<pair<int, bool> > scopes_aux = this->scopes;
 	int scope_value;
-
+	cout << "Start seach " << symbol_name << endl;
 	auto symbols = this->table.find(symbol_name);
 	if (symbols != this->table.end()) {
+		cout << "if start" << endl;
 		for (Attributes &symbol : symbols->second) {
 			if (symbol.symbol_name != symbol_name) continue;
 			if (symbol.scope == 0) { predef_symbol = &symbol; break; }
@@ -143,6 +144,7 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 				if (scopes_aux[i].second) break; // No puede ver al padre
 				
 				if (symbol.scope == scopes_aux[i].first) {
+					cout << "best option: " << symbol.scope << endl;
 					best_option = &symbol;		// El scope mas cercano
 					break;
 				} else if (best_option != nullptr && scopes_aux[i].first == best_option->scope) {
@@ -150,15 +152,18 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 				}
 			}
 		}
-
+		
 		if (best_option != nullptr){
+			cout << "Retornando " << symbol_name << " en el scope " << best_option->scope << endl;
 			return best_option;
 		}else if (predef_symbol != nullptr){
 			return predef_symbol;
 		}else{
+			cout << "No se encontro " << symbol_name << endl;
 			return nullptr;
 		}
 	}
+	cout << "No se encontro " << symbol_name << endl;
 	return nullptr;
 }
 
