@@ -523,5 +523,15 @@ manejo_error:
 %%
 
 void yyerror(const char *s) {
-    cerr << "Error sintáctico en línea " << yylineno << ": " << s << endl;
+    static bool first_error = true;
+    
+    // Solo mostrar el primer error
+    if (first_error) {
+        extern char* yytext;
+        
+        cerr << "\nError sintáctico en línea " << yylineno 
+             << ", columna " << yylloc.first_column << ": '" << yytext << "'"<< endl << endl;
+        
+        first_error = false;
+    }
 }
