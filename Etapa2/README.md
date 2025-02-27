@@ -23,25 +23,63 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 - Para compilar y ejecutar el proyecto:
   
   Estando en la carpeta `Etapa2/` realizar los siguientes pasos:
-  - Creación de carpeta Build
+  - Para ejecucion y prueba del proyecto usando la suit de `tests`:
 	```
-	mkdir build && cd build
+	make test arg=<nombre de archivo>
 	```
-  - Estando en `build` preparar el proyecto:
+	Se asume que los archivos de pruebas estan en la carpeta `tests/` y tienen extensión `.txt` por defecto.
+	Ej.
 	```
-	cmake ..
+	make test arg=prueba // Se refiere a probar el archivo prueba.txt
+	make test arg=1      // Se refiere a probar el archivo 1.txt
 	```
-  - Para compilar el proyecto
+  - Para ejecucion y prueba del proyecto directamente:
+	```
+	make run arg=<dir de archivo>
+	```
+	Ej.
+	```
+	make run arg=tests/0.txt  // Probar el archivo ubicado en `tests` de nombre `0.txt`
+	make run arg=otrodir/t1.md  // Probar el archivo ubicado en `otrodir` de nombre `t1.md`
+	```
+  - Para ejecucion manual:
+	Compilar y generar el ejecutable
 	```
 	make
 	```
-	Para volver a recompilar solo hace falta ejecutar `make` estando en `build`. En caso de cambios con `CMakeLists.txt` o si hay problemas con dependencias, puedes limpiar el proyecto y recompilar con:
+	Ejecutar la etapa
 	```
-	rm -rf build/*
-	cmake ..
-	make
+	./mango_bajito <dir del archivo>
 	```
-  - Para Ejecutar el proyecto (se debe estar en la carpeta `build/`)
+  - Limpieza de archivos generados
 	```
-	./mango_bajito ../tests/<archivo de prueba>
+	make clean
 	```
+
+## Realizado
+- [x] Guardar variables declaradas (sin valor).
+- [x] Guardar variables declaradas (con valor).
+- [x] Abrir y cerrar alcances. Actualizacion de scopes.
+- [x] Guardar estructuras.
+- [x] Guardar variantes.
+- [x] Guardar informacion de ciclo determinado.
+- [x] Guardar informacion de ciclo indeterminado.
+- [x] Guardar funciones.
+- [x] Guardar funciones con 1 parametro.
+- [ ] Guardar funciones con multiples parametros.
+- [ ] Revisar la logica de la funcion `hablame`.
+- [ ] Revisar la logica de la funcion `rescata`.
+- [ ] Revisar operaciones
+	- [ ] Asignaciones +=, -=, *=
+	- [ ] Decremento y aumento ++ y --
+	- [ ] Expresiones logicas y anidamiento de ellas
+- [ ] Guardar apuntadores en general.
+	- [ ] Chequear la informacion de los elementos apuntadores(funcion print_info).
+- [ ] Guardar lista de valores de un array.
+	- [ ] Guardar informacion relevante de los array.
+    - [ ] Analizar logica para multidimencion. Guardado, informacion, etc.
+- [ ] Errores:
+	- [x] Utilizacion de variabls sin definir.
+	- [x] Redeclaracion de una variable en un mismo scope.
+	- [x] Modificacion del valor de una variable asociada a un ciclo determinado.
+	- [ ] Modificacion del valor de una variable asociada a un try/catch.
