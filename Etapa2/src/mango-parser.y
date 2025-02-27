@@ -381,7 +381,7 @@ indeterminado:
     T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
     ;
 var_ciclo_determinado:
-    T_IDENTIFICADOR T_ENTRE T_VALUE T_HASTA T_VALUE {
+    T_IDENTIFICADOR T_ENTRE expresion T_HASTA expresion {
         if (symbolTable.search_symbol($1) != nullptr){
 			ERROR_TYPE++;
             yyerror("Variable ya declarada anteriormente");
