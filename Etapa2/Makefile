@@ -14,7 +14,7 @@ test: build/mango_bajito
 	@if [ -z "$(arg)" ]; then \
 		echo "Uso: make test <número de prueba> (ejemplo: make test 0)"; \
 	else \
-		./mango_bajito tests/$(arg).txt; \
+		./mango_bajito tests/$(arg).mng; \
 	fi
 
 clean:
