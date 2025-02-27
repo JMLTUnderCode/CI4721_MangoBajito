@@ -53,6 +53,7 @@ enum Category{
 	TYPE,
 	POINTER_C, 
 	POINTER_V,
+	STRUCT_ATTRIBUTE,
 	UNKNOWN
 };
 
@@ -62,10 +63,10 @@ struct Attributes {
 	Category category;
 	int scope;
 	Attributes *type;
-	vector<pair<Information, Attributes*> > info; // Informacion de los atributos (depende de Category)
 	Values value;
+	vector<pair<Information, Attributes*>> info; // Informacion de los atributos (depende de Category)
 
-	Attributes() : symbol_name(""), category(UNKNOWN), scope(0), type(nullptr), info({}), value(nullptr) {}
+	Attributes() : symbol_name(""), category(UNKNOWN), scope(0), type(nullptr), value(nullptr), info({}) {}
 };
 
 void print_info(vector<pair<Information, Attributes*> > informations);
@@ -74,20 +75,26 @@ class SymbolTable {
 	protected:
 		unordered_map<string, vector<Attributes> > table;	//Tabla de simbolos
 		vector<pair<int, bool> > scopes;					//Pila de scopes
-		vector<string> predef_types = {"mango", "manguita", "manguangua", "negro", "higuerote", "tas_claro", "un_coño", "array$", "funcion$", "error$"};
+		vector<string> predef_types = {
+			"mango", "manguita", "manguangua", "negro", "higuerote", "tas_claro", 
+			"un_coño", 
+			"array$", 
+			"funcion$", 
+			"error$"
+		};
 		vector<string> predef_func = {"rescata", "hablame", "se_prende"};
 	public:
-		int current_scope;							//Scope actual
-		int next_scope;								//Proximo scope
-		stack<int> prev_scope;								//Scope antiguo
+		int current_scope;                                          //Scope actual
+		int next_scope;                                             //Proximo scope
+		stack<int> prev_scope;                                      //Stack de scopes antiguos
 		SymbolTable();
 		~SymbolTable() = default;
-		void print_table();											//Imprimir tabla de simbolos
-		void open_scope();											//Abrir nuevo scope
+		void print_table();                                         //Imprimir tabla de simbolos
+		void open_scope();                                          //Abrir nuevo scope
 		void close_scope();											//Cerrar scope 
-		bool insert_symbol(string symbol_name, Attributes &attr);	//Insertar simbolo en la tabla
-		Attributes* search_symbol(string symbol_name);				//Buscar simbolo en la tabla
-		bool contains_key(string key);						        //Verifica si la tabla contiene el simbolo
+		bool insert_symbol(string symbol_name, Attributes &attr);   //Insertar simbolo en la tabla
+		Attributes* search_symbol(string symbol_name);              //Buscar simbolo en la tabla
+		bool contains_key(string key);                              //Verifica si la tabla contiene el simbolo
 		void finding_variables_in_scope(int scope);
 };
 #endif

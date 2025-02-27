@@ -1,6 +1,13 @@
+# Test 4: Combinaciones de multiples estructuras.
 se_prende(){
 	si_es_asi (Sisa){
+		arroz_con_mango Persona {
+			nombre : higuerote;
+			edad : mango;
+			estudiante : tas_claro;
+		};
 		culito a: mango = 100;
+
 	}o_asi (Sisa){
 		culito b: mango;
 		jeva mi_array: mango[5];
@@ -11,7 +18,7 @@ se_prende(){
 		c = 1000;
 
 		repite_burda i entre 0 hasta 3 {
-			a = 100;
+			i = 100;
 		};
 	};
 	culito miau: mango;
@@ -20,8 +27,8 @@ se_prende(){
 	se_potea = 999;
 	se_potea = 8;
 	echar_cuento funcion(d : mango) lanza mango{
-			se_potea = 4;
-			lanzate a + c; 
+		se_potea = 4;
+		lanzate a + c; 
 	};
 
 	meando{
