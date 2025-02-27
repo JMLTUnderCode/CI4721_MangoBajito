@@ -1,11 +1,13 @@
 # Test 3: Definicion de funciones
 jeva CONST : higuerote[10] = "Manguelson";
 se_prende(){
-	echar_cuento fun1() {
+	echar_cuento fun1() lanza un_coño {
 		# Hacer un print de global
 	};
-	echar_cuento fun2(p1 : mango, p2 : manguangua) {
+	echar_cuento fun2(p1 : mango, p2 : manguangua) lanza mango {
 		p1 = 2;
 		p2 = 3.0;
+		lanzate p1;
 	};
+	culito value : mango = fun2(1, 2.0);
 };
