@@ -1,4 +1,4 @@
-# Test 2: Definicion de buble indeterminado y determinado
+# Test 2: Definicion de bucle indeterminado y determinado
 culito suma: mango = 0;
 se_prende(){
 	culito n: mango;
