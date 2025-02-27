@@ -7,7 +7,7 @@ se_prende(){
     culito b: mango = 1;
     culito temp: mango;
 
-    repite_burda i entre 1 hasta n-1 {
+    repite_burda i entre 1 hasta n - 1 {
         temp = a;
         a = b;
         b = temp + b;

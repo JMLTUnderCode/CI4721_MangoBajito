@@ -70,6 +70,23 @@ struct Attributes {
 };
 
 void print_info(vector<pair<Information, Attributes*> > informations);
+
+// ERROR_TYPE enum
+enum errorType {
+	NON_DEF_VAR,
+	ALREADY_DEF_VAR,
+	VAR_FOR,
+	VAR_TRY,
+	NON_DEF_FUNC,
+	ALREADY_DEF_FUNC,
+	NON_DEF_STRUCT,
+	ALREADY_DEF_STRUCT,
+	NON_DEF_UNION,
+	ALREADY_DEF_UNION,
+	NON_DEF_TYPE,
+	ALREADY_DEF_ATTR,
+	DEBUGGING_TYPE,
+};
 // Implementacion Tabla de Simbolos Le-Blanc Cook
 class SymbolTable {
 	protected:

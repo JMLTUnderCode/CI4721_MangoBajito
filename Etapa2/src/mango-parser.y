@@ -19,7 +19,7 @@ extern int yylineno;
 extern YYLTYPE yylloc;
 
 SymbolTable symbolTable = SymbolTable();
-int ERROR_TYPE = 0; // Permite manejar un error particular. Aumentar en 1 para ser personalizado.
+errorType ERROR_TYPE; // Permite manejar un error particular de tipo errorType
 string current_struct_name = "";
 %}
 
@@ -148,8 +148,8 @@ instruccion:
 declaracion:
     tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos {
         if (symbolTable.search_symbol($4) == nullptr){
-			ERROR_TYPE++;
-            yyerror("Tipo no definido en el lenguaje");
+			ERROR_TYPE = NON_DEF_TYPE;
+            yyerror($4);
             exit(1);
         };
 
@@ -170,16 +170,16 @@ declaracion:
         };
 
         if (!symbolTable.insert_symbol($2, *attributes)){
-			ERROR_TYPE++;
-            yyerror("Variable ya declarada en este alcance");
+			ERROR_TYPE = ALREADY_DEF_VAR;
+            yyerror($2);
             exit(1);
         };
     }
 
     | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
         if (symbolTable.search_symbol($4) == nullptr){
-			ERROR_TYPE++;
-            yyerror("Tipo no definido en el lenguaje");
+			ERROR_TYPE = NON_DEF_TYPE;
+            yyerror($4);
             exit(1);
         };
 
@@ -231,13 +231,13 @@ declaracion:
 	            break;
 	        
 	        default:
-	            cout << "TIPO DESCONOCIDO: Asignando nullptr" << endl;
+	            cout << "TIPO DESCONOCIDO: Asignando nullptr a: " << $2 << endl;
 	            attributes->value = nullptr;
 	    }
 
         if (!symbolTable.insert_symbol($2, *attributes)){
-			ERROR_TYPE++;
-            yyerror("Variable ya declarada en este alcance");
+			ERROR_TYPE = ALREADY_DEF_VER;
+            yyerror($2);
             exit(1);
         };
     }
@@ -279,15 +279,21 @@ asignacion:
     T_IDENTIFICADOR operadores_asginacion expresion { 
 		Attributes *attr_var = symbolTable.search_symbol($1);
         if (attr_var == nullptr){
-			ERROR_TYPE++;
-            yyerror("Variable no definida");
+			ERROR_TYPE = NON_DEF_VAR;
+            yyerror($1);
             exit(1);
         };
                 
         string info_var = get<string>(attr_var->info[0].first);
         if (strcmp(info_var.c_str(), "CICLO FOR") == 0){
-			ERROR_TYPE++;
-            yyerror("No se puede modificar una variable en un ciclo determinado");
+			ERROR_TYPE = VAR_FOR;
+            yyerror("No se puede modificar una variable de un ciclo determinado");
+            exit(1);
+        }
+
+        if (strcmp(info_var.c_str(), "MANEJO ERROR") == 0){
+			ERROR_TYPE = VAR_TRY;
+            yyerror("No se puede modificar una variable de un meando/fuera_del_perol");
             exit(1);
         }
 
@@ -339,10 +345,10 @@ expresion:
     | expresion_nuevo
     | arreglo
     | T_NELSON expresion
-    | T_OPRESTA expresion %prec T_SIGNO_MENOS
     | expresion T_FLECHA expresion
     | expresion T_OPSUMA expresion
     | expresion T_OPRESTA expresion
+    | T_OPRESTA expresion %prec T_SIGNO_MENOS
     | expresion T_OPMULT expresion
     | expresion T_OPDIVDECIMAL expresion
     | expresion T_OPDIVENTERA expresion
@@ -358,6 +364,7 @@ expresion:
     | expresion T_YUNTA expresion
     | expresion T_OPDECREMENTO
     | expresion T_OPINCREMENTO
+    | T_DERPAREN expresion T_IZQPAREN
     | entrada_salida
     | funcion
     | casting
@@ -383,8 +390,8 @@ indeterminado:
 var_ciclo_determinado:
     T_IDENTIFICADOR T_ENTRE expresion T_HASTA expresion {
         if (symbolTable.search_symbol($1) != nullptr){
-			ERROR_TYPE++;
-            yyerror("Variable ya declarada anteriormente");
+			ERROR_TYPE = ALREADY_DEF_VAR;
+            yyerror($1);
             exit(1);
         };
 
@@ -394,30 +401,31 @@ var_ciclo_determinado:
         attributes->info.push_back({"CICLO FOR", nullptr});
         attributes->type = symbolTable.search_symbol("mango");
         attributes->category = VARIABLE;
-    switch($3.type) {
-        case ExpresionAttribute::INT:
-            attributes->value = $3.ival;
-            break;
-        case ExpresionAttribute::FLOAT:
-            attributes->value = $3.fval;
-            break;
-        case ExpresionAttribute::BOOL:
-            attributes->value = (bool)$3.ival; // Asumiendo que se almacena en ival
-            break;
-        case ExpresionAttribute::STRING:
-            attributes->value = string($3.sval); // Convierte a std::string
-            break;
-        case ExpresionAttribute::POINTER:
-            // Manejar punteros según sea necesario
-            attributes->value = nullptr; // O el valor adecuado
-            break;
-        default:
-            attributes->value = nullptr;
-    }
+
+        switch($3.type) {
+            case ExpresionAttribute::INT:
+                attributes->value = $3.ival;
+                break;
+            case ExpresionAttribute::FLOAT:
+                attributes->value = $3.fval;
+                break;
+            case ExpresionAttribute::BOOL:
+                attributes->value = (bool)$3.ival; // Asumiendo que se almacena en ival
+                break;
+            case ExpresionAttribute::STRING:
+                attributes->value = string($3.sval); // Convierte a std::string
+                break;
+            case ExpresionAttribute::POINTER:
+                // Manejar punteros según sea necesario
+                attributes->value = nullptr; // O el valor adecuado
+                break;
+            default:
+                attributes->value = nullptr;
+        }
 
         if (!symbolTable.insert_symbol($1, *attributes)){
-			ERROR_TYPE++;
-            yyerror("Variable ya declarada en este alcance");
+			ERROR_TYPE = ALREADY_DEF_VAR;
+            yyerror($1);
             exit(1);
         };
     }
@@ -440,15 +448,15 @@ secuencia:
 secuencia_declaraciones:
     | secuencia_declaraciones T_PUNTOCOMA T_IDENTIFICADOR T_DOSPUNTOS tipos{
 		if (current_struct_name == "") {
-			ERROR_TYPE++;
+			ERROR_TYPE = DEBBUGING_TYPE;
             yyerror("No hay estructura actual");
             exit(1);
         }
         
 		Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
         if (struct_attr == nullptr) {
-			ERROR_TYPE++;
-            yyerror("No se encontró la estructura");
+			ERROR_TYPE = NON_DEF_STRUCT;
+            yyerror(current_struct_name);
             exit(1);
         }
         
@@ -460,8 +468,8 @@ secuencia_declaraciones:
         attr->value = nullptr;
         
         if (!symbolTable.insert_symbol($3, *attr)) {
-			ERROR_TYPE++;
-            yyerror("Atributo ya declarado en esta estructura");
+			ERROR_TYPE = ALREADY_DEF_ATTR;
+            yyerror($3);
             exit(1);
         }
         
@@ -470,15 +478,15 @@ secuencia_declaraciones:
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
         if (current_struct_name == "") {
-			ERROR_TYPE++;
+			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay estructura actual");
             exit(1);
         }
 
         Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
         if (struct_attr == nullptr) {
-			ERROR_TYPE++;
-            yyerror("No se encontró la estructura");
+			ERROR_TYPE = NON_DEF_STRUCT;
+            yyerror(current_struct_name);
             exit(1);
         }
         
@@ -490,8 +498,8 @@ secuencia_declaraciones:
         attr->value = nullptr;
 
         if (!symbolTable.insert_symbol($1, *attr)) {
-			ERROR_TYPE++;
-            yyerror("Atributo ya declarado en esta estructura");
+			ERROR_TYPE = ALREADY_DEF_ATTR;
+            yyerror($1);
             exit(1);
         }
 		
@@ -512,8 +520,8 @@ variante:
 		current_struct_name = string($2);
 
 		if (!symbolTable.insert_symbol($2, *attributes)){
-			ERROR_TYPE++;
-            yyerror("Variante ya declarada en este alcance");
+			ERROR_TYPE = ALREADY_DEF_UNION;
+            yyerror($2);
             exit(1);
         };
         
@@ -536,8 +544,8 @@ struct:
         current_struct_name = string($2);
         
         if (!symbolTable.insert_symbol($2, *attributes)){
-			ERROR_TYPE++;
-            yyerror("Estructura ya declarada en este alcance");
+			ERROR_TYPE = ALREADY_DEF_STRUCT;
+            yyerror($2);
             exit(1);
         };
         
@@ -550,8 +558,8 @@ struct:
 firma_funcion: 
     T_ECHARCUENTO T_IDENTIFICADOR {
         if (symbolTable.search_symbol($2) != nullptr){
-			ERROR_TYPE++;
-            yyerror("Función ya declarada anteriormente");
+			ERROR_TYPE = ALREADY_DEF_FUNC;
+            yyerror($2);
             exit(1);
         };
 
@@ -565,8 +573,8 @@ firma_funcion:
         attributes->value = nullptr;
 
         if (!symbolTable.insert_symbol($2, *attributes)){
-			ERROR_TYPE++;
-            yyerror("Función ya declarada en este alcance");
+			ERROR_TYPE = ALREADY_DEF_FUNC;
+            yyerror($2);
             exit(1);
         };
 
@@ -587,8 +595,8 @@ secuencia_parametros:
 parametro:
     T_AKITOY T_IDENTIFICADOR T_DOSPUNTOS tipos{
         if (symbolTable.search_symbol($2) != nullptr){
-			ERROR_TYPE++;
-            yyerror("Variable ya declarada anteriormente");
+			ERROR_TYPE = ALREADY_DEF_VAR;
+            yyerror($2);
             exit(1);
         };
 
@@ -601,8 +609,8 @@ parametro:
         attributes->value = nullptr;
 
         if (!symbolTable.insert_symbol($2, *attributes)){
-			ERROR_TYPE++;
-            yyerror("Variable ya declarada en este alcance");
+			ERROR_TYPE = ALREADY_DEF_VAR;
+            yyerror($2);
             exit(1);
         };
 
@@ -610,8 +618,8 @@ parametro:
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
         if (symbolTable.search_symbol($1) != nullptr){
-			ERROR_TYPE++;
-            yyerror("Variable ya declarada anteriormente");
+			ERROR_TYPE = ALREADY_DEF_VAR;
+            yyerror($1);
             exit(1);
         };
 
@@ -625,8 +633,8 @@ parametro:
         attributes->value = nullptr;
 
         if (!symbolTable.insert_symbol($1, *attributes)){
-			ERROR_TYPE++;
-            yyerror("Variable ya declarada en este alcance");
+			ERROR_TYPE = ALREADY_DEF_VAR;
+            yyerror($1);
             exit(1);
         };
 
@@ -648,7 +656,8 @@ arreglo:
 var_manejo_error:
     T_COMO abrir_scope T_IDENTIFICADOR {
         if (symbolTable.search_symbol($3) != nullptr){
-            yyerror("Variable ya declarada anteriormente");
+            ERROR_TYPE = ALREADY_DEF_VAR;
+            yyerror($3);
             exit(1);
         };
 
@@ -660,7 +669,8 @@ var_manejo_error:
         attributes->category = VARIABLE;
 
         if (!symbolTable.insert_symbol($3, *attributes)){
-            yyerror("Variable ya declarada en este alcance");
+            ERROR_TYPE = ALREADY_DEF_VAR;
+            yyerror($3);
             exit(1);
         };
     }
@@ -668,7 +678,7 @@ var_manejo_error:
 
 manejador:
     | T_FUERADELPEROL abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
-    | T_FUERADELPEROL T_COMO abrir_scope T_IDENTIFICADOR T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+    | T_FUERADELPEROL var_manejo_error T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
     ;
 
 manejo_error:
@@ -681,9 +691,52 @@ casting:
 
 %%
 
-void yyerror(const char *mns) {
+void yyerror(const char *var) {
     static bool first_error = true;
-    
+    /*
+	VAR_FOR,
+	VAR_TRY,
+	DEBUGGING_TYPE, */
+    switch (ERROR_TYPE){
+        case NON_DEF_VAR:
+            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "Variable " << "\""<< var << "\"" << " no definida." << "'\n\n";
+            break;
+        case ALREADY_DEF_VAR:
+            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "\"" << var << "\"" << " ya fue definido como una variable" << "'\n\n";
+            break;
+        case NON_DEF_FUNC:
+            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "Funcion " << "\""<< var << "\"" << " no definida." << "'\n\n";
+            break;
+        case ALREADY_DEF_FUNC:
+            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "\"" << var << "\"" << " ya fue definido como una funcion" << "'\n\n";
+            break;
+        case NON_DEF_STRUCT:
+            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "Estructura " << "\""<< var << "\"" << " no definida." << "'\n\n";
+            break;
+        case ALREADY_DEF_STRUCT:
+            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "\"" << var << "\"" << " ya fue definido como una variable" << "'\n\n";
+            break;
+        case NON_DEF_UNION:
+            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "Variante " << "\""<< var << "\"" << " no definida." << "'\n\n";
+            break;
+        case ALREADY_DEF_UNION:
+            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "\"" << var << "\"" << " ya fue definido como una variante" << "'\n\n";
+            break;
+        case ALREADY_DEF_ATTR:
+            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "\"" << var << "\"" << " ya fue definido como un atributo" << "'\n\n";
+            break;
+        case NON_DEF_TYPE:
+            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "Tipo " << "\""<< var << "\"" << " no definido." << "'\n\n";
+            break;
+        case VAR_FOR:
+            break;
+        case VAR_TRY:
+            break;
+        case DEBBUGING_TYPE:
+            break;
+        default:
+            break;
+    }
     // Solo mostrar el primer error
     if (ERROR_TYPE == 0) {
 		extern char* yytext;

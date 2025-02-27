@@ -58,7 +58,8 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 
 ## Realizado
 - [x] Guardar variables declaradas (sin valor).
-- [x] Guardar variables declaradas (con valor).
+- [x] Guardar variables declaradas (con valor) (🐞❗).
+  - [ ] Revisar guardado de literales.
 - [x] Abrir y cerrar alcances. Actualizacion de scopes.
 - [x] Guardar estructuras.
 - [x] Guardar variantes.
@@ -67,8 +68,12 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 - [x] Guardar funciones.
 - [x] Guardar funciones con 1 parametro.
 - [ ] Guardar funciones con multiples parametros.
-- [ ] Revisar la logica de la funcion `hablame`.
-- [ ] Revisar la logica de la funcion `rescata`.
+- [ ] Agregar a tipos nombres de struct/varinates
+- [x] Revisar la logica de la funcion `hablame`.
+- [x] Revisar la logica de la funcion `rescata`.
+- [ ] Casteo
+  - [x] Agregarlo a la gramática
+  - [ ] Lógica de guardado en Tabla de Símbolos
 - [ ] Revisar operaciones
 	- [ ] Asignaciones +=, -=, *=
 	- [ ] Decremento y aumento ++ y --
@@ -78,8 +83,10 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 - [ ] Guardar lista de valores de un array.
 	- [ ] Guardar informacion relevante de los array.
     - [ ] Analizar logica para multidimencion. Guardado, informacion, etc.
-- [ ] Errores:
-	- [x] Utilizacion de variabls sin definir.
+- [x] Errores:
+	- [x] Utilizacion de variable sin definir.
 	- [x] Redeclaracion de una variable en un mismo scope.
 	- [x] Modificacion del valor de una variable asociada a un ciclo determinado.
-	- [ ] Modificacion del valor de una variable asociada a un try/catch.
+	- [x] Modificacion del valor de una variable asociada a un try/catch.
+	- [ ] Errores de Mango Bajito
+	- [ ] Mostrar errores de context más informativos
