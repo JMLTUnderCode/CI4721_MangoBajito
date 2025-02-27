@@ -1,11 +1,13 @@
-culito a: mango = 100;
+# Test 1: Definicion de Condicionales
 se_prende(){
-	culito b: mango = 100;
-	culito p1: mango = 1;
-    culito p2: manguita = 2;
-    culito p3: manguangua = 3;
-    culito p4: negro = 4;
-    culito p5: higuerote[1] = 5;
-    culito p6: tas_claro[2] = Sisa;
-    culito p7: tas_claro[3] = Nolsa;
+	si_es_asi (Sisa) {
+		culito a: mango;
+		a = 100;
+	} o_asi (Sisa) {
+		culito b: mango;
+		jeva mi_array: mango[5];
+	} nojoda {
+		culito a: mango;
+		culito c: mango;
+	};
 };

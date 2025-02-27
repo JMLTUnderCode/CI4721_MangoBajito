@@ -1,7 +1,11 @@
+# Test 3: Definicion de funciones
+jeva CONST : higuerote[10] = "Manguelson";
 se_prende(){
-	culito suma: mango = 0;
-	culito n: mango;
-	echale_bolas_si(Sisa){
-		n = 1;
+	echar_cuento fun1() {
+		# Hacer un print de global
+	};
+	echar_cuento fun2(p1 : mango, p2 : manguangua) {
+		p1 = 2;
+		p2 = 3.0;
 	};
 };
