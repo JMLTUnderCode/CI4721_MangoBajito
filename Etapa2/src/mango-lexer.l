@@ -41,6 +41,7 @@ MANGUANGUA    -?([0-9]*\.?[0-9]+|[0-9]+\.?[0-9]*)([eE][+-]?[0-9]+)?
 NEGRO         "\"."
 HIGUEROTE     \"[^\"]*\"
 IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
+CASTING       \b(mango|manguita|manguangua|negro|higuerote|tas_claro)\b
 
 %%
 [ \t]+            { current_column += yyleng; }  // Espacios/tabs
@@ -174,6 +175,13 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
     UPDATE_LOC
     yylval.sval = strdup(yytext);
     return T_IDENTIFICADOR;
+}
+
+{CASTING} { 
+    UPDATE_LOC
+	yytext[yyleng - 1] = '\0';
+    yylval.att_val.sval = strdup(yytext + 1);
+	return T_CASTEO;
 }
 
 "#".*         ;  /* Comentarios de una línea */

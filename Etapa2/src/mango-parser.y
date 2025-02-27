@@ -68,6 +68,7 @@ string current_struct_name = "";
 %token <sval> T_IDENTIFICADOR 
 %token <att_val> T_VALUE
 %token T_IZQPAREN T_DERPAREN T_IZQLLAVE T_DERLLAVE T_IZQCORCHE T_DERCORCHE
+%token T_CASTEO
 
 // Declaracion de tipos de retorno para las producciones 
 %type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion parametro secuencia_parametros
@@ -91,6 +92,9 @@ string current_struct_name = "";
 %left T_OPINCREMENTO T_OPDECREMENTO
 %right T_SIGNO_MENOS T_NELSON
 %left T_FLECHA
+
+%right T_CASTEO  // Precedencia más alta para el casting
+
 %start programa
 %%
 
@@ -237,6 +241,7 @@ declaracion:
             exit(1);
         };
     }
+	| declaracion_funcion
     ;
 
 declaracion_aputador:
@@ -353,6 +358,9 @@ expresion:
     | expresion T_YUNTA expresion
     | expresion T_OPDECREMENTO
     | expresion T_OPINCREMENTO
+    | entrada_salida
+    | funcion
+    | casting
     ;
 
 condicion:
@@ -421,7 +429,7 @@ determinado:
 
 entrada_salida:
     T_RESCATA T_IZQPAREN secuencia T_DERPAREN
-    | T_HABLAME T_IZQPAREN secuencia T_DERPAREN
+    | T_HABLAME T_IZQPAREN expresion T_DERPAREN
     ;
 
 secuencia:
@@ -626,16 +634,19 @@ parametro:
     }
     ;
 
-funcion:
-    firma_funcion abrir_scope T_IZQPAREN secuencia_parametros T_DERPAREN T_LANZA tipo_funcion T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+declaracion_funcion:
+    firma_funcion abrir_scope T_IZQPAREN secuencia_parametros T_DERPAREN T_LANZA tipo_funcion T_IZQLLAVE instruccionesopt T_DERLLAVE cerrar_scope
     ;
+
+funcion:
+	T_IDENTIFICADOR T_IZQPAREN secuencia T_DERPAREN
 
 arreglo:
     T_IZQCORCHE secuencia T_DERCORCHE
     ;
 
 var_manejo_error:
-    T_COMO abrir_scope T_IDENTIFICADOR{
+    T_COMO abrir_scope T_IDENTIFICADOR {
         if (symbolTable.search_symbol($3) != nullptr){
             yyerror("Variable ya declarada anteriormente");
             exit(1);
@@ -663,6 +674,10 @@ manejador:
 manejo_error:
     T_T_MEANDO abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope manejador
     ;
+
+casting:
+	T_CASTEO expresion
+	;
 
 %%
 
