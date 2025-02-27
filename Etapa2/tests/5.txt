@@ -1,16 +1,1 @@
-se_prende(){
-	si_es_asi (Sisa){
-		culito a: mango;
-		a = 100;
-	}o_asi (Sisa){
-		culito b: mango;
-		jeva mi_array: mango[5];
-	}nojoda{
-		culito a: mango;
-		culito c: mango;
-
-		repite_burda i entre 0 hasta 3 {
-			a = 100;
-		};
-	};
-};
+# Test 5: 
