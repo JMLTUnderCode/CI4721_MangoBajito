@@ -27,11 +27,11 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 	```
 	make test arg=<nombre de archivo>
 	```
-	Se asume que los archivos de pruebas estan en la carpeta `tests/` y tienen extensión `.txt` por defecto.
+	Se asume que los archivos de pruebas estan en la carpeta `tests/` y tienen extensión `.mng` por defecto.
 	Ej.
 	```
-	make test arg=prueba // Se refiere a probar el archivo prueba.txt
-	make test arg=1      // Se refiere a probar el archivo 1.txt
+	make test arg=prueba // Se refiere a probar el archivo prueba.mng
+	make test arg=1      // Se refiere a probar el archivo 1.mng
 	```
   - Para ejecucion y prueba del proyecto directamente:
 	```
@@ -39,8 +39,8 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 	```
 	Ej.
 	```
-	make run arg=tests/0.txt  // Probar el archivo ubicado en `tests` de nombre `0.txt`
-	make run arg=otrodir/t1.md  // Probar el archivo ubicado en `otrodir` de nombre `t1.md`
+	make run arg=tests/0.mng  // Probar el archivo ubicado en `tests` de nombre `0.mng`
+	make run arg=otrodir/t1.mng  // Probar el archivo ubicado en `otrodir` de nombre `t1.mng`
 	```
   - Para ejecucion manual:
 	Compilar y generar el ejecutable
