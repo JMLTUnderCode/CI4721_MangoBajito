@@ -101,7 +101,7 @@ void SymbolTable::open_scope() {
 }
 
 void SymbolTable::close_scope() {
-	this->finding_variables_in_scope(this->current_scope);
+	//this->finding_variables_in_scope(this->current_scope);
 	this->scopes[this->current_scope].second = true;
 	this->current_scope = this->prev_scope.top();
 	this->prev_scope.pop();
@@ -139,12 +139,12 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 			if (symbol.symbol_name != symbol_name) continue;
 			if (symbol.scope == 0) { predef_symbol = &symbol; break; }
 			for(int i = this->scopes.size() - 1; i >= 0; i--){
-				if (this->scopes[i].second) continue; // No puede ver al padre
+				if (this->scopes[i].second) continue; // Scope cerrado.
 				if (symbol.scope == this->scopes[i].first) {
-					best_option = &symbol;		// El scope mas cercano
+					best_option = &symbol; // El scope mas cercano
 					break;
 				} else if (best_option != nullptr && this->scopes[i].first == best_option->scope) {
-					break;						// No se encontrara un scope mas cercano
+					break; // No se encontrara un scope mas cercano
 				}
 			}
 		}
@@ -161,6 +161,11 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 }
 
 void SymbolTable::print_table() {
+	string ss;
+	cout << "--> Print table? (s/n): "; cin >> ss;
+	while(ss != "s" && ss != "n") { cout << "Key Error. Print table? (s/n): "; cin >> ss; }
+	if (ss == "n") return;
+	
     cout << "                          ---> Tabla de Simbolos <---" << endl;
 	int count = 1;
     for (auto& symbol : this->table) {

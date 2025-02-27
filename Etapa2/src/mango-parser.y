@@ -9,8 +9,8 @@ using namespace std;
 typedef struct YYLTYPE {
     int first_line;
     int first_column;
-    int last_line;
-    int last_column;
+    //int last_line;
+    //int last_column;
 } YYLTYPE;
 
 void yyerror(const char *s);
@@ -19,38 +19,34 @@ extern int yylineno;
 extern YYLTYPE yylloc;
 
 SymbolTable symbolTable = SymbolTable();
-char* current_struct_name = nullptr;
+int ERROR_TYPE = 0; // Permite manejar un error particular. Aumentar en 1 para ser personalizado.
+string current_struct_name = "";
 %}
 
 %code requires {
-  struct ExpresionAttribute {
-    enum Type { INT, FLOAT, BOOL, STRING, POINTER } type;
-    union {
-    int ival;
-    float fval;
-    double dval;
-    char cval;
-    char* sval;
-    };
-  };
+	struct ExpresionAttribute {
+		enum Type { INT, FLOAT, DOUBLE, BOOL, STRING, POINTER } type;
+		union {
+			int ival;
+			float fval;
+			double dval;
+			char* sval;
+		};
+	};
 }
 
 %union {
-  ExpresionAttribute att_val; // Usa el struct definido
-}  
-
-%union {
+	ExpresionAttribute att_val; // Usa el struct definido
     int ival;
     float fval;
     double dval;
-    char cval;
     char* sval;
 }
 
-%token <ival> T_MANGO       // Token para int
-%token <fval> T_MANGUITA    // Token para float
-%token <dval> T_MANGUANGUA    // Token para double
-%token <cval> T_NEGRO  // Token para caracter
+%token <sval> T_MANGO       // Token para int
+%token <sval> T_MANGUITA    // Token para float
+%token <sval> T_MANGUANGUA  // Token para double
+%token <sval> T_NEGRO       // Token para caracter
 %token <sval> T_HIGUEROTE   // Token para string
 
 %token T_SE_PRENDE T_ASIGNACION T_DOSPUNTOS T_PUNTOCOMA T_COMA
@@ -72,7 +68,6 @@ char* current_struct_name = nullptr;
 %token <sval> T_IDENTIFICADOR 
 %token <att_val> T_VALUE
 %token T_IZQPAREN T_DERPAREN T_IZQLLAVE T_DERLLAVE T_IZQCORCHE T_DERCORCHE
-
 
 // Declaracion de tipos de retorno para las producciones 
 %type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion 
@@ -100,11 +95,11 @@ char* current_struct_name = nullptr;
 %%
 
 abrir_scope:
-    {symbolTable.open_scope();}
+    { symbolTable.open_scope(); }
     ;
 
 cerrar_scope:
-    {symbolTable.close_scope();}
+    { symbolTable.close_scope(); }
     ;
 
 programa:
@@ -113,7 +108,10 @@ programa:
     ;
 
 main:
-    T_SE_PRENDE abrir_scope T_IZQPAREN T_DERPAREN T_IZQLLAVE instruccionesopt T_DERLLAVE T_PUNTOCOMA cerrar_scope { symbolTable.print_table(); cout << "Programa válido." << endl; } 
+    T_SE_PRENDE abrir_scope T_IZQPAREN T_DERPAREN T_IZQLLAVE instruccionesopt T_DERLLAVE T_PUNTOCOMA cerrar_scope { 
+		symbolTable.print_table(); 
+		cout << "Programa válido: "; 
+	} 
     ;
 
 instrucciones:
@@ -127,7 +125,6 @@ instruccionesopt:
 instruccion:
     declaracion 
     | asignacion
-    | struct
     | condicion 
     | bucle 
     | entrada_salida 
@@ -146,13 +143,13 @@ instruccion:
 
 declaracion:
     tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos {
-        Attributes *attributes = new Attributes();
-
         if (symbolTable.search_symbol($4) == nullptr){
+			ERROR_TYPE++;
             yyerror("Tipo no definido en el lenguaje");
             exit(1);
         };
 
+		Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
         attributes->info.push_back({"-", nullptr});
@@ -169,18 +166,20 @@ declaracion:
         };
 
         if (!symbolTable.insert_symbol($2, *attributes)){
+			ERROR_TYPE++;
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
     }
-    | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
-        Attributes *attributes = new Attributes();
 
+    | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
         if (symbolTable.search_symbol($4) == nullptr){
+			ERROR_TYPE++;
             yyerror("Tipo no definido en el lenguaje");
             exit(1);
         };
 
+		Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
         attributes->info.push_back({"-", nullptr});
@@ -191,48 +190,51 @@ declaracion:
         } else if (strcmp($1, "POINTER_C") == 0){
             attributes->category = POINTER_C;
         } else if (strcmp($1, "VARIABLE") == 0){
-
             attributes->category = VARIABLE;
         } else if (strcmp($1, "CONSTANTE") == 0){
-
             attributes->category = CONSTANT;
         };
         
         // Asignar valor según el tipo de la expresión
         
-    switch($6.type) {
-        case ExpresionAttribute::INT:
-            cout << "ASIGNANDO ENTERO: valor = " << $6.ival << endl;
-            // Asignar directamente sin usar Values como constructor
-            attributes->value = $6.ival;
-            break;
-        
-        case ExpresionAttribute::FLOAT:
-            cout << "ASIGNANDO FLOAT: valor = " << $6.fval << endl;
-            attributes->value = $6.fval;
-            break;
-        
-        case ExpresionAttribute::BOOL:
-            cout << "ASIGNANDO BOOL: valor = " << ($6.ival ? "true" : "false") << endl;
-            attributes->value = static_cast<bool>($6.ival);
-            break;
-        
-        case ExpresionAttribute::STRING:
-            cout << "ASIGNANDO STRING: valor = \"" << $6.sval << "\"" << endl;
-            attributes->value = std::string($6.sval);
-            break;
-        
-        case ExpresionAttribute::POINTER:
-            cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
-            attributes->value = nullptr;
-            break;
-        
-        default:
-            cout << "TIPO DESCONOCIDO: Asignando nullptr" << endl;
-            attributes->value = nullptr;
-    }
+	    switch($6.type) {
+	        case ExpresionAttribute::INT:
+	            //cout << "ASIGNANDO ENTERO: valor = " << $6.ival << endl;
+	            attributes->value = $6.ival;
+	            break;
+	        
+	        case ExpresionAttribute::FLOAT:
+	            //cout << "ASIGNANDO FLOAT: valor = " << $6.fval << endl;
+	            attributes->value = $6.fval;
+	            break;
+	        
+			case ExpresionAttribute::DOUBLE:
+	            //cout << "ASIGNANDO DOUBLE: valor = " << $6.dval << endl;
+	            attributes->value = $6.dval;
+	            break;
+
+	        case ExpresionAttribute::BOOL:
+	            //cout << "ASIGNANDO BOOL: valor = " << (strcmp($6.sval, "Sisa") == 0 ? "true" : "false") << endl;
+	            attributes->value = strcmp($6.sval, "Sisa") == 0 ? true : false;
+	            break;
+	        
+	        case ExpresionAttribute::STRING:
+	            //cout << "ASIGNANDO STRING: valor = \"" << $6.sval << "\"" << endl;
+	            attributes->value = string($6.sval);
+	            break;
+	        
+	        case ExpresionAttribute::POINTER:
+	            //cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
+	            attributes->value = nullptr;
+	            break;
+	        
+	        default:
+	            //cout << "TIPO DESCONOCIDO: Asignando nullptr" << endl;
+	            attributes->value = nullptr;
+	    }
 
         if (!symbolTable.insert_symbol($2, *attributes)){
+			ERROR_TYPE++;
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
@@ -274,36 +276,38 @@ asignacion:
     T_IDENTIFICADOR operadores_asginacion expresion { 
 		Attributes *attr_var = symbolTable.search_symbol($1);
         if (attr_var == nullptr){
+			ERROR_TYPE++;
             yyerror("Variable no definida");
             exit(1);
         };
                 
         string info_var = get<string>(attr_var->info[0].first);
         if (strcmp(info_var.c_str(), "CICLO FOR") == 0){
+			ERROR_TYPE++;
             yyerror("No se puede modificar una variable en un ciclo determinado");
             exit(1);
         }
 
-    switch($3.type) {
-        case ExpresionAttribute::INT:
-            attr_var->value = $3.ival;
-            break;
-        case ExpresionAttribute::FLOAT:
-            attr_var->value = $3.fval;
-            break;
-        case ExpresionAttribute::BOOL:
-            attr_var->value = (bool)$3.ival; // Asumiendo que se almacena en ival
-            break;
-        case ExpresionAttribute::STRING:
-            attr_var->value = string($3.sval); // Convierte a std::string
-            break;
-        case ExpresionAttribute::POINTER:
-            // Manejar punteros según sea necesario
-            attr_var->value = nullptr; // O el valor adecuado
-            break;
-        default:
-            attr_var->value = nullptr;
-    }
+	    switch($3.type) {
+	        case ExpresionAttribute::INT:
+	            attr_var->value = $3.ival;
+	            break;
+	        case ExpresionAttribute::FLOAT:
+	            attr_var->value = $3.fval;
+	            break;
+	        case ExpresionAttribute::BOOL:
+	            attr_var->value = (bool)$3.ival; // Asumiendo que se almacena en ival
+	            break;
+	        case ExpresionAttribute::STRING:
+	            attr_var->value = string($3.sval); // Convierte a std::string
+	            break;
+	        case ExpresionAttribute::POINTER:
+	            // Manejar punteros según sea necesario
+	            attr_var->value = nullptr; // O el valor adecuado
+	            break;
+	        default:
+	            attr_var->value = nullptr;
+	    }
     }
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asginacion expresion
     ;
@@ -373,6 +377,7 @@ indeterminado:
 var_ciclo_determinado:
     T_IDENTIFICADOR T_ENTRE T_VALUE T_HASTA T_VALUE {
         if (symbolTable.search_symbol($1) != nullptr){
+			ERROR_TYPE++;
             yyerror("Variable ya declarada anteriormente");
             exit(1);
         };
@@ -406,6 +411,7 @@ var_ciclo_determinado:
     }
 
         if (!symbolTable.insert_symbol($1, *attributes)){
+			ERROR_TYPE++;
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
@@ -428,18 +434,19 @@ secuencia:
 
 secuencia_declaraciones:
     | secuencia_declaraciones T_PUNTOCOMA T_IDENTIFICADOR T_DOSPUNTOS tipos{
-        if (current_struct_name == nullptr) {
-            yyerror("Error interno: no hay estructura actual");
+		if (current_struct_name == "") {
+			ERROR_TYPE++;
+            yyerror("No hay estructura actual");
             exit(1);
         }
-        Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
         
+		Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
         if (struct_attr == nullptr) {
-            yyerror("Error interno: no se encontró la estructura");
+			ERROR_TYPE++;
+            yyerror("No se encontró la estructura");
             exit(1);
         }
         
-        // Crear y registrar el atributo de estructura
         Attributes *attr = new Attributes();
         attr->symbol_name = $3;
         attr->scope = symbolTable.current_scope;
@@ -447,25 +454,26 @@ secuencia_declaraciones:
         attr->type = symbolTable.search_symbol($5);
         attr->value = nullptr;
         
-        // Guardar el atributo en la tabla de símbolos
         if (!symbolTable.insert_symbol($3, *attr)) {
+			ERROR_TYPE++;
             yyerror("Atributo ya declarado en esta estructura");
             exit(1);
         }
         
-        // Agregar el atributo a la información de la estructura
         struct_attr->info.push_back({string($3), attr});
-        cout << "  Agregando atributo: " << $3 << " a estructura: " << current_struct_name << endl;
+        //cout << "  Agregando atributo: \"" << $3 << "\" a estructura: " << current_struct_name << endl;
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
-        if (current_struct_name == nullptr) {
-            yyerror("Error interno: no hay estructura actual");
+        if (current_struct_name == "") {
+			ERROR_TYPE++;
+            yyerror("No hay estructura actual");
             exit(1);
         }
+
         Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
-        
         if (struct_attr == nullptr) {
-            yyerror("Error interno: no se encontró la estructura");
+			ERROR_TYPE++;
+            yyerror("No se encontró la estructura");
             exit(1);
         }
         
@@ -475,50 +483,69 @@ secuencia_declaraciones:
         attr->category = STRUCT_ATTRIBUTE;
         attr->type = symbolTable.search_symbol($3);
         attr->value = nullptr;
-        
+
         if (!symbolTable.insert_symbol($1, *attr)) {
+			ERROR_TYPE++;
             yyerror("Atributo ya declarado en esta estructura");
             exit(1);
         }
-        
+		
         struct_attr->info.push_back({string($1), attr});
-        cout << "  Agregando atributo: " << $1 << " a estructura: " << current_struct_name << endl;
+        //cout << "  Agregando atributo: \"" << $1 << "\" a estructura: " << current_struct_name << endl;
     }
     ;
 
 variante: 
-    T_COLIAO T_IDENTIFICADOR abrir_scope T_IZQLLAVE secuencia_declaraciones T_DERLLAVE cerrar_scope
+    T_COLIAO T_IDENTIFICADOR {
+		Attributes *attributes = new Attributes();
+        attributes->symbol_name = $2;
+        attributes->scope = symbolTable.current_scope;
+        attributes->category = UNION;
+        attributes->info.push_back({"UNION", nullptr});
+        attributes->value = nullptr;
+
+		current_struct_name = string($2);
+
+		if (!symbolTable.insert_symbol($2, *attributes)){
+			ERROR_TYPE++;
+            yyerror("Variante ya declarada en este alcance");
+            exit(1);
+        };
+        
+        //cout << "Definiendo variante: " << $2 << endl;
+
+	} abrir_scope T_IZQLLAVE secuencia_declaraciones T_PUNTOCOMA T_DERLLAVE {
+		current_struct_name = "";
+	} cerrar_scope
     ;
 
 struct: 
-    T_ARROZCONMANGO T_IDENTIFICADOR abrir_scope  {
+    T_ARROZCONMANGO T_IDENTIFICADOR {
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
-        attributes->scope = symbolTable.current_scope - 1;
+        attributes->scope = symbolTable.current_scope;
         attributes->category = STRUCT;
         attributes->info.push_back({"ESTRUCTURA", nullptr});
         attributes->value = nullptr;
         
-        current_struct_name = strdup($2);
+        current_struct_name = string($2);
         
         if (!symbolTable.insert_symbol($2, *attributes)){
+			ERROR_TYPE++;
             yyerror("Estructura ya declarada en este alcance");
             exit(1);
         };
         
-        cout << "Definiendo estructura: " << $2 << endl;
-    } T_IZQLLAVE secuencia_declaraciones T_PUNTOCOMA T_DERLLAVE cerrar_scope {
-        // Liberar memoria
-        if (current_struct_name) {
-            free(current_struct_name);
-            current_struct_name = nullptr;
-        }
-    }
+        //cout << "Definiendo estructura: " << $2 << endl;
+    } abrir_scope T_IZQLLAVE secuencia_declaraciones T_PUNTOCOMA T_DERLLAVE {
+        current_struct_name = "";
+    } cerrar_scope
     ;
 
 firma_funcion: 
     T_ECHARCUENTO T_IDENTIFICADOR {
         if (symbolTable.search_symbol($2) != nullptr){
+			ERROR_TYPE++;
             yyerror("Función ya declarada anteriormente");
             exit(1);
         };
@@ -532,6 +559,7 @@ firma_funcion:
         attributes->value = nullptr;
 
         if (!symbolTable.insert_symbol($2, *attributes)){
+			ERROR_TYPE++;
             yyerror("Función ya declarada en este alcance");
             exit(1);
         };
@@ -550,6 +578,7 @@ secuencia_parametros:
 parametro:
     T_AKITOY T_IDENTIFICADOR T_DOSPUNTOS tipos{
         if (symbolTable.search_symbol($2) != nullptr){
+			ERROR_TYPE++;
             yyerror("Variable ya declarada anteriormente");
             exit(1);
         };
@@ -564,12 +593,14 @@ parametro:
         attributes->value = nullptr;
 
         if (!symbolTable.insert_symbol($2, *attributes)){
+			ERROR_TYPE++;
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
         if (symbolTable.search_symbol($1) != nullptr){
+			ERROR_TYPE++;
             yyerror("Variable ya declarada anteriormente");
             exit(1);
         };
@@ -584,6 +615,7 @@ parametro:
         attributes->value = nullptr;
 
         if (!symbolTable.insert_symbol($1, *attributes)){
+			ERROR_TYPE++;
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
@@ -609,16 +641,14 @@ manejo_error:
 
 %%
 
-void yyerror(const char *s) {
+void yyerror(const char *mns) {
     static bool first_error = true;
     
     // Solo mostrar el primer error
-    if (first_error) {
-        extern char* yytext;
-        
-        cerr << "\nError sintáctico en línea " << yylineno 
-             << ", columna " << yylloc.first_column << ": '" << yytext << "'"<< endl << endl;
-        
-        first_error = false;
-    }
+    if (ERROR_TYPE == 0) {
+		extern char* yytext;
+        cerr << "\nError sintáctico en línea " << yylineno << ", columna " << yylloc.first_column << ": '" << yytext << "'\n\n";
+    } else {
+		cerr << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << mns << "\n\n";
+	}
 }
