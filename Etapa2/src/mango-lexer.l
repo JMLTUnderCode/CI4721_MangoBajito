@@ -41,7 +41,7 @@ MANGUANGUA    -?([0-9]*\.?[0-9]+|[0-9]+\.?[0-9]*)([eE][+-]?[0-9]+)?
 NEGRO         "\"."
 HIGUEROTE     \"[^\"]*\"
 IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
-CASTING       \b(mango|manguita|manguangua|negro|higuerote|tas_claro)\b
+CASTING       \(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(tas_claro\)
 
 %%
 [ \t]+            { current_column += yyleng; }  // Espacios/tabs
