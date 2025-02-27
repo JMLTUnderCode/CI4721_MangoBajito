@@ -149,7 +149,7 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 
 {MANGUANGUA} {
     UPDATE_LOC
-    yylval.att_val.type = ExpresionAttribute::DOUBLE;  // O podrías definir un tipo DOUBLE si lo necesitas
+    yylval.att_val.type = ExpresionAttribute::DOUBLE;
     yylval.att_val.dval = strtod(yytext, nullptr);
     return T_VALUE;
 }
@@ -165,7 +165,7 @@ IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 {HIGUEROTE} {
     UPDATE_LOC
     yylval.att_val.type = ExpresionAttribute::STRING;
-    yytext[yyleng - 1] = '\0';  // yyleng es la longitud de yytext
+    yytext[yyleng - 1] = '\0';
     yylval.att_val.sval = strdup(yytext + 1);
 	return T_VALUE;
 }

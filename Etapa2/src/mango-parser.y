@@ -70,7 +70,7 @@ string current_struct_name = "";
 %token T_IZQPAREN T_DERPAREN T_IZQLLAVE T_DERLLAVE T_IZQCORCHE T_DERCORCHE
 
 // Declaracion de tipos de retorno para las producciones 
-%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion 
+%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion parametro secuencia_parametros
 %type <att_val> expresion
 
 // Declaracion de precedencia y asociatividad de Operadores
@@ -194,9 +194,7 @@ declaracion:
         } else if (strcmp($1, "CONSTANTE") == 0){
             attributes->category = CONSTANT;
         };
-        
-        // Asignar valor según el tipo de la expresión
-        
+                
 	    switch($6.type) {
 	        case ExpresionAttribute::INT:
 	            //cout << "ASIGNANDO ENTERO: valor = " << $6.ival << endl;
@@ -229,7 +227,7 @@ declaracion:
 	            break;
 	        
 	        default:
-	            //cout << "TIPO DESCONOCIDO: Asignando nullptr" << endl;
+	            cout << "TIPO DESCONOCIDO: Asignando nullptr" << endl;
 	            attributes->value = nullptr;
 	    }
 
@@ -385,7 +383,6 @@ var_ciclo_determinado:
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $1;
         attributes->scope = symbolTable.current_scope;
-        //attributes->info.clear();
         attributes->info.push_back({"CICLO FOR", nullptr});
         attributes->type = symbolTable.search_symbol("mango");
         attributes->category = VARIABLE;
@@ -555,6 +552,7 @@ firma_funcion:
         attributes->scope = symbolTable.current_scope;
         //attributes->info.clear();
         attributes->info.push_back({"FUNCION", nullptr});
+        attributes->type = symbolTable.search_symbol("funcion$");
         attributes->category = FUNCTION;
         attributes->value = nullptr;
 
@@ -563,6 +561,8 @@ firma_funcion:
             yyerror("Función ya declarada en este alcance");
             exit(1);
         };
+
+        $$ = $2;
     }
     ;
 
@@ -575,6 +575,7 @@ secuencia_parametros:
     | secuencia_parametros T_COMA parametro
     | parametro
     ;
+
 parametro:
     T_AKITOY T_IDENTIFICADOR T_DOSPUNTOS tipos{
         if (symbolTable.search_symbol($2) != nullptr){
@@ -586,7 +587,6 @@ parametro:
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
-        //attributes->info.clear();
         attributes->info.push_back({"PARAMETRO", nullptr});
         attributes->type = symbolTable.search_symbol($4);
         attributes->category = POINTER_V;
@@ -597,6 +597,8 @@ parametro:
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
+
+        $$ = $2;
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
         if (symbolTable.search_symbol($1) != nullptr){
@@ -619,6 +621,8 @@ parametro:
             yyerror("Variable ya declarada en este alcance");
             exit(1);
         };
+
+        $$ = $1;
     }
     ;
 
@@ -628,6 +632,27 @@ funcion:
 
 arreglo:
     T_IZQCORCHE secuencia T_DERCORCHE
+    ;
+
+var_manejo_error:
+    T_COMO abrir_scope T_IDENTIFICADOR{
+        if (symbolTable.search_symbol($3) != nullptr){
+            yyerror("Variable ya declarada anteriormente");
+            exit(1);
+        };
+
+        Attributes *attributes = new Attributes();
+        attributes->symbol_name = $3;
+        attributes->scope = symbolTable.current_scope;
+        attributes->info.push_back({"MANEJO ERROR", nullptr});
+        attributes->type = symbolTable.search_symbol("error$");
+        attributes->category = VARIABLE;
+
+        if (!symbolTable.insert_symbol($3, *attributes)){
+            yyerror("Variable ya declarada en este alcance");
+            exit(1);
+        };
+    }
     ;
 
 manejador:
