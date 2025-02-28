@@ -87,6 +87,7 @@ string current_struct_name = "";
 %left T_OPSUMA T_OPRESTA 
 %left T_OPMULT T_OPDIVENTERA T_OPDIVDECIMAL T_OPMOD
 %right T_OPEXP
+%nonassoc T_IZQPAREN T_DERPAREN
 
 // Operaciones unarias
 %left T_OPINCREMENTO T_OPDECREMENTO
@@ -201,7 +202,7 @@ declaracion:
                 
 	    switch($6.type) {
 	        case ExpresionAttribute::INT:
-	            //cout << "ASIGNANDO ENTERO: valor = " << $6.ival << endl;
+	            cout << "ASIGNANDO ENTERO: valor = " << $6.ival << endl;
 	            attributes->value = $6.ival;
 	            break;
 	        
@@ -340,6 +341,7 @@ expresion:
     T_IDENTIFICADOR 
     | T_VALUE 
     | T_PELABOLA
+    | T_IZQPAREN expresion T_DERPAREN
     | valores_booleanos 
     | expresion_apuntador 
     | expresion_nuevo
@@ -364,7 +366,6 @@ expresion:
     | expresion T_YUNTA expresion
     | expresion T_OPDECREMENTO
     | expresion T_OPINCREMENTO
-    | T_DERPAREN expresion T_IZQPAREN
     | entrada_salida
     | funcion
     | casting
