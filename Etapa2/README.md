@@ -58,8 +58,9 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 
 ## Realizado
 - [x] Guardar variables declaradas (sin valor).
-- [x] Guardar variables declaradas (con valor) (🐞❗).
+- [x] Guardar variables declaradas (con valor).
   - [ ] Revisar guardado de literales.
+  - [ ] Actualizacion asignacion de variables. Si a = 4, b = 5, y luego se hace a = b entonces a vale 5.
 - [x] Abrir y cerrar alcances. Actualizacion de scopes.
 - [x] Guardar estructuras.
 - [x] Guardar variantes.
@@ -68,7 +69,7 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 - [x] Guardar funciones.
 - [x] Guardar funciones con 1 parametro.
 - [ ] Guardar funciones con multiples parametros.
-- [ ] Agregar a tipos nombres de struct/varinates
+- [ ] Agregar a tipos nombres de struct/varinates.
 - [x] Revisar la logica de la funcion `hablame`.
 - [x] Revisar la logica de la funcion `rescata`.
 - [ ] Casteo
@@ -88,5 +89,6 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 	- [x] Redeclaracion de una variable en un mismo scope.
 	- [x] Modificacion del valor de una variable asociada a un ciclo determinado.
 	- [x] Modificacion del valor de una variable asociada a un try/catch.
-	- [ ] Errores de Mango Bajito
+	- [ ] Errores de Mango Bajito (lo usados en meando/fueral_del_perol: piaso e copion por ejemplo)
+	- [ ] Cuando haya un syntax error retorna "Escribe bien esa vaina", entre otros.
 	- [ ] Mostrar errores de context más informativos
