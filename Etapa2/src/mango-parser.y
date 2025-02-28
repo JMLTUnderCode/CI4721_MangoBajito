@@ -19,7 +19,7 @@ extern int yylineno;
 extern YYLTYPE yylloc;
 
 SymbolTable symbolTable = SymbolTable();
-errorType ERROR_TYPE; // Permite manejar un error particular de tipo errorType
+errorType ERROR_TYPE = SEMANTIC_TYPE; // Permite manejar un error particular de tipo errorType
 string current_struct_name = "";
 %}
 
@@ -236,7 +236,7 @@ declaracion:
 	    }
 
         if (!symbolTable.insert_symbol($2, *attributes)){
-			ERROR_TYPE = ALREADY_DEF_VER;
+			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($2);
             exit(1);
         };
@@ -448,7 +448,7 @@ secuencia:
 secuencia_declaraciones:
     | secuencia_declaraciones T_PUNTOCOMA T_IDENTIFICADOR T_DOSPUNTOS tipos{
 		if (current_struct_name == "") {
-			ERROR_TYPE = DEBBUGING_TYPE;
+			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay estructura actual");
             exit(1);
         }
@@ -456,7 +456,7 @@ secuencia_declaraciones:
 		Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
         if (struct_attr == nullptr) {
 			ERROR_TYPE = NON_DEF_STRUCT;
-            yyerror(current_struct_name);
+            yyerror(current_struct_name.c_str());
             exit(1);
         }
         
@@ -486,7 +486,7 @@ secuencia_declaraciones:
         Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
         if (struct_attr == nullptr) {
 			ERROR_TYPE = NON_DEF_STRUCT;
-            yyerror(current_struct_name);
+            yyerror(current_struct_name.c_str());
             exit(1);
         }
         
@@ -693,55 +693,54 @@ casting:
 
 void yyerror(const char *var) {
     static bool first_error = true;
-    /*
-	VAR_FOR,
-	VAR_TRY,
-	DEBUGGING_TYPE, */
-    switch (ERROR_TYPE){
-        case NON_DEF_VAR:
-            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "Variable " << "\""<< var << "\"" << " no definida." << "'\n\n";
-            break;
-        case ALREADY_DEF_VAR:
-            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "\"" << var << "\"" << " ya fue definido como una variable" << "'\n\n";
-            break;
-        case NON_DEF_FUNC:
-            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "Funcion " << "\""<< var << "\"" << " no definida." << "'\n\n";
-            break;
-        case ALREADY_DEF_FUNC:
-            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "\"" << var << "\"" << " ya fue definido como una funcion" << "'\n\n";
-            break;
-        case NON_DEF_STRUCT:
-            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "Estructura " << "\""<< var << "\"" << " no definida." << "'\n\n";
-            break;
-        case ALREADY_DEF_STRUCT:
-            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "\"" << var << "\"" << " ya fue definido como una variable" << "'\n\n";
-            break;
-        case NON_DEF_UNION:
-            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "Variante " << "\""<< var << "\"" << " no definida." << "'\n\n";
-            break;
-        case ALREADY_DEF_UNION:
-            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "\"" << var << "\"" << " ya fue definido como una variante" << "'\n\n";
-            break;
-        case ALREADY_DEF_ATTR:
-            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "\"" << var << "\"" << " ya fue definido como un atributo" << "'\n\n";
-            break;
-        case NON_DEF_TYPE:
-            cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << "Tipo " << "\""<< var << "\"" << " no definido." << "'\n\n";
-            break;
-        case VAR_FOR:
-            break;
-        case VAR_TRY:
-            break;
-        case DEBBUGING_TYPE:
-            break;
-        default:
-            break;
-    }
-    // Solo mostrar el primer error
-    if (ERROR_TYPE == 0) {
-		extern char* yytext;
-        cerr << "\nError sintáctico en línea " << yylineno << ", columna " << yylloc.first_column << ": '" << yytext << "'\n\n";
-    } else {
-		cerr << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": " << mns << "\n\n";
+
+	if (ERROR_TYPE == SEMANTIC_TYPE) {
+		cerr << "\nError sintáctico en línea " << yylineno << ", columna " << yylloc.first_column << ": '" << yylex << "'\n\n";
+	} else {
+		cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": ";
+		switch (ERROR_TYPE) {
+	        case NON_DEF_VAR:
+	            cout << "Variable \"" << var << "\" no definida.";
+	            break;
+	        case ALREADY_DEF_VAR:
+	            cout << "Variable \"" << var << "\" ya fue definida.";
+	            break;
+	        case NON_DEF_FUNC:
+	            cout << "Funcion \"" << var << "\" no definida.";
+	            break;
+	        case ALREADY_DEF_FUNC:
+	            cout << "Funcion \"" << var << "\" ya fue definida.";
+	            break;
+	        case NON_DEF_STRUCT:
+	            cout << "Estructura \"" << var << "\" no definida.";
+	            break;
+	        case ALREADY_DEF_STRUCT:
+	            cout << "Estructura \"" << var << "\" ya fue definida.";
+	            break;
+	        case NON_DEF_UNION:
+	            cout << "Variante \"" << var << "\" no definida.";
+	            break;
+	        case ALREADY_DEF_UNION:
+	            cout << "Variante \"" << var << "\" ya fue definida.";
+	            break;
+	        case ALREADY_DEF_ATTR:
+	            cout << "Atributo \"" << var << "\" ya fue definido.";
+	            break;
+	        case NON_DEF_TYPE:
+	            cout << "Tipo \"" << var << "\"" << " no definido.";
+	            break;
+	        case VAR_FOR:
+				cout << "Variable \"" << var << "\" es de ciclo repite_burda. No se admite cambiar su valor.";
+	            break;
+	        case VAR_TRY:
+				cout << "Variable \"" << var << "\" es de estructura fuera_del_perol. No se admite cambiar su valor.";
+	            break;
+	        case DEBUGGING_TYPE:
+				cout << var;
+	            break;
+	        default:
+	            break;
+	    }
+		cout << "\n\n";
 	}
 }

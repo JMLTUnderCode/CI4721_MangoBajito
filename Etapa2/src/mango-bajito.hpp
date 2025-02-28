@@ -86,6 +86,7 @@ enum errorType {
 	NON_DEF_TYPE,
 	ALREADY_DEF_ATTR,
 	DEBUGGING_TYPE,
+	SEMANTIC_TYPE
 };
 // Implementacion Tabla de Simbolos Le-Blanc Cook
 class SymbolTable {
