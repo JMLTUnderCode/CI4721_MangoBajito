@@ -60,7 +60,12 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 - [x] Guardar variables declaradas (sin valor).
 - [x] Guardar variables declaradas (con valor).
   - [ ] Revisar guardado de literales.
-  - [ ] Actualizacion asignacion de variables. Si a = 4, b = 5, y luego se hace a = b entonces a vale 5.
+  - [x] Actualizacion asignacion de variables. Si a = 4, b = 5, y luego se hace a = b entonces a vale 5.
+  - [ ] Veriticar que la actualizacion de variables correspondan a su valor esperado. Ej. actualizar int con int, etc.
+  - [ ] Actualizacion de IDENTIFICADORES a nivel de operaciones.
+    - [x] Por suma de entero + entero
+      - [ ] Faltan los subcasos
+    - [ ] Faltan para las demas operaciones, resta, multi, etc.
 - [x] Abrir y cerrar alcances. Actualizacion de scopes.
 - [x] Guardar estructuras.
 - [x] Guardar variantes.
