@@ -9,7 +9,7 @@ se_prende(){
 
     repite_burda i entre 1 hasta (n-1) {
         temp = 2;
-        # a = b;
+        a = b;
         b = temp + b;
     };
 };
