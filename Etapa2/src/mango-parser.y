@@ -347,10 +347,10 @@ expresion:
     | expresion_nuevo
     | arreglo
     | T_NELSON expresion
+	| T_OPRESTA expresion %prec T_SIGNO_MENOS
     | expresion T_FLECHA expresion
     | expresion T_OPSUMA expresion
     | expresion T_OPRESTA expresion
-    | T_OPRESTA expresion %prec T_SIGNO_MENOS
     | expresion T_OPMULT expresion
     | expresion T_OPDIVDECIMAL expresion
     | expresion T_OPDIVENTERA expresion
