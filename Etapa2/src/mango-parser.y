@@ -696,7 +696,8 @@ void yyerror(const char *var) {
     static bool first_error = true;
 
 	if (ERROR_TYPE == SEMANTIC_TYPE) {
-		cerr << "\nError sintáctico en línea " << yylineno << ", columna " << yylloc.first_column << ": '" << yylex << "'\n\n";
+		extern char* yytext;
+		cerr << "\nError sintáctico en línea " << yylineno << ", columna " << yylloc.first_column << ": '" << yytext << "'\n\n";
 	} else {
 		cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": ";
 		switch (ERROR_TYPE) {
