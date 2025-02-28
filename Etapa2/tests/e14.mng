@@ -8,8 +8,8 @@ se_prende(){
     culito temp: mango;
 
     repite_burda i entre 1 hasta (n-1) {
-        temp = a;
-        a = b;
+        temp = 2;
+        # a = b;
         b = temp + b;
     };
 };

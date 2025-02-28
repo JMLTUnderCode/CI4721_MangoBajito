@@ -25,7 +25,7 @@ string current_struct_name = "";
 
 %code requires {
 	struct ExpresionAttribute {
-		enum Type { INT, FLOAT, DOUBLE, BOOL, STRING, POINTER } type;
+		enum Type { INT, FLOAT, DOUBLE, BOOL, STRING, POINTER, ID} type;
 		union {
 			int ival;
 			float fval;
@@ -309,14 +309,24 @@ asignacion:
 	            attr_var->value = (bool)$3.ival; // Asumiendo que se almacena en ival
 	            break;
 	        case ExpresionAttribute::STRING:
-	            attr_var->value = string($3.sval); // Convierte a std::string
+                attr_var->value = string($3.sval); // Convierte a std::string
 	            break;
 	        case ExpresionAttribute::POINTER:
 	            // Manejar punteros según sea necesario
 	            attr_var->value = nullptr; // O el valor adecuado
 	            break;
 	        default:
-	            attr_var->value = nullptr;
+                cout << $3.sval << endl;
+                Attributes *attr = symbolTable.search_symbol($3.sval);
+                if(attr != nullptr){
+                    if(attr->category == VARIABLE || attr->category == CONSTANT){
+                        attr_var->value = attr->value;
+                    } 
+                } else {
+                    attr_var->value = nullptr;
+                }
+                break;
+	            
 	    }
     }
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asginacion expresion
@@ -338,8 +348,27 @@ expresion_nuevo:
     ;
 
 expresion:
-    T_IDENTIFICADOR 
-    | T_VALUE 
+    T_IDENTIFICADOR {$$.sval = $1; $$.type = ExpresionAttribute::ID;}
+    | T_VALUE {
+        switch($1.type) {
+	        case ExpresionAttribute::INT:
+	            $$.ival = $1.ival;
+	            break;
+	        case ExpresionAttribute::FLOAT:
+	            $$.fval = $1.fval;
+	            break;
+	        case ExpresionAttribute::BOOL:
+	            $$.ival = (bool)$1.ival; // Asumiendo que se almacena en ival
+	            break;
+	        case ExpresionAttribute::STRING:
+                $$.sval = $1.sval; // Convierte a std::string
+	            break;
+            case ExpresionAttribute::DOUBLE:
+                $$.dval = $1.dval;
+	        default:
+                break;
+        }
+    }
     | T_PELABOLA
     | T_IZQPAREN expresion T_DERPAREN
     | valores_booleanos 
@@ -349,7 +378,31 @@ expresion:
     | T_NELSON expresion
 	| T_OPRESTA expresion %prec T_SIGNO_MENOS
     | expresion T_FLECHA expresion
-    | expresion T_OPSUMA expresion
+    | expresion T_OPSUMA expresion {
+        if($1.type == ExpresionAttribute::INT && $3.type == ExpresionAttribute::INT){
+            $$.type = ExpresionAttribute::INT;
+            $$.ival = $1.ival + $3.ival;
+        }
+
+        if($1.type == ExpresionAttribute::FLOAT && $3.type == ExpresionAttribute::INT){
+            $$.type = ExpresionAttribute::FLOAT;
+            $$.fval = (float)($1.fval + $3.ival);
+        }
+
+        if($1.type == ExpresionAttribute::INT && $3.type == ExpresionAttribute::FLOAT){
+            $$.type = ExpresionAttribute::FLOAT;
+            $$.fval = (float)($1.ival + $3.fval);
+        }
+
+        if($1.type == ExpresionAttribute::ID && $3.type == ExpresionAttribute::ID){
+            Attributes *var1 = symbolTable.search_symbol($1.sval);
+            Attributes *var2 = symbolTable.search_symbol($3.sval);
+
+            $$.type = ExpresionAttribute::INT;
+            $$.ival = get<int>(var1->value) + get<int>(var2->value);
+        }
+        
+    }
     | expresion T_OPRESTA expresion
     | expresion T_OPMULT expresion
     | expresion T_OPDIVDECIMAL expresion

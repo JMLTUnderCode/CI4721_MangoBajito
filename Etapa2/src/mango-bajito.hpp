@@ -114,5 +114,6 @@ class SymbolTable {
 		Attributes* search_symbol(string symbol_name);              //Buscar simbolo en la tabla
 		bool contains_key(string key);                              //Verifica si la tabla contiene el simbolo
 		void finding_variables_in_scope(int scope);
+		void print_attribute(Attributes &attr);
 };
 #endif

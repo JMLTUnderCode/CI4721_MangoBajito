@@ -160,6 +160,15 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 	return nullptr;
 }
 
+void SymbolTable::print_attribute(Attributes &attr){
+	cout << "       Símbolo: " << attr.symbol_name 
+		<< ", Categoría: " << attr.category 
+		<< ", Scope: " << attr.scope 
+		<< ", Type: "<< (attr.type != nullptr ? attr.type->symbol_name : "")
+		<<  ", Informacion: "; print_info(attr.info); 
+		cout << ", Value: "; print_values(attr.value); cout << "\n\n";
+}
+
 void SymbolTable::print_table() {
 	string ss;
 	cout << "--> Print table? (s/n): "; cin >> ss;
@@ -171,12 +180,7 @@ void SymbolTable::print_table() {
     for (auto& symbol : this->table) {
         cout << "    Clave: " << count++ << ": " << symbol.first << endl;
         for (Attributes &attr : symbol.second) {
-            cout << "       Símbolo: " << attr.symbol_name 
-                 << ", Categoría: " << attr.category 
-                 << ", Scope: " << attr.scope 
-				 << ", Type: "<< (attr.type != nullptr ? attr.type->symbol_name : "")
-			     <<  ", Informacion: "; print_info(attr.info); 
-				 cout << ", Value: "; print_values(attr.value); cout << "\n\n";
+            print_attribute(attr);
         }
     }
 }
