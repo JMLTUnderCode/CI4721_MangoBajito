@@ -18,7 +18,7 @@ se_prende(){
 		c = 1000;
 
 		repite_burda i entre 0 hasta 3 {
-			i = 100;
+			a = 100;
 		};
 	};
 	culito miau: mango;
@@ -28,7 +28,8 @@ se_prende(){
 	se_potea = 8;
 	echar_cuento funcion(d : mango) lanza mango{
 		se_potea = 4;
-		lanzate a + c; 
+		# Revisar el error en esta siguiente linea. Lanzate no es capaz de retornar operaciones.
+		lanzate se_potea + d; 
 	};
 
 	meando{
