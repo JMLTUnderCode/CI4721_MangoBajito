@@ -269,7 +269,7 @@ tipo_valor:
     | T_TASCLARO { $$ = strdup("tas_claro"); }
     ;
 
-operadores_asginacion:
+operadores_asignacion:
     T_ASIGNACION
     | T_OPASIGSUMA
     | T_OPASIGRESTA
@@ -277,7 +277,7 @@ operadores_asginacion:
     ;
 
 asignacion:
-    T_IDENTIFICADOR operadores_asginacion expresion { 
+    T_IDENTIFICADOR operadores_asignacion expresion { 
 		Attributes *attr_var = symbolTable.search_symbol($1);
         if (attr_var == nullptr){
 			ERROR_TYPE = NON_DEF_VAR;
@@ -329,7 +329,7 @@ asignacion:
 	            
 	    }
     }
-    | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asginacion expresion
+    | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asignacion expresion
     ;
 
 valores_booleanos:
@@ -648,11 +648,6 @@ secuencia_parametros:
 
 parametro:
     T_AKITOY T_IDENTIFICADOR T_DOSPUNTOS tipos{
-        if (symbolTable.search_symbol($2) != nullptr){
-			ERROR_TYPE = ALREADY_DEF_VAR;
-            yyerror($2);
-            exit(1);
-        };
 
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
@@ -671,11 +666,6 @@ parametro:
         $$ = $2;
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
-        if (symbolTable.search_symbol($1) != nullptr){
-			ERROR_TYPE = ALREADY_DEF_VAR;
-            yyerror($1);
-            exit(1);
-        };
 
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $1;
