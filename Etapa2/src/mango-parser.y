@@ -611,11 +611,7 @@ struct:
 
 firma_funcion: 
     T_ECHARCUENTO T_IDENTIFICADOR {
-        if (symbolTable.search_symbol($2) != nullptr){
-			ERROR_TYPE = ALREADY_DEF_FUNC;
-            yyerror($2);
-            exit(1);
-        };
+
 
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
