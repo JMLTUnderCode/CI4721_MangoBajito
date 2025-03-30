@@ -456,7 +456,7 @@ expresion:
     | expresion_nuevo
     | arreglo
     | T_NELSON expresion
-	| T_OPRESTA expresion %prec T_SIGNO_MENOS
+	| T_OPRESTA expresion %prec T_SIGNO_MENOS {$$ = $2;}
     | expresion T_FLECHA expresion
     | expresion T_OPSUMA expresion {
         if($1.type == ExpresionAttribute::INT && $3.type == ExpresionAttribute::INT){
