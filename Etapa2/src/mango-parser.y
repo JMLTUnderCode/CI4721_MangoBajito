@@ -75,7 +75,7 @@ const char* current_array_base_type = nullptr;
 %token T_CASTEO
 
 // Declaracion de tipos de retorno para las producciones 
-%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion parametro secuencia_parametros
+%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion
 %type <att_val> expresion
 
 // Declaracion de precedencia y asociatividad de Operadores
@@ -823,7 +823,7 @@ firma_funcion:
             exit(1);
         };
 
-        $$ = strdup($2);
+        current_function_name = string($2);
     }
     ;
 
@@ -839,6 +839,18 @@ secuencia_parametros:
 
 parametro:
     T_AKITOY T_IDENTIFICADOR T_DOSPUNTOS tipos{
+		if (current_function_name == "") {
+			ERROR_TYPE = DEBUGGING_TYPE;
+            yyerror("No hay funcion actual");
+            exit(1);
+        }
+        
+		Attributes* funct_attr = symbolTable.search_symbol(current_function_name);
+        if (funct_attr == nullptr) {
+			ERROR_TYPE = NON_DEF_FUNC;
+            yyerror(current_function_name.c_str());
+            exit(1);
+        }
 
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
@@ -854,10 +866,22 @@ parametro:
             exit(1);
         };
 
-        $$ = strdup($2);
+		funct_attr->info.push_back({string($2), attributes});
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
-
+		if (current_function_name == "") {
+			ERROR_TYPE = DEBUGGING_TYPE;
+            yyerror("No hay funcion actual");
+            exit(1);
+        }
+        
+		Attributes* funct_attr = symbolTable.search_symbol(current_function_name);
+        if (funct_attr == nullptr) {
+			ERROR_TYPE = NON_DEF_FUNC;
+            yyerror(current_function_name.c_str());
+            exit(1);
+        }
+		
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $1;
         attributes->scope = symbolTable.current_scope;
@@ -873,12 +897,14 @@ parametro:
             exit(1);
         };
 
-        $$ = strdup($1);
+		funct_attr->info.push_back({string($1), attributes});
     }
     ;
 
 declaracion_funcion:
-    firma_funcion abrir_scope T_IZQPAREN secuencia_parametros T_DERPAREN T_LANZA tipo_funcion T_IZQLLAVE instruccionesopt T_DERLLAVE cerrar_scope
+    firma_funcion abrir_scope T_IZQPAREN secuencia_parametros T_DERPAREN T_LANZA tipo_funcion {
+		current_function_name = "";
+	} T_IZQLLAVE instruccionesopt T_DERLLAVE cerrar_scope
     ;
 
 funcion:
@@ -946,7 +972,7 @@ void yyerror(const char *var) {
 	            cout << "Variable \"" << var << "\" ya fue definida.";
 	            break;
 	        case NON_DEF_FUNC:
-	            cout << "Funcion \"" << var << "\" no definida.";
+				cout << "Funcion \"" << var << "\" no definida.";
 	            break;
 	        case ALREADY_DEF_FUNC:
 	            cout << "Funcion \"" << var << "\" ya fue definida.";

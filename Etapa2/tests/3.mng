@@ -4,10 +4,13 @@ se_prende(){
 	echar_cuento fun1() lanza un_coño {
 		# Hacer un print de global
 	};
-	echar_cuento fun2(p1 : mango, p2 : manguangua) lanza mango {
+	culito p1 : mango = 23;
+	echar_cuento fun2(p1 : mango, p2 : manguangua, p3 : mango) lanza mango {
 		p1 = 2;
 		p2 = 3.0;
 		lanzate p1;
 	};
+	
+	# Falta verificar la llamada a funciones con cantidad incorrecta de parametros
 	culito value : mango = fun2(1, 2.0);
 };
