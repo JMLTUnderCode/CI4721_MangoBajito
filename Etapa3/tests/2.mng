@@ -1,0 +1,12 @@
+# Test 2: Definicion de bucle indeterminado y determinado
+culito suma: mango = 0;
+se_prende(){
+	culito n: mango;
+	repite_burda i entre 0 hasta 3 {
+		n = 100;
+	};
+	echale_bolas_si(Sisa){
+		n = 1;
+	};
+	n = -11;
+};
