@@ -32,6 +32,10 @@ public:
 		s_else,
 		s_asign,
 		s_exp,
+		s_while,
+		s_for,
+		rango_for,
+		flow_for,
 		// Agrega más tipos de nodos según sea necesario
 	};
 
@@ -63,9 +67,19 @@ public:
 			return "s_asign";
 		case NodeType::s_main:
 			return "s_main";
+		case NodeType::s_exp:
+			return "s_exp";
+		case NodeType::s_while:
+			return "s_while";
+		case NodeType::s_for:
+			return "s_for";
+		case NodeType::rango_for:
+			return "rango_for";
+		case NodeType::flow_for:
+			return "flow_for";
 		// Agrega más casos según sea necesario
 		default:
-			return "Unknown";
+			return "Pendiente, pon nombre!!!";
 		}
 	}
 	const std::vector<std::shared_ptr<ASTNode>> &getChildren() const { return children; }

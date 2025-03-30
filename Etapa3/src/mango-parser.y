@@ -165,7 +165,7 @@ instruccion:
       declaracion // ✓
     | asignacion  // ✓
     | condicion   // ✓
-    | bucle     
+    | bucle     // ✓
     | entrada_salida 
     | funcion 
     | manejo_error 
@@ -515,39 +515,39 @@ alternativa:
 
 bucle:
     indeterminado 
-    | determinado
+    | {iniciarNodo(ASTNode::NodeType::s_for);} determinado {cerrarNodo();}
     ;
 
 indeterminado:
-    T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+    {iniciarNodo(ASTNode::NodeType::s_while);} T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope {cerrarNodo();}
     ;
 var_ciclo_determinado:
-    T_IDENTIFICADOR T_ENTRE expresion T_HASTA expresion {
-        if (symbolTable.search_symbol($1) != nullptr){
+    {iniciarNodo(ASTNode::NodeType::rango_for);} T_IDENTIFICADOR T_ENTRE expresion T_HASTA expresion {cerrarNodo();} {
+        if (symbolTable.search_symbol($2) != nullptr){
 			ERROR_TYPE = ALREADY_DEF_VAR;
-            yyerror($1);
+            yyerror($2);
             exit(1);
         };
 
         Attributes *attributes = new Attributes();
-        attributes->symbol_name = $1;
+        attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
         attributes->info.push_back({"CICLO FOR", nullptr});
         attributes->type = symbolTable.search_symbol("mango");
         attributes->category = VARIABLE;
 
-        switch($3.type) {
+        switch($4.type) {
             case ExpresionAttribute::INT:
-                attributes->value = $3.ival;
+                attributes->value = $4.ival;
                 break;
             case ExpresionAttribute::FLOAT:
-                attributes->value = $3.fval;
+                attributes->value = $4.fval;
                 break;
             case ExpresionAttribute::BOOL:
-                attributes->value = (bool)$3.ival; // Asumiendo que se almacena en ival
+                attributes->value = (bool)$4.ival; // Asumiendo que se almacena en ival
                 break;
             case ExpresionAttribute::STRING:
-                attributes->value = string($3.sval); // Convierte a std::string
+                attributes->value = string($4.sval); // Convierte a std::string
                 break;
             case ExpresionAttribute::POINTER:
                 // Manejar punteros según sea necesario
@@ -557,16 +557,16 @@ var_ciclo_determinado:
                 attributes->value = nullptr;
         }
 
-        if (!symbolTable.insert_symbol($1, *attributes)){
+        if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_VAR;
-            yyerror($1);
+            yyerror($2);
             exit(1);
         };
     }
     ;
 determinado:
-    T_REPITEBURDA abrir_scope var_ciclo_determinado T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
-    | T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW T_VALUE T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+    T_REPITEBURDA abrir_scope var_ciclo_determinado T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope
+    | T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW T_VALUE T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::flow_for); cerrarNodo(); iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope
     ;
 
 entrada_salida:
