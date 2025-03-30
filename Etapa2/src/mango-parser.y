@@ -28,15 +28,32 @@ const char* current_array_base_type = nullptr;
 %}
 
 %code requires {
+    #include <cstring>
 	struct ExpresionAttribute {
-		enum Type { INT, FLOAT, DOUBLE, BOOL, STRING, POINTER, ID} type;
+		enum Type { INT, FLOAT, DOUBLE, BOOL, STRING, POINTER, ID, CHAR} type;
 		union {
 			int ival;
 			float fval;
 			double dval;
 			char* sval;
 		};
-	};
+	};       
+}
+
+%code requires {
+    inline char* typeToString(ExpresionAttribute::Type type) {
+        switch (type) {
+            case ExpresionAttribute::INT:    return "mango";
+            case ExpresionAttribute::FLOAT:  return "manguita";
+            case ExpresionAttribute::DOUBLE: return "manguangua";
+            case ExpresionAttribute::BOOL:   return "bool";
+            case ExpresionAttribute::CHAR: return "negro";
+            case ExpresionAttribute::STRING: return "higuerote";
+            case ExpresionAttribute::POINTER:return "pointer";
+            case ExpresionAttribute::ID:     return "id";
+            default:                         return "unknown";
+        }
+    }     
 }
 
 %union {
@@ -432,7 +449,8 @@ asignacion:
         int array_size = get<int>(array_attr->value);
         
         if (index < 0 || index >= array_size) {
-            string error = "Índice " + to_string(index) + " fuera de rango [0-" + to_string(array_size-1) + "]";
+            string error = to_string(index);
+            ERROR_TYPE = SEGMENTATION_FAULT;
             yyerror(error.c_str());
             exit(1);
         }
@@ -440,14 +458,35 @@ asignacion:
         std::string element_name = std::string($1) + "[" + std::to_string(index) + "]";
         Attributes* array_element_attributes = symbolTable.search_symbol(element_name.c_str());
         
-        // Validar tipo
-        /*if (!check_type_compatibility(array_attr->type, $6)) {
-            string error = "Tipo incompatible. Esperado: " + array_attr->type->symbol_name;
-            ERROR_TYPE = SEMANTIC_TYPE;
-            yyerror(error.c_str());
-            exit(1);
-        }*/
+    if (array_attr->type->symbol_name != typeToString($6.type)) {
+        string error = array_attr->type->symbol_name;
+        ERROR_TYPE = TYPE_ERROR;
+        yyerror(error.c_str());
+        exit(1);
+    }
         
+
+        /*switch($1.type) {
+	        case ExpresionAttribute::INT:
+	            $$.ival = $1.ival;
+	            break;
+	        case ExpresionAttribute::FLOAT:
+	            $$.fval = $1.fval;
+	            break;
+	        case ExpresionAttribute::BOOL:
+	            $$.ival = (bool)$1.ival; // Asumiendo que se almacena en ival
+	            break;
+	        case ExpresionAttribute::STRING:
+                $$.sval = $1.sval; // Convierte a std::string
+	            break;
+            case ExpresionAttribute::DOUBLE:
+                $$.dval = $1.dval;
+	        default:
+                break;
+        }*/
+
+
+
         // Asignar valor
         switch($6.type) {
             case ExpresionAttribute::INT:
@@ -1001,6 +1040,12 @@ void yyerror(const char *var) {
 	        case VAR_TRY:
 				cout << "Variable \"" << var << "\" es de estructura fuera_del_perol. No se admite cambiar su valor.";
 	            break;
+            case TYPE_ERROR:
+				cout << "Tipo incompatible. Esperado: \""  << var << "\"";
+	            break;     
+            case SEGMENTATION_FAULT:
+                cout << "Indice \"" << var << "\" fuera de rango.";
+                break;    
 	        case DEBUGGING_TYPE:
 				cout << var;
 	            break;

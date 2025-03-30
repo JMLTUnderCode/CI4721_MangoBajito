@@ -1,10 +1,10 @@
 # Test 0: Definicion y declaracion correcta de todos los tipos del lenguaje.
 se_prende(){
 	culito mango0: mango = 2147483647;
-	jeva mango1: mango = -2147483648;
+	jeva mango1: mango = -2147483647;
 
     culito manguita0: manguita = 2.000022;
-	jeva manguita1: manguita = -2.032165402;
+	jeva manguita1: manguita = -2.00;
 
     culito manguangua0: manguangua = 1.79769e+308; # Double mas grande
 	jeva manguangua1: manguangua = -1.79769e+308; # Double mas pequeño

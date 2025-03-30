@@ -4,5 +4,5 @@
 se_prende(){
     culito A: mango[4];
 
-A[0] = 1;
+    A[9] = 9;
 };
