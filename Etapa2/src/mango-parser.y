@@ -175,22 +175,38 @@ declaracion:
             }
 
             // Crear atributos del array
-            Attributes* array_attr = new Attributes();
-            array_attr->symbol_name = $2;
-            array_attr->category = ARRAY;
-            array_attr->scope = symbolTable.current_scope;
-            array_attr->type = base_type_attr;
-            array_attr->value = current_array_size;
+            Attributes* attributes = new Attributes();
+            attributes->symbol_name = $2;
+            attributes->category = ARRAY;
+            attributes->scope = symbolTable.current_scope;
+            attributes->type = base_type_attr;
+            attributes->value = current_array_size;
+
+            for (int i = 0; i < current_array_size; i++) {
+                Attributes *elem = new Attributes();
+                elem->symbol_name = std::string($2) + "[" + std::to_string(i) + "]";
+                elem->scope = symbolTable.current_scope;
+                elem->category = ARRAY_ELEMENT;
+                elem->type = base_type_attr;
+                elem->value = nullptr;
+
+                // Usar el índice como clave en formato string
+                attributes->info.push_back({std::string($2) + "[" + std::to_string(i) + "]", elem});
+    
+                // Opcional: Insertar elemento en tabla de símbolos
+                if (!symbolTable.insert_symbol(elem->symbol_name, *elem)) {
+                    ERROR_TYPE = ALREADY_DEF_VAR;
+                    yyerror(elem->symbol_name.c_str());
+                    exit(1);
+                }
+            }
 
             // Insertar en tabla de símbolos
-            if (!symbolTable.insert_symbol($2, *array_attr)) {
+            if (!symbolTable.insert_symbol($2, *attributes)) {
                 ERROR_TYPE = ALREADY_DEF_VAR;
                 yyerror($2);
                 exit(1);
             }
-
-            // Preparar para inicialización
-            current_array_name = $2;
         }
         // Caso normal (no array)
         else {
@@ -290,7 +306,6 @@ declaracion:
     }
 	| declaracion_funcion
     ;
-
 
 
 declaracion_aputador:
@@ -398,6 +413,61 @@ asignacion:
 	    }
     }
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asignacion expresion
+    | T_IDENTIFICADOR T_IZQCORCHE expresion T_DERCORCHE operadores_asignacion expresion {
+        Attributes* array_attr = symbolTable.search_symbol($1);
+        
+        if (!array_attr || array_attr->category != ARRAY) {
+            ERROR_TYPE = NON_DEF_VAR;
+            yyerror($1);
+            exit(1);
+        }
+        
+        if ($3.type != ExpresionAttribute::INT) {
+            ERROR_TYPE = SEMANTIC_TYPE;
+            yyerror("Índice de array debe ser entero");
+            exit(1);
+        }
+        
+        int index = $3.ival;
+        int array_size = get<int>(array_attr->value);
+        
+        if (index < 0 || index >= array_size) {
+            string error = "Índice " + to_string(index) + " fuera de rango [0-" + to_string(array_size-1) + "]";
+            yyerror(error.c_str());
+            exit(1);
+        }
+
+        std::string element_name = std::string($1) + "[" + std::to_string(index) + "]";
+        Attributes* array_element_attributes = symbolTable.search_symbol(element_name.c_str());
+        
+        // Validar tipo
+        /*if (!check_type_compatibility(array_attr->type, $6)) {
+            string error = "Tipo incompatible. Esperado: " + array_attr->type->symbol_name;
+            ERROR_TYPE = SEMANTIC_TYPE;
+            yyerror(error.c_str());
+            exit(1);
+        }*/
+        
+        // Asignar valor
+        switch($6.type) {
+            case ExpresionAttribute::INT:
+                array_element_attributes->value = $6.ival;
+                break;
+            case ExpresionAttribute::FLOAT:
+                array_element_attributes->value = $6.fval;
+                break;
+            case ExpresionAttribute::STRING:
+                array_element_attributes->value = string($6.sval);
+                break;
+            default:
+                ERROR_TYPE = SEMANTIC_TYPE;
+                yyerror("Tipo no soportado para array");
+                exit(1);
+        }
+        
+        // Actualizar en tabla de símbolos
+        symbolTable.insert_symbol(array_element_attributes->symbol_name, *array_element_attributes);
+    }    
     ;
 
 valores_booleanos:
@@ -527,8 +597,7 @@ expresion:
 
             $$.type = ExpresionAttribute::INT;
             $$.ival = get<int>(var1->value) + get<int>(var2->value);
-        }
-        
+        }       
     }
     | expresion T_OPRESTA expresion
     | expresion T_OPMULT expresion

@@ -87,7 +87,10 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 - [ ] Guardar apuntadores en general.
 	- [ ] Chequear la informacion de los elementos apuntadores(funcion print_info).
 - [ ] Guardar lista de valores de un array.
-	- [ ] Guardar informacion relevante de los array.
+	- [x] Inicializacion de arrays.
+	- [x] Edit de valores en array.
+	- [ ] Verificacion de tipos.
+	- [ ] Acceso directo a valores del array.
     - [ ] Analizar logica para multidimencion. Guardado, informacion, etc.
 - [x] Errores:
 	- [x] Utilizacion de variable sin definir.
