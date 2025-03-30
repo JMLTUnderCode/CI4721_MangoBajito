@@ -47,4 +47,13 @@ se_prende(){
 		attr_struct_3 : tas_claro;
 	};
 
+	# Analizar esta parte para el caso de usar variantes y structs como types.
+
+	culito var_union : MiUnion;
+	var_union.attr_struct_1 = 32;
+
+	culito var_struct : MiEstructura;
+	var_struct.attr_struct_1 = "hola";
+	var_struct.attr_struct_2 = 32;
+	var_struct.attr_struct_3 = Sisa;
 };
