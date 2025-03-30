@@ -3,6 +3,7 @@
 #include <mango-parser.tab.hpp>
 #include "ast.hpp" // Para ASTNode
 #include <stack>   // Para std::stack
+#include <string>
 
 extern int yyparse();
 extern FILE *yyin;
@@ -24,7 +25,8 @@ int main(int argc, char **argv)
 
     std::cout << "Analizando el código en Mango Bajito..." << std::endl;
     yyparse();
-    // printAST(ancestros.top()); // Imprime el AST completo
+
+    printAST(ancestros.top());
     std::cout << "Análisis finalizado." << std::endl;
 
     if (yyin)

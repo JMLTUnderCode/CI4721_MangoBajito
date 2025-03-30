@@ -141,14 +141,12 @@ programa:
     instrucciones 
     { cerrarNodo(); }
     main cerrar_scope
-    { cerrarNodo(); }
     | { iniciarNodo(ASTNode::NodeType::program_main); }
     abrir_scope main cerrar_scope
-    { cerrarNodo(); }
     ;
 
 main:
-    T_SE_PRENDE abrir_scope T_IZQPAREN T_DERPAREN T_IZQLLAVE instruccionesopt T_DERLLAVE T_PUNTOCOMA cerrar_scope { 
+    T_SE_PRENDE abrir_scope {iniciarNodo(ASTNode::NodeType::s_main);}T_IZQPAREN T_DERPAREN T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instruccionesopt {cerrarNodo();} T_DERLLAVE T_PUNTOCOMA cerrar_scope {cerrarNodo();} { 
 		symbolTable.print_table(); 
 		cout << "Programa válido: "; 
 	} 
@@ -164,9 +162,9 @@ instruccionesopt:
     ;
 
 instruccion:
-    declaracion 
-    | asignacion 
-    | condicion 
+      declaracion // ✓
+    | asignacion  // ✓
+    | condicion   // ✓
     | bucle     
     | entrada_salida 
     | funcion 
@@ -184,6 +182,9 @@ instruccion:
 
 declaracion:
     tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos {
+
+        iniciarNodo(ASTNode::NodeType::Undefined);
+
         if (symbolTable.search_symbol($4) == nullptr){
 			ERROR_TYPE = NON_DEF_TYPE;
             yyerror($4);
@@ -198,22 +199,55 @@ declaracion:
 
         if (strcmp($1, "POINTER_V") == 0){
             attributes->category = POINTER_V;
+            ancestros.top()->informacion.es_apuntador = "true";
+            ancestros.top()->type = ASTNode::NodeType::s_decl_culito;
+
         } else if (strcmp($1, "POINTER_C") == 0){
             attributes->category = POINTER_C;
+            ancestros.top()->informacion.es_apuntador = "true";
+            ancestros.top()->type = ASTNode::NodeType::s_decl_jeva;
         } else if (strcmp($1, "VARIABLE") == 0){
             attributes->category = VARIABLE;
+            ancestros.top()->type = ASTNode::NodeType::s_decl_culito;
         } else if (strcmp($1, "CONSTANTE") == 0){
             attributes->category = CONSTANT;
+            ancestros.top()->type = ASTNode::NodeType::s_decl_jeva;
         };
+
+        ancestros.top()->informacion.tipo = strdup($4);
+        ancestros.top()->informacion.identificador = strdup($2);
 
         if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($2);
             exit(1);
         };
+
+        cerrarNodo();
     }
 
-    | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
+    | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION {
+        iniciarNodo(ASTNode::NodeType::s_asign);
+        ancestros.top()->informacion.tipo_asignacion = strdup("=");
+
+        iniciarNodo(ASTNode::NodeType::Undefined);
+        if (strcmp($1, "POINTER_V") == 0){
+            ancestros.top()->informacion.es_apuntador = "true";
+            ancestros.top()->type = ASTNode::NodeType::s_decl_culito;
+        } else if (strcmp($1, "POINTER_C") == 0){
+            ancestros.top()->informacion.es_apuntador = "true";
+            ancestros.top()->type = ASTNode::NodeType::s_decl_jeva;
+        } else if (strcmp($1, "VARIABLE") == 0){
+            ancestros.top()->type = ASTNode::NodeType::s_decl_culito;
+        } else if (strcmp($1, "CONSTANTE") == 0){
+            ancestros.top()->type = ASTNode::NodeType::s_decl_jeva;
+        };
+        ancestros.top()->informacion.tipo = strdup($4);
+        ancestros.top()->informacion.identificador = strdup($2);
+
+        cerrarNodo();
+    }  expresion {
+        cerrarNodo();
         if (symbolTable.search_symbol($4) == nullptr){
 			ERROR_TYPE = NON_DEF_TYPE;
             yyerror($4);
@@ -236,30 +270,30 @@ declaracion:
             attributes->category = CONSTANT;
         };
                 
-	    switch($6.type) {
+	    switch($7.type) {
 	        case ExpresionAttribute::INT:
-	            cout << "ASIGNANDO ENTERO: valor = " << $6.ival << endl;
-	            attributes->value = $6.ival;
+	            cout << "ASIGNANDO ENTERO: valor = " << $7.ival << endl;
+	            attributes->value = $7.ival;
 	            break;
 	        
 	        case ExpresionAttribute::FLOAT:
-	            //cout << "ASIGNANDO FLOAT: valor = " << $6.fval << endl;
-	            attributes->value = $6.fval;
+	            //cout << "ASIGNANDO FLOAT: valor = " << $7.fval << endl;
+	            attributes->value = $7.fval;
 	            break;
 	        
 			case ExpresionAttribute::DOUBLE:
-	            //cout << "ASIGNANDO DOUBLE: valor = " << $6.dval << endl;
-	            attributes->value = $6.dval;
+	            //cout << "ASIGNANDO DOUBLE: valor = " << $7.dval << endl;
+	            attributes->value = $7.dval;
 	            break;
 
 	        case ExpresionAttribute::BOOL:
-	            //cout << "ASIGNANDO BOOL: valor = " << (strcmp($6.sval, "Sisa") == 0 ? "true" : "false") << endl;
-	            attributes->value = strcmp($6.sval, "Sisa") == 0 ? true : false;
+	            //cout << "ASIGNANDO BOOL: valor = " << (strcmp($7.sval, "Sisa") == 0 ? "true" : "false") << endl;
+	            attributes->value = strcmp($7.sval, "Sisa") == 0 ? true : false;
 	            break;
 	        
 	        case ExpresionAttribute::STRING:
-	            //cout << "ASIGNANDO STRING: valor = \"" << $6.sval << "\"" << endl;
-	            attributes->value = string($6.sval);
+	            //cout << "ASIGNANDO STRING: valor = \"" << $7.sval << "\"" << endl;
+	            attributes->value = string($7.sval);
 	            break;
 	        
 	        case ExpresionAttribute::POINTER:
@@ -292,7 +326,7 @@ tipo_declaracion:
     ;
 
 tipos:
-    tipo_valor 
+    tipo_valor {$$ = strdup($1);}
     | tipos T_IZQCORCHE expresion T_DERCORCHE { $$ = strdup("array$"); }
     ;
 
@@ -471,12 +505,12 @@ expresion:
     ;
 
 condicion:
-    {iniciarNodo(ASTNode::NodeType::s_if);} T_SIESASI T_IZQPAREN {iniciarNodo(ASTNode::NodeType::s_exp);} expresion {cerrarNodo();} T_DERPAREN abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope alternativa
+    {iniciarNodo(ASTNode::NodeType::s_if);} T_SIESASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope alternativa {cerrarNodo();} 
     ;
 
 alternativa:
-    | {iniciarNodo(ASTNode::NodeType::s_if_else);} T_OASI T_IZQPAREN {iniciarNodo(ASTNode::NodeType::s_exp);} expresion {cerrarNodo();} T_DERPAREN abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope alternativa
-    | {iniciarNodo(ASTNode::NodeType::s_else);} T_NOJODA abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope
+    | {iniciarNodo(ASTNode::NodeType::s_if_else);} T_OASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope {cerrarNodo();} alternativa
+    | {iniciarNodo(ASTNode::NodeType::s_else);} T_NOJODA abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope {cerrarNodo();}
     ;
 
 bucle:
