@@ -612,7 +612,6 @@ struct:
 firma_funcion: 
     T_ECHARCUENTO T_IDENTIFICADOR {
 
-
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
@@ -628,7 +627,7 @@ firma_funcion:
             exit(1);
         };
 
-        $$ = $2;
+        $$ = strdup($2);
     }
     ;
 
@@ -638,8 +637,8 @@ tipo_funcion:
     ;
 
 secuencia_parametros:
-    | secuencia_parametros T_COMA parametro
-    | parametro
+    | secuencia_parametros T_COMA parametro 
+	| parametro
     ;
 
 parametro:
@@ -659,7 +658,7 @@ parametro:
             exit(1);
         };
 
-        $$ = $2;
+        $$ = strdup($2);
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
 
@@ -678,7 +677,7 @@ parametro:
             exit(1);
         };
 
-        $$ = $1;
+        $$ = strdup($1);
     }
     ;
 
