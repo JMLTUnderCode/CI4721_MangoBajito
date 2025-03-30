@@ -23,6 +23,8 @@ errorType ERROR_TYPE = SEMANTIC_TYPE; // Permite manejar un error particular de 
 string current_struct_name = "";
 string current_function_name = "";
 string current_array_name = "";
+int current_array_size = 0;
+const char* current_array_base_type = nullptr;
 %}
 
 %code requires {
@@ -150,33 +152,75 @@ instruccion:
 
 declaracion:
     tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos {
-        if (symbolTable.search_symbol($4) == nullptr){
-			ERROR_TYPE = NON_DEF_TYPE;
-            yyerror($4);
-            exit(1);
-        };
+        // Caso para arrays (detectado por variables globales)
+        if (current_array_size > 0 && current_array_base_type != nullptr) {
+            // Verificar que el tipo base existe
+            Attributes* base_type_attr = symbolTable.search_symbol(current_array_base_type);
+            if (base_type_attr == nullptr) {
+                ERROR_TYPE = NON_DEF_TYPE;
+                yyerror(current_array_base_type);
+                exit(1);
+            }
 
-		Attributes *attributes = new Attributes();
-        attributes->symbol_name = $2;
-        attributes->scope = symbolTable.current_scope;
-        attributes->info.push_back({"-", nullptr});
-        attributes->type = symbolTable.search_symbol($4);
+            // Validar categoría de declaración
+            if (strcmp($1, "CONSTANTE") == 0) {
+                ERROR_TYPE = SEMANTIC_TYPE;
+                yyerror("No se pueden declarar arrays constantes");
+                exit(1);
+            }
+            if (strcmp($1, "POINTER_C") == 0 || strcmp($1, "POINTER_V") == 0) {
+                ERROR_TYPE = SEMANTIC_TYPE;
+                yyerror("No se pueden declarar punteros a arrays");
+                exit(1);
+            }
 
-        if (strcmp($1, "POINTER_V") == 0){
-            attributes->category = POINTER_V;
-        } else if (strcmp($1, "POINTER_C") == 0){
-            attributes->category = POINTER_C;
-        } else if (strcmp($1, "VARIABLE") == 0){
-            attributes->category = VARIABLE;
-        } else if (strcmp($1, "CONSTANTE") == 0){
-            attributes->category = CONSTANT;
-        };
+            // Crear atributos del array
+            Attributes* array_attr = new Attributes();
+            array_attr->symbol_name = $2;
+            array_attr->category = ARRAY;
+            array_attr->scope = symbolTable.current_scope;
+            array_attr->type = base_type_attr;
+            array_attr->value = current_array_size;
 
-        if (!symbolTable.insert_symbol($2, *attributes)){
-			ERROR_TYPE = ALREADY_DEF_VAR;
-            yyerror($2);
-            exit(1);
-        };
+            // Insertar en tabla de símbolos
+            if (!symbolTable.insert_symbol($2, *array_attr)) {
+                ERROR_TYPE = ALREADY_DEF_VAR;
+                yyerror($2);
+                exit(1);
+            }
+
+            // Preparar para inicialización
+            current_array_name = $2;
+        }
+        // Caso normal (no array)
+        else {
+            if (symbolTable.search_symbol($4) == nullptr) {
+                ERROR_TYPE = NON_DEF_TYPE;
+                yyerror($4);
+                exit(1);
+            }
+
+            Attributes *attributes = new Attributes();
+            attributes->symbol_name = $2;
+            attributes->scope = symbolTable.current_scope;
+            attributes->type = symbolTable.search_symbol($4);
+
+            if (strcmp($1, "POINTER_V") == 0) {
+                attributes->category = POINTER_V;
+            } else if (strcmp($1, "POINTER_C") == 0) {
+                attributes->category = POINTER_C;
+            } else if (strcmp($1, "VARIABLE") == 0) {
+                attributes->category = VARIABLE;
+            } else if (strcmp($1, "CONSTANTE") == 0) {
+                attributes->category = CONSTANT;
+            }
+
+            if (!symbolTable.insert_symbol($2, *attributes)) {
+                ERROR_TYPE = ALREADY_DEF_VAR;
+                yyerror($2);
+                exit(1);
+            }
+        }
     }
 
     | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
@@ -247,6 +291,8 @@ declaracion:
 	| declaracion_funcion
     ;
 
+
+
 declaracion_aputador:
     { $$ = strdup(""); }
     | T_AHITA   { $$ = strdup("POINTER"); }
@@ -259,7 +305,24 @@ tipo_declaracion:
 
 tipos:
     tipo_valor 
-    | tipos T_IZQCORCHE expresion T_DERCORCHE { $$ = strdup("array$"); }
+    | tipos T_IZQCORCHE expresion T_DERCORCHE {
+        // Verificar que la expresión sea un valor entero válido
+        if ($3.type != ExpresionAttribute::INT) {
+            yyerror("El tamaño del arreglo debe ser un número entero");
+            exit(1);
+        }
+
+    // Obtener tipo base y tamaño
+    char* base_type = $1;
+    int array_size = $3.ival;
+
+    // Registrar tamaño en variable global temporal
+    current_array_size = array_size; // Variable global para tamaño
+    current_array_base_type = base_type; // Variable global para tipo base
+
+    $$ = base_type; // Retornar tipo base para validación
+
+    }
     ;
 
 tipo_valor:
@@ -304,6 +367,7 @@ asignacion:
 
 	    switch($3.type) {
 	        case ExpresionAttribute::INT:
+                cout << "Asignando valor entero: " << $3.ival << " a la variable." << endl;
 	            attr_var->value = $3.ival;
 	            break;
 	        case ExpresionAttribute::FLOAT:
@@ -354,9 +418,53 @@ expresion_nuevo:
 expresion:
     T_IDENTIFICADOR {$$.sval = $1; $$.type = ExpresionAttribute::ID;}
     | T_VALUE {
-		if(current_array_name != ""){
+       if (current_array_name != "") {
+            Attributes *array_attr = symbolTable.search_symbol(current_array_name.c_str());
+            if (array_attr == nullptr) {
+                yyerror("Array no definido");
+                exit(1);
+            }
+            cout << "array_attr->category: " << array_attr->category << endl;
 
-		}
+            if (array_attr->category != ARRAY) {  // Asumiendo que ARRAY es una nueva categoría
+                yyerror("El identificador no es un array");
+                exit(1);
+            }
+
+            if (array_attr->category == VARIABLE) {
+                cout << "Agregando valor al array '" << current_array_name << "': ";
+                switch ($1.type) {
+                    case ExpresionAttribute::INT: {
+                        cout << $1.ival << endl;
+                        Attributes *elem = new Attributes();
+                        elem->value = $1.ival;
+                        // Se inserta en info como par {cadena, puntero a Attributes}
+                        array_attr->info.push_back({string(""), elem});
+                        break;
+                    }
+                    case ExpresionAttribute::FLOAT: {
+                        cout << $1.fval << endl;
+                        Attributes *elem = new Attributes();
+                        elem->value = $1.fval;
+                        array_attr->info.push_back({string(""), elem});
+                        break;
+                    }
+                    case ExpresionAttribute::STRING: {
+                        cout << $1.sval << endl;
+                        Attributes *elem = new Attributes();
+                        elem->value = string($1.sval);
+                        array_attr->info.push_back({string(""), elem});
+                        break;
+                    }
+                    default:
+                        yyerror("Tipo no soportado para agregar al array");
+                        exit(1);
+                }
+            } else {
+                yyerror("El identificador no es un array");
+                exit(1);
+            }
+        }
 		
         switch($1.type) {
 	        case ExpresionAttribute::INT:
@@ -384,7 +492,18 @@ expresion:
     | expresion_nuevo
     | arreglo
     | T_NELSON expresion
-	| T_OPRESTA expresion %prec T_SIGNO_MENOS
+    | T_OPRESTA expresion %prec T_OPRESTA {
+        if ($2.type == ExpresionAttribute::INT) {
+            $$.type = ExpresionAttribute::INT;
+            $$.ival = -$2.ival;
+        } else if ($2.type == ExpresionAttribute::FLOAT) {
+            $$.type = ExpresionAttribute::FLOAT;
+            $$.fval = -$2.fval;
+        } else {
+            yyerror("Operación de signo negativo no soportada para este tipo");
+            exit(1);
+        }
+    }
     | expresion T_FLECHA expresion
     | expresion T_OPSUMA expresion {
         if($1.type == ExpresionAttribute::INT && $3.type == ExpresionAttribute::INT){
@@ -699,6 +818,8 @@ funcion:
 arreglo:
     T_IZQCORCHE secuencia T_DERCORCHE {
 		current_array_name = "";
+        int current_array_size = 0;
+        const char* current_array_base_type = nullptr;
 	}
     ;
 

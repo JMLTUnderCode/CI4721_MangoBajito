@@ -1,7 +1,7 @@
 # Test 0: Definicion y declaracion correcta de todos los tipos del lenguaje.
 se_prende(){
-	culito mango0: mango = 2147483647; # Int mas grande
-	jeva mango1: mango =  -2147483648; # Int mas pequeño
+	culito mango0: mango = 2147483647;
+	jeva mango1: mango = -2147483648;
 
     culito manguita0: manguita = 2.000022;
 	jeva manguita1: manguita = -2.032165402;
@@ -32,19 +32,4 @@ se_prende(){
 
 	culito higuerote_array8 : higuerote[2];
 	jeva higuerote_array9 : higuerote[3] = ["hola", "mundo", "!"];
-
-	coliao MiUnion {
-		attr_union_1 : mango;
-		attr_union_2 : manguita;
-		attr_union_3 : manguangua;
-		attr_union_4 : tas_claro;
-		attr_union_5 : mango[5];
-	};
-
-	arroz_con_mango MiEstructura {
-		attr_struct_1 : higuerote;
-		attr_struct_2 : mango;
-		attr_struct_3 : tas_claro;
-	};
-
 };

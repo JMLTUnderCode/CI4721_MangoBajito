@@ -80,6 +80,7 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
   - [x] Agregarlo a la gramática
   - [ ] Lógica de guardado en Tabla de Símbolos
 - [ ] Revisar operaciones
+	- [x] Creacion de numeros negativos
 	- [ ] Asignaciones +=, -=, *=
 	- [ ] Decremento y aumento ++ y --
 	- [ ] Expresiones logicas y anidamiento de ellas

@@ -1,0 +1,6 @@
+# Test 5: Caso de Prueba Nro.5
+# Multiplicación de dos matrices, no necesariamente cuadradas
+
+se_prende(){
+    culito A: mango[1];
+};
