@@ -21,6 +21,8 @@ extern YYLTYPE yylloc;
 SymbolTable symbolTable = SymbolTable();
 errorType ERROR_TYPE = SEMANTIC_TYPE; // Permite manejar un error particular de tipo errorType
 string current_struct_name = "";
+string current_function_name = "";
+string current_array_name = "";
 %}
 
 %code requires {
@@ -298,6 +300,8 @@ asignacion:
             exit(1);
         }
 
+		current_array_name = string($1); // En caso de asignacion de arreglos.
+
 	    switch($3.type) {
 	        case ExpresionAttribute::INT:
 	            attr_var->value = $3.ival;
@@ -350,6 +354,10 @@ expresion_nuevo:
 expresion:
     T_IDENTIFICADOR {$$.sval = $1; $$.type = ExpresionAttribute::ID;}
     | T_VALUE {
+		if(current_array_name != ""){
+
+		}
+		
         switch($1.type) {
 	        case ExpresionAttribute::INT:
 	            $$.ival = $1.ival;
@@ -689,7 +697,9 @@ funcion:
 	T_IDENTIFICADOR T_IZQPAREN secuencia T_DERPAREN
 
 arreglo:
-    T_IZQCORCHE secuencia T_DERCORCHE
+    T_IZQCORCHE secuencia T_DERCORCHE {
+		current_array_name = "";
+	}
     ;
 
 var_manejo_error:
