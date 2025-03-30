@@ -28,6 +28,7 @@ public:
 		s_if_else,
 		s_else,
 		s_asign,
+		s_exp,
 		// Agrega más tipos de nodos según sea necesario
 	};
 

@@ -471,12 +471,12 @@ expresion:
     ;
 
 condicion:
-    T_SIESASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope alternativa
+    {iniciarNodo(ASTNode::NodeType::s_if);} T_SIESASI T_IZQPAREN {iniciarNodo(ASTNode::NodeType::s_exp);} expresion {cerrarNodo();} T_DERPAREN abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope alternativa
     ;
 
 alternativa:
-    | T_OASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope alternativa
-    | T_NOJODA abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+    | {iniciarNodo(ASTNode::NodeType::s_if_else);} T_OASI T_IZQPAREN {iniciarNodo(ASTNode::NodeType::s_exp);} expresion {cerrarNodo();} T_DERPAREN abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope alternativa
+    | {iniciarNodo(ASTNode::NodeType::s_else);} T_NOJODA abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope
     ;
 
 bucle:
