@@ -95,7 +95,8 @@ enum errorType {
 	PARAMETERS_ERROR,
 	EMPTY_ARRAY_CONSTANT,
 	POINTER_ARRAY,
-	INT_SIZE_ARRAY
+	INT_SIZE_ARRAY,
+	INT_INDEX_ARRAY
 };
 
 // Declaración de errorTypeToString como extern

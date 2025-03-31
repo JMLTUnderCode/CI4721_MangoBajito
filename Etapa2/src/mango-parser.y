@@ -41,7 +41,8 @@ unordered_map<errorType, vector<string>> errorDictionary = {
     {PARAMETERS_ERROR, {}},
     {EMPTY_ARRAY_CONSTANT, {}},
     {POINTER_ARRAY, {}},
-    {INT_SIZE_ARRAY,{}}
+    {INT_SIZE_ARRAY,{}},
+    {INT_INDEX_ARRAY, {}}
 };
 
 errorType ERROR_TYPE = SEMANTIC_TYPE; // Permite manejar un error particular de tipo errorType
@@ -468,13 +469,13 @@ asignacion:
         string info_var = get<string>(attr_var->info[0].first);
         if (strcmp(info_var.c_str(), "CICLO FOR") == 0){
 			ERROR_TYPE = VAR_FOR;
-            yyerror("No se puede modificar una variable de un ciclo determinado");
+            yyerror(info_var.c_str());
             //exit(1);
         }
 
         if (strcmp(info_var.c_str(), "MANEJO ERROR") == 0){
 			ERROR_TYPE = VAR_TRY;
-            yyerror("No se puede modificar una variable de un meando/fuera_del_perol");
+            yyerror(info_var.c_str());
             //exit(1);
         }
 
@@ -538,8 +539,8 @@ asignacion:
             //exit(1);
         }
         if ($3.type != ExpresionAttribute::INT) {
-            ERROR_TYPE = SEMANTIC_TYPE;
-            yyerror("Índice de array debe ser entero");
+            ERROR_TYPE = INT_INDEX_ARRAY;
+            yyerror(typeToString($3.type));
             //exit(1);
         }
         
@@ -1312,7 +1313,10 @@ void yyerror(const char *var) {
                 break;
             case INT_SIZE_ARRAY:
                 error_msg += "Tamano de array no puede ser definido como: \"" + std::string(var) + "\". Solo admite enteros";
-                break;            
+                break;
+            case INT_INDEX_ARRAY:
+                error_msg += "El indice del array no puede ser definido como: \"" + std::string(var) + "\". Solo admite enteros"; 
+                break;           
             case DEBUGGING_TYPE:
                 error_msg += std::string(var);
                 break;

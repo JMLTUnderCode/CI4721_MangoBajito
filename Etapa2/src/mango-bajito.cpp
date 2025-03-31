@@ -20,7 +20,8 @@ vector<string> errorTypeToString = {
 	"PARAMETERS_ERROR",
 	"EMPTY_ARRAY_CONSTANT",
 	"POINTER_ARRAY",
-	"INT_SIZE_ARRAY"
+	"INT_SIZE_ARRAY",
+	"INT_INDEX_ARRAY"
 };
 
 // Función para agregar un error al diccionario

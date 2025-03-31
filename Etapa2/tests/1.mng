@@ -5,6 +5,7 @@ se_prende(){
 		a = 100;
 		culito a: mango;
 		jeva prueba: mango["a"]; # No tiene sentido.
+
 	echar_cuento fun2(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
 		p1 = 2;
 		p2 = 3.0;
@@ -17,7 +18,8 @@ se_prende(){
 	};
 	} o_asi (Sisa) {
 		culito b: mango;
-		jeva mi_array: mango[5]; # No tiene sentido.
+		culito mi_array: mango[5]; # No tiene sentido.
+		mi_array["a"] = 3;
 		jeva mi_array1 : mango[5] = [1,2,3,4,5]; # Si tiene sentido;
 	} nojoda {
 		culito a: mango;
