@@ -29,7 +29,7 @@ int current_function_parameters = 0;
 string current_function_type = "";
 
 string current_array_name = "";
-std::vector<int> current_array_size;
+int current_array_size = 0;
 const char* current_array_base_type = nullptr;
 
 %}
@@ -201,7 +201,7 @@ instruccion:
 declaracion:
     tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos {
         // Caso para arrays (detectado por variables globales)
-        if (current_array_size.size() > 0 && current_array_base_type != nullptr) {
+        if (current_array_size > 0 && current_array_base_type != nullptr) {
             // Verificar que el tipo base existe
             Attributes* base_type_attr = symbolTable.search_symbol(current_array_base_type);
             if (base_type_attr == nullptr) {
@@ -255,6 +255,10 @@ declaracion:
                 yyerror($2);
                 exit(1);
             }
+
+            string current_array_name = "";
+            int current_array_size = 0;
+            const char* current_array_base_type = nullptr;            
         }
         // Caso normal (no array)
         else {
@@ -286,7 +290,6 @@ declaracion:
             }
         }
     }
-
     | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
         if (symbolTable.search_symbol($4) == nullptr){
 			ERROR_TYPE = NON_DEF_TYPE;
@@ -1169,7 +1172,7 @@ funcion:
 arreglo:
     T_IZQCORCHE secuencia T_DERCORCHE {
 		current_array_name = "";
-        current_array_size.clear();
+        current_array_size = 0;
         const char* current_array_base_type = nullptr;
 	}
     ;

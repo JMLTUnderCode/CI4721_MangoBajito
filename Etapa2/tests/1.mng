@@ -1,13 +1,13 @@
 # Test 1: Definicion de Condicionales
 se_prende(){
-	si_es_asi (Sisa) {
-		culito a: mango;
-		a = 100;
-	} o_asi (Sisa) {
-		culito b: mango;
-		jeva mi_array: mango[5];
-	} nojoda {
-		culito a: mango;
-		culito c: mango;
-	};
+  si_es_asi (Sisa) {
+    culito a: mango;
+  } o_asi (Sisa) {
+    culito b: mango;
+    culito mi_array: mango[9]; # No tiene sentido.
+    jeva mi_array1 : mango = [1,2,3]; # Si tiene sentido;
+  } nojoda {
+    culito a: mango;
+    culito c: mango;
+  };
 };
