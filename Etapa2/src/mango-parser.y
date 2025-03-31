@@ -20,7 +20,29 @@ extern YYLTYPE yylloc;
 
 SymbolTable symbolTable = SymbolTable();
 
+// Inicialización del diccionario de errores
+unordered_map<errorType, vector<string>> errorDictionary = {
+    {NON_DEF_VAR, {}},
+    {ALREADY_DEF_VAR, {}},
+    {VAR_FOR, {}},
+    {VAR_TRY, {}},
+    {NON_DEF_FUNC, {}},
+    {ALREADY_DEF_FUNC, {}},
+    {NON_DEF_STRUCT, {}},
+    {ALREADY_DEF_STRUCT, {}},
+    {NON_DEF_UNION, {}},
+    {ALREADY_DEF_UNION, {}},
+    {NON_DEF_TYPE, {}},
+    {ALREADY_DEF_ATTR, {}},
+    {DEBUGGING_TYPE, {}},
+    {SEMANTIC_TYPE, {}},
+    {TYPE_ERROR, {}},
+    {SEGMENTATION_FAULT, {}},
+    {PARAMETERS_ERROR, {}},
+};
+
 errorType ERROR_TYPE = SEMANTIC_TYPE; // Permite manejar un error particular de tipo errorType
+bool FIRST_ERROR = false;
 
 string current_struct_name = "";
 
@@ -166,8 +188,12 @@ programa:
 
 main:
     T_SE_PRENDE abrir_scope T_IZQPAREN T_DERPAREN T_IZQLLAVE instruccionesopt T_DERLLAVE T_PUNTOCOMA cerrar_scope { 
-		symbolTable.print_table(); 
-		cout << "Programa válido: "; 
+		if (FIRST_ERROR) {
+			printErrors();
+		} else {
+			symbolTable.print_table(); 
+			cout << "Programa válido: "; 
+		}
 	} 
     ;
 
@@ -207,19 +233,19 @@ declaracion:
             if (base_type_attr == nullptr) {
                 ERROR_TYPE = NON_DEF_TYPE;
                 yyerror(current_array_base_type);
-                exit(1);
+                //exit(1);
             }
 
             // Validar categoría de declaración
             if (strcmp($1, "CONSTANTE") == 0) {
                 ERROR_TYPE = SEMANTIC_TYPE;
                 yyerror("No se pueden declarar arrays constantes");
-                exit(1);
+                //exit(1);
             }
             if (strcmp($1, "POINTER_C") == 0 || strcmp($1, "POINTER_V") == 0) {
                 ERROR_TYPE = SEMANTIC_TYPE;
                 yyerror("No se pueden declarar punteros a arrays");
-                exit(1);
+                //exit(1);
             }
 
             // Crear atributos del array
@@ -245,7 +271,7 @@ declaracion:
                 if (!symbolTable.insert_symbol(elem->symbol_name, *elem)) {
                     ERROR_TYPE = ALREADY_DEF_VAR;
                     yyerror(elem->symbol_name.c_str());
-                    exit(1);
+                    //exit(1);
                 }
             }
 
@@ -253,7 +279,7 @@ declaracion:
             if (!symbolTable.insert_symbol($2, *attributes)) {
                 ERROR_TYPE = ALREADY_DEF_VAR;
                 yyerror($2);
-                exit(1);
+                //exit(1);
             }
 
             string current_array_name = "";
@@ -265,7 +291,7 @@ declaracion:
             if (symbolTable.search_symbol($4) == nullptr) {
                 ERROR_TYPE = NON_DEF_TYPE;
                 yyerror($4);
-                exit(1);
+                //exit(1);
             }
 
             Attributes *attributes = new Attributes();
@@ -287,7 +313,7 @@ declaracion:
             if (!symbolTable.insert_symbol($2, *attributes)) {
                 ERROR_TYPE = ALREADY_DEF_VAR;
                 yyerror($2);
-                exit(1);
+                //exit(1);
             }
         }
     }
@@ -295,7 +321,7 @@ declaracion:
         if (symbolTable.search_symbol($4) == nullptr){
 			ERROR_TYPE = NON_DEF_TYPE;
             yyerror($4);
-            exit(1);
+            //exit(1);
         };
 
 		if (current_function_type != ""){ // En caso de asignacion de funciones.
@@ -304,7 +330,7 @@ declaracion:
 				ERROR_TYPE = TYPE_ERROR;
 				string error_message = type_id + "\". Recibido: \"" + current_function_type;
 				yyerror(error_message.c_str());
-				exit(1);
+				//exit(1);
 			}
 			current_function_type = "";
 		}
@@ -327,27 +353,22 @@ declaracion:
 
 	    switch($6.type) {
 	        case ExpresionAttribute::INT:
-	            cout << "ASIGNANDO ENTERO: valor = " << $6.ival << endl;
 	            attributes->value = $6.ival;
 	            break;
 	        
 	        case ExpresionAttribute::FLOAT:
-	            //cout << "ASIGNANDO FLOAT: valor = " << $6.fval << endl;
 	            attributes->value = $6.fval;
 	            break;
 	        
 			case ExpresionAttribute::DOUBLE:
-	            //cout << "ASIGNANDO DOUBLE: valor = " << $6.dval << endl;
 	            attributes->value = $6.dval;
 	            break;
 
 	        case ExpresionAttribute::BOOL:
-	            //cout << "ASIGNANDO BOOL: valor = " << (strcmp($6.sval, "Sisa") == 0 ? "true" : "false") << endl;
 	            attributes->value = strcmp($6.sval, "Sisa") == 0 ? true : false;
 	            break;
 	        
 	        case ExpresionAttribute::STRING:
-	            //cout << "ASIGNANDO STRING: valor = \"" << $6.sval << "\"" << endl;
 	            attributes->value = string($6.sval);
 	            break;
 
@@ -356,19 +377,17 @@ declaracion:
                 break;
 
 	        case ExpresionAttribute::POINTER:
-	            //cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
 	            attributes->value = nullptr;
 	            break;
 	        
 	        default:
-	            cout << "TIPO DESCONOCIDO: Asignando nullptr a: " << $2 << endl;
 	            attributes->value = nullptr;
 	    }
 
         if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($2);
-            exit(1);
+            //exit(1);
         };
     }
 	| declaracion_funcion
@@ -392,7 +411,7 @@ tipos:
         // Verificar que la expresión sea un valor entero válido
         if ($3.type != ExpresionAttribute::INT) {
             yyerror("El tamaño del arreglo debe ser un número entero");
-            exit(1);
+            //exit(1);
         }
 
 	    // Obtener tipo base y tamaño
@@ -410,7 +429,7 @@ tipos:
 		if (attribute == nullptr){
 			ERROR_TYPE = NON_DEF_VAR;
 			yyerror($1);
-			exit(1);
+			//exit(1);
 		}
 
 		$$ = strdup(attribute->symbol_name.c_str());
@@ -439,20 +458,20 @@ asignacion:
         if (attr_var == nullptr){
 			ERROR_TYPE = NON_DEF_VAR;
             yyerror($1);
-            exit(1);
+            //exit(1);
         };
         
         string info_var = get<string>(attr_var->info[0].first);
         if (strcmp(info_var.c_str(), "CICLO FOR") == 0){
 			ERROR_TYPE = VAR_FOR;
             yyerror("No se puede modificar una variable de un ciclo determinado");
-            exit(1);
+            //exit(1);
         }
 
         if (strcmp(info_var.c_str(), "MANEJO ERROR") == 0){
 			ERROR_TYPE = VAR_TRY;
             yyerror("No se puede modificar una variable de un meando/fuera_del_perol");
-            exit(1);
+            //exit(1);
         }
 
 		if (attr_var->category == ARRAY){ // En caso de asignacion de arreglos.
@@ -464,14 +483,13 @@ asignacion:
 				ERROR_TYPE = TYPE_ERROR;
 				string error_message = attr_var->type->symbol_name + "\". Recibido: \"" + current_function_type;
 				yyerror(error_message.c_str());
-				exit(1);
+				//exit(1);
 			}
 			current_function_type = "";
 		}
 
 	    switch($3.type) {
 	        case ExpresionAttribute::INT:
-                cout << "Asignando valor entero: " << $3.ival << " a la variable." << endl;
 	            attr_var->value = $3.ival;
 	            break;
 	        case ExpresionAttribute::FLOAT:
@@ -513,12 +531,12 @@ asignacion:
         if (!array_attr || array_attr->category != ARRAY) {
             ERROR_TYPE = NON_DEF_VAR;
             yyerror($1);
-            exit(1);
+            //exit(1);
         }
         if ($3.type != ExpresionAttribute::INT) {
             ERROR_TYPE = SEMANTIC_TYPE;
             yyerror("Índice de array debe ser entero");
-            exit(1);
+            //exit(1);
         }
         
         int index = $3.ival;
@@ -527,7 +545,7 @@ asignacion:
             string error = to_string(index);
             ERROR_TYPE = SEGMENTATION_FAULT;
             yyerror(error.c_str());
-            exit(1);
+            //exit(1);
         }
         std::string element_name = std::string($1) + "[" + std::to_string(index) + "]";
         Attributes* array_element_attributes = symbolTable.search_symbol(element_name.c_str());
@@ -536,7 +554,7 @@ asignacion:
             string error = array_attr->type->symbol_name;
             ERROR_TYPE = TYPE_ERROR;
             yyerror(error.c_str());
-            exit(1);
+            //exit(1);
         }
   
         // Asignar valor
@@ -569,7 +587,7 @@ asignacion:
             default:
                 ERROR_TYPE = SEMANTIC_TYPE;
                 yyerror("Tipo no soportado para array");
-                exit(1);
+                //exit(1);
         }
 
         // Actualizar en tabla de símbolos
@@ -604,7 +622,7 @@ expresion:
 				if (param_attr->type->symbol_name != var_attr->type->symbol_name) {
 					ERROR_TYPE = TYPE_ERROR;
 					yyerror(param_attr->type->symbol_name.c_str());
-					exit(1);
+					//exit(1);
 				}
 				current_function_parameters++;
 
@@ -612,7 +630,7 @@ expresion:
 				ERROR_TYPE = PARAMETERS_ERROR;
 				string error_message = "Error en la función '" + current_function_name + "': Excede la cantidad de parámetros.";
 				yyerror(error_message.c_str());
-				exit(1);
+				//exit(1);
 			}
 		}
 	}
@@ -621,77 +639,69 @@ expresion:
             Attributes *array_attr = symbolTable.search_symbol(current_array_name.c_str());
             if (array_attr == nullptr) {
                 yyerror("Array no definido");
-                exit(1);
+                //exit(1);
             }
-            cout << "array_attr->category: " << array_attr->category << endl;
 
             if (array_attr->category != ARRAY) {  // Asumiendo que ARRAY es una nueva categoría
                 yyerror("El identificador no es un array");
-                exit(1);
+                //exit(1);
             }
 
             if (array_attr->category == VARIABLE) {
-                cout << "Agregando valor al array '" << current_array_name << "': ";
-        switch ($1.type) {
-            case ExpresionAttribute::INT: {
-                cout << $1.ival << endl;
-                Attributes *elem = new Attributes();
-                elem->value = $1.ival;
-                // Se inserta en info como par {cadena, puntero a Attributes}
-                array_attr->info.push_back({string(""), elem});
-                break;
-            }
-            case ExpresionAttribute::FLOAT: {
-                cout << $1.fval << endl;
-                Attributes *elem = new Attributes();
-                elem->value = $1.fval;
-                array_attr->info.push_back({string(""), elem});
-                break;
-            }
-        case ExpresionAttribute::DOUBLE: {
-            cout << $1.dval << endl;
-            Attributes *elem = new Attributes();
-            elem->value = $1.dval;
-            array_attr->info.push_back({string(""), elem});
-            break;
-        }
-        case ExpresionAttribute::BOOL: {
-            cout << ($1.ival ? "true" : "false") << endl;
-            Attributes *elem = new Attributes();
-            elem->value = (bool)$1.ival;
-            array_attr->info.push_back({string(""), elem});
-            break;
-        }
-        case ExpresionAttribute::STRING: {
-            cout << $1.sval << endl;
-            Attributes *elem = new Attributes();
-            elem->value = string($1.sval);
-            array_attr->info.push_back({string(""), elem});
-            break;
-        }
-        case ExpresionAttribute::CHAR: {
-            cout << $1.cval << endl;
-            Attributes *elem = new Attributes();
-            elem->value = $1.cval; // Asume que $1.sval es un string y toma el primer carácter
-            array_attr->info.push_back({string(""), elem});
-            break;
-        }
-        case ExpresionAttribute::POINTER: {
-            cout << "nullptr" << endl;
-            Attributes *elem = new Attributes();
-            elem->value = nullptr; // Manejar punteros según sea necesario
-            array_attr->info.push_back({string(""), elem});
-            break;
-        }
-        default:
-            yyerror("Tipo no soportado para agregar al array");
-            exit(1);
-        }
+        		switch ($1.type) {
+		            case ExpresionAttribute::INT: {
+		                Attributes *elem = new Attributes();
+		                elem->value = $1.ival;
+		                // Se inserta en info como par {cadena, puntero a Attributes}
+		                array_attr->info.push_back({string(""), elem});
+		                break;
+		            }
+		            case ExpresionAttribute::FLOAT: {
+		                Attributes *elem = new Attributes();
+		                elem->value = $1.fval;
+		                array_attr->info.push_back({string(""), elem});
+		                break;
+            		}
+			        case ExpresionAttribute::DOUBLE: {
+			            Attributes *elem = new Attributes();
+			            elem->value = $1.dval;
+			            array_attr->info.push_back({string(""), elem});
+			            break;
+			        }
+			        case ExpresionAttribute::BOOL: {
+			            Attributes *elem = new Attributes();
+			            elem->value = (bool)$1.ival;
+			            array_attr->info.push_back({string(""), elem});
+			            break;
+			        }
+			        case ExpresionAttribute::STRING: {
+			            Attributes *elem = new Attributes();
+			            elem->value = string($1.sval);
+			            array_attr->info.push_back({string(""), elem});
+			            break;
+			        }
+			        case ExpresionAttribute::CHAR: {
+			            Attributes *elem = new Attributes();
+			            elem->value = $1.cval; // Asume que $1.sval es un string y toma el primer carácter
+			            array_attr->info.push_back({string(""), elem});
+			            break;
+			        }
+			        case ExpresionAttribute::POINTER: {
+			            Attributes *elem = new Attributes();
+			            elem->value = nullptr; // Manejar punteros según sea necesario
+			            array_attr->info.push_back({string(""), elem});
+			            break;
+			        }
+			        default:
+			            yyerror("Tipo no soportado para agregar al array");
+			            //exit(1);
+				}
             } else {
                 yyerror("El identificador no es un array");
-                exit(1);
+                //exit(1);
             }
-        }
+		}
+
 		if (current_function_name != "") {
 			Attributes* func_attr = symbolTable.search_symbol(current_function_name);
 			if (current_function_parameters < func_attr->info.size()) { // Si hay parámetros.
@@ -699,7 +709,7 @@ expresion:
 				if (param_attr->type->symbol_name != typeToString($1.type)) {
 					ERROR_TYPE = TYPE_ERROR;
 					yyerror(param_attr->type->symbol_name.c_str());
-					exit(1);
+					//exit(1);
 				}
 				current_function_parameters++;
 
@@ -707,7 +717,7 @@ expresion:
 				ERROR_TYPE = PARAMETERS_ERROR;
 				string error_message = "Error en la función '" + current_function_name + "': Excede la cantidad de parámetros.";
 				yyerror(error_message.c_str());
-				exit(1);
+				//exit(1);
 			}
 		}
 		
@@ -735,7 +745,7 @@ expresion:
                 break;
             default:
                 yyerror("Tipo no soportado");
-                exit(1);
+                //exit(1);
         }
     }
     | T_PELABOLA
@@ -758,7 +768,7 @@ expresion:
         }
         else {
             yyerror("Operación de signo negativo no soportada para este tipo");
-            exit(1);
+            //exit(1);
         }
     }
     | expresion T_FLECHA expresion
@@ -815,13 +825,13 @@ expresion:
         if (!array_attr || array_attr->category != ARRAY) {
             ERROR_TYPE = NON_DEF_VAR;
             yyerror($1);
-            exit(1);
+            //exit(1);
         }
         
         if ($3.type != ExpresionAttribute::INT) {
             ERROR_TYPE = SEMANTIC_TYPE;
             yyerror("Índice de array debe ser entero");
-            exit(1);
+            //exit(1);
         }
         
         int index = $3.ival;
@@ -831,7 +841,7 @@ expresion:
             string error = to_string(index);
             ERROR_TYPE = SEGMENTATION_FAULT;
             yyerror(error.c_str());
-            exit(1);
+            //exit(1);
         }
 
         std::string element_name = std::string($1) + "[" + std::to_string(index) + "]";
@@ -859,7 +869,7 @@ expresion:
         } else {
             ERROR_TYPE = SEMANTIC_TYPE;
             yyerror("Tipo no soportado para retorno de array");
-            exit(1);
+            //exit(1);
         }    
     }  
 ;
@@ -886,7 +896,7 @@ var_ciclo_determinado:
         if (symbolTable.search_symbol($1) != nullptr){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($1);
-            exit(1);
+            //exit(1);
         };
 
         Attributes *attributes = new Attributes();
@@ -921,13 +931,13 @@ var_ciclo_determinado:
             default:
                 attributes->value = nullptr;
                 yyerror("Tipo no soportado");
-                exit(1);
+                //exit(1);
         }
 
         if (!symbolTable.insert_symbol($1, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($1);
-            exit(1);
+            //exit(1);
         };
     }
     ;
@@ -951,14 +961,14 @@ secuencia_declaraciones:
 		if (current_struct_name == "") {
 			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay estructura actual");
-            exit(1);
+            //exit(1);
         }
         
 		Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
         if (struct_attr == nullptr) {
 			ERROR_TYPE = NON_DEF_STRUCT;
             yyerror(current_struct_name.c_str());
-            exit(1);
+            //exit(1);
         }
         
         Attributes *attr = new Attributes();
@@ -971,24 +981,23 @@ secuencia_declaraciones:
         if (!symbolTable.insert_symbol($3, *attr)) {
 			ERROR_TYPE = ALREADY_DEF_ATTR;
             yyerror($3);
-            exit(1);
+            //exit(1);
         }
         
         struct_attr->info.push_back({string($3), attr});
-        //cout << "  Agregando atributo: \"" << $3 << "\" a estructura: " << current_struct_name << endl;
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
         if (current_struct_name == "") {
 			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay estructura actual");
-            exit(1);
+            //exit(1);
         }
 
         Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
         if (struct_attr == nullptr) {
 			ERROR_TYPE = NON_DEF_STRUCT;
             yyerror(current_struct_name.c_str());
-            exit(1);
+            //exit(1);
         }
         
         Attributes *attr = new Attributes();
@@ -1001,11 +1010,10 @@ secuencia_declaraciones:
         if (!symbolTable.insert_symbol($1, *attr)) {
 			ERROR_TYPE = ALREADY_DEF_ATTR;
             yyerror($1);
-            exit(1);
+            //exit(1);
         }
 		
         struct_attr->info.push_back({string($1), attr});
-        //cout << "  Agregando atributo: \"" << $1 << "\" a estructura: " << current_struct_name << endl;
     }
     ;
 
@@ -1023,11 +1031,9 @@ variante:
 		if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_UNION;
             yyerror($2);
-            exit(1);
+            //exit(1);
         };
         
-        //cout << "Definiendo variante: " << $2 << endl;
-
 	} abrir_scope T_IZQLLAVE secuencia_declaraciones T_PUNTOCOMA T_DERLLAVE {
 		current_struct_name = "";
 	} cerrar_scope
@@ -1047,10 +1053,9 @@ struct:
         if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_STRUCT;
             yyerror($2);
-            exit(1);
+            //exit(1);
         };
         
-        //cout << "Definiendo estructura: " << $2 << endl;
     } abrir_scope T_IZQLLAVE secuencia_declaraciones T_PUNTOCOMA T_DERLLAVE {
         current_struct_name = "";
     } cerrar_scope
@@ -1070,7 +1075,7 @@ firma_funcion:
         if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_FUNC;
             yyerror($2);
-            exit(1);
+            //exit(1);
         };
 
         current_function_name = string($2);
@@ -1094,14 +1099,14 @@ parametro:
 		if (current_function_name == "") {
 			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay funcion actual");
-            exit(1);
+            //exit(1);
         }
         
 		Attributes* funct_attr = symbolTable.search_symbol(current_function_name);
         if (funct_attr == nullptr) {
 			ERROR_TYPE = NON_DEF_FUNC;
             yyerror(current_function_name.c_str());
-            exit(1);
+            //exit(1);
         }
 
         Attributes *attributes = new Attributes();
@@ -1115,7 +1120,7 @@ parametro:
         if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($2);
-            exit(1);
+            //exit(1);
         };
 
 		funct_attr->info.push_back({string($2), attributes});
@@ -1124,14 +1129,14 @@ parametro:
 		if (current_function_name == "") {
 			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay funcion actual");
-            exit(1);
+            //exit(1);
         }
         
 		Attributes* funct_attr = symbolTable.search_symbol(current_function_name);
         if (funct_attr == nullptr) {
 			ERROR_TYPE = NON_DEF_FUNC;
             yyerror(current_function_name.c_str());
-            exit(1);
+            //exit(1);
         }
 		
         Attributes *attributes = new Attributes();
@@ -1146,7 +1151,7 @@ parametro:
         if (!symbolTable.insert_symbol($1, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($1);
-            exit(1);
+            //exit(1);
         };
 
 		funct_attr->info.push_back({string($1), attributes});
@@ -1167,11 +1172,11 @@ funcion:
 		Attributes* func_attr = symbolTable.search_symbol(string($1));
         if (func_attr == nullptr) {
             yyerror("Funcion no definida");
-            exit(1);
+            //exit(1);
         }
 		if (func_attr->category != FUNCTION) {
             yyerror("El identificador no es una funcion");
-            exit(1);
+            //exit(1);
         }
 		current_function_name = func_attr->symbol_name;
 		current_function_parameters = 0;
@@ -1183,7 +1188,7 @@ funcion:
 			ERROR_TYPE = PARAMETERS_ERROR;
 			string error_message = "Falta de parametros en la llamada a la funcion '" + string($1) + "'";
 			yyerror(error_message.c_str());
-			exit(1);
+			//exit(1);
 		}
 		current_function_name = "";
 		current_function_parameters = 0;
@@ -1202,7 +1207,7 @@ var_manejo_error:
         if (symbolTable.search_symbol($3) != nullptr){
             ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($3);
-            exit(1);
+            //exit(1);
         };
 
         Attributes *attributes = new Attributes();
@@ -1215,7 +1220,7 @@ var_manejo_error:
         if (!symbolTable.insert_symbol($3, *attributes)){
             ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($3);
-            exit(1);
+            //exit(1);
         };
     }
     ;
@@ -1236,66 +1241,72 @@ casting:
 %%
 
 void yyerror(const char *var) {
-    static bool first_error = true;
+    FIRST_ERROR = true;
 
-	if (ERROR_TYPE == SEMANTIC_TYPE) {
-		extern char* yytext;
-		cerr << "\nError sintáctico en línea " << yylineno << ", columna " << yylloc.first_column << ": '" << yytext << "'\n\n";
-		cout << var << "\n\n";
-	} else {
-		cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": ";
-		switch (ERROR_TYPE) {
-	        case NON_DEF_VAR:
-	            cout << "Variable \"" << var << "\" no definida.";
-	            break;
-	        case ALREADY_DEF_VAR:
-	            cout << "Variable \"" << var << "\" ya fue definida.";
-	            break;
-	        case NON_DEF_FUNC:
-				cout << "Funcion \"" << var << "\" no definida.";
-	            break;
-	        case ALREADY_DEF_FUNC:
-	            cout << "Funcion \"" << var << "\" ya fue definida.";
-	            break;
-	        case NON_DEF_STRUCT:
-	            cout << "Estructura \"" << var << "\" no definida.";
-	            break;
-	        case ALREADY_DEF_STRUCT:
-	            cout << "Estructura \"" << var << "\" ya fue definida.";
-	            break;
-	        case NON_DEF_UNION:
-	            cout << "Variante \"" << var << "\" no definida.";
-	            break;
-	        case ALREADY_DEF_UNION:
-	            cout << "Variante \"" << var << "\" ya fue definida.";
-	            break;
-	        case ALREADY_DEF_ATTR:
-	            cout << "Atributo \"" << var << "\" ya fue definido.";
-	            break;
-	        case NON_DEF_TYPE:
-	            cout << "Tipo \"" << var << "\"" << " no definido.";
-	            break;
-	        case VAR_FOR:
-				cout << "Variable \"" << var << "\" es de ciclo repite_burda. No se admite cambiar su valor.";
-	            break;
-	        case VAR_TRY:
-				cout << "Variable \"" << var << "\" es de estructura fuera_del_perol. No se admite cambiar su valor.";
-	            break;
-            case TYPE_ERROR:
-				cout << "Tipo incompatible. Esperado: \""  << var << "\"";
-	            break;     
-            case SEGMENTATION_FAULT:
-                cout << "Indice \"" << var << "\" fuera de rango.";
+    std::string error_msg; // Variable para construir el mensaje de error
+
+    if (ERROR_TYPE == SEMANTIC_TYPE) {
+        extern char* yytext;
+        error_msg = "Error sintáctico en línea " + std::to_string(yylineno) +
+                    ", columna " + std::to_string(yylloc.first_column) +
+                    ": '" + yytext + "'\n" + var;
+        addError(ERROR_TYPE, error_msg);
+    } else {
+        error_msg = "Error en línea " + std::to_string(yylineno) +
+                    ", columna " + std::to_string(yylloc.first_column) + ": ";
+        switch (ERROR_TYPE) {
+            case NON_DEF_VAR:
+                error_msg += "Variable \"" + std::string(var) + "\" no definida.";
                 break;
-			case PARAMETERS_ERROR:
-				cout << var;
-				break;
-	        case DEBUGGING_TYPE:
-				cout << var;
-	            break;
-	        default:
-	            break;
-	    }
-		cout << "\n\n";
-	}
+            case ALREADY_DEF_VAR:
+                error_msg += "Variable \"" + std::string(var) + "\" ya fue definida.";
+                break;
+            case NON_DEF_FUNC:
+                error_msg += "Función \"" + std::string(var) + "\" no definida.";
+                break;
+            case ALREADY_DEF_FUNC:
+                error_msg += "Función \"" + std::string(var) + "\" ya fue definida.";
+                break;
+            case NON_DEF_STRUCT:
+                error_msg += "Estructura \"" + std::string(var) + "\" no definida.";
+                break;
+            case ALREADY_DEF_STRUCT:
+                error_msg += "Estructura \"" + std::string(var) + "\" ya fue definida.";
+                break;
+            case NON_DEF_UNION:
+                error_msg += "Variante \"" + std::string(var) + "\" no definida.";
+                break;
+            case ALREADY_DEF_UNION:
+                error_msg += "Variante \"" + std::string(var) + "\" ya fue definida.";
+                break;
+            case ALREADY_DEF_ATTR:
+                error_msg += "Atributo \"" + std::string(var) + "\" ya fue definido.";
+                break;
+            case NON_DEF_TYPE:
+                error_msg += "Tipo \"" + std::string(var) + "\" no definido.";
+                break;
+            case VAR_FOR:
+                error_msg += "Variable \"" + std::string(var) + "\" es de ciclo `repite_burda`. No se admite cambiar su valor.";
+                break;
+            case VAR_TRY:
+                error_msg += "Variable \"" + std::string(var) + "\" es de estructura `fuera_del_perol`. No se admite cambiar su valor.";
+                break;
+            case TYPE_ERROR:
+                error_msg += "Tipo incompatible. Esperado: \"" + std::string(var) + "\".";
+                break;
+            case SEGMENTATION_FAULT:
+                error_msg += "Índice \"" + std::string(var) + "\" fuera de rango.";
+                break;
+            case PARAMETERS_ERROR:
+                error_msg += std::string(var);
+                break;
+            case DEBUGGING_TYPE:
+                error_msg += std::string(var);
+                break;
+            default:
+                error_msg += "Error desconocido.";
+                break;
+        }
+        addError(ERROR_TYPE, error_msg); // Agrega el mensaje al diccionario de errores
+    }
 }

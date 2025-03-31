@@ -94,6 +94,16 @@ enum errorType {
 	SEGMENTATION_FAULT,
 	PARAMETERS_ERROR,
 };
+
+// Declaración de errorTypeToString como extern
+extern vector<string> errorTypeToString;
+
+// Define el diccionario para almacenar los errores
+extern unordered_map<errorType, vector<string>> errorDictionary;
+
+void addError(errorType type, const string& errorMessage);
+void printErrors();
+
 // Implementacion Tabla de Simbolos Le-Blanc Cook
 class SymbolTable {
 	protected:
