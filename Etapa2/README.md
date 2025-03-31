@@ -74,7 +74,7 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
   - [x] Al momento de llamar una funcion que sea llamada con la cantidad de parametros correcta.
   - [x] Verificar tipos de los parametros al momento de llamar a una funcion.
   - [x] Al momento de asignar una funcion a una variable, verificar que la variable tenga el tipo correcto.
-- [ ] Agregar a tipos nombres de struct/variantes.
+- [x] Agregar a tipos nombres de struct/variantes.
 - [x] Revisar la logica de la funcion `hablame`.
 - [x] Revisar la logica de la funcion `rescata`.
 - [ ] Casteo

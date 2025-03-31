@@ -405,6 +405,16 @@ tipos:
 
 	    $$ = base_type; // Retornar tipo base para validación
     }
+	| T_IDENTIFICADOR {
+		Attributes* attribute = symbolTable.search_symbol(string($1));
+		if (attribute == nullptr){
+			ERROR_TYPE = NON_DEF_VAR;
+			yyerror($1);
+			exit(1);
+		}
+
+		$$ = strdup(attribute->symbol_name.c_str());
+	}
     ;
 
 tipo_valor:
@@ -458,7 +468,7 @@ asignacion:
 			}
 			current_function_type = "";
 		}
-		cout << "checking 1: " << typeToString($3.type) << endl;
+
 	    switch($3.type) {
 	        case ExpresionAttribute::INT:
                 cout << "Asignando valor entero: " << $3.ival << " a la variable." << endl;
@@ -793,6 +803,7 @@ expresion:
     | expresion T_OPDECREMENTO
     | expresion T_OPINCREMENTO
     | entrada_salida
+	| variante
     | funcion {
 		// POR IMPLEMENTAR: La funcion debe retornar un valor asociado segun sea el caso.
 		$$.type = ExpresionAttribute::ID;
