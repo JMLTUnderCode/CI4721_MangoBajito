@@ -433,10 +433,10 @@ tipos:
 		if (attribute == nullptr){
 			ERROR_TYPE = NON_DEF_VAR;
 			yyerror($1);
-			//exit(1);
+			$$ = $1;
+		} else {
+			$$ = strdup(attribute->symbol_name.c_str());
 		}
-
-		$$ = strdup(attribute->symbol_name.c_str());
 	}
     ;
 
