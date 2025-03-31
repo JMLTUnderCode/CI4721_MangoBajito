@@ -5,6 +5,7 @@
 #include <memory>
 #include <iostream>
 #include <string>
+#include <map>
 
 struct info
 {
@@ -13,6 +14,7 @@ struct info
 	std::string identificador = "";
 	std::string tipo = "";
 	std::string es_atributo = "";
+	std::string valor = "";
 };
 
 class ASTNode
@@ -50,6 +52,9 @@ public:
 		s_decremento,
 		s_return,
 		s_delete,
+		variable,
+		valor,
+		e_null,
 		s_struct,
 		decl_sequence,
 		s_variante,
@@ -120,6 +125,10 @@ public:
 			return "s_return";
 		case NodeType::s_delete:
 			return "s_delete";
+		case NodeType::variable:
+			return "variable";
+		case NodeType::valor:
+			return "valor";
 		case NodeType::s_struct:
 			return "s_struct";
 		case NodeType::decl_sequence:
@@ -128,6 +137,8 @@ public:
 			return "s_decl_struct";
 		case NodeType::s_variante:
 			return "s_variante";
+		case NodeType::e_null:
+			return "null";
 		// Agrega más casos según sea necesario
 		default:
 			return "Pendiente, pon nombre!!!";
@@ -156,11 +167,35 @@ inline void printAST(const std::shared_ptr<ASTNode> &node, int depth = 0)
 
 	// Print the node type
 	std::cout << "Node Type: " << node->getType() << std::endl;
+	// Use a map to iterate over the attributes of the 'informacion' struct
+	std::map<std::string, std::string> attributes = {
+		{"es_apuntador", node->informacion.es_apuntador},
+		{"tipo_asignacion", node->informacion.tipo_asignacion},
+		{"identificador", node->informacion.identificador},
+		{"tipo", node->informacion.tipo},
+		{"es_atributo", node->informacion.es_atributo},
+		{"valor", node->informacion.valor}};
 
+	for (const auto &attribute : attributes)
+	{
+		if (!attribute.second.empty())
+		{
+			// Indent based on depth + 1
+			for (int i = 0; i < depth + 1; ++i)
+				std::cout << "  ";
+			std::cout << attribute.first << ": " << attribute.second << std::endl;
+		}
+	}
+	// Indent based on depth + 1
+	if (!node->getChildren().empty()){
+		for (int i = 0; i < depth + 1; ++i)
+			std::cout << "  ";
+		std::cout<< "Hijos:" <<std::endl;
+	}
 	// Recursively print children
 	for (const auto &child : node->getChildren())
 	{
-		printAST(child, depth + 1);
+		printAST(child, depth + 2);
 	}
 }
 #endif // AST_HPP

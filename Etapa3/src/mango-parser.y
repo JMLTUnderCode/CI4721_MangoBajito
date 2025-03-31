@@ -429,12 +429,31 @@ expresion_nuevo:
     ;
 
 expresion:
-    T_IDENTIFICADOR {$$.sval = $1; $$.type = ExpresionAttribute::ID;}
+    T_IDENTIFICADOR {iniciarNodo(ASTNode::NodeType::variable); ancestros.top()->informacion.identificador = $1; cerrarNodo(); $$.sval = $1; $$.type = ExpresionAttribute::ID;}
     | T_VALUE {
-		if(current_array_name != ""){
+		iniciarNodo(ASTNode::NodeType::valor);
+        switch ($1.type) {
+            case ExpresionAttribute::INT:
+            ancestros.top()->informacion.valor = strdup(to_string($1.ival).c_str());
+            break;
+            case ExpresionAttribute::FLOAT:
+            ancestros.top()->informacion.valor = strdup(to_string($1.fval).c_str());
+            break;
+            case ExpresionAttribute::DOUBLE:
+            ancestros.top()->informacion.valor = strdup(to_string($1.dval).c_str());
+            break;
+            case ExpresionAttribute::BOOL:
+            ancestros.top()->informacion.valor = strdup($1.ival ? "true" : "false");
+            break;
+            default:
+            ancestros.top()->informacion.valor = strdup($1.sval);
+            break;
+        };
+        cerrarNodo();
+
+        if(current_array_name != ""){
 
 		}
-
         switch($1.type) {
 	        case ExpresionAttribute::INT:
 	            $$.ival = $1.ival;
@@ -454,7 +473,7 @@ expresion:
                 break;
         }
     }
-    | T_PELABOLA
+    | T_PELABOLA {iniciarNodo(ASTNode::NodeType::e_null); }
     | T_IZQPAREN expresion T_DERPAREN
     | valores_booleanos 
     | expresion_apuntador 
