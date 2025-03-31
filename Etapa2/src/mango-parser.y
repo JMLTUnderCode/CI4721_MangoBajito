@@ -270,6 +270,7 @@ declaracion:
 
             Attributes *attributes = new Attributes();
             attributes->symbol_name = $2;
+			attributes->info.push_back({"-", nullptr});
             attributes->scope = symbolTable.current_scope;
             attributes->type = symbolTable.search_symbol($4);
 
