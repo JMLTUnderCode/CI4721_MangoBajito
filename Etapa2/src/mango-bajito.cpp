@@ -16,6 +16,7 @@ void print_values(Values x){
 	visit([](auto&& arg) {
 		using T = decay_t<decltype(arg)>;
 		if constexpr (is_same_v<T, nullptr_t>) cout << "null";
+		else if constexpr (is_same_v<T, char>) cout << arg;
 		else if constexpr (is_same_v<T, int>) cout << arg;
 		else if constexpr (is_same_v<T, bool>) cout << (arg ? "true" : "false");
 		else if constexpr (is_same_v<T, float>) cout << arg;

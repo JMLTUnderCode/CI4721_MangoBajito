@@ -2,7 +2,8 @@
 # Multiplicación de dos matrices, no necesariamente cuadradas
 
 se_prende(){
-    culito A: mango[4];
-
-    A[9] = 9;
+    culito A: negro[3];
+    A[0] = 'a';
+    A[1] = A[0];
+    A[0] = 'B';
 };

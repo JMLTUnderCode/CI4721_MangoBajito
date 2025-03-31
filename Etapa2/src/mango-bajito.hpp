@@ -15,11 +15,12 @@ struct RecursiveArray; // Declaración adelantada
 class SymbolTable;
 
 // Definicion de tipo Information para almacenar la informacion de los atributos
-typedef variant<string, int, bool> Information;
+typedef variant<string, int, bool, char> Information;
 
 // Definicion de tipo Values para almacenar el valor de los atributos
 typedef variant<
 	nullptr_t,
+	char,
 	int, 
 	bool, 
 	float, 
