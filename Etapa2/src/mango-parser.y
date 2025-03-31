@@ -19,13 +19,19 @@ extern int yylineno;
 extern YYLTYPE yylloc;
 
 SymbolTable symbolTable = SymbolTable();
+
 errorType ERROR_TYPE = SEMANTIC_TYPE; // Permite manejar un error particular de tipo errorType
+
 string current_struct_name = "";
+
 string current_function_name = "";
 int current_function_parameters = 0;
+string current_function_type = "";
+
 string current_array_name = "";
 int current_array_size = 0;
 const char* current_array_base_type = nullptr;
+
 %}
 
 %code requires {
@@ -325,7 +331,6 @@ declaracion:
 	| declaracion_funcion
     ;
 
-
 declaracion_aputador:
     { $$ = strdup(""); }
     | T_AHITA   { $$ = strdup("POINTER"); }
@@ -337,7 +342,9 @@ tipo_declaracion:
     ;
 
 tipos:
-    tipo_valor 
+    tipo_valor {
+		if (current_function_name != "") current_function_type = string($1);
+	}
     | tipos T_IZQCORCHE expresion T_DERCORCHE {
         // Verificar que la expresión sea un valor entero válido
         if ($3.type != ExpresionAttribute::INT) {
@@ -345,16 +352,15 @@ tipos:
             exit(1);
         }
 
-    // Obtener tipo base y tamaño
-    char* base_type = $1;
-    int array_size = $3.ival;
+	    // Obtener tipo base y tamaño
+	    char* base_type = $1;
+	    int array_size = $3.ival;
 
-    // Registrar tamaño en variable global temporal
-    current_array_size = array_size; // Variable global para tamaño
-    current_array_base_type = base_type; // Variable global para tipo base
+	    // Registrar tamaño en variable global temporal
+	    current_array_size = array_size; // Variable global para tamaño
+	    current_array_base_type = base_type; // Variable global para tipo base
 
-    $$ = base_type; // Retornar tipo base para validación
-
+	    $$ = base_type; // Retornar tipo base para validación
     }
     ;
 
@@ -894,7 +900,6 @@ firma_funcion:
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
         //attributes->info.clear();
-        attributes->info.push_back({"FUNCION", nullptr});
         attributes->type = symbolTable.search_symbol("funcion$");
         attributes->category = FUNCTION;
         attributes->value = nullptr;
@@ -911,7 +916,9 @@ firma_funcion:
 
 tipo_funcion:
     tipos 
-    | T_UNCONO
+    | T_UNCONO { 
+		if (current_function_name != "") current_function_type = "un_coño"; 
+	}
     ;
 
 secuencia_parametros:
@@ -985,7 +992,10 @@ parametro:
 
 declaracion_funcion:
     firma_funcion abrir_scope T_IZQPAREN secuencia_parametros T_DERPAREN T_LANZA tipo_funcion {
+		Attributes* funct_attr = symbolTable.search_symbol(current_function_name);
+		funct_attr->info.push_back({current_function_type, symbolTable.search_symbol(current_function_type)});
 		current_function_name = "";
+		current_function_type = "";
 	} T_IZQLLAVE instruccionesopt T_DERLLAVE cerrar_scope
     ;
 
@@ -1001,11 +1011,11 @@ funcion:
             exit(1);
         }
 		current_function_name = string($1);
-		current_function_parameters = 1;
+		current_function_parameters = 0;
 
 	} T_IZQPAREN secuencia T_DERPAREN {
 		Attributes* func_attr = symbolTable.search_symbol(strdup($1));
-		if ( current_function_parameters < func_attr->info.size()) {
+		if ( current_function_parameters < func_attr->info.size() - 1) {
 			ERROR_TYPE = PARAMETERS_ERROR;
 			string error_message = "Falta de parametros en la llamada a la funcion '" + string($1) + "'";
 			yyerror(error_message.c_str());
