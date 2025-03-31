@@ -72,7 +72,7 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
   - [x] Guardar funciones con multiples parametros.
   - [x] Actualizar el vector de informacion de una funcion con sus respectivos parametros.
   - [x] Al momento de llamar una funcion que sea llamada con la cantidad de parametros correcta.
-  - [ ] Verificar tipos de los parametros al momento de llamar a una funcion.
+  - [x] Verificar tipos de los parametros al momento de llamar a una funcion.
   - [ ] Al momento de asignar una funcion a una variable, verificar que la variable tenga el tipo correcto.
 - [ ] Agregar a tipos nombres de struct/variantes.
 - [x] Revisar la logica de la funcion `hablame`.

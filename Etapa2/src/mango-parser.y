@@ -582,8 +582,12 @@ expresion:
 		if (current_function_name != "") {
 			Attributes* func_attr = symbolTable.search_symbol(current_function_name);
 			if (current_function_parameters < func_attr->info.size()) { // Si hay parámetros.
-				// por codear
-
+				Attributes* param_attr = func_attr->info[current_function_parameters].second;
+				if (param_attr->type->symbol_name != typeToString($1.type)) {
+					ERROR_TYPE = TYPE_ERROR;
+					yyerror(param_attr->type->symbol_name.c_str());
+					exit(1);
+				}
 				current_function_parameters++;
 
 			} else { // Excede la cantidad de parametros.
