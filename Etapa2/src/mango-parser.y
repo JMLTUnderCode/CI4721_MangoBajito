@@ -55,7 +55,7 @@ const char* current_array_base_type = nullptr;
             case ExpresionAttribute::FLOAT:  return "manguita";
             case ExpresionAttribute::DOUBLE: return "manguangua";
             case ExpresionAttribute::BOOL:   return "bool";
-            case ExpresionAttribute::CHAR: return "negro";
+            case ExpresionAttribute::CHAR:   return "negro";
             case ExpresionAttribute::STRING: return "higuerote";
             case ExpresionAttribute::POINTER:return "pointer";
             case ExpresionAttribute::ID:     return "id";
@@ -420,8 +420,8 @@ operadores_asignacion:
     ;
 
 asignacion:
-    T_IDENTIFICADOR operadores_asignacion expresion { 
-		Attributes *attr_var = symbolTable.search_symbol($1);
+    T_IDENTIFICADOR operadores_asignacion expresion {
+		Attributes *attr_var = symbolTable.search_symbol(string($1));
         if (attr_var == nullptr){
 			ERROR_TYPE = NON_DEF_VAR;
             yyerror($1);
@@ -454,7 +454,7 @@ asignacion:
 			}
 			current_function_type = "";
 		}
-
+		cout << "checking 1: " << typeToString($3.type) << endl;
 	    switch($3.type) {
 	        case ExpresionAttribute::INT:
                 cout << "Asignando valor entero: " << $3.ival << " a la variable." << endl;
@@ -477,8 +477,11 @@ asignacion:
 	            // Manejar punteros según sea necesario
 	            attr_var->value = nullptr; // O el valor adecuado
 	            break;
+			case ExpresionAttribute::ID:
+				// Para el caso de funciones, provicionalmente se maneja asi.
+				attr_var->value = nullptr;
+				break;
 	        default:
-                cout << $3.sval << endl;
                 Attributes *attr = symbolTable.search_symbol($3.sval);
                 if(attr != nullptr){
                     if(attr->category == VARIABLE || attr->category == CONSTANT){
@@ -487,7 +490,7 @@ asignacion:
                 } else {
                     attr_var->value = nullptr;
                 }
-                break;    
+                break;
 	        }
         }
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asignacion expresion
@@ -555,11 +558,9 @@ asignacion:
                 exit(1);
         }
 
-        
         // Actualizar en tabla de símbolos
         symbolTable.insert_symbol(array_element_attributes->symbol_name, *array_element_attributes);
-
-    }    
+    }
     ;
 
 valores_booleanos:
@@ -784,7 +785,10 @@ expresion:
     | expresion T_OPDECREMENTO
     | expresion T_OPINCREMENTO
     | entrada_salida
-    | funcion
+    | funcion {
+		// POR IMPLEMENTAR: La funcion debe retornar un valor asociado segun sea el caso.
+		$$.type = ExpresionAttribute::ID;
+	}
     | casting
     | T_IDENTIFICADOR T_IZQCORCHE expresion T_DERCORCHE {
         Attributes* array_attr = symbolTable.search_symbol($1);

@@ -66,14 +66,14 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 - [x] Guardar variantes.
 - [x] Guardar informacion de ciclo determinado.
 - [x] Guardar informacion de ciclo indeterminado.
-- [ ] Funciones
+- [x] Funciones
   - [x] Guardar funciones.
   - [x] Guardar funciones con 1 parametro.
   - [x] Guardar funciones con multiples parametros.
   - [x] Actualizar el vector de informacion de una funcion con sus respectivos parametros.
   - [x] Al momento de llamar una funcion que sea llamada con la cantidad de parametros correcta.
   - [x] Verificar tipos de los parametros al momento de llamar a una funcion.
-  - [ ] Al momento de asignar una funcion a una variable, verificar que la variable tenga el tipo correcto.
+  - [x] Al momento de asignar una funcion a una variable, verificar que la variable tenga el tipo correcto.
 - [ ] Agregar a tipos nombres de struct/variantes.
 - [x] Revisar la logica de la funcion `hablame`.
 - [x] Revisar la logica de la funcion `rescata`.

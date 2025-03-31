@@ -13,4 +13,5 @@ se_prende(){
 	
 	# Falta verificar los tipos de los parametros en las llamadas.
 	culito value : mango = fun2(p, 2.0, 3);
+	value = fun2(p, 2.0, 3);
 };
