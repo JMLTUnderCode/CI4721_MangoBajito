@@ -468,7 +468,7 @@ asignacion:
         string info_var = get<string>(attr_var->info[0].first);
         if (strcmp(info_var.c_str(), "CICLO FOR") == 0){
 			ERROR_TYPE = VAR_FOR;
-            yyerror("No se puede modificar una variable de un ciclo determinado");
+            yyerror($1);
             //exit(1);
         }
 
