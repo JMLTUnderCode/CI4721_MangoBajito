@@ -19,8 +19,11 @@ se_prende(){
 	} o_asi (Sisa) {
 		culito b: mango;
 		culito mi_array: mango[5]; # No tiene sentido.
-		mi_array["a"] = 3;
-		jeva mi_array1 : mango[5] = [1,2,3,4,5]; # Si tiene sentido;
+		mi_array[0] = 4;
+		mi_array[1] = "8";
+		mi_array[2] = 'a';
+
+		
 	} nojoda {
 		culito a: mango;
 		culito c: mango;
