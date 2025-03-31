@@ -4,6 +4,7 @@ se_prende(){
 		culito a: mango;
 		a = 100;
 		culito a: mango;
+		jeva prueba: mango["a"]; # No tiene sentido.
 	echar_cuento fun2(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
 		p1 = 2;
 		p2 = 3.0;

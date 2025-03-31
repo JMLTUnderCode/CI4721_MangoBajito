@@ -94,7 +94,8 @@ enum errorType {
 	SEGMENTATION_FAULT,
 	PARAMETERS_ERROR,
 	EMPTY_ARRAY_CONSTANT,
-	POINTER_ARRAY
+	POINTER_ARRAY,
+	INT_SIZE_ARRAY
 };
 
 // Declaración de errorTypeToString como extern

@@ -40,7 +40,7 @@ unordered_map<errorType, vector<string>> errorDictionary = {
     {SEGMENTATION_FAULT, {}},
     {PARAMETERS_ERROR, {}},
     {EMPTY_ARRAY_CONSTANT, {}},
-    {POINTER_ARRAY, {}};
+    {POINTER_ARRAY, {}},
     {INT_SIZE_ARRAY,{}}
 };
 
@@ -236,7 +236,6 @@ declaracion:
             if (base_type_attr == nullptr) {
                 ERROR_TYPE = NON_DEF_TYPE;
                 yyerror(current_array_base_type);
-                addError(ERROR_TYPE, current_array_base_type);
                 //exit(1);
             }
 
@@ -244,12 +243,10 @@ declaracion:
             if (strcmp($1, "CONSTANTE") == 0) {
                 ERROR_TYPE = EMPTY_ARRAY_CONSTANT;
                 yyerror($2);
-                addError(ERROR_TYPE, $2);
                 //exit(1);
             }
             if (strcmp($1, "POINTER_C") == 0 || strcmp($1, "POINTER_V") == 0) {
                 ERROR_TYPE = POINTER_ARRAY;
-                addError(ERROR_TYPE, $2);
                 yyerror($2);
                 //exit(1);
             }
@@ -277,7 +274,6 @@ declaracion:
                 if (!symbolTable.insert_symbol(elem->symbol_name, *elem)) {
                     ERROR_TYPE = ALREADY_DEF_VAR;
                     yyerror(elem->symbol_name.c_str());
-                    addError(ERROR_TYPE, elem->symbol_name.c_str());
                     //exit(1);
                 }
             }
@@ -286,7 +282,6 @@ declaracion:
             if (!symbolTable.insert_symbol($2, *attributes)) {
                 ERROR_TYPE = ALREADY_DEF_VAR;
                 yyerror($2);
-                addError(ALREADY_DEF_VAR, $2);
                 //exit(1);
             }
 
@@ -299,7 +294,6 @@ declaracion:
             if (symbolTable.search_symbol($4) == nullptr) {
                 ERROR_TYPE = NON_DEF_TYPE;
                 yyerror($4);
-                addError(ERROR_TYPE, $4);
                 //exit(1);
             }
 
@@ -322,7 +316,6 @@ declaracion:
             if (!symbolTable.insert_symbol($2, *attributes)) {
                 ERROR_TYPE = ALREADY_DEF_VAR;
                 yyerror($2);
-                addError(ERROR_TYPE, $2);
                 //exit(1);
             }
         }
@@ -331,7 +324,6 @@ declaracion:
         if (symbolTable.search_symbol($4) == nullptr){
 			ERROR_TYPE = NON_DEF_TYPE;
             yyerror($4);
-            addError(ERROR_TYPE, $4);
             //exit(1);
         };
 
@@ -341,7 +333,6 @@ declaracion:
 				ERROR_TYPE = TYPE_ERROR;
 				string error_message = type_id + "\". Recibido: \"" + current_function_type;
 				yyerror(error_message.c_str());
-                addError(ERROR_TYPE, error_message.c_str());
 				//exit(1);
 			}
 			current_function_type = "";
@@ -399,7 +390,6 @@ declaracion:
         if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($2);
-            addError(ERROR_TYPE, $2);
             //exit(1);
         };
     }
@@ -423,7 +413,8 @@ tipos:
     | tipos T_IZQCORCHE expresion T_DERCORCHE {
         // Verificar que la expresión sea un valor entero válido
         if ($3.type != ExpresionAttribute::INT) {
-            yyerror("El tamaño del arreglo debe ser un número entero");
+            ERROR_TYPE = INT_SIZE_ARRAY;
+            yyerror(typeToString($3.type));
             //exit(1);
         }
 
@@ -1320,7 +1311,7 @@ void yyerror(const char *var) {
                 error_msg += "Array \"" + std::string(var) + "\" declarado apuntador.";
                 break;
             case INT_SIZE_ARRAY:
-                error_msg += "Tamano del arrat \"" + std::string(var) + "\" debe ser un numero entero";
+                error_msg += "Tamano de array no puede ser definido como: \"" + std::string(var) + "\" .Solo admite enteres";
                 break;            
             case DEBUGGING_TYPE:
                 error_msg += std::string(var);
