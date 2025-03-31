@@ -1,22 +1,23 @@
 # Test 0: Definicion y declaracion correcta de todos los tipos del lenguaje.
 se_prende(){
-	culito mango0: mango = 2147483647; # Int mas grande
-	jeva mango1: mango =  -2147483648; # Int mas pequeño
+	culito mango0: mango = 2147483647;
+	jeva mango1: mango = -2147483647;
 
-    culito manguita0: manguita = 2.000022;
-	jeva manguita1: manguita = -2.032165402;
+	culito manguita0: manguita = 2.000022;
+	jeva manguita1: manguita = -2.0321654; # Maximo 7 decimales.
 
-    culito manguangua0: manguangua = 1.79769e+308; # Double mas grande
-	jeva manguangua1: manguangua = -1.79769e+308; # Double mas pequeño
+	culito manguangua0 : manguangua = 123.123456789012345; # Maximo 15 decimales.
+	culito manguangua1: manguangua = 1.79769e+308; # Double mas grande
+	jeva manguangua2: manguangua = -1.79769e+308; # Double mas pequeño
 
 	culito negro0: negro = "c";
-    jeva negro1: negro = "$";
+	jeva negro1: negro = "$";
 
-    culito higuerote0: higuerote = "hola";
+	culito higuerote0: higuerote = "hola";
 	jeva higuerote1: higuerote = " mundo";
 
 	culito tas_claro0: tas_claro = Sisa;
-    jeva tas_claro1: tas_claro = Nolsa;
+	jeva tas_claro1: tas_claro = Nolsa;
 
 	culito mango_array0 : mango[5];
 	jeva mango_array1 : mango[3] = [3, 4, 5];
@@ -33,27 +34,23 @@ se_prende(){
 	culito higuerote_array8 : higuerote[2];
 	jeva higuerote_array9 : higuerote[3] = ["hola", "mundo", "!"];
 
-	coliao MiUnion {
-		attr_union_1 : mango;
-		attr_union_2 : manguita;
-		attr_union_3 : manguangua;
-		attr_union_4 : tas_claro;
-		attr_union_5 : mango[5];
+	coliao MyUnion {
+		attr_u_1 : mango;
+		attr_u_2 : manguita;
 	};
 
-	arroz_con_mango MiEstructura {
-		attr_struct_1 : higuerote;
-		attr_struct_2 : mango;
-		attr_struct_3 : tas_claro;
+	arroz_con_mango MyStruct {
+		attr_s_1 : mango;
+		attr_s_2 : manguita;
+		attr_s_3 : higuerote;
 	};
 
 	# Analizar esta parte para el caso de usar variantes y structs como types.
+	culito var_union : MyUnion;
+	var_union.attr_u_1 = 32;
 
-	culito var_union : MiUnion;
-	var_union.attr_struct_1 = 32;
-
-	culito var_struct : MiEstructura;
-	var_struct.attr_struct_1 = "hola";
-	var_struct.attr_struct_2 = 32;
-	var_struct.attr_struct_3 = Sisa;
+	culito var_struct : MyStruct;
+	var_struct.attr_s_1 = 123;
+	var_struct.attr_s_2 = 123.123;
+	var_struct.attr_s_3 = "hola";
 };

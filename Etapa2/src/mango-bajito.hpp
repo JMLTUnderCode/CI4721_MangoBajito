@@ -15,11 +15,12 @@ struct RecursiveArray; // Declaración adelantada
 class SymbolTable;
 
 // Definicion de tipo Information para almacenar la informacion de los atributos
-typedef variant<string, int, bool> Information;
+typedef variant<string, int, bool, char> Information;
 
 // Definicion de tipo Values para almacenar el valor de los atributos
 typedef variant<
 	nullptr_t,
+	char,
 	int, 
 	bool, 
 	float, 
@@ -54,6 +55,8 @@ enum Category{
 	POINTER_C, 
 	POINTER_V,
 	STRUCT_ATTRIBUTE,
+	ARRAY,
+	ARRAY_ELEMENT,
 	UNKNOWN
 };
 
@@ -86,8 +89,21 @@ enum errorType {
 	NON_DEF_TYPE,
 	ALREADY_DEF_ATTR,
 	DEBUGGING_TYPE,
-	SEMANTIC_TYPE
+	SEMANTIC_TYPE,
+	TYPE_ERROR,
+	SEGMENTATION_FAULT,
+	PARAMETERS_ERROR,
 };
+
+// Declaración de errorTypeToString como extern
+extern vector<string> errorTypeToString;
+
+// Define el diccionario para almacenar los errores
+extern unordered_map<errorType, vector<string>> errorDictionary;
+
+void addError(errorType type, const string& errorMessage);
+void printErrors();
+
 // Implementacion Tabla de Simbolos Le-Blanc Cook
 class SymbolTable {
 	protected:

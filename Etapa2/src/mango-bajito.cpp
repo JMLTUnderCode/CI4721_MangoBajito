@@ -1,5 +1,40 @@
 #include "mango-bajito.hpp"
 
+vector<string> errorTypeToString = {
+	"NON_DEF_VAR",
+	"ALREADY_DEF_VAR",
+	"VAR_FOR",
+	"VAR_TRY",
+	"NON_DEF_FUNC",
+	"ALREADY_DEF_FUNC",
+	"NON_DEF_STRUCT",
+	"ALREADY_DEF_STRUCT",
+	"NON_DEF_UNION",
+	"ALREADY_DEF_UNION",
+	"NON_DEF_TYPE",
+	"ALREADY_DEF_ATTR",
+	"DEBUGGING_TYPE",
+	"SEMANTIC_TYPE",
+	"TYPE_ERROR",
+	"SEGMENTATION_FAULT",
+	"PARAMETERS_ERROR"
+};
+
+// Función para agregar un error al diccionario
+void addError(errorType type, const string& errorMessage) {
+    errorDictionary[type].push_back(errorMessage);
+}
+
+// Función para imprimir todos los errores
+void printErrors() {
+    for (const auto& [type, errors] : errorDictionary) {
+		if(errors.empty()) continue;
+        cout << "Error Type: " << errorTypeToString[type] << endl;
+        for (const auto& error : errors) cout << "  - " << error << endl;
+    }
+}
+
+// Función para imprimir la información de los atributos
 void print_info(vector<pair<Information, Attributes*> > informations){
 	for (auto &info : informations){
 		if (holds_alternative<int>(info.first)) {
@@ -16,6 +51,7 @@ void print_values(Values x){
 	visit([](auto&& arg) {
 		using T = decay_t<decltype(arg)>;
 		if constexpr (is_same_v<T, nullptr_t>) cout << "null";
+		else if constexpr (is_same_v<T, char>) cout << arg;
 		else if constexpr (is_same_v<T, int>) cout << arg;
 		else if constexpr (is_same_v<T, bool>) cout << (arg ? "true" : "false");
 		else if constexpr (is_same_v<T, float>) cout << arg;

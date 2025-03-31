@@ -1,0 +1,28 @@
+se_prende(){
+	arroz_con_mango MyStruct {
+		attr_s_1 : mango;
+		attr_s_2 : manguita;
+		attr_s_3 : higuerote;
+	};
+
+	# Analizar esta parte para el caso de usar variantes y structs como types.
+	culito var_union : MyStruct;
+
+	echar_cuento fun1() lanza un_coño {
+		# Hacer un print de global
+	};
+
+	culito p : manguita = 23;
+	echar_cuento fun2(p1 : mango, p2 : manguita, p3 : mango) lanza manguita {
+		p1 = 2;
+		p2 = 3.0;
+		lanzate p2;
+	};
+	
+	culito value : mango = fun2(p, 2.0, 3);
+	value = fun1();
+
+	repite_burda i entre 1 hasta (n-1) {
+		i = 3;
+    };
+};
