@@ -1311,7 +1311,7 @@ void yyerror(const char *var) {
                 error_msg += "Array \"" + std::string(var) + "\" declarado apuntador.";
                 break;
             case INT_SIZE_ARRAY:
-                error_msg += "Tamano de array no puede ser definido como: \"" + std::string(var) + "\" .Solo admite enteros";
+                error_msg += "Tamano de array no puede ser definido como: \"" + std::string(var) + "\". Solo admite enteros";
                 break;            
             case DEBUGGING_TYPE:
                 error_msg += std::string(var);
