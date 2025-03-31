@@ -752,7 +752,17 @@ expresion:
     }
     | entrada_salida
     | funcion
-    | casting 
+    | casting {
+        cout<< "casting " << $$.sval <<endl;
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_cast);
+        topNode = ancestros.top();
+        topNode->addChild(hijoDerecho);
+        topNode->informacion.tipo = strdup($$.sval);
+        cerrarNodo();
+    }
     ;
 
 condicion:
