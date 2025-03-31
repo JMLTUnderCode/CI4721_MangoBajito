@@ -61,6 +61,25 @@ public:
 		s_variante,
 		s_func,
 		s_sec_param,
+		e_neg,
+		e_flecha,
+		e_suma,
+		e_resta,
+		e_mult,
+		e_divdec,
+		e_divent,
+		e_mod,
+		e_expon,
+		e_igual,
+		e_diff,
+		e_greater,
+		e_gt,
+		e_less,
+		e_lt,
+		e_or,
+		e_and,
+		e_decr,
+		e_incr,
 		// Agrega más tipos de nodos según sea necesario
 	};
 
@@ -148,6 +167,44 @@ public:
 			return "s_sec_param";
 		case NodeType::s_decl_param:
 			return "s_decl_param";
+		case NodeType::e_neg:
+			return "e_neg";
+		case NodeType::e_flecha:
+			return "e_flecha";
+		case NodeType::e_suma:
+			return "e_suma";
+		case NodeType::e_resta:
+			return "e_resta";
+		case NodeType::e_mult:
+			return "e_mult";
+		case NodeType::e_divdec:
+			return "e_divdec";
+		case NodeType::e_divent:
+			return "e_divent";
+		case NodeType::e_mod:
+			return "e_mod";
+		case NodeType::e_expon:
+			return "e_expon";
+		case NodeType::e_igual:
+			return "e_igual";
+		case NodeType::e_diff:
+			return "e_diff";
+		case NodeType::e_greater:
+			return "e_greater";
+		case NodeType::e_gt:
+			return "e_gt";
+		case NodeType::e_less:
+			return "e_less";
+		case NodeType::e_lt:
+			return "e_lt";
+		case NodeType::e_or:
+			return "e_or";
+		case NodeType::e_and:
+			return "e_and";
+		case NodeType::e_decr:
+			return "e_decr";
+		case NodeType::e_incr:
+			return "e_incr";
 			
 		// Agrega más casos según sea necesario
 		default:

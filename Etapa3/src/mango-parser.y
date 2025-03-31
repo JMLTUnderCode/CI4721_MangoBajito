@@ -75,6 +75,7 @@ string current_array_name = "";
 %token <sval> T_MANGUANGUA  // Token para double
 %token <sval> T_NEGRO       // Token para caracter
 %token <sval> T_HIGUEROTE   // Token para string
+%token <sval> T_SISA T_NOLSA // Token para true y false
 
 %token T_SE_PRENDE T_ASIGNACION T_DOSPUNTOS T_PUNTOCOMA T_COMA
 %token T_SIESASI T_OASI T_NOJODA
@@ -82,7 +83,7 @@ string current_array_name = "";
 %token T_ECHALEBOLAS
 %token T_ROTALO T_KIETO
 %token T_CULITO T_JEVA
-%token T_TASCLARO T_SISA T_NOLSA T_ARROZCONMANGO T_COLIAO T_PUNTO
+%token T_TASCLARO T_ARROZCONMANGO T_COLIAO T_PUNTO
 %token T_AHITA T_AKITOY T_CEROKM T_BORRADOL T_PELABOLA T_FLECHA
 %token T_UNCONO
 %token T_ECHARCUENTO T_LANZA T_LANZATE
@@ -98,8 +99,8 @@ string current_array_name = "";
 %token T_CASTEO
 
 // Declaracion de tipos de retorno para las producciones 
-%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion operadores_asignacion tipo_funcion
-%type <att_val> expresion
+%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion operadores_asignacion valores_booleanos tipo_funcion
+%type <att_val> expresion 
 
 // Declaracion de precedencia y asociatividad de Operadores
 // Asignacion
@@ -414,8 +415,8 @@ asignacion:
     ;
 
 valores_booleanos:
-    T_SISA 
-    | T_NOLSA
+    T_SISA {$$ = strdup("true");}
+    | T_NOLSA {$$ = strdup("false");}
     ;
 
 expresion_apuntador:
@@ -434,18 +435,23 @@ expresion:
 		iniciarNodo(ASTNode::NodeType::valor);
         switch ($1.type) {
             case ExpresionAttribute::INT:
+            ancestros.top()->informacion.tipo = "int";
             ancestros.top()->informacion.valor = strdup(to_string($1.ival).c_str());
             break;
             case ExpresionAttribute::FLOAT:
+            ancestros.top()->informacion.tipo = "float";
             ancestros.top()->informacion.valor = strdup(to_string($1.fval).c_str());
             break;
             case ExpresionAttribute::DOUBLE:
+            ancestros.top()->informacion.tipo = "double";
             ancestros.top()->informacion.valor = strdup(to_string($1.dval).c_str());
             break;
             case ExpresionAttribute::BOOL:
+            ancestros.top()->informacion.tipo = "bool";
             ancestros.top()->informacion.valor = strdup($1.ival ? "true" : "false");
             break;
             default:
+            ancestros.top()->informacion.tipo = "string";
             ancestros.top()->informacion.valor = strdup($1.sval);
             break;
         };
@@ -475,11 +481,16 @@ expresion:
     }
     | T_PELABOLA {iniciarNodo(ASTNode::NodeType::e_null); }
     | T_IZQPAREN expresion T_DERPAREN
-    | valores_booleanos 
+    | valores_booleanos {
+        iniciarNodo(ASTNode::NodeType::valor);
+        ancestros.top()->informacion.tipo = "bool";
+        ancestros.top()->informacion.valor = $1;
+        cerrarNodo();
+    }
     | expresion_apuntador 
     | expresion_nuevo
     | arreglo
-    | T_NELSON expresion
+    | {iniciarNodo(ASTNode::NodeType::e_neg);} T_NELSON expresion {cerrarNodo();}
 	| T_OPRESTA expresion %prec T_SIGNO_MENOS {$$ = $2;}
     | expresion T_FLECHA expresion
     | expresion T_OPSUMA expresion {
