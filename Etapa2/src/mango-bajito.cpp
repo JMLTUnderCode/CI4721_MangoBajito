@@ -17,7 +17,10 @@ vector<string> errorTypeToString = {
 	"SEMANTIC_TYPE",
 	"TYPE_ERROR",
 	"SEGMENTATION_FAULT",
-	"PARAMETERS_ERROR"
+	"PARAMETERS_ERROR",
+	"EMPTY_ARRAY_CONSTANT",
+	"POINTER_ARRAY",
+	"INT_SIZE_ARRAY"
 };
 
 // Función para agregar un error al diccionario
