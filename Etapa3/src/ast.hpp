@@ -13,6 +13,7 @@ struct info
 	std::string tipo_asignacion = "";
 	std::string identificador = "";
 	std::string tipo = "";
+	std::string es_atributo = "";
 };
 
 class ASTNode
@@ -36,6 +37,12 @@ public:
 		s_for,
 		rango_for,
 		flow_for,
+		s_break,
+		s_continue,
+		s_incremento,
+		s_decremento,
+		s_return,
+		s_delete,
 		// Agrega más tipos de nodos según sea necesario
 	};
 
@@ -77,6 +84,18 @@ public:
 			return "rango_for";
 		case NodeType::flow_for:
 			return "flow_for";
+		case NodeType::s_break:
+			return "s_break";
+		case NodeType::s_continue:
+			return "s_continue";
+		case NodeType::s_incremento:
+			return "s_incremento";
+		case NodeType::s_decremento:
+			return "s_decremento";
+		case NodeType::s_return:
+			return "s_return";
+		case NodeType::s_delete:
+			return "s_delete";
 		// Agrega más casos según sea necesario
 		default:
 			return "Pendiente, pon nombre!!!";

@@ -171,13 +171,18 @@ instruccion:
     | manejo_error 
     | struct
     | variante
-    | T_KIETO 
-    | T_ROTALO
-    | T_IDENTIFICADOR T_OPDECREMENTO
-    | T_IDENTIFICADOR T_OPINCREMENTO
-    | T_LANZATE expresion
-    | T_BORRADOL T_IDENTIFICADOR 
-    | T_BORRADOL T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR 
+    | {iniciarNodo(ASTNode::NodeType::s_break);} T_KIETO {cerrarNodo();}    // ✓
+    | {iniciarNodo(ASTNode::NodeType::s_continue);} T_ROTALO {cerrarNodo();} // ✓
+    | T_IDENTIFICADOR T_OPDECREMENTO {iniciarNodo(ASTNode::NodeType::s_decremento); ancestros.top()->informacion.identificador = $1; cerrarNodo();} // ✓
+    | T_IDENTIFICADOR T_OPINCREMENTO {iniciarNodo(ASTNode::NodeType::s_incremento); ancestros.top()->informacion.identificador = $1; cerrarNodo();} // ✓
+    | {iniciarNodo(ASTNode::NodeType::s_return);} T_LANZATE expresion {cerrarNodo();} // ✓
+    | T_BORRADOL T_IDENTIFICADOR {iniciarNodo(ASTNode::NodeType::s_delete); ancestros.top()->informacion.identificador = $2; cerrarNodo();}
+    | T_BORRADOL T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR {  // ✓
+        iniciarNodo(ASTNode::NodeType::s_delete);
+        ancestros.top()->informacion.identificador = $4;
+        ancestros.top()->informacion.es_atributo = "true";
+        cerrarNodo();
+    }
     ;
 
 declaracion:
