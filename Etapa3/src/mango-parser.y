@@ -25,7 +25,7 @@ extern std::stack<std::shared_ptr<ASTNode>> ancestros;
 void iniciarNodo(ASTNode::NodeType tipo) {
     auto nuevoNodo = std::make_shared<ASTNode>(tipo);
     ancestros.push(nuevoNodo);
-    std::cout << "Nodo insertado en la pila. Tipo: " << static_cast<int>(tipo) << std::endl;
+    // std::cout << "Nodo insertado en la pila. Tipo: " << static_cast<int>(tipo) << std::endl;
 }
 
 // Función para cerrar un nodo
@@ -36,7 +36,7 @@ void cerrarNodo() {
         if (!ancestros.empty()) {
             ancestros.top()->addChild(nodoActual);
         }
-        std::cout << "Nodo eliminado de la pila." << std::endl;
+        // std::cout << "Nodo eliminado de la pila." << std::endl;
     } else {
         std::cerr << "Error: No hay nodos en la pila para cerrar." << std::endl;
     }
@@ -76,6 +76,7 @@ string current_array_name = "";
 %token <sval> T_NEGRO       // Token para caracter
 %token <sval> T_HIGUEROTE   // Token para string
 %token <sval> T_SISA T_NOLSA // Token para true y false
+%token <sval> T_CASTEO
 
 %token T_SE_PRENDE T_ASIGNACION T_DOSPUNTOS T_PUNTOCOMA T_COMA
 %token T_SIESASI T_OASI T_NOJODA
@@ -96,7 +97,6 @@ string current_array_name = "";
 %token <sval> T_IDENTIFICADOR 
 %token <att_val> T_VALUE
 %token T_IZQPAREN T_DERPAREN T_IZQLLAVE T_DERLLAVE T_IZQCORCHE T_DERCORCHE
-%token T_CASTEO
 
 // Declaracion de tipos de retorno para las producciones 
 %type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion operadores_asignacion valores_booleanos tipo_funcion
@@ -180,7 +180,8 @@ instruccion:
     | T_BORRADOL T_IDENTIFICADOR {iniciarNodo(ASTNode::NodeType::s_delete); ancestros.top()->informacion.identificador = $2; cerrarNodo();}
     | T_BORRADOL T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR {  // ✓
         iniciarNodo(ASTNode::NodeType::s_delete);
-        ancestros.top()->informacion.identificador = $4;
+        ancestros.top()->informacion.identificador = $2;
+        ancestros.top()->informacion.identificador_atributo = $4;
         ancestros.top()->informacion.es_atributo = "true";
         cerrarNodo();
     }
@@ -420,8 +421,18 @@ valores_booleanos:
     ;
 
 expresion_apuntador:
-    T_AKITOY T_IDENTIFICADOR
-    | T_AKITOY T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR
+    T_AKITOY T_IDENTIFICADOR {
+        iniciarNodo(ASTNode::NodeType::e_apuntador);
+        ancestros.top()->informacion.identificador = $2;
+        ancestros.top()->informacion.es_atributo = "true";
+        cerrarNodo();}
+    | T_AKITOY T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR {
+        iniciarNodo(ASTNode::NodeType::e_apuntador);
+        ancestros.top()->informacion.identificador = $2;
+        ancestros.top()->informacion.identificador_atributo = $4;
+        ancestros.top()->informacion.es_atributo = "true";
+        cerrarNodo();
+    }
     ;
 
 expresion_nuevo:
@@ -492,8 +503,19 @@ expresion:
     | arreglo
     | {iniciarNodo(ASTNode::NodeType::e_neg);} T_NELSON expresion {cerrarNodo();}
 	| T_OPRESTA expresion %prec T_SIGNO_MENOS {$$ = $2;}
-    | expresion T_FLECHA expresion
     | expresion T_OPSUMA expresion {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_suma);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+       
+
         if($1.type == ExpresionAttribute::INT && $3.type == ExpresionAttribute::INT){
             $$.type = ExpresionAttribute::INT;
             $$.ival = $1.ival + $3.ival;
@@ -518,25 +540,219 @@ expresion:
         }
         
     }
-    | expresion T_OPRESTA expresion
+    | expresion T_FLECHA expresion  {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_flecha);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    }  
+    | expresion T_OPRESTA expresion {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_resta);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
     | expresion T_OPMULT expresion
+    {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_mult);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
     | expresion T_OPDIVDECIMAL expresion
+    {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_divdec);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
     | expresion T_OPDIVENTERA expresion
+    {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_divent);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
     | expresion T_OPMOD expresion
-    | expresion T_OPEXP expresion
+    {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_mod);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
+    | expresion T_OPEXP expresion {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_expon);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
     | expresion T_OPIGUAL expresion
-    | expresion T_OPDIFERENTE expresion
+    {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_igual);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
+    | expresion T_OPDIFERENTE expresion 
+    {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_diff);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
     | expresion T_OPMAYOR expresion
+    {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_greater);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
     | expresion T_OPMAYORIGUAL expresion
+    {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_ge);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
     | expresion T_OPMENOR expresion
+    {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_less);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
     | expresion T_OPMENORIGUAL expresion
+    {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_le);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
     | expresion T_OSEA expresion
+    {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_or);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
     | expresion T_YUNTA expresion
-    | expresion T_OPDECREMENTO
-    | expresion T_OPINCREMENTO
+    {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        auto hijoIzquierdo = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_and);
+        topNode = ancestros.top();
+        topNode->addChild(hijoIzquierdo);
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
+    | expresion T_OPDECREMENTO {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_decr);
+        topNode = ancestros.top();
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    } 
+    | expresion T_OPINCREMENTO {
+        auto topNode = ancestros.top();
+        auto hijoDerecho = topNode->children.back();
+        topNode->children.pop_back();
+        iniciarNodo(ASTNode::NodeType::e_incr);
+        topNode = ancestros.top();
+        topNode->addChild(hijoDerecho);
+        cerrarNodo();
+    }
     | entrada_salida
     | funcion
-    | casting
+    | casting 
     ;
 
 condicion:

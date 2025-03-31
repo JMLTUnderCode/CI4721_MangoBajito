@@ -12,6 +12,7 @@ struct info
 	std::string es_apuntador = "";
 	std::string tipo_asignacion = "";
 	std::string identificador = "";
+	std::string identificador_atributo = "";
 	std::string tipo = "";
 	std::string es_atributo = "";
 	std::string valor = "";
@@ -73,13 +74,15 @@ public:
 		e_igual,
 		e_diff,
 		e_greater,
-		e_gt,
+		e_ge,
 		e_less,
-		e_lt,
+		e_le,
 		e_or,
 		e_and,
 		e_decr,
 		e_incr,
+		e_apuntador,
+		e_cast,
 		// Agrega más tipos de nodos según sea necesario
 	};
 
@@ -191,12 +194,12 @@ public:
 			return "e_diff";
 		case NodeType::e_greater:
 			return "e_greater";
-		case NodeType::e_gt:
-			return "e_gt";
+		case NodeType::e_ge:
+			return "e_ge";
 		case NodeType::e_less:
 			return "e_less";
-		case NodeType::e_lt:
-			return "e_lt";
+		case NodeType::e_le:
+			return "e_le";
 		case NodeType::e_or:
 			return "e_or";
 		case NodeType::e_and:
@@ -205,7 +208,10 @@ public:
 			return "e_decr";
 		case NodeType::e_incr:
 			return "e_incr";
-			
+		case NodeType::e_apuntador:
+			return "e_apuntador";
+		case NodeType::e_cast:
+			return "e_cast";
 		// Agrega más casos según sea necesario
 		default:
 			return "Pendiente, pon nombre!!!";
@@ -241,7 +247,8 @@ inline void printAST(const std::shared_ptr<ASTNode> &node, int depth = 0)
 		{"identificador", node->informacion.identificador},
 		{"tipo", node->informacion.tipo},
 		{"es_atributo", node->informacion.es_atributo},
-		{"valor", node->informacion.valor}};
+		{"valor", node->informacion.valor},
+		{"identificador_atributo", node->informacion.identificador_atributo}};
 
 	for (const auto &attribute : attributes)
 	{
@@ -254,10 +261,11 @@ inline void printAST(const std::shared_ptr<ASTNode> &node, int depth = 0)
 		}
 	}
 	// Indent based on depth + 1
-	if (!node->getChildren().empty()){
+	if (!node->getChildren().empty())
+	{
 		for (int i = 0; i < depth + 1; ++i)
 			std::cout << "  ";
-		std::cout<< "Hijos:" <<std::endl;
+		std::cout << "Hijos:" << std::endl;
 	}
 	// Recursively print children
 	for (const auto &child : node->getChildren())
