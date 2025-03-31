@@ -38,7 +38,7 @@ int current_column = 1;   // Lleva el seguimiento de la columna actual
 MANGO         (0|[1-9][0-9]{0,8}|1[0-9]{9}|20[0-9]{8}|21[0-3][0-9]{7}|214[0-6][0-9]{6}|2147[0-3][0-9]{5}|21474[0-7][0-9]{4}|214748[0-2][0-9]{3}|2147483[0-5][0-9]{2}|21474836[0-3][0-9]|214748364[0-7])
 MANGUITA      [0-9]+\.[0-9]{1,7}
 MANGUANGUA    ([0-9]*\.?[0-9]{1,15}|[0-9]+\.?[0-9]*)([eE][+-]?[0-9]+)?
-NEGRO         "\"."
+NEGRO         \'.\'
 HIGUEROTE     \"[^\"]*\"
 IDENTIFICADOR [a-zA-Z_][a-zA-Z0-9_]*
 CASTING       \(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(tas_claro\)
@@ -157,9 +157,15 @@ CASTING       \(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(ta
 
 {NEGRO} {
     UPDATE_LOC
-    yylval.att_val.type = ExpresionAttribute::STRING;
-    yytext[yyleng - 1] = '\0';  // cambiar la ultima comilla por \0
-	yylval.att_val.sval = strdup(yytext + 1); // +1 elimina la primera comilla.
+    
+    if (yyleng < 3 || yytext[0] != '\'' || yytext[yyleng-1] != '\'') {
+        exit(1);
+    }
+
+    // Manejar caracteres normales y escapados
+    yylval.att_val.type = ExpresionAttribute::CHAR;
+    yylval.att_val.cval = yytext[1];  // Usamos cval en lugar de sval
+    
     return T_VALUE;
 }
 

@@ -43,6 +43,7 @@ const char* current_array_base_type = nullptr;
 			float fval;
 			double dval;
 			char* sval;
+            char cval;
 		};
 	};       
 }
@@ -60,7 +61,29 @@ const char* current_array_base_type = nullptr;
             case ExpresionAttribute::ID:     return "id";
             default:                         return "unknown";
         }
-    }     
+    }  
+
+    inline ExpresionAttribute::Type stringToType(const std::string& typeStr) {
+        if (typeStr == "mango") {
+            return ExpresionAttribute::INT;
+        } else if (typeStr == "manguita") {
+            return ExpresionAttribute::FLOAT;
+        } else if (typeStr == "manguangua") {
+            return ExpresionAttribute::DOUBLE;
+        } else if (typeStr == "bool") {
+            return ExpresionAttribute::BOOL;
+        } else if (typeStr == "negro") {
+            return ExpresionAttribute::CHAR;
+        } else if (typeStr == "higuerote") {
+            return ExpresionAttribute::STRING;
+        } else if (typeStr == "pointer") {
+            return ExpresionAttribute::POINTER;
+        } else if (typeStr == "id") {
+            return ExpresionAttribute::ID;
+        } else {
+            throw std::invalid_argument("Tipo desconocido: " + typeStr);
+        }
+    }   
 }
 
 %union {
@@ -69,6 +92,7 @@ const char* current_array_base_type = nullptr;
     float fval;
     double dval;
     char* sval;
+    char cval;
 }
 
 %token <sval> T_MANGO       // Token para int
@@ -322,7 +346,11 @@ declaracion:
 	            //cout << "ASIGNANDO STRING: valor = \"" << $6.sval << "\"" << endl;
 	            attributes->value = string($6.sval);
 	            break;
-	        
+
+            case ExpresionAttribute::CHAR:
+                attributes->value = $6.cval;
+                break;
+
 	        case ExpresionAttribute::POINTER:
 	            //cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
 	            attributes->value = nullptr;
@@ -441,6 +469,10 @@ asignacion:
 	        case ExpresionAttribute::STRING:
                 attr_var->value = string($3.sval); // Convierte a std::string
 	            break;
+            case ExpresionAttribute::CHAR: {
+                attr_var->value = $3.cval;
+                break;
+            }
 	        case ExpresionAttribute::POINTER:
 	            // Manejar punteros según sea necesario
 	            attr_var->value = nullptr; // O el valor adecuado
@@ -455,20 +487,17 @@ asignacion:
                 } else {
                     attr_var->value = nullptr;
                 }
-                break;
-	            
-	    }
-    }
+                break;    
+	        }
+        }
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asignacion expresion
     | T_IDENTIFICADOR T_IZQCORCHE expresion T_DERCORCHE operadores_asignacion expresion {
         Attributes* array_attr = symbolTable.search_symbol($1);
-        
         if (!array_attr || array_attr->category != ARRAY) {
             ERROR_TYPE = NON_DEF_VAR;
             yyerror($1);
             exit(1);
         }
-        
         if ($3.type != ExpresionAttribute::INT) {
             ERROR_TYPE = SEMANTIC_TYPE;
             yyerror("Índice de array debe ser entero");
@@ -477,62 +506,59 @@ asignacion:
         
         int index = $3.ival;
         int array_size = get<int>(array_attr->value);
-        
         if (index < 0 || index >= array_size) {
             string error = to_string(index);
             ERROR_TYPE = SEGMENTATION_FAULT;
             yyerror(error.c_str());
             exit(1);
         }
-
         std::string element_name = std::string($1) + "[" + std::to_string(index) + "]";
         Attributes* array_element_attributes = symbolTable.search_symbol(element_name.c_str());
         
-	    if (array_attr->type->symbol_name != typeToString($6.type)) {
-	        string error = array_attr->type->symbol_name;
-	        ERROR_TYPE = TYPE_ERROR;
-	        yyerror(error.c_str());
-	        exit(1);
-	    }
-        
-        /*switch($1.type) {
-	        case ExpresionAttribute::INT:
-	            $$.ival = $1.ival;
-	            break;
-	        case ExpresionAttribute::FLOAT:
-	            $$.fval = $1.fval;
-	            break;
-	        case ExpresionAttribute::BOOL:
-	            $$.ival = (bool)$1.ival; // Asumiendo que se almacena en ival
-	            break;
-	        case ExpresionAttribute::STRING:
-                $$.sval = $1.sval; // Convierte a std::string
-	            break;
-            case ExpresionAttribute::DOUBLE:
-                $$.dval = $1.dval;
-	        default:
-                break;
-        }*/
-
+        if (array_attr->type->symbol_name != typeToString($6.type)) {
+            string error = array_attr->type->symbol_name;
+            ERROR_TYPE = TYPE_ERROR;
+            yyerror(error.c_str());
+            exit(1);
+        }
+  
         // Asignar valor
-        switch($6.type) {
+        switch ($6.type) {
             case ExpresionAttribute::INT:
                 array_element_attributes->value = $6.ival;
                 break;
             case ExpresionAttribute::FLOAT:
                 array_element_attributes->value = $6.fval;
                 break;
+            case ExpresionAttribute::DOUBLE:
+                array_element_attributes->value = $6.dval;
+                break;
+            case ExpresionAttribute::BOOL:
+                array_element_attributes->value = (bool)$6.ival; // Asumiendo que el valor booleano está en ival
+                break;
             case ExpresionAttribute::STRING:
-                array_element_attributes->value = string($6.sval);
+                if ($6.sval) {
+                    array_element_attributes->value = std::string($6.sval);
+                } else {
+                    array_element_attributes->value = std::string("");
+                }
+                break;
+            case ExpresionAttribute::CHAR:
+                array_element_attributes->value =  $6.cval;
+                break;
+            case ExpresionAttribute::POINTER:
+                array_element_attributes->value = nullptr; // Manejar punteros según sea necesario
                 break;
             default:
                 ERROR_TYPE = SEMANTIC_TYPE;
                 yyerror("Tipo no soportado para array");
                 exit(1);
         }
+
         
         // Actualizar en tabla de símbolos
         symbolTable.insert_symbol(array_element_attributes->symbol_name, *array_element_attributes);
+
     }    
     ;
 
@@ -591,33 +617,61 @@ expresion:
 
             if (array_attr->category == VARIABLE) {
                 cout << "Agregando valor al array '" << current_array_name << "': ";
-                switch ($1.type) {
-                    case ExpresionAttribute::INT: {
-                        cout << $1.ival << endl;
-                        Attributes *elem = new Attributes();
-                        elem->value = $1.ival;
-                        // Se inserta en info como par {cadena, puntero a Attributes}
-                        array_attr->info.push_back({string(""), elem});
-                        break;
-                    }
-                    case ExpresionAttribute::FLOAT: {
-                        cout << $1.fval << endl;
-                        Attributes *elem = new Attributes();
-                        elem->value = $1.fval;
-                        array_attr->info.push_back({string(""), elem});
-                        break;
-                    }
-                    case ExpresionAttribute::STRING: {
-                        cout << $1.sval << endl;
-                        Attributes *elem = new Attributes();
-                        elem->value = string($1.sval);
-                        array_attr->info.push_back({string(""), elem});
-                        break;
-                    }
-                    default:
-                        yyerror("Tipo no soportado para agregar al array");
-                        exit(1);
-                }
+        switch ($1.type) {
+            case ExpresionAttribute::INT: {
+                cout << $1.ival << endl;
+                Attributes *elem = new Attributes();
+                elem->value = $1.ival;
+                // Se inserta en info como par {cadena, puntero a Attributes}
+                array_attr->info.push_back({string(""), elem});
+                break;
+            }
+            case ExpresionAttribute::FLOAT: {
+                cout << $1.fval << endl;
+                Attributes *elem = new Attributes();
+                elem->value = $1.fval;
+                array_attr->info.push_back({string(""), elem});
+                break;
+            }
+        case ExpresionAttribute::DOUBLE: {
+            cout << $1.dval << endl;
+            Attributes *elem = new Attributes();
+            elem->value = $1.dval;
+            array_attr->info.push_back({string(""), elem});
+            break;
+        }
+        case ExpresionAttribute::BOOL: {
+            cout << ($1.ival ? "true" : "false") << endl;
+            Attributes *elem = new Attributes();
+            elem->value = (bool)$1.ival;
+            array_attr->info.push_back({string(""), elem});
+            break;
+        }
+        case ExpresionAttribute::STRING: {
+            cout << $1.sval << endl;
+            Attributes *elem = new Attributes();
+            elem->value = string($1.sval);
+            array_attr->info.push_back({string(""), elem});
+            break;
+        }
+        case ExpresionAttribute::CHAR: {
+            cout << $1.cval << endl;
+            Attributes *elem = new Attributes();
+            elem->value = $1.cval; // Asume que $1.sval es un string y toma el primer carácter
+            array_attr->info.push_back({string(""), elem});
+            break;
+        }
+        case ExpresionAttribute::POINTER: {
+            cout << "nullptr" << endl;
+            Attributes *elem = new Attributes();
+            elem->value = nullptr; // Manejar punteros según sea necesario
+            array_attr->info.push_back({string(""), elem});
+            break;
+        }
+        default:
+            yyerror("Tipo no soportado para agregar al array");
+            exit(1);
+        }
             } else {
                 yyerror("El identificador no es un array");
                 exit(1);
@@ -643,22 +697,30 @@ expresion:
 		}
 		
         switch($1.type) {
-	        case ExpresionAttribute::INT:
-	            $$.ival = $1.ival;
-	            break;
-	        case ExpresionAttribute::FLOAT:
-	            $$.fval = $1.fval;
-	            break;
-	        case ExpresionAttribute::BOOL:
-	            $$.ival = (bool)$1.ival; // Asumiendo que se almacena en ival
-	            break;
-	        case ExpresionAttribute::STRING:
-                $$.sval = $1.sval; // Convierte a std::string
-	            break;
+            case ExpresionAttribute::INT:
+                $$.ival = $1.ival;
+                break;
+            case ExpresionAttribute::FLOAT:
+                $$.fval = $1.fval;
+                break;
             case ExpresionAttribute::DOUBLE:
                 $$.dval = $1.dval;
-	        default:
                 break;
+            case ExpresionAttribute::BOOL:
+                $$.ival = (bool)$1.ival; // Asumiendo que se almacena en ival
+                break;
+            case ExpresionAttribute::STRING:
+                $$.sval = $1.sval; // Convierte a std::string
+                break;
+            case ExpresionAttribute::CHAR:
+                $$.ival = $1.cval; // Asume que $1.sval es un string y toma el primer carácter
+                break;
+            case ExpresionAttribute::POINTER:
+                $$.ival = 0; // Manejar punteros según sea necesario
+                break;
+            default:
+                yyerror("Tipo no soportado");
+                exit(1);
         }
     }
     | T_PELABOLA
@@ -724,7 +786,60 @@ expresion:
     | entrada_salida
     | funcion
     | casting
-    ;
+    | T_IDENTIFICADOR T_IZQCORCHE expresion T_DERCORCHE {
+        Attributes* array_attr = symbolTable.search_symbol($1);
+        
+        if (!array_attr || array_attr->category != ARRAY) {
+            ERROR_TYPE = NON_DEF_VAR;
+            yyerror($1);
+            exit(1);
+        }
+        
+        if ($3.type != ExpresionAttribute::INT) {
+            ERROR_TYPE = SEMANTIC_TYPE;
+            yyerror("Índice de array debe ser entero");
+            exit(1);
+        }
+        
+        int index = $3.ival;
+        int array_size = get<int>(array_attr->value);
+        
+        if (index < 0 || index >= array_size) {
+            string error = to_string(index);
+            ERROR_TYPE = SEGMENTATION_FAULT;
+            yyerror(error.c_str());
+            exit(1);
+        }
+
+        std::string element_name = std::string($1) + "[" + std::to_string(index) + "]";
+        Attributes* array_element_attributes = symbolTable.search_symbol(element_name.c_str());
+
+        // Retornar el valor almacenado en el elemento del array
+        if (array_element_attributes->type->symbol_name == "mango") { // INT
+            $$.type = ExpresionAttribute::INT;
+            $$.ival = get<int>(array_element_attributes->value);
+        } else if (array_element_attributes->type->symbol_name == "manguita") { // FLOAT
+            $$.type = ExpresionAttribute::FLOAT;
+            $$.fval = get<float>(array_element_attributes->value);
+        } else if (array_element_attributes->type->symbol_name == "manguangua") { // DOUBLE
+            $$.type = ExpresionAttribute::DOUBLE;
+            $$.dval = get<double>(array_element_attributes->value);
+        } else if (array_element_attributes->type->symbol_name == "negro") { // CHAR
+            $$.type = ExpresionAttribute::CHAR;
+            $$.ival = get<char>(array_element_attributes->value);
+        } else if (array_element_attributes->type->symbol_name == "higuerote") { // STRING
+            $$.type = ExpresionAttribute::STRING;
+            $$.sval = strdup(get<string>(array_element_attributes->value).c_str());
+        } else if (array_element_attributes->type->symbol_name == "tas_claro") { // BOOL
+            $$.type = ExpresionAttribute::BOOL;
+            $$.ival = get<bool>(array_element_attributes->value);
+        } else {
+            ERROR_TYPE = SEMANTIC_TYPE;
+            yyerror("Tipo no soportado para retorno de array");
+            exit(1);
+        }    
+    }  
+;
 
 condicion:
     T_SIESASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope alternativa
@@ -765,18 +880,25 @@ var_ciclo_determinado:
             case ExpresionAttribute::FLOAT:
                 attributes->value = $3.fval;
                 break;
+            case ExpresionAttribute::DOUBLE:
+                attributes->value = $3.dval;
+                break;
             case ExpresionAttribute::BOOL:
                 attributes->value = (bool)$3.ival; // Asumiendo que se almacena en ival
                 break;
             case ExpresionAttribute::STRING:
                 attributes->value = string($3.sval); // Convierte a std::string
                 break;
+            case ExpresionAttribute::CHAR:
+                attributes->value = $3.cval; // Asume que $3.sval es un string y toma el primer carácter
+                break;
             case ExpresionAttribute::POINTER:
-                // Manejar punteros según sea necesario
-                attributes->value = nullptr; // O el valor adecuado
+                attributes->value = nullptr; // Manejar punteros según sea necesario
                 break;
             default:
                 attributes->value = nullptr;
+                yyerror("Tipo no soportado");
+                exit(1);
         }
 
         if (!symbolTable.insert_symbol($1, *attributes)){

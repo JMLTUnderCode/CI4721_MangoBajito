@@ -91,8 +91,8 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 	- [x] Inicializacion de arrays.
 	- [x] Edit de valores en array.
 	- [x] Verificacion de tipos.
-	- [ ] Diferenciacion negro e higuerote 
-	- [ ] Acceso directo a valores del array.
+	- [x] Diferenciacion negro e higuerote 
+	- [x] Acceso directo a valores del array.
     - [ ] Analizar logica para multidimencion. Guardado, informacion, etc.
 - [x] Errores:
 	- [x] Utilizacion de variable sin definir.
