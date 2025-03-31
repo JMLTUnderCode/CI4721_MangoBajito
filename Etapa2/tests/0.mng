@@ -37,7 +37,7 @@ se_prende(){
 	coliao MyUnion {
 		attr_u_1 : mango;
 		attr_u_2 : manguita;
-	}
+	};
 
 	arroz_con_mango MyStruct {
 		attr_s_1 : mango;
