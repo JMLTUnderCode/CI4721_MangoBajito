@@ -532,7 +532,6 @@ expresion:
 		$$.sval = $1; $$.type = ExpresionAttribute::ID;
 	}
     | T_VALUE {
-		cout << "checking 1" << endl;
        if (current_array_name != "") {
             Attributes *array_attr = symbolTable.search_symbol(current_array_name.c_str());
             if (array_attr == nullptr) {
@@ -580,10 +579,8 @@ expresion:
                 exit(1);
             }
         }
-		cout << "checking 2: " << current_function_name << endl;
 		if (current_function_name != "") {
 			Attributes* func_attr = symbolTable.search_symbol(current_function_name);
-			cout << "checking 2" << endl;
 			if (current_function_parameters < func_attr->info.size()) { // Si hay parámetros.
 				// por codear
 
@@ -981,7 +978,6 @@ funcion:
         }
 		current_function_name = string($1);
 		current_function_parameters = 1;
-		cout << "checking 1: " << current_function_name << endl;
 
 	} T_IZQPAREN secuencia T_DERPAREN {
 		Attributes* func_attr = symbolTable.search_symbol(strdup($1));
@@ -1047,7 +1043,7 @@ void yyerror(const char *var) {
 	if (ERROR_TYPE == SEMANTIC_TYPE) {
 		extern char* yytext;
 		cerr << "\nError sintáctico en línea " << yylineno << ", columna " << yylloc.first_column << ": '" << yytext << "'\n\n";
-		cout << var << endl;
+		cout << var << "\n\n";
 	} else {
 		cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": ";
 		switch (ERROR_TYPE) {
