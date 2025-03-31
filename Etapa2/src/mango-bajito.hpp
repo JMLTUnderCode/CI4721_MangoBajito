@@ -90,7 +90,8 @@ enum errorType {
 	DEBUGGING_TYPE,
 	SEMANTIC_TYPE,
 	TYPE_ERROR,
-	SEGMENTATION_FAULT
+	SEGMENTATION_FAULT,
+	PARAMETERS_ERROR,
 };
 // Implementacion Tabla de Simbolos Le-Blanc Cook
 class SymbolTable {

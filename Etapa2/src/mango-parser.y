@@ -22,6 +22,7 @@ SymbolTable symbolTable = SymbolTable();
 errorType ERROR_TYPE = SEMANTIC_TYPE; // Permite manejar un error particular de tipo errorType
 string current_struct_name = "";
 string current_function_name = "";
+int current_function_parameters = 0;
 string current_array_name = "";
 int current_array_size = 0;
 const char* current_array_base_type = nullptr;
@@ -395,7 +396,9 @@ asignacion:
             exit(1);
         }
 
-		current_array_name = string($1); // En caso de asignacion de arreglos.
+		if (attr_var->category == ARRAY){
+			current_array_name = string($1); // En caso de asignacion de arreglos.
+		}
 
 	    switch($3.type) {
 	        case ExpresionAttribute::INT:
@@ -525,8 +528,11 @@ expresion_nuevo:
     ;
 
 expresion:
-    T_IDENTIFICADOR {$$.sval = $1; $$.type = ExpresionAttribute::ID;}
+    T_IDENTIFICADOR {
+		$$.sval = $1; $$.type = ExpresionAttribute::ID;
+	}
     | T_VALUE {
+		cout << "checking 1" << endl;
        if (current_array_name != "") {
             Attributes *array_attr = symbolTable.search_symbol(current_array_name.c_str());
             if (array_attr == nullptr) {
@@ -574,6 +580,22 @@ expresion:
                 exit(1);
             }
         }
+		cout << "checking 2: " << current_function_name << endl;
+		if (current_function_name != "") {
+			Attributes* func_attr = symbolTable.search_symbol(current_function_name);
+			cout << "checking 2" << endl;
+			if (current_function_parameters < func_attr->info.size()) { // Si hay parámetros.
+				// por codear
+
+				current_function_parameters++;
+
+			} else { // Excede la cantidad de parametros.
+				ERROR_TYPE = PARAMETERS_ERROR;
+				string error_message = "Error en la función '" + current_function_name + "': Excede la cantidad de parámetros.";
+				yyerror(error_message.c_str());
+				exit(1);
+			}
+		}
 		
         switch($1.type) {
 	        case ExpresionAttribute::INT:
@@ -947,7 +969,31 @@ declaracion_funcion:
     ;
 
 funcion:
-	T_IDENTIFICADOR T_IZQPAREN secuencia T_DERPAREN
+	T_IDENTIFICADOR {
+		Attributes* func_attr = symbolTable.search_symbol(string($1));
+        if (func_attr == nullptr) {
+            yyerror("Funcion no definida");
+            exit(1);
+        }
+		if (func_attr->category != FUNCTION) {
+            yyerror("El identificador no es una funcion");
+            exit(1);
+        }
+		current_function_name = string($1);
+		current_function_parameters = 1;
+		cout << "checking 1: " << current_function_name << endl;
+
+	} T_IZQPAREN secuencia T_DERPAREN {
+		Attributes* func_attr = symbolTable.search_symbol(strdup($1));
+		if ( current_function_parameters < func_attr->info.size()) {
+			ERROR_TYPE = PARAMETERS_ERROR;
+			string error_message = "Falta de parametros en la llamada a la funcion '" + string($1) + "'";
+			yyerror(error_message.c_str());
+			exit(1);
+		}
+		current_function_name = "";
+		current_function_parameters = 0;
+	}
 
 arreglo:
     T_IZQCORCHE secuencia T_DERCORCHE {
@@ -1001,6 +1047,7 @@ void yyerror(const char *var) {
 	if (ERROR_TYPE == SEMANTIC_TYPE) {
 		extern char* yytext;
 		cerr << "\nError sintáctico en línea " << yylineno << ", columna " << yylloc.first_column << ": '" << yytext << "'\n\n";
+		cout << var << endl;
 	} else {
 		cout << "\nError en línea " << yylineno << ", columna " << yylloc.first_column << ": ";
 		switch (ERROR_TYPE) {
@@ -1045,7 +1092,10 @@ void yyerror(const char *var) {
 	            break;     
             case SEGMENTATION_FAULT:
                 cout << "Indice \"" << var << "\" fuera de rango.";
-                break;    
+                break;
+			case PARAMETERS_ERROR:
+				cout << var;
+				break;
 	        case DEBUGGING_TYPE:
 				cout << var;
 	            break;

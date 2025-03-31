@@ -7,10 +7,10 @@ se_prende(){
 	culito p1 : mango = 23;
 	echar_cuento fun2(p1 : mango, p2 : manguangua, p3 : mango) lanza mango {
 		p1 = 2;
-		p2 = 3.0;
+		#p2 = 3.0;
 		lanzate p1;
 	};
 	
-	# Falta verificar la llamada a funciones con cantidad incorrecta de parametros
-	culito value : mango = fun2(1, 2.0);
+	# Falta verificar los tipos de los parametros en las llamadas.
+	culito value : mango = fun2(1, 2.0, 3);
 };
