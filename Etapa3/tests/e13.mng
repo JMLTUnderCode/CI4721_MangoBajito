@@ -10,6 +10,7 @@ se_prende(){
         si_es_asi (n igualito 0) {
             uy_kieto;
         };
+        n = "hola" + 10;
         suma += n;
     };
 };

@@ -4,10 +4,10 @@
 se_prende(){
     jeva n: mango = (mango)hablame("");
     culito a: mango = 0;
-    culito b: mango = 1;
+    culito b: higuerote = 1;
     culito temp: mango;
 
-    repite_burda i entre 1 hasta (n-1) {
+    repite_burda i entre "hola" hasta (n-1) {
         temp = 2;
         a = b;
         b = temp + b;

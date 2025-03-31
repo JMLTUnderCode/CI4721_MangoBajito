@@ -3,4 +3,5 @@
 
 se_prende(){
     rescata("Hola mundo");
+    culito a: higuerote = 100;
 };

@@ -4,4 +4,8 @@
 se_prende(){
     culito nombre: higuerote = hablame("nombre de usuario: ");
     rescata("Hola ", nombre);
+
+    echale_bolas_si (nombre > 0) {
+        rescata("Hola ", nombre);
+    };
 };
