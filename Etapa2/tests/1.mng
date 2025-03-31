@@ -22,8 +22,6 @@ se_prende(){
 		mi_array[0] = 4;
 		mi_array[1] = "8";
 		mi_array[2] = 'a';
-
-		
 	} nojoda {
 		culito a: mango;
 		culito c: mango;
