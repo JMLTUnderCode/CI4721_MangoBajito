@@ -530,6 +530,26 @@ expresion_nuevo:
 expresion:
     T_IDENTIFICADOR {
 		$$.sval = $1; $$.type = ExpresionAttribute::ID;
+
+		if (current_function_name != "") {
+			Attributes* func_attr = symbolTable.search_symbol(current_function_name);
+			if (current_function_parameters < func_attr->info.size()) { // Si hay parámetros.
+				Attributes* param_attr = func_attr->info[current_function_parameters].second;
+				Attributes* var_attr = symbolTable.search_symbol($1);
+				if (param_attr->type->symbol_name != var_attr->type->symbol_name) {
+					ERROR_TYPE = TYPE_ERROR;
+					yyerror(param_attr->type->symbol_name.c_str());
+					exit(1);
+				}
+				current_function_parameters++;
+
+			} else { // Excede la cantidad de parametros.
+				ERROR_TYPE = PARAMETERS_ERROR;
+				string error_message = "Error en la función '" + current_function_name + "': Excede la cantidad de parámetros.";
+				yyerror(error_message.c_str());
+				exit(1);
+			}
+		}
 	}
     | T_VALUE {
        if (current_array_name != "") {
