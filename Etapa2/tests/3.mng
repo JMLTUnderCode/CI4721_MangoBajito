@@ -5,7 +5,7 @@ se_prende(){
 		# Hacer un print de global
 	};
 	culito p : mango = 23;
-	echar_cuento fun2(p1 : mango, p2 : manguita, p3 : mango) lanza manguita {
+	echar_cuento fun2(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
 		p1 = 2;
 		p2 = 3.0;
 		lanzate p2;

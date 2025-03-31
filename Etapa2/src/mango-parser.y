@@ -270,6 +270,17 @@ declaracion:
             exit(1);
         };
 
+		if (current_function_type != ""){ // En caso de asignacion de funciones.
+			string type_id = symbolTable.search_symbol($4)->symbol_name;
+			if (current_function_type != type_id){
+				ERROR_TYPE = TYPE_ERROR;
+				string error_message = type_id + "\". Recibido: \"" + current_function_type;
+				yyerror(error_message.c_str());
+				exit(1);
+			}
+			current_function_type = "";
+		}
+
 		Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
@@ -285,7 +296,7 @@ declaracion:
         } else if (strcmp($1, "CONSTANTE") == 0){
             attributes->category = CONSTANT;
         };
-                
+
 	    switch($6.type) {
 	        case ExpresionAttribute::INT:
 	            cout << "ASIGNANDO ENTERO: valor = " << $6.ival << endl;
@@ -388,7 +399,7 @@ asignacion:
             yyerror($1);
             exit(1);
         };
-                
+        
         string info_var = get<string>(attr_var->info[0].first);
         if (strcmp(info_var.c_str(), "CICLO FOR") == 0){
 			ERROR_TYPE = VAR_FOR;
@@ -402,8 +413,18 @@ asignacion:
             exit(1);
         }
 
-		if (attr_var->category == ARRAY){
-			current_array_name = string($1); // En caso de asignacion de arreglos.
+		if (attr_var->category == ARRAY){ // En caso de asignacion de arreglos.
+			current_array_name = string($1); 
+		}
+
+		if (current_function_type != ""){ // En caso de asignacion de funciones.
+			if (current_function_type != attr_var->type->symbol_name){
+				ERROR_TYPE = TYPE_ERROR;
+				string error_message = attr_var->type->symbol_name + "\". Recibido: \"" + current_function_type;
+				yyerror(error_message.c_str());
+				exit(1);
+			}
+			current_function_type = "";
 		}
 
 	    switch($3.type) {
@@ -467,14 +488,13 @@ asignacion:
         std::string element_name = std::string($1) + "[" + std::to_string(index) + "]";
         Attributes* array_element_attributes = symbolTable.search_symbol(element_name.c_str());
         
-    if (array_attr->type->symbol_name != typeToString($6.type)) {
-        string error = array_attr->type->symbol_name;
-        ERROR_TYPE = TYPE_ERROR;
-        yyerror(error.c_str());
-        exit(1);
-    }
+	    if (array_attr->type->symbol_name != typeToString($6.type)) {
+	        string error = array_attr->type->symbol_name;
+	        ERROR_TYPE = TYPE_ERROR;
+	        yyerror(error.c_str());
+	        exit(1);
+	    }
         
-
         /*switch($1.type) {
 	        case ExpresionAttribute::INT:
 	            $$.ival = $1.ival;
@@ -493,8 +513,6 @@ asignacion:
 	        default:
                 break;
         }*/
-
-
 
         // Asignar valor
         switch($6.type) {
@@ -1010,8 +1028,9 @@ funcion:
             yyerror("El identificador no es una funcion");
             exit(1);
         }
-		current_function_name = string($1);
+		current_function_name = func_attr->symbol_name;
 		current_function_parameters = 0;
+		current_function_type = get<string>(func_attr->info[func_attr->info.size()-1].first);
 
 	} T_IZQPAREN secuencia T_DERPAREN {
 		Attributes* func_attr = symbolTable.search_symbol(strdup($1));
