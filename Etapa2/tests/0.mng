@@ -34,7 +34,7 @@ se_prende(){
 	culito higuerote_array8 : higuerote[2];
 	jeva higuerote_array9 : higuerote[3] = ["hola", "mundo", "!"];
 
-	culiao MyUnion {
+	coliao MyUnion {
 		attr_u_1 : mango;
 		attr_u_2 : manguita;
 	}
