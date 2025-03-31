@@ -5,7 +5,8 @@ se_prende(){
 		a = 100;
 	} o_asi (Sisa) {
 		culito b: mango;
-		jeva mi_array: mango[5];
+		jeva mi_array: mango[5]; # No tiene sentido.
+		jeva mi_array1 : mango = [1,2,3,4,5]; # Si tiene sentido;
 	} nojoda {
 		culito a: mango;
 		culito c: mango;
