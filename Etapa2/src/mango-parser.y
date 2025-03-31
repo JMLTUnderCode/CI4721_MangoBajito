@@ -255,6 +255,10 @@ declaracion:
                 yyerror($2);
                 exit(1);
             }
+
+            string current_array_name = "";
+            int current_array_size = 0;
+            const char* current_array_base_type = nullptr;            
         }
         // Caso normal (no array)
         else {
@@ -286,7 +290,6 @@ declaracion:
             }
         }
     }
-
     | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
         if (symbolTable.search_symbol($4) == nullptr){
 			ERROR_TYPE = NON_DEF_TYPE;
@@ -1177,7 +1180,7 @@ funcion:
 arreglo:
     T_IZQCORCHE secuencia T_DERCORCHE {
 		current_array_name = "";
-        int current_array_size = 0;
+        current_array_size = 0;
         const char* current_array_base_type = nullptr;
 	}
     ;
