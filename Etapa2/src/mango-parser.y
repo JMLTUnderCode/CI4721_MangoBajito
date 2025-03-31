@@ -357,26 +357,56 @@ declaracion:
 
 	    switch($6.type) {
 	        case ExpresionAttribute::INT:
+				if(string($4) != "mango") {
+					ERROR_TYPE = TYPE_ERROR;
+					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
+					yyerror(error_message.c_str());
+				}
 	            attributes->value = $6.ival;
 	            break;
 	        
 	        case ExpresionAttribute::FLOAT:
+				if(string($4) != "manguita") {
+					ERROR_TYPE = TYPE_ERROR;
+					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
+					yyerror(error_message.c_str());
+				}
 	            attributes->value = $6.fval;
 	            break;
 	        
 			case ExpresionAttribute::DOUBLE:
+				if(string($4) != "manguangua") {
+					ERROR_TYPE = TYPE_ERROR;
+					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
+					yyerror(error_message.c_str());
+				}
 	            attributes->value = $6.dval;
 	            break;
 
 	        case ExpresionAttribute::BOOL:
+				if(string($4) != "tas_claro") {
+					ERROR_TYPE = TYPE_ERROR;
+					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
+					yyerror(error_message.c_str());
+				}
 	            attributes->value = strcmp($6.sval, "Sisa") == 0 ? true : false;
 	            break;
 	        
 	        case ExpresionAttribute::STRING:
+				if(string($4) != "higuerote") {
+					ERROR_TYPE = TYPE_ERROR;
+					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
+					yyerror(error_message.c_str());
+				}
 	            attributes->value = string($6.sval);
 	            break;
 
             case ExpresionAttribute::CHAR:
+				if(string($4) != "negro") {
+					ERROR_TYPE = TYPE_ERROR;
+					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
+					yyerror(error_message.c_str());
+				}
                 attributes->value = $6.cval;
                 break;
 
@@ -410,6 +440,7 @@ tipo_declaracion:
 tipos:
     tipo_valor {
 		if (current_function_name != "") current_function_type = string($1);
+		$$ = $1;
 	}
     | tipos T_IZQCORCHE expresion T_DERCORCHE {
         // Verificar que la expresión sea un valor entero válido
