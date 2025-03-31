@@ -475,7 +475,7 @@ asignacion:
 
         if (strcmp(info_var.c_str(), "MANEJO ERROR") == 0){
 			ERROR_TYPE = VAR_TRY;
-            yyerror(info_var.c_str());
+            yyerror($1);
             //exit(1);
         }
 
