@@ -27,9 +27,10 @@ public:
 		program_main,
 		s_main,
 		instuctions,
-		s_decl_struct,
+		s_decl_struct_variante,
 		s_decl_culito,
 		s_decl_jeva,
+		s_decl_param,
 		s_if,
 		s_if_else,
 		s_else,
@@ -58,6 +59,8 @@ public:
 		s_struct,
 		decl_sequence,
 		s_variante,
+		s_func,
+		s_sec_param,
 		// Agrega más tipos de nodos según sea necesario
 	};
 
@@ -133,12 +136,19 @@ public:
 			return "s_struct";
 		case NodeType::decl_sequence:
 			return "decl_sequence";
-		case NodeType::s_decl_struct:
-			return "s_decl_struct";
+		case NodeType::s_decl_struct_variante:
+			return "s_decl_struct_variante";
 		case NodeType::s_variante:
 			return "s_variante";
 		case NodeType::e_null:
 			return "null";
+		case NodeType::s_func:
+			return "s_func";
+		case NodeType::s_sec_param:
+			return "s_sec_param";
+		case NodeType::s_decl_param:
+			return "s_decl_param";
+			
 		// Agrega más casos según sea necesario
 		default:
 			return "Pendiente, pon nombre!!!";

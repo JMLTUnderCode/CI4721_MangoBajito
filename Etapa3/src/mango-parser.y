@@ -98,7 +98,7 @@ string current_array_name = "";
 %token T_CASTEO
 
 // Declaracion de tipos de retorno para las producciones 
-%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion operadores_asignacion
+%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion operadores_asignacion tipo_funcion
 %type <att_val> expresion
 
 // Declaracion de precedencia y asociatividad de Operadores
@@ -165,12 +165,12 @@ instruccion:
       declaracion     // ✓
     | asignacion      // ✓
     | condicion       // ✓
-    | bucle     // ✓
+    | bucle           // ✓
     | entrada_salida  // ✓
     | funcion         // ✓
     | manejo_error    // ✓
-    | struct
-    | variante
+    | struct          // ✓
+    | variante        // ✓
     | {iniciarNodo(ASTNode::NodeType::s_break);} T_KIETO {cerrarNodo();}    // ✓
     | {iniciarNodo(ASTNode::NodeType::s_continue);} T_ROTALO {cerrarNodo();} // ✓
     | T_IDENTIFICADOR T_OPDECREMENTO {iniciarNodo(ASTNode::NodeType::s_decremento); ancestros.top()->informacion.identificador = $1; cerrarNodo();} // ✓
@@ -606,7 +606,7 @@ secuencia:
 secuencia_declaraciones:
     | secuencia_declaraciones T_PUNTOCOMA T_IDENTIFICADOR T_DOSPUNTOS tipos{
         
-        iniciarNodo(ASTNode::NodeType::s_decl_struct);
+        iniciarNodo(ASTNode::NodeType::s_decl_struct_variante);
         ancestros.top()->informacion.tipo = strdup($5);
         ancestros.top()->informacion.identificador = strdup($3);
         cerrarNodo();
@@ -642,7 +642,7 @@ secuencia_declaraciones:
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
 
-        iniciarNodo(ASTNode::NodeType::s_decl_struct);
+        iniciarNodo(ASTNode::NodeType::s_decl_struct_variante);
         ancestros.top()->informacion.tipo = strdup($3);
         ancestros.top()->informacion.identificador = strdup($1);
         cerrarNodo();
@@ -733,6 +733,7 @@ struct:
 
 firma_funcion: 
     T_ECHARCUENTO T_IDENTIFICADOR {
+        ancestros.top()->informacion.identificador = $2;
 
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
@@ -754,8 +755,8 @@ firma_funcion:
     ;
 
 tipo_funcion:
-    tipos 
-    | T_UNCONO
+    tipos {$$ = strdup($1);} 
+    | T_UNCONO {$$ = strdup("void");}
     ;
 
 secuencia_parametros:
@@ -765,6 +766,11 @@ secuencia_parametros:
 
 parametro:
     T_AKITOY T_IDENTIFICADOR T_DOSPUNTOS tipos{
+        iniciarNodo(ASTNode::NodeType::s_decl_param);
+        ancestros.top()->informacion.tipo = strdup($4);
+        ancestros.top()->informacion.identificador = strdup($2);
+        ancestros.top()->informacion.es_apuntador = "true";
+        cerrarNodo();
 		if (current_function_name == "") {
 			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay funcion actual");
@@ -795,6 +801,11 @@ parametro:
 		funct_attr->info.push_back({string($2), attributes});
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
+        iniciarNodo(ASTNode::NodeType::s_decl_param);
+        ancestros.top()->informacion.tipo = strdup($3);
+        ancestros.top()->informacion.identificador = strdup($1);
+        cerrarNodo();
+
 		if (current_function_name == "") {
 			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay funcion actual");
@@ -828,9 +839,9 @@ parametro:
     ;
 
 declaracion_funcion:
-    firma_funcion abrir_scope T_IZQPAREN secuencia_parametros T_DERPAREN T_LANZA tipo_funcion {
+    {iniciarNodo(ASTNode::NodeType::s_func);} firma_funcion abrir_scope T_IZQPAREN {iniciarNodo(ASTNode::NodeType::s_sec_param);} secuencia_parametros T_DERPAREN T_LANZA tipo_funcion {cerrarNodo(); ancestros.top()->informacion.tipo = $9;}{
 		current_function_name = "";
-	} T_IZQLLAVE instruccionesopt T_DERLLAVE cerrar_scope
+	} T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instruccionesopt {cerrarNodo(); cerrarNodo();}T_DERLLAVE cerrar_scope
     ;
 
 funcion:
