@@ -9,6 +9,11 @@ se_prende(){
 		culito a: mango = 100;
 
 	}o_asi (Sisa){
+		coliao Persona {
+			nombre : higuerote;
+			edad : mango;
+			estudiante : tas_claro;
+		};
 		culito b: mango;
 		jeva mi_array: mango[5];
 	}nojoda{

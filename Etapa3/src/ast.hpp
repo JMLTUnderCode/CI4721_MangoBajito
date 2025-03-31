@@ -6,7 +6,6 @@
 #include <iostream>
 #include <string>
 
-
 struct info
 {
 	std::string es_apuntador = "";
@@ -26,6 +25,7 @@ public:
 		program_main,
 		s_main,
 		instuctions,
+		s_decl_struct,
 		s_decl_culito,
 		s_decl_jeva,
 		s_if,
@@ -50,6 +50,9 @@ public:
 		s_decremento,
 		s_return,
 		s_delete,
+		s_struct,
+		decl_sequence,
+		s_variante,
 		// Agrega más tipos de nodos según sea necesario
 	};
 
@@ -117,6 +120,14 @@ public:
 			return "s_return";
 		case NodeType::s_delete:
 			return "s_delete";
+		case NodeType::s_struct:
+			return "s_struct";
+		case NodeType::decl_sequence:
+			return "decl_sequence";
+		case NodeType::s_decl_struct:
+			return "s_decl_struct";
+		case NodeType::s_variante:
+			return "s_variante";
 		// Agrega más casos según sea necesario
 		default:
 			return "Pendiente, pon nombre!!!";
@@ -131,7 +142,7 @@ public:
 
 	NodeType type;
 	std::vector<std::shared_ptr<ASTNode>> children;
-	info informacion; 
+	info informacion;
 };
 
 inline void printAST(const std::shared_ptr<ASTNode> &node, int depth = 0)

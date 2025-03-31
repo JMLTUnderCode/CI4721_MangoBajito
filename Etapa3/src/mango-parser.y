@@ -586,6 +586,12 @@ secuencia:
 
 secuencia_declaraciones:
     | secuencia_declaraciones T_PUNTOCOMA T_IDENTIFICADOR T_DOSPUNTOS tipos{
+        
+        iniciarNodo(ASTNode::NodeType::s_decl_struct);
+        ancestros.top()->informacion.tipo = strdup($5);
+        ancestros.top()->informacion.identificador = strdup($3);
+        cerrarNodo();
+
 		if (current_struct_name == "") {
 			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay estructura actual");
@@ -616,6 +622,12 @@ secuencia_declaraciones:
         //cout << "  Agregando atributo: \"" << $3 << "\" a estructura: " << current_struct_name << endl;
     }
     | T_IDENTIFICADOR T_DOSPUNTOS tipos {
+
+        iniciarNodo(ASTNode::NodeType::s_decl_struct);
+        ancestros.top()->informacion.tipo = strdup($3);
+        ancestros.top()->informacion.identificador = strdup($1);
+        cerrarNodo();
+
         if (current_struct_name == "") {
 			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay estructura actual");
@@ -649,6 +661,8 @@ secuencia_declaraciones:
 
 variante: 
     T_COLIAO T_IDENTIFICADOR {
+        iniciarNodo(ASTNode::NodeType::s_variante);
+        ancestros.top()->informacion.identificador = $2;
 		Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
@@ -666,13 +680,16 @@ variante:
         
         //cout << "Definiendo variante: " << $2 << endl;
 
-	} abrir_scope T_IZQLLAVE secuencia_declaraciones T_PUNTOCOMA T_DERLLAVE {
+	} abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::decl_sequence);} secuencia_declaraciones T_PUNTOCOMA {cerrarNodo();} T_DERLLAVE {
 		current_struct_name = "";
+        cerrarNodo();
 	} cerrar_scope
     ;
 
 struct: 
     T_ARROZCONMANGO T_IDENTIFICADOR {
+        iniciarNodo(ASTNode::NodeType::s_struct);
+        ancestros.top()->informacion.identificador = $2;
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
@@ -689,8 +706,9 @@ struct:
         };
         
         //cout << "Definiendo estructura: " << $2 << endl;
-    } abrir_scope T_IZQLLAVE secuencia_declaraciones T_PUNTOCOMA T_DERLLAVE {
+    } abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::decl_sequence);} secuencia_declaraciones T_PUNTOCOMA {cerrarNodo();} T_DERLLAVE {
         current_struct_name = "";
+        cerrarNodo();
     } cerrar_scope
     ;
 
