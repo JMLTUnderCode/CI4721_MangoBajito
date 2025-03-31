@@ -1,5 +1,6 @@
 # Test 1: Definicion de Condicionales
 se_prende(){
+	hola();
 	si_es_asi (Sisa) {
 		culito a: mango;
 		a = 100;

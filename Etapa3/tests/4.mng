@@ -29,12 +29,12 @@ se_prende(){
 	echar_cuento funcion(d : mango) lanza mango{
 		se_potea = 4;
 		# Revisar el error en esta siguiente linea. Lanzate no es capaz de retornar operaciones.
-		lanzate se_potea + d; 
+		lanzate se_potea; 
 	};
 
 	meando{
 		culito ayuda: higuerote;
 	} fuera_del_perol como e{
-		miau = 50;
+		culito ayuda: higuerote;
 	};
 };

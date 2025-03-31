@@ -33,6 +33,13 @@ public:
 		s_else,
 		s_asign,
 		s_exp,
+		s_sequence,
+		s_print,
+		s_input,
+		s_func_call,
+		s_try,
+		s_try_catch,
+		s_try_catch_variable,
 		s_while,
 		s_for,
 		rango_for,
@@ -74,6 +81,20 @@ public:
 			return "s_asign";
 		case NodeType::s_main:
 			return "s_main";
+		case NodeType::s_sequence:
+			return "s_sequence";
+		case NodeType::s_print:
+			return "s_print";
+		case NodeType::s_input:
+			return "s_input";
+		case NodeType::s_func_call:
+			return "s_func_call";
+		case NodeType::s_try:
+			return "s_try";
+		case NodeType::s_try_catch:
+			return "s_try_catch";
+		case NodeType::s_try_catch_variable:
+			return "s_try_catch_variable";
 		case NodeType::s_exp:
 			return "s_exp";
 		case NodeType::s_while:

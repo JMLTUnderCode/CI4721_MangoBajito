@@ -162,13 +162,13 @@ instruccionesopt:
     ;
 
 instruccion:
-      declaracion // ✓
-    | asignacion  // ✓
-    | condicion   // ✓
+      declaracion     // ✓
+    | asignacion      // ✓
+    | condicion       // ✓
     | bucle     // ✓
-    | entrada_salida 
-    | funcion 
-    | manejo_error 
+    | entrada_salida  // ✓
+    | funcion         // ✓
+    | manejo_error    // ✓
     | struct
     | variante
     | {iniciarNodo(ASTNode::NodeType::s_break);} T_KIETO {cerrarNodo();}    // ✓
@@ -575,8 +575,8 @@ determinado:
     ;
 
 entrada_salida:
-    T_RESCATA T_IZQPAREN secuencia T_DERPAREN
-    | T_HABLAME T_IZQPAREN expresion T_DERPAREN
+    {iniciarNodo(ASTNode::NodeType::s_print);} T_RESCATA T_IZQPAREN {iniciarNodo(ASTNode::NodeType::s_sequence);} secuencia {cerrarNodo();} T_DERPAREN {cerrarNodo();}
+    | {iniciarNodo(ASTNode::NodeType::s_input);} T_HABLAME T_IZQPAREN expresion T_DERPAREN {cerrarNodo();}
     ;
 
 secuencia:
@@ -797,7 +797,7 @@ declaracion_funcion:
     ;
 
 funcion:
-	T_IDENTIFICADOR T_IZQPAREN secuencia T_DERPAREN
+	T_IDENTIFICADOR  {iniciarNodo(ASTNode::NodeType::s_func_call); ancestros.top()->informacion.identificador = $1;} T_IZQPAREN {iniciarNodo(ASTNode::NodeType::s_sequence);} secuencia T_DERPAREN {cerrarNodo(); cerrarNodo();}
 
 arreglo:
     T_IZQCORCHE secuencia T_DERCORCHE {
@@ -807,6 +807,10 @@ arreglo:
 
 var_manejo_error:
     T_COMO abrir_scope T_IDENTIFICADOR {
+        iniciarNodo(ASTNode::NodeType::s_try_catch_variable);
+        ancestros.top()->informacion.identificador = $3;
+        cerrarNodo();
+
         if (symbolTable.search_symbol($3) != nullptr){
             ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($3);
@@ -829,12 +833,12 @@ var_manejo_error:
     ;
 
 manejador:
-    | T_FUERADELPEROL abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
-    | T_FUERADELPEROL var_manejo_error T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+    | T_FUERADELPEROL abrir_scope T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();}T_DERLLAVE cerrar_scope
+    | T_FUERADELPEROL var_manejo_error T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope
     ;
 
 manejo_error:
-    T_T_MEANDO abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope manejador
+    T_T_MEANDO abrir_scope {iniciarNodo(ASTNode::NodeType::s_try);} T_IZQLLAVE {iniciarNodo(ASTNode::NodeType::instuctions);} instrucciones {cerrarNodo();} T_DERLLAVE cerrar_scope {iniciarNodo(ASTNode::NodeType::s_try_catch);}  manejador{cerrarNodo(); cerrarNodo();}
     ;
 
 casting:
