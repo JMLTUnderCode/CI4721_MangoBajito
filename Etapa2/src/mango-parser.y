@@ -434,10 +434,10 @@ tipos:
 		if (attribute == nullptr){
 			ERROR_TYPE = NON_DEF_VAR;
 			yyerror($1);
-			//exit(1);
+			$$ = $1;
+		} else {
+			$$ = strdup(attribute->symbol_name.c_str());
 		}
-
-		$$ = strdup(attribute->symbol_name.c_str());
 	}
     ;
 
@@ -469,7 +469,7 @@ asignacion:
         string info_var = get<string>(attr_var->info[0].first);
         if (strcmp(info_var.c_str(), "CICLO FOR") == 0){
 			ERROR_TYPE = VAR_FOR;
-            yyerror(info_var.c_str());
+            yyerror($1);
             //exit(1);
         }
 
