@@ -738,7 +738,11 @@ expresion:
         } else if ($2.type == ExpresionAttribute::FLOAT) {
             $$.type = ExpresionAttribute::FLOAT;
             $$.fval = -$2.fval;
-        } else {
+        } else if ($2.type == ExpresionAttribute::DOUBLE) {
+            $$.type = ExpresionAttribute::DOUBLE;
+            $$.fval = -$2.dval;
+        }
+        else {
             yyerror("Operación de signo negativo no soportada para este tipo");
             exit(1);
         }
