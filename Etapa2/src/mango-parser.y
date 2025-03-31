@@ -1320,7 +1320,7 @@ void yyerror(const char *var) {
                 error_msg += "Array \"" + std::string(var) + "\" declarado apuntador.";
                 break;
             case INT_SIZE_ARRAY:
-                error_msg += "Tamano del arrat \"" + std::string(var) + "\" debe ser un numero entero";
+                error_msg += "Tamano del array \"" + std::string(var) + "\" debe ser un numero entero";
                 break;            
             case DEBUGGING_TYPE:
                 error_msg += std::string(var);
