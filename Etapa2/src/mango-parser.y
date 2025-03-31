@@ -590,8 +590,8 @@ asignacion:
                 array_element_attributes->value = nullptr; // Manejar punteros según sea necesario
                 break;
             default:
-                ERROR_TYPE = SEMANTIC_TYPE;
-                yyerror("Tipo no soportado para array");
+                ERROR_TYPE = NON_DEF_TYPE;
+                yyerror($1);
                 //exit(1);
         }
 
@@ -633,8 +633,7 @@ expresion:
 
 			} else { // Excede la cantidad de parametros.
 				ERROR_TYPE = PARAMETERS_ERROR;
-				string error_message = "Error en la función '" + current_function_name + "': Excede la cantidad de parámetros.";
-				yyerror(error_message.c_str());
+				yyerror(current_function_name.c_str());
 				//exit(1);
 			}
 		}
@@ -1303,7 +1302,7 @@ void yyerror(const char *var) {
                 error_msg += "Índice \"" + std::string(var) + "\" fuera de rango.";
                 break;
             case PARAMETERS_ERROR:
-                error_msg += std::string(var);
+                error_msg += "Error en la función \"" + std::string(var) + "\": Excede la cantidad de parámetros.";
                 break;
             case EMPTY_ARRAY_CONSTANT:
                 error_msg += "Array \"" + std::string(var) + "\" declarado constante.";
