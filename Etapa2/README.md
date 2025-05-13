@@ -56,35 +56,38 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 	make clean
 	```
 
-## Realizado
+## Realizado y Por Realizar
+- [ ] Limpieza y reestructuracion
+    - [ ] Limpiar estructuras requires de union, types, error_types del parser.
 - [x] Guardar variables declaradas (sin valor).
 - [x] Guardar variables declaradas (con valor).
-  - [ ] Revisar guardado de literales.
-  - [x] Actualizacion asignacion de variables. Si a = 4, b = 5, y luego se hace a = b entonces a vale 5.
+    - [ ] Revisar guardado de literales.
+    - [x] Actualizacion asignacion de variables. Si a = 4, b = 5, y luego se hace a = b entonces a vale 5.
 - [x] Abrir y cerrar alcances. Actualizacion de scopes.
 - [x] Guardar estructuras.
 - [x] Guardar variantes.
 - [x] Guardar informacion de ciclo determinado.
 - [x] Guardar informacion de ciclo indeterminado.
 - [x] Funciones
-  - [x] Guardar funciones.
-  - [x] Guardar funciones con 1 parametro.
-  - [x] Guardar funciones con multiples parametros.
-  - [x] Actualizar el vector de informacion de una funcion con sus respectivos parametros.
-  - [x] Al momento de llamar una funcion que sea llamada con la cantidad de parametros correcta.
-  - [x] Verificar tipos de los parametros al momento de llamar a una funcion.
-  - [x] Al momento de asignar una funcion a una variable, verificar que la variable tenga el tipo correcto.
+    - [x] Guardar funciones.
+    - [x] Guardar funciones con 1 parametro.
+    - [x] Guardar funciones con multiples parametros.
+    - [x] Actualizar el vector de informacion de una funcion con sus respectivos parametros.
+    - [x] Al momento de llamar una funcion que sea llamada con la cantidad de parametros correcta.
+    - [x] Verificar tipos de los parametros al momento de llamar a una funcion.
+    - [x] Al momento de asignar una funcion a una variable, verificar que la variable tenga el tipo correcto.
 - [x] Agregar a tipos nombres de struct/variantes.
 - [x] Revisar la logica de la funcion `hablame`.
 - [x] Revisar la logica de la funcion `rescata`.
 - [ ] Casteo
-  - [x] Agregarlo a la gramática
-  - [ ] Lógica de guardado en Tabla de Símbolos
+    - [x] Agregarlo a la gramática
+    - [ ] Lógica de guardado en Tabla de Símbolos
 - [ ] Revisar operaciones
 	- [x] Creacion de numeros negativos
 	- [ ] Asignaciones +=, -=, *=
 	- [ ] Decremento y aumento ++ y --
-	- [ ] Expresiones logicas y anidamiento de ellas
+	- [ ] Expresiones logicas
+    	- [ ] Anidamiento
 - [ ] Guardar apuntadores en general.
 	- [ ] Chequear la informacion de los elementos apuntadores(funcion print_info).
 - [ ] Guardar lista de valores de un array.
@@ -93,7 +96,10 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 	- [x] Verificacion de tipos.
 	- [x] Diferenciacion negro e higuerote 
 	- [x] Acceso directo a valores del array.
-    - [ ] Analizar logica para multidimencion. Guardado, informacion, etc.
+    - [ ] Multidimension
+        - [ ] Guardado
+        - [ ] informacion
+        - [ ] Valores
 - [x] Errores:
 	- [x] Utilizacion de variable sin definir.
 	- [x] Redeclaracion de una variable en un mismo scope.
@@ -102,3 +108,18 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 	- [ ] Errores de Mango Bajito (lo usados en meando/fueral_del_perol: piaso e copion por ejemplo)
 	- [ ] Cuando haya un syntax error retorna "Escribe bien esa vaina", entre otros.
 	- [ ] Mostrar errores de context más informativos
+- [ ] Suit de pruebas
+  - [ ] Construir un script para una suit de pruebas (Script o alguna otro método)
+  - [ ] Incluir casos de prueba por categorias y secciones.
+  - [ ] Suits
+    - [ ] Asignaciones
+    - [ ] Errores
+    - [ ] MeandoFueraDelPerol
+    - [ ] Bucle For
+    - [ ] Bucle While
+    - [ ] Arreglos
+    - [ ] Estructuras
+    - [ ] Uniones
+    - [ ] Apuntadores
+    - [ ] Funciones
+    - [ ] 
