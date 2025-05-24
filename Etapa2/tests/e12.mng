@@ -3,5 +3,13 @@
 
 se_prende(){
     culito nombre: higuerote = hablame("nombre de usuario: ");
+    culito num: mango = 5;
+    culito num2: mango = 5;
+    num++;
+    num++;
+    ++num;
+    num2--;
+    num2--;
+    --num;
     rescata("Hola ", nombre);
 };

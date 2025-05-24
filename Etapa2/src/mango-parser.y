@@ -221,8 +221,65 @@ instruccion:
     | variante
     | T_KIETO 
     | T_ROTALO
-    | T_IDENTIFICADOR T_OPDECREMENTO
-    | T_IDENTIFICADOR T_OPINCREMENTO
+    | T_IDENTIFICADOR T_OPDECREMENTO {
+        Attributes *var = symbolTable.search_symbol($1);
+        if (var == nullptr) {
+            ERROR_TYPE = NON_DEF_VAR;
+            yyerror($1);
+            YYABORT;
+        }
+
+        if (var->type != nullptr && var->type->symbol_name == "mango") {
+            if (holds_alternative<int>(var->value)) {
+                int old_val = get<int>(var->value);
+                var->value = old_val - 1;
+                // No se asigna a $$ porque 'instruccion' no devuelve un valor aquí
+            } else {
+                string error_msg = "La variable '" + string($1) + "' es de tipo mango pero no contiene un valor entero para decrementar (en instruccion).";
+                yyerror(error_msg.c_str());
+                YYABORT;
+            }
+        } else {
+            string error_msg = "El operador -- (en instruccion) no se puede aplicar a la variable '" + string($1) + "'. ";
+            error_msg += "Se esperaba tipo mango, pero se obtuvo: ";
+            if (var->type != nullptr) error_msg += var->type->symbol_name; else error_msg += "desconocido";
+            error_msg += ".";
+            yyerror(error_msg.c_str());
+            YYABORT;
+        }
+    }
+    | T_IDENTIFICADOR T_OPINCREMENTO {
+        // Acción para la sentencia: identificador++
+        // $1 es el T_IDENTIFICADOR (char* nombre_variable)
+        Attributes *var = symbolTable.search_symbol($1); // Usar $1 directamente
+        if (var == nullptr) {
+            ERROR_TYPE = NON_DEF_VAR;
+            yyerror($1); // $1 es el nombre del identificador
+            YYABORT;
+        }
+
+        if (var->type != nullptr && var->type->symbol_name == "mango") {
+            if (holds_alternative<int>(var->value)) {
+                int old_val = get<int>(var->value);
+                var->value = old_val + 1; // Actualiza el valor en la tabla de símbolos (efecto secundario)
+                std::cout << "DEBUG [Instruccion]: Postincremento de variable '" << $1 
+                          << "', valor original = " << old_val 
+                          << ", nuevo valor en tabla = " << get<int>(var->value) << std::endl;
+                // No se asigna a $$ porque 'instruccion' no devuelve un valor aquí
+            } else {
+                string error_msg = "La variable '" + string($1) + "' es de tipo mango pero no contiene un valor entero para incrementar (en instruccion).";
+                yyerror(error_msg.c_str());
+                YYABORT;
+            }
+        } else {
+            string error_msg = "El operador ++ (en instruccion) no se puede aplicar a la variable '" + string($1) + "'. ";
+            error_msg += "Se esperaba tipo mango, pero se obtuvo: ";
+            if (var->type != nullptr) error_msg += var->type->symbol_name; else error_msg += "desconocido";
+            error_msg += ".";
+            yyerror(error_msg.c_str());
+            YYABORT;
+        }
+    }
     | T_LANZATE expresion
     | T_BORRADOL T_IDENTIFICADOR 
     | T_BORRADOL T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR 
@@ -845,8 +902,6 @@ expresion:
     | expresion T_OPMENORIGUAL expresion
     | expresion T_OSEA expresion
     | expresion T_YUNTA expresion
-    | expresion T_OPDECREMENTO
-    | expresion T_OPINCREMENTO
     | entrada_salida
 	| variante
     | funcion {

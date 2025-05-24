@@ -85,7 +85,7 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 - [ ] Revisar operaciones
 	- [x] Creacion de numeros negativos
 	- [ ] Asignaciones +=, -=, *=
-	- [ ] Decremento y aumento ++ y --
+	- [x] Decremento y aumento ++ y --
 	- [ ] Expresiones logicas
     	- [ ] Anidamiento
 - [ ] Guardar apuntadores en general.

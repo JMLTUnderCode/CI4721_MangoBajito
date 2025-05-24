@@ -10,8 +10,8 @@ se_prende(){
 	culito manguangua1: manguangua = 1.79769e+308; # Double mas grande
 	jeva manguangua2: manguangua = -1.79769e+308; # Double mas pequeño
 
-	culito negro0: negro = "c";
-	jeva negro1: negro = "$";
+	culito negro0: negro = 'c';
+	jeva negro1: negro = '$';
 
 	culito higuerote0: higuerote = "hola";
 	jeva higuerote1: higuerote = " mundo";
