@@ -1,0 +1,108 @@
+#ifndef TAC_HPP
+#define TAC_HPP
+
+#include <string>
+#include <sstream>
+
+using namespace std;
+/**
+ * @class TACInstruction
+ * @brief Clase que representa una instrucción de código intermedio en tres direcciones (TAC).
+ * @param op Operación a realizar (por ejemplo, "ADD", "SUB", "GOTO").
+ * @param arg1 Primer operando o argumento de la operación.
+ * @param arg2 Segundo operando o argumento de la operación.
+ * @param result Variable resultado o temporal donde se almacenará el resultado de la operación.
+ * @param label Nombre de la etiqueta (si aplica).
+ * @details Esta clase se utiliza para representar instrucciones de código intermedio en un formato
+ *          de tres direcciones. Cada instrucción puede tener una operación, dos operandos y un resultado.
+ *          También puede incluir etiquetas para saltos condicionales o incondicionales.
+ * @note - Las operaciones pueden incluir asignaciones, saltos, comparaciones y operaciones aritméticas.
+ * @note - El formato de salida de la instrucción se puede obtener utilizando el método toString().
+ * @note - Las etiquetas se generan automáticamente y son únicas para cada instrucción.
+ * 
+*/
+class TACInstruction {
+public:
+    string op;      // Operación ("ADD", "SUB", "GOTO", "LABEL", etc.)
+    string arg1;    // Primer operando o destino de salto/etiqueta
+    string arg2;    // Segundo operando
+    string result;  // Variable resultado o temporal
+    string label;   // Nombre de la etiqueta (si aplica)
+
+    TACInstruction(string op,
+                   string arg1 = "",
+                   string arg2 = "",
+                   string result = "",
+                   string label = "")
+        : op(op), arg1(arg1), arg2(arg2), result(result), label(label) {}
+
+    string toString() const {
+        ostringstream oss;
+        if (op == "LABEL") {
+            oss << label << ":";
+        } else if (op == "GOTO") {
+            oss << "goto " << arg1;
+        } else if (op == "IFGOTO") {
+            oss << "if " << arg1 << " goto " << arg2;
+        } else if (op == "ASSIGN") {
+            oss << result << " = " << arg1;
+        } else if (op == "IF_FALSE_GOTO") {
+            oss << "ifFalse " << arg1 << " goto " << arg2;
+        } else {
+            // Operaciones aritméticas y otras de 3 direcciones
+            oss << result << " = " << arg1 << " " << op << " " << arg2;
+        }
+        return oss.str();
+    }
+};
+/** 
+ * @class LabelGenerator
+ * @brief Clase que genera etiquetas y temporales únicos para instrucciones TAC.
+ * @param counter_label Contador de etiquetas.
+ * @param counter_temp Contador de temporales.
+ * @details Esta clase se utiliza para generar etiquetas y temporales únicos para instrucciones de código
+ *          intermedio en tres direcciones (TAC). Mantiene contadores para etiquetas y temporales, y
+ *          proporciona métodos para crear nuevos identificadores únicos.
+ * @note - Las etiquetas se generan con un prefijo opcional (por defecto "L").
+ * @note - Los temporales se generan con un prefijo opcional (por defecto "t").
+ * @note - Los métodos getLabelCount() y getTempCount() devuelven el conteo actual de etiquetas y temporales.
+ * @note - Los métodos resetLabel() y resetTemp() permiten restablecer los contadores de etiquetas y temporales.
+ * @note - El método reset() restablece ambos contadores a cero.
+*/
+class LabelGenerator {
+    int counter_label; // Contador de etiquetas
+	int counter_temp;       // Contador de etiquetas temporales
+public:
+    LabelGenerator() : counter_label(0), counter_temp(0) {}
+
+    string newLabel(const string& base = "L") {
+        return base + to_string(counter_label++);
+    }
+
+	string newTemp(const string& base = "t") {
+		return base + to_string(counter_temp++);
+	}
+
+	void reset() {
+		counter_label = 0;
+		counter_temp = 0;
+	}
+
+	void resetLabel() {
+		counter_label = 0;
+	}
+
+	void resetTemp() {
+		counter_temp = 0;
+	}
+
+	int getLabelCount() const {
+		return counter_label;
+	}
+
+	int getTempCount() const {
+		return counter_temp;
+	}
+};
+
+#endif // TAC_HPP

@@ -25,4 +25,4 @@ include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
 # Crear el ejecutable
-add_executable(mango_bajito src/main.cpp ${FLEX_Lexer_OUTPUTS} ${BISON_Parser_OUTPUTS} src/mango-bajito.cpp)
+add_executable(mango_bajito src/main.cpp ${FLEX_Lexer_OUTPUTS} ${BISON_Parser_OUTPUTS} src/mango-bajito.cpp src/tac.hpp)
