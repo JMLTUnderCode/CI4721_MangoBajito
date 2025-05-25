@@ -138,6 +138,7 @@ CASTING       \(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(ta
     UPDATE_LOC
     yylval.att_val.type = ExpresionAttribute::INT;
     yylval.att_val.ival = atoi(yytext);
+    yylval.att_val.temp = strdup(yytext);
     return T_VALUE;
 }
 
@@ -145,6 +146,7 @@ CASTING       \(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(ta
     UPDATE_LOC
     yylval.att_val.type = ExpresionAttribute::FLOAT;
     yylval.att_val.fval = strtof(yytext, nullptr);
+    yylval.att_val.temp = strdup(yytext);
     return T_VALUE;
 }
 
@@ -152,6 +154,7 @@ CASTING       \(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(ta
     UPDATE_LOC
     yylval.att_val.type = ExpresionAttribute::DOUBLE;
     yylval.att_val.dval = strtod(yytext, nullptr);
+    yylval.att_val.temp = strdup(yytext);
     return T_VALUE;
 }
 
@@ -165,6 +168,7 @@ CASTING       \(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(ta
     // Manejar caracteres normales y escapados
     yylval.att_val.type = ExpresionAttribute::CHAR;
     yylval.att_val.cval = yytext[1];  // Usamos cval en lugar de sval
+    yylval.att_val.temp = strdup(yytext);
     
     return T_VALUE;
 }
@@ -174,6 +178,7 @@ CASTING       \(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(ta
     yylval.att_val.type = ExpresionAttribute::STRING;
     yytext[yyleng - 1] = '\0';
     yylval.att_val.sval = strdup(yytext + 1);
+    yylval.att_val.temp = strdup(yytext);
 	return T_VALUE;
 }
 

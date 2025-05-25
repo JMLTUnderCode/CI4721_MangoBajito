@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cstdlib>
 #include "mango-bajito.hpp"
+#include "tac.hpp"
+#include <vector>
 #include <cstring>
 
 using namespace std;
@@ -57,7 +59,8 @@ string current_function_type = "";
 string current_array_name = "";
 int current_array_size = 0;
 const char* current_array_base_type = nullptr;
-
+vector<TACInstruction> tac_instructions; // Instrucciones TAC
+LabelGenerator labelGen; // Generador de etiquetas para TAC
 %}
 
 %code requires {
@@ -71,6 +74,7 @@ const char* current_array_base_type = nullptr;
 			char* sval;
             char cval;
 		};
+        char* temp;
 	};       
 }
 
@@ -195,7 +199,10 @@ main:
 		if (FIRST_ERROR) {
 			printErrors();
 		} else {
-			symbolTable.print_table(); 
+			symbolTable.print_table();
+            for (const auto& instruction : tac_instructions) {
+                cout << instruction.toString() << endl;
+            }
 			cout << "Programa válido: "; 
 		}
 	} 
@@ -480,6 +487,13 @@ declaracion:
             yyerror($2);
             //exit(1);
         };
+
+        // TAC para declaracion de variables + asignacion
+        if ($6.temp == nullptr){
+            cout << "temp attribute set to null"<<endl;
+        }else{
+            tac_instructions.emplace_back("ASSING", $6.temp, "", $2);
+        }
     }
 	| declaracion_funcion
     ;
@@ -617,7 +631,10 @@ asignacion:
                 }
                 break;
 	        }
+            // TAC para declaracion de variables + asignacion
+            //tac_instructions.emplace_back("ASSING", $3.temp, "", $1);
         }
+        
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asignacion expresion
     | T_IDENTIFICADOR T_IZQCORCHE expresion T_DERCORCHE operadores_asignacion expresion {
         Attributes* array_attr = symbolTable.search_symbol($1);
@@ -839,6 +856,7 @@ expresion:
                 yyerror("Tipo no soportado");
                 //exit(1);
         }
+        $$.temp = $1.temp; // Asignar el valor temporal
     }
     | T_PELABOLA
     | T_IZQPAREN expresion T_DERPAREN
