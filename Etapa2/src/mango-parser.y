@@ -910,22 +910,81 @@ expresion:
 
             $$.type = ExpresionAttribute::INT;
             $$.ival = get<int>(var1->value) + get<int>(var2->value);
-        }       
+        }
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("+", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());       
     }
-    | expresion T_OPRESTA expresion
-    | expresion T_OPMULT expresion
-    | expresion T_OPDIVDECIMAL expresion
-    | expresion T_OPDIVENTERA expresion
-    | expresion T_OPMOD expresion
-    | expresion T_OPEXP expresion
-    | expresion T_OPIGUAL expresion
-    | expresion T_OPDIFERENTE expresion
-    | expresion T_OPMAYOR expresion
-    | expresion T_OPMAYORIGUAL expresion
-    | expresion T_OPMENOR expresion
-    | expresion T_OPMENORIGUAL expresion
-    | expresion T_OSEA expresion
-    | expresion T_YUNTA expresion
+    | expresion T_OPRESTA expresion {
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("-", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPMULT expresion {
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("*", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPDIVDECIMAL expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("/", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPDIVENTERA expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("//", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPMOD expresion {
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("%", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPEXP expresion {
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("**", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPIGUAL expresion {
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("==", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPDIFERENTE expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("!=", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPMAYOR expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back(">", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPMAYORIGUAL expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back(">=", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPMENOR expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("<", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPMENORIGUAL expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("<=", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OSEA expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("or", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_YUNTA expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("and", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
     | entrada_salida
 	| variante
     | funcion {
@@ -960,31 +1019,44 @@ expresion:
 
         std::string element_name = std::string($1) + "[" + std::to_string(index) + "]";
         Attributes* array_element_attributes = symbolTable.search_symbol(element_name.c_str());
-
+        string index_temp = labelGen.newTemp();
         // Retornar el valor almacenado en el elemento del array
         if (array_element_attributes->type->symbol_name == "mango") { // INT
             $$.type = ExpresionAttribute::INT;
             $$.ival = get<int>(array_element_attributes->value);
+            tac_instructions.emplace_back("*", $3.temp, "4", index_temp);
         } else if (array_element_attributes->type->symbol_name == "manguita") { // FLOAT
             $$.type = ExpresionAttribute::FLOAT;
             $$.fval = get<float>(array_element_attributes->value);
+            tac_instructions.emplace_back("*", $3.temp, "8", index_temp);
         } else if (array_element_attributes->type->symbol_name == "manguangua") { // DOUBLE
             $$.type = ExpresionAttribute::DOUBLE;
             $$.dval = get<double>(array_element_attributes->value);
+            tac_instructions.emplace_back("*", $3.temp, "16", index_temp);
         } else if (array_element_attributes->type->symbol_name == "negro") { // CHAR
             $$.type = ExpresionAttribute::CHAR;
             $$.ival = get<char>(array_element_attributes->value);
+            tac_instructions.emplace_back("*", $3.temp, "1", index_temp);
         } else if (array_element_attributes->type->symbol_name == "higuerote") { // STRING
             $$.type = ExpresionAttribute::STRING;
             $$.sval = strdup(get<string>(array_element_attributes->value).c_str());
+            tac_instructions.emplace_back("*", $3.temp, to_string(get<string>(array_element_attributes->value).length()), index_temp);
         } else if (array_element_attributes->type->symbol_name == "tas_claro") { // BOOL
             $$.type = ExpresionAttribute::BOOL;
             $$.ival = get<bool>(array_element_attributes->value);
+            tac_instructions.emplace_back("*", $3.temp, "1", index_temp);
         } else {
             ERROR_TYPE = SEMANTIC_TYPE;
             yyerror("Tipo no soportado para retorno de array");
             //exit(1);
-        }    
+        }
+        char* full_aux = (char*)malloc(strlen($1)+index_temp.length()+5);
+        char* aux1 = (char*)malloc(strlen($1)+2);
+        char* aux2 = (char*)malloc(index_temp.length()+2);
+        strcpy(aux1, $1); aux1[strlen($1)] = '[';
+        strcpy(aux2, index_temp.c_str()); aux2[index_temp.length()] = ']';
+        strcpy(full_aux, aux1); strcat(full_aux, aux2);
+        $$.temp = full_aux; 
     }  
 ;
 

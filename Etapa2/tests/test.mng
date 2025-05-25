@@ -4,6 +4,7 @@
 se_prende(){
     culito A: negro[3];
     A[0] = 'a';
+    culito aux: negro = A[0];
     A[1] = A[0];
     A[0] = 'B';
 };
