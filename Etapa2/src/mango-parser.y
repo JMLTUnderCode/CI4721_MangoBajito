@@ -492,7 +492,7 @@ declaracion:
         if ($6.temp == nullptr){
             cout << "temp attribute set to null"<<endl;
         }else{
-            tac_instructions.emplace_back("ASSING", $6.temp, "", $2);
+            tac_instructions.emplace_back("ASSIGN", $6.temp, "", $2);
         }
     }
 	| declaracion_funcion
@@ -630,11 +630,14 @@ asignacion:
                     attr_var->value = nullptr;
                 }
                 break;
-	        }
-            // TAC para declaracion de variables + asignacion
-            //tac_instructions.emplace_back("ASSING", $3.temp, "", $1);
+	    }
+
+        if ($3.temp == nullptr){
+            cout << "temp attribute set to null"<<endl;
+        }else{
+            tac_instructions.emplace_back("ASSIGN", $3.temp, "", $1);
         }
-        
+    }    
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asignacion expresion
     | T_IDENTIFICADOR T_IZQCORCHE expresion T_DERCORCHE operadores_asignacion expresion {
         Attributes* array_attr = symbolTable.search_symbol($1);
@@ -722,7 +725,7 @@ expresion_nuevo:
 
 expresion:
     T_IDENTIFICADOR {
-		$$.sval = $1; $$.type = ExpresionAttribute::ID;
+		$$.sval = $1; $$.type = ExpresionAttribute::ID; $$.temp = $1;
 
 		if (current_function_name != "") {
 			Attributes* func_attr = symbolTable.search_symbol(current_function_name);
@@ -880,6 +883,9 @@ expresion:
             yyerror("Operación de signo negativo no soportada para este tipo");
             //exit(1);
         }
+        char* aux = (char*)malloc(strlen($2.temp)+2); aux[0]='-';
+        strcat(aux, $2.temp);
+        $$.temp = aux;
     }
     | expresion T_FLECHA expresion
     | expresion T_OPSUMA expresion {

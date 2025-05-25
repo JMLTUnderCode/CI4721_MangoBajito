@@ -37,22 +37,22 @@ public:
         : op(op), arg1(arg1), arg2(arg2), result(result), label(label) {}
 
     string toString() const {
-        ostringstream oss;
+        string oss = "";
         if (op == "LABEL") {
-            oss << label << ":";
+            oss += label + ":";
         } else if (op == "GOTO") {
-            oss << "goto " << arg1;
+            oss += "goto " + arg1;
         } else if (op == "IFGOTO") {
-            oss << "if " << arg1 << " goto " << arg2;
+            oss += "if " + arg1 + " goto " + arg2;
         } else if (op == "ASSIGN") {
-            oss << result << " = " << arg1;
+            oss += result + " = " + arg1;
         } else if (op == "IF_FALSE_GOTO") {
-            oss << "ifFalse " << arg1 << " goto " << arg2;
+            oss += "ifFalse " + arg1 + " goto " + arg2;
         } else {
             // Operaciones aritméticas y otras de 3 direcciones
-            oss << result << " = " << arg1 << " " << op << " " << arg2;
+            oss += result + " = " + arg1 + " " + op + " " + arg2;
         }
-        return oss.str();
+        return oss;
     }
 };
 /** 
