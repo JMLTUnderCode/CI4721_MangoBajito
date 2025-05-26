@@ -63,7 +63,7 @@ const char* current_array_base_type = nullptr;
 %code requires {
     #include <cstring>
 	struct ExpresionAttribute {
-		enum Type { INT, FLOAT, DOUBLE, BOOL, STRING, POINTER, ID, CHAR} type;
+		enum Type { INT, FLOAT, DOUBLE, BOOL, STRING, POINTER, ID, CHAR, VOID} type;
 		union {
 			int ival;
 			float fval;
@@ -85,6 +85,7 @@ const char* current_array_base_type = nullptr;
             case ExpresionAttribute::STRING: return "higuerote";
             case ExpresionAttribute::POINTER:return "pointer";
             case ExpresionAttribute::ID:     return "id";
+			case ExpresionAttribute::VOID:   return "un_coño";
             default:                         return "unknown";
         }
     }  
@@ -106,6 +107,8 @@ const char* current_array_base_type = nullptr;
             return ExpresionAttribute::POINTER;
         } else if (typeStr == "id") {
             return ExpresionAttribute::ID;
+		} else if (typeStr == "un_coño") {
+			return ExpresionAttribute::VOID;
         } else {
             throw std::invalid_argument("Tipo desconocido: " + typeStr);
         }
@@ -217,7 +220,7 @@ instruccion:
     | condicion 
     | bucle 
     | entrada_salida 
-    | funcion 
+    | funcion
     | manejo_error 
     | struct
     | variante
@@ -228,7 +231,7 @@ instruccion:
         if (var == nullptr) {
             ERROR_TYPE = NON_DEF_VAR;
             yyerror($1);
-            YYABORT;
+            
         }
 
         if (var->type != nullptr && var->type->symbol_name == "mango") {
@@ -239,7 +242,7 @@ instruccion:
             } else {
                 string error_msg = "La variable '" + string($1) + "' es de tipo mango pero no contiene un valor entero para decrementar (en instruccion).";
                 yyerror(error_msg.c_str());
-                YYABORT;
+                
             }
         } else {
             string error_msg = "El operador -- (en instruccion) no se puede aplicar a la variable '" + string($1) + "'. ";
@@ -247,7 +250,7 @@ instruccion:
             if (var->type != nullptr) error_msg += var->type->symbol_name; else error_msg += "desconocido";
             error_msg += ".";
             yyerror(error_msg.c_str());
-            YYABORT;
+            
         }
     }
     | T_IDENTIFICADOR T_OPINCREMENTO {
@@ -257,7 +260,7 @@ instruccion:
         if (var == nullptr) {
             ERROR_TYPE = NON_DEF_VAR;
             yyerror($1); // $1 es el nombre del identificador
-            YYABORT;
+            
         }
 
         if (var->type != nullptr && var->type->symbol_name == "mango") {
@@ -268,7 +271,7 @@ instruccion:
             } else {
                 string error_msg = "La variable '" + string($1) + "' es de tipo mango pero no contiene un valor entero para incrementar (en instruccion).";
                 yyerror(error_msg.c_str());
-                YYABORT;
+                
             }
         } else {
             string error_msg = "El operador ++ (en instruccion) no se puede aplicar a la variable '" + string($1) + "'. ";
@@ -276,7 +279,7 @@ instruccion:
             if (var->type != nullptr) error_msg += var->type->symbol_name; else error_msg += "desconocido";
             error_msg += ".";
             yyerror(error_msg.c_str());
-            YYABORT;
+            
         }
     }
     | T_LANZATE expresion
@@ -451,7 +454,7 @@ declaracion:
                     ERROR_TYPE = TYPE_ERROR;
                     string error_message = "No se puede asignar un valor booleano al tipo '" + string($4) + "'.";
                     yyerror(error_message.c_str());
-                    YYABORT;
+                    
                 }
                 break;
 	        
@@ -561,7 +564,6 @@ asignacion:
         if (lhs_attr == nullptr){
             ERROR_TYPE = NON_DEF_VAR;
             yyerror(lhs_name.c_str());
-            YYABORT;
         }
         
         // Specific checks from your original rule
@@ -570,40 +572,49 @@ asignacion:
             if (info_var_check == "CICLO FOR"){
                 ERROR_TYPE = VAR_FOR;
                 yyerror(lhs_name.c_str());
-                YYABORT;
             }
             if (info_var_check == "MANEJO ERROR"){
                 ERROR_TYPE = VAR_TRY;
                 yyerror(lhs_name.c_str());
-                YYABORT;
             }
         }
 
         if (lhs_attr->category == CONSTANT && op_type == 0 && !holds_alternative<nullptr_t>(lhs_attr->value)) {
             ERROR_TYPE = ALREADY_DEF_VAR; // Or a specific "CANNOT_MODIFY_CONSTANT"
             yyerror(("No se puede modificar la constante '" + lhs_name + "' después de su inicialización.").c_str());
-            YYABORT;
+            
         }
          if (lhs_attr->category == CONSTANT && op_type != 0) {
             ERROR_TYPE = ALREADY_DEF_VAR; // Or a specific "CANNOT_MODIFY_CONSTANT"
             yyerror(("No se puede usar operador de asignación compuesta en constante '" + lhs_name + "'.").c_str());
-            YYABORT;
+            
         }
 
 
         // --- Inlined execute_assignment_logic ---
         if (!lhs_attr->type) {
             yyerror(("Error interno: El tipo del lado izquierdo es nulo para '" + lhs_name + "'").c_str());
-            YYABORT;
+            
         }
         string lhs_declared_type_name = lhs_attr->type->symbol_name;
+
+		if (current_function_name != ""){ // En caso de asignacion de funciones.
+			if (current_function_type != lhs_declared_type_name){
+				ERROR_TYPE = TYPE_ERROR;
+				string error_message = lhs_declared_type_name + "\". Recibido: \"" + current_function_type;
+				yyerror(error_message.c_str());
+			}
+			current_function_name = "";
+			current_function_parameters = 0;
+			current_function_type = "";
+		}
 
         if (op_type != 0) { // Compound assignments
             if (holds_alternative<nullptr_t>(lhs_attr->value)) {
                 ERROR_TYPE = NON_DEF_VAR;
                 string op_str = (op_type == 1 ? "+=" : (op_type == 2 ? "-=" : (op_type == 3 ? "*=" : "OP_COMPUESTO")));
                 yyerror(("Variable/Elemento '" + lhs_name + "' no inicializada antes de usarla en operación '" + op_str + "'.").c_str());
-                YYABORT;
+                
             }
         }
 
@@ -611,31 +622,31 @@ asignacion:
             case 0: // Simple Assignment (=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = rhs_expr.ival; }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = rhs_expr.fval; }
                     else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = static_cast<float>(rhs_expr.ival); }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                     if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = rhs_expr.dval; }
                     else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = static_cast<double>(rhs_expr.fval); }
                     else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = static_cast<double>(rhs_expr.ival); }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "tas_claro") {
                     if (rhs_expr.type == ExpresionAttribute::BOOL) { lhs_attr->value = (bool)rhs_expr.ival; }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a tas_claro '" + lhs_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a tas_claro '" + lhs_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "higuerote") {
                     if (rhs_expr.type == ExpresionAttribute::STRING) { lhs_attr->value = string(rhs_expr.sval); }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "negro") {
                     if (rhs_expr.type == ExpresionAttribute::CHAR) { lhs_attr->value = rhs_expr.cval; }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a negro '" + lhs_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a negro '" + lhs_name + "'").c_str()); }
                 } else if (rhs_expr.type == ExpresionAttribute::ID) {
                     Attributes *rhs_id_attr = symbolTable.search_symbol(rhs_expr.sval);
                     if (rhs_id_attr) {
                         if (rhs_id_attr->category == VARIABLE || rhs_id_attr->category == CONSTANT || rhs_id_attr->category == ARRAY_ELEMENT || rhs_id_attr->category == POINTER_V || rhs_id_attr->category == POINTER_C) {
                             if (holds_alternative<nullptr_t>(rhs_id_attr->value) && rhs_id_attr->type && rhs_id_attr->type->symbol_name != "pointer") {
-                                 ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_id_attr->symbol_name.c_str()) + "' usada en asignación antes de ser inicializada.").c_str()); YYABORT;
+                                 ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_id_attr->symbol_name.c_str()) + "' usada en asignación antes de ser inicializada.").c_str()); 
                             }
                             if (lhs_declared_type_name == rhs_id_attr->type->symbol_name) {
                                 lhs_attr->value = rhs_id_attr->value;
@@ -645,9 +656,9 @@ asignacion:
                                 lhs_attr->value = static_cast<double>(get<int>(rhs_id_attr->value));
                             } else if (lhs_declared_type_name == "manguangua" && rhs_id_attr->type->symbol_name == "manguita" && holds_alternative<float>(rhs_id_attr->value)) {
                                 lhs_attr->value = static_cast<double>(get<float>(rhs_id_attr->value));
-                            } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Error de tipo: no se puede asignar " + string(rhs_id_attr->type->symbol_name.c_str()) + " a " + lhs_declared_type_name + " '" + lhs_name + "'").c_str()); YYABORT;}
-                        } else { ERROR_TYPE = TYPE_ERROR; yyerror(("El lado derecho de la asignación ('" + string(rhs_expr.sval) + "') no es una variable o constante evaluable.").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_expr.sval) + "' no definida para asignación.").c_str()); YYABORT;}
+                            } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Error de tipo: no se puede asignar " + string(rhs_id_attr->type->symbol_name.c_str()) + " a " + lhs_declared_type_name + " '" + lhs_name + "'").c_str()); }
+                        } else { ERROR_TYPE = TYPE_ERROR; yyerror(("El lado derecho de la asignación ('" + string(rhs_expr.sval) + "') no es una variable o constante evaluable.").c_str()); }
+                    } else { ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_expr.sval) + "' no definida para asignación.").c_str()); }
                 } else { // Assigning struct/union or other complex types
                     // This part needs specific logic for your complex types.
                     // For now, if types match by name, allow assignment.
@@ -660,79 +671,79 @@ asignacion:
                     //      (rhs_expr.type_name == lhs_declared_type_name) /* and rhs_expr holds a compatible struct/union value */ ) {
                     //      lhs_attr->value = rhs_expr.complex_value; // Needs ExpresionAttribute to hold complex values
                     // } else
-                    ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo de asignación no soportado para variable '" + lhs_declared_type_name + "' desde expresión '" + string(typeToString(rhs_expr.type)) + "'").c_str()); YYABORT;
+                    ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo de asignación no soportado para variable '" + lhs_declared_type_name + "' desde expresión '" + string(typeToString(rhs_expr.type)) + "'").c_str()); 
                 }
                 break;
             case 1: // Compound Assignment (+=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT && holds_alternative<int>(lhs_attr->value)) {
                         lhs_attr->value = get<int>(lhs_attr->value) + rhs_expr.ival;
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_name + "'").c_str()); YYABORT;}
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (holds_alternative<float>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<float>(lhs_attr->value) + rhs_expr.fval; }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<float>(lhs_attr->value) + static_cast<float>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_name + "'").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguita '" + lhs_name + "' no contiene un valor flotante para '+='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguita '" + lhs_name + "' no contiene un valor flotante para '+='.").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                      if (holds_alternative<double>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = get<double>(lhs_attr->value) + rhs_expr.dval; }
                         else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<double>(lhs_attr->value) + static_cast<double>(rhs_expr.fval); }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<double>(lhs_attr->value) + static_cast<double>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_name + "'").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguangua '" + lhs_name + "' no contiene un valor double para '+='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguangua '" + lhs_name + "' no contiene un valor double para '+='.").c_str()); }
                 } else if (lhs_declared_type_name == "higuerote") {
                     if (rhs_expr.type == ExpresionAttribute::STRING && holds_alternative<string>(lhs_attr->value)) {
                         lhs_attr->value = get<string>(lhs_attr->value) + string(rhs_expr.sval);
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede concatenar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_name + "'").c_str()); YYABORT;}
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede concatenar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_name + "'").c_str()); }
                 }
-                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' no soportada para el tipo '" + lhs_declared_type_name + "' de la variable '" + lhs_name + "'").c_str()); YYABORT;}
+                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' no soportada para el tipo '" + lhs_declared_type_name + "' de la variable '" + lhs_name + "'").c_str()); }
                 break;
             case 2: // Compound Assignment (-=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT && holds_alternative<int>(lhs_attr->value)) {
                         lhs_attr->value = get<int>(lhs_attr->value) - rhs_expr.ival;
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de mango '" + lhs_name + "'").c_str()); YYABORT;}
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de mango '" + lhs_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (holds_alternative<float>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<float>(lhs_attr->value) - rhs_expr.fval; }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<float>(lhs_attr->value) - static_cast<float>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguita '" + lhs_name + "'").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguita '" + lhs_name + "' no contiene un valor flotante para '-='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguita '" + lhs_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguita '" + lhs_name + "' no contiene un valor flotante para '-='.").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                      if (holds_alternative<double>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = get<double>(lhs_attr->value) - rhs_expr.dval; }
                         else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<double>(lhs_attr->value) - static_cast<double>(rhs_expr.fval); }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<double>(lhs_attr->value) - static_cast<double>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguangua '" + lhs_name + "'").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguangua '" + lhs_name + "' no contiene un valor double para '-='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguangua '" + lhs_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguangua '" + lhs_name + "' no contiene un valor double para '-='.").c_str()); }
                 }
-                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' no soportada para el tipo '" + lhs_declared_type_name + "' de la variable '" + lhs_name + "'").c_str()); YYABORT;}
+                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' no soportada para el tipo '" + lhs_declared_type_name + "' de la variable '" + lhs_name + "'").c_str()); }
                 break;
             case 3: // Compound Assignment (*=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT && holds_alternative<int>(lhs_attr->value)) {
                         lhs_attr->value = get<int>(lhs_attr->value) * rhs_expr.ival;
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar mango '" + lhs_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); YYABORT;}
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar mango '" + lhs_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (holds_alternative<float>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<float>(lhs_attr->value) * rhs_expr.fval; }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<float>(lhs_attr->value) * static_cast<float>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar manguita '" + lhs_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguita '" + lhs_name + "' no contiene un valor flotante para '*='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar manguita '" + lhs_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguita '" + lhs_name + "' no contiene un valor flotante para '*='.").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                      if (holds_alternative<double>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = get<double>(lhs_attr->value) * rhs_expr.dval; }
                         else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<double>(lhs_attr->value) * static_cast<double>(rhs_expr.fval); }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<double>(lhs_attr->value) * static_cast<double>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar manguangua '" + lhs_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguangua '" + lhs_name + "' no contiene un valor double para '*='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar manguangua '" + lhs_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguangua '" + lhs_name + "' no contiene un valor double para '*='.").c_str()); }
                 }
-                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' no soportada para el tipo '" + lhs_declared_type_name + "' de la variable '" + lhs_name + "'").c_str()); YYABORT;}
+                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' no soportada para el tipo '" + lhs_declared_type_name + "' de la variable '" + lhs_name + "'").c_str()); }
                 break;
             default:
                 yyerror("Operador de asignación desconocido internamente.");
-                YYABORT;
+                
         }
         // --- End Inlined execute_assignment_logic ---
     }
@@ -748,12 +759,12 @@ asignacion:
         if (struct_var_attr == nullptr) {
             ERROR_TYPE = NON_DEF_VAR;
             yyerror(struct_name_str.c_str());
-            YYABORT;
+            
         }
         if (struct_var_attr->category != STRUCT && struct_var_attr->category != UNION) {
             ERROR_TYPE = TYPE_ERROR;
             yyerror(("La variable '" + struct_name_str + "' no es una estructura o variante.").c_str());
-            YYABORT;
+            
         }
 
         // Find the member attribute
@@ -771,7 +782,7 @@ asignacion:
         if (!member_found || lhs_attr == nullptr) {
             ERROR_TYPE = NON_DEF_VAR; // O usa NON_DEF_ATTR si lo agregas a tu enum y diccionario
             yyerror(("La estructura/variante '" + struct_name_str + "' no tiene un miembro llamado '" + member_name_str + "'.").c_str());
-            YYABORT;
+            
         }
         
         const std::string lhs_full_name = struct_name_str + "." + member_name_str;
@@ -779,7 +790,7 @@ asignacion:
         // --- Inlined execute_assignment_logic for struct member ---
         if (!lhs_attr->type) {
             yyerror(("Error interno: El tipo del miembro '" + lhs_full_name + "' es nulo.").c_str());
-            YYABORT;
+            
         }
         string lhs_declared_type_name = lhs_attr->type->symbol_name;
 
@@ -788,7 +799,7 @@ asignacion:
                 ERROR_TYPE = NON_DEF_VAR;
                 string op_str = (op_type == 1 ? "+=" : (op_type == 2 ? "-=" : (op_type == 3 ? "*=" : "OP_COMPUESTO")));
                 yyerror(("Miembro '" + lhs_full_name + "' no inicializado antes de usarlo en operación '" + op_str + "'.").c_str());
-                YYABORT;
+                
             }
         }
         // (Repeat the switch(op_type) block from above, using lhs_attr, lhs_full_name, op_type, rhs_expr)
@@ -798,31 +809,31 @@ asignacion:
             case 0: // Simple Assignment (=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = rhs_expr.ival; }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = rhs_expr.fval; }
                     else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = static_cast<float>(rhs_expr.ival); }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                     if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = rhs_expr.dval; }
                     else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = static_cast<double>(rhs_expr.fval); }
                     else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = static_cast<double>(rhs_expr.ival); }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "tas_claro") {
                     if (rhs_expr.type == ExpresionAttribute::BOOL) { lhs_attr->value = (bool)rhs_expr.ival; }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a tas_claro '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a tas_claro '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "higuerote") {
                     if (rhs_expr.type == ExpresionAttribute::STRING) { lhs_attr->value = string(rhs_expr.sval); }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "negro") {
                     if (rhs_expr.type == ExpresionAttribute::CHAR) { lhs_attr->value = rhs_expr.cval; }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a negro '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a negro '" + lhs_full_name + "'").c_str()); }
                 } else if (rhs_expr.type == ExpresionAttribute::ID) {
                     Attributes *rhs_id_attr = symbolTable.search_symbol(rhs_expr.sval);
                     if (rhs_id_attr) {
                         if (rhs_id_attr->category == VARIABLE || rhs_id_attr->category == CONSTANT || rhs_id_attr->category == ARRAY_ELEMENT || rhs_id_attr->category == POINTER_V || rhs_id_attr->category == POINTER_C) {
                             if (holds_alternative<nullptr_t>(rhs_id_attr->value) && rhs_id_attr->type && rhs_id_attr->type->symbol_name != "pointer") {
-                                 ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_id_attr->symbol_name.c_str()) + "' usada en asignación antes de ser inicializada.").c_str()); YYABORT;
+                                 ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_id_attr->symbol_name.c_str()) + "' usada en asignación antes de ser inicializada.").c_str()); 
                             }
                             if (lhs_declared_type_name == rhs_id_attr->type->symbol_name) {
                                 lhs_attr->value = rhs_id_attr->value;
@@ -832,83 +843,83 @@ asignacion:
                                 lhs_attr->value = static_cast<double>(get<int>(rhs_id_attr->value));
                             } else if (lhs_declared_type_name == "manguangua" && rhs_id_attr->type->symbol_name == "manguita" && holds_alternative<float>(rhs_id_attr->value)) {
                                 lhs_attr->value = static_cast<double>(get<float>(rhs_id_attr->value));
-                            } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Error de tipo: no se puede asignar " + string(rhs_id_attr->type->symbol_name.c_str()) + " a " + lhs_declared_type_name + " '" + lhs_full_name + "'").c_str()); YYABORT;}
-                        } else { ERROR_TYPE = TYPE_ERROR; yyerror(("El lado derecho de la asignación ('" + string(rhs_expr.sval) + "') no es una variable o constante evaluable.").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_expr.sval) + "' no definida para asignación.").c_str()); YYABORT;}
+                            } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Error de tipo: no se puede asignar " + string(rhs_id_attr->type->symbol_name.c_str()) + " a " + lhs_declared_type_name + " '" + lhs_full_name + "'").c_str()); }
+                        } else { ERROR_TYPE = TYPE_ERROR; yyerror(("El lado derecho de la asignación ('" + string(rhs_expr.sval) + "') no es una variable o constante evaluable.").c_str()); }
+                    } else { ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_expr.sval) + "' no definida para asignación.").c_str()); }
                 } else {
-                    ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo de asignación no soportado para miembro '" + lhs_declared_type_name + "' desde expresión '" + string(typeToString(rhs_expr.type)) + "'").c_str()); YYABORT;
+                    ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo de asignación no soportado para miembro '" + lhs_declared_type_name + "' desde expresión '" + string(typeToString(rhs_expr.type)) + "'").c_str()); 
                 }
                 break;
             case 1: // Compound Assignment (+=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT && holds_alternative<int>(lhs_attr->value)) {
                         lhs_attr->value = get<int>(lhs_attr->value) + rhs_expr.ival;
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (holds_alternative<float>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<float>(lhs_attr->value) + rhs_expr.fval; }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<float>(lhs_attr->value) + static_cast<float>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_full_name + "'").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Miembro manguita '" + lhs_full_name + "' no contiene un valor flotante para '+='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_full_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Miembro manguita '" + lhs_full_name + "' no contiene un valor flotante para '+='.").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                      if (holds_alternative<double>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = get<double>(lhs_attr->value) + rhs_expr.dval; }
                         else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<double>(lhs_attr->value) + static_cast<double>(rhs_expr.fval); }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<double>(lhs_attr->value) + static_cast<double>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_full_name + "'").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Miembro manguangua '" + lhs_full_name + "' no contiene un valor double para '+='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_full_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Miembro manguangua '" + lhs_full_name + "' no contiene un valor double para '+='.").c_str()); }
                 } else if (lhs_declared_type_name == "higuerote") {
                     if (rhs_expr.type == ExpresionAttribute::STRING && holds_alternative<string>(lhs_attr->value)) {
                         lhs_attr->value = get<string>(lhs_attr->value) + string(rhs_expr.sval);
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede concatenar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede concatenar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_full_name + "'").c_str()); }
                 }
-                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' no soportada para el tipo '" + lhs_declared_type_name + "' del miembro '" + lhs_full_name + "'").c_str()); YYABORT;}
+                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' no soportada para el tipo '" + lhs_declared_type_name + "' del miembro '" + lhs_full_name + "'").c_str()); }
                 break;
             case 2: // Compound Assignment (-=)
                  if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT && holds_alternative<int>(lhs_attr->value)) {
                         lhs_attr->value = get<int>(lhs_attr->value) - rhs_expr.ival;
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de mango '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de mango '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (holds_alternative<float>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<float>(lhs_attr->value) - rhs_expr.fval; }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<float>(lhs_attr->value) - static_cast<float>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguita '" + lhs_full_name + "'").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Miembro manguita '" + lhs_full_name + "' no contiene un valor flotante para '-='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguita '" + lhs_full_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Miembro manguita '" + lhs_full_name + "' no contiene un valor flotante para '-='.").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                      if (holds_alternative<double>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = get<double>(lhs_attr->value) - rhs_expr.dval; }
                         else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<double>(lhs_attr->value) - static_cast<double>(rhs_expr.fval); }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<double>(lhs_attr->value) - static_cast<double>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguangua '" + lhs_full_name + "'").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Miembro manguangua '" + lhs_full_name + "' no contiene un valor double para '-='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguangua '" + lhs_full_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Miembro manguangua '" + lhs_full_name + "' no contiene un valor double para '-='.").c_str()); }
                 }
-                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' no soportada para el tipo '" + lhs_declared_type_name + "' del miembro '" + lhs_full_name + "'").c_str()); YYABORT;}
+                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' no soportada para el tipo '" + lhs_declared_type_name + "' del miembro '" + lhs_full_name + "'").c_str()); }
                 break;
             case 3: // Compound Assignment (*=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT && holds_alternative<int>(lhs_attr->value)) {
                         lhs_attr->value = get<int>(lhs_attr->value) * rhs_expr.ival;
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar mango '" + lhs_full_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); YYABORT;}
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar mango '" + lhs_full_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (holds_alternative<float>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<float>(lhs_attr->value) * rhs_expr.fval; }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<float>(lhs_attr->value) * static_cast<float>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar manguita '" + lhs_full_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Miembro manguita '" + lhs_full_name + "' no contiene un valor flotante para '*='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar manguita '" + lhs_full_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Miembro manguita '" + lhs_full_name + "' no contiene un valor flotante para '*='.").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                      if (holds_alternative<double>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = get<double>(lhs_attr->value) * rhs_expr.dval; }
                         else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<double>(lhs_attr->value) * static_cast<double>(rhs_expr.fval); }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<double>(lhs_attr->value) * static_cast<double>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar manguangua '" + lhs_full_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Miembro manguangua '" + lhs_full_name + "' no contiene un valor double para '*='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar manguangua '" + lhs_full_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Miembro manguangua '" + lhs_full_name + "' no contiene un valor double para '*='.").c_str()); }
                 }
-                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' no soportada para el tipo '" + lhs_declared_type_name + "' del miembro '" + lhs_full_name + "'").c_str()); YYABORT;}
+                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' no soportada para el tipo '" + lhs_declared_type_name + "' del miembro '" + lhs_full_name + "'").c_str()); }
                 break;
             default:
                 yyerror("Operador de asignación desconocido internamente.");
-                YYABORT;
+                
         }
         // --- End copy of switch(op_type) for struct member ---
         // --- End Inlined execute_assignment_logic for struct member ---
@@ -924,19 +935,19 @@ asignacion:
         if (!array_attr || array_attr->category != ARRAY) {
             ERROR_TYPE = NON_DEF_VAR;
             yyerror(string($1).c_str());
-            YYABORT;
+            
         }
         if (index_expr.type != ExpresionAttribute::INT) {
             ERROR_TYPE = INT_INDEX_ARRAY;
             yyerror(typeToString(index_expr.type)); // Pass the problematic type string
-            YYABORT;
+            
         }
         
         int index_val = index_expr.ival;
         if (!holds_alternative<int>(array_attr->value)) {
              ERROR_TYPE = SEMANTIC_TYPE; // Or a more specific error
              yyerror(("La variable array '" + string($1) + "' no tiene un tamaño entero almacenado.").c_str());
-             YYABORT;
+             
         }
         int array_size_val = get<int>(array_attr->value);
 
@@ -944,7 +955,7 @@ asignacion:
             string error_str = to_string(index_val);
             ERROR_TYPE = SEGMENTATION_FAULT;
             yyerror(error_str.c_str());
-            YYABORT;
+            
         }
 
         std::string element_name_str = std::string($1) + "[" + std::to_string(index_val) + "]";
@@ -955,7 +966,7 @@ asignacion:
             // Your original code searches for them, so we assume they should exist.
             ERROR_TYPE = NON_DEF_VAR; // Or a more specific "ARRAY_ELEMENT_NOT_FOUND"
             yyerror(("Elemento de array '" + element_name_str + "' no encontrado en la tabla de símbolos.").c_str());
-            YYABORT;
+            
         }
         
         const std::string lhs_full_name = element_name_str;
@@ -963,7 +974,7 @@ asignacion:
         // --- Inlined execute_assignment_logic for array element ---
         if (!lhs_attr->type) {
             yyerror(("Error interno: El tipo del elemento de array '" + lhs_full_name + "' es nulo.").c_str());
-            YYABORT;
+            
         }
         string lhs_declared_type_name = lhs_attr->type->symbol_name;
 
@@ -972,7 +983,7 @@ asignacion:
                 ERROR_TYPE = NON_DEF_VAR;
                 string op_str = (op_type == 1 ? "+=" : (op_type == 2 ? "-=" : (op_type == 3 ? "*=" : "OP_COMPUESTO")));
                 yyerror(("Elemento de array '" + lhs_full_name + "' no inicializado antes de usarlo en operación '" + op_str + "'.").c_str());
-                YYABORT;
+                
             }
         }
         // (Repeat the switch(op_type) block from above, using lhs_attr, lhs_full_name, op_type, rhs_expr)
@@ -982,31 +993,31 @@ asignacion:
             case 0: // Simple Assignment (=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = rhs_expr.ival; }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = rhs_expr.fval; }
                     else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = static_cast<float>(rhs_expr.ival); }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                     if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = rhs_expr.dval; }
                     else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = static_cast<double>(rhs_expr.fval); }
                     else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = static_cast<double>(rhs_expr.ival); }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "tas_claro") {
                     if (rhs_expr.type == ExpresionAttribute::BOOL) { lhs_attr->value = (bool)rhs_expr.ival; }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a tas_claro '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a tas_claro '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "higuerote") {
                     if (rhs_expr.type == ExpresionAttribute::STRING) { lhs_attr->value = string(rhs_expr.sval); }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "negro") {
                     if (rhs_expr.type == ExpresionAttribute::CHAR) { lhs_attr->value = rhs_expr.cval; }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a negro '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a negro '" + lhs_full_name + "'").c_str()); }
                 } else if (rhs_expr.type == ExpresionAttribute::ID) {
                     Attributes *rhs_id_attr = symbolTable.search_symbol(rhs_expr.sval);
                     if (rhs_id_attr) {
                         if (rhs_id_attr->category == VARIABLE || rhs_id_attr->category == CONSTANT || rhs_id_attr->category == ARRAY_ELEMENT || rhs_id_attr->category == POINTER_V || rhs_id_attr->category == POINTER_C) {
                             if (holds_alternative<nullptr_t>(rhs_id_attr->value) && rhs_id_attr->type && rhs_id_attr->type->symbol_name != "pointer") {
-                                 ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_id_attr->symbol_name.c_str()) + "' usada en asignación antes de ser inicializada.").c_str()); YYABORT;
+                                 ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_id_attr->symbol_name.c_str()) + "' usada en asignación antes de ser inicializada.").c_str()); 
                             }
                             if (lhs_declared_type_name == rhs_id_attr->type->symbol_name) {
                                 lhs_attr->value = rhs_id_attr->value;
@@ -1016,83 +1027,83 @@ asignacion:
                                 lhs_attr->value = static_cast<double>(get<int>(rhs_id_attr->value));
                             } else if (lhs_declared_type_name == "manguangua" && rhs_id_attr->type->symbol_name == "manguita" && holds_alternative<float>(rhs_id_attr->value)) {
                                 lhs_attr->value = static_cast<double>(get<float>(rhs_id_attr->value));
-                            } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Error de tipo: no se puede asignar " + string(rhs_id_attr->type->symbol_name.c_str()) + " a " + lhs_declared_type_name + " '" + lhs_full_name + "'").c_str()); YYABORT;}
-                        } else { ERROR_TYPE = TYPE_ERROR; yyerror(("El lado derecho de la asignación ('" + string(rhs_expr.sval) + "') no es una variable o constante evaluable.").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_expr.sval) + "' no definida para asignación.").c_str()); YYABORT;}
+                            } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Error de tipo: no se puede asignar " + string(rhs_id_attr->type->symbol_name.c_str()) + " a " + lhs_declared_type_name + " '" + lhs_full_name + "'").c_str()); }
+                        } else { ERROR_TYPE = TYPE_ERROR; yyerror(("El lado derecho de la asignación ('" + string(rhs_expr.sval) + "') no es una variable o constante evaluable.").c_str()); }
+                    } else { ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_expr.sval) + "' no definida para asignación.").c_str()); }
                 } else {
-                    ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo de asignación no soportado para elemento de array '" + lhs_declared_type_name + "' desde expresión '" + string(typeToString(rhs_expr.type)) + "'").c_str()); YYABORT;
+                    ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo de asignación no soportado para elemento de array '" + lhs_declared_type_name + "' desde expresión '" + string(typeToString(rhs_expr.type)) + "'").c_str()); 
                 }
                 break;
             case 1: // Compound Assignment (+=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT && holds_alternative<int>(lhs_attr->value)) {
                         lhs_attr->value = get<int>(lhs_attr->value) + rhs_expr.ival;
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (holds_alternative<float>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<float>(lhs_attr->value) + rhs_expr.fval; }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<float>(lhs_attr->value) + static_cast<float>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_full_name + "'").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Elemento de array manguita '" + lhs_full_name + "' no contiene un valor flotante para '+='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_full_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Elemento de array manguita '" + lhs_full_name + "' no contiene un valor flotante para '+='.").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                      if (holds_alternative<double>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = get<double>(lhs_attr->value) + rhs_expr.dval; }
                         else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<double>(lhs_attr->value) + static_cast<double>(rhs_expr.fval); }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<double>(lhs_attr->value) + static_cast<double>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_full_name + "'").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Elemento de array manguangua '" + lhs_full_name + "' no contiene un valor double para '+='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_full_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Elemento de array manguangua '" + lhs_full_name + "' no contiene un valor double para '+='.").c_str()); }
                 } else if (lhs_declared_type_name == "higuerote") {
                     if (rhs_expr.type == ExpresionAttribute::STRING && holds_alternative<string>(lhs_attr->value)) {
                         lhs_attr->value = get<string>(lhs_attr->value) + string(rhs_expr.sval);
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede concatenar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede concatenar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_full_name + "'").c_str()); }
                 }
-                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' no soportada para el tipo '" + lhs_declared_type_name + "' del elemento de array '" + lhs_full_name + "'").c_str()); YYABORT;}
+                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' no soportada para el tipo '" + lhs_declared_type_name + "' del elemento de array '" + lhs_full_name + "'").c_str()); }
                 break;
             case 2: // Compound Assignment (-=)
                  if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT && holds_alternative<int>(lhs_attr->value)) {
                         lhs_attr->value = get<int>(lhs_attr->value) - rhs_expr.ival;
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de mango '" + lhs_full_name + "'").c_str()); YYABORT;}
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de mango '" + lhs_full_name + "'").c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (holds_alternative<float>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<float>(lhs_attr->value) - rhs_expr.fval; }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<float>(lhs_attr->value) - static_cast<float>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguita '" + lhs_full_name + "'").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Elemento de array manguita '" + lhs_full_name + "' no contiene un valor flotante para '-='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguita '" + lhs_full_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Elemento de array manguita '" + lhs_full_name + "' no contiene un valor flotante para '-='.").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                      if (holds_alternative<double>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = get<double>(lhs_attr->value) - rhs_expr.dval; }
                         else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<double>(lhs_attr->value) - static_cast<double>(rhs_expr.fval); }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<double>(lhs_attr->value) - static_cast<double>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguangua '" + lhs_full_name + "'").c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Elemento de array manguangua '" + lhs_full_name + "' no contiene un valor double para '-='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguangua '" + lhs_full_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Elemento de array manguangua '" + lhs_full_name + "' no contiene un valor double para '-='.").c_str()); }
                 }
-                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' no soportada para el tipo '" + lhs_declared_type_name + "' del elemento de array '" + lhs_full_name + "'").c_str()); YYABORT;}
+                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' no soportada para el tipo '" + lhs_declared_type_name + "' del elemento de array '" + lhs_full_name + "'").c_str()); }
                 break;
             case 3: // Compound Assignment (*=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT && holds_alternative<int>(lhs_attr->value)) {
                         lhs_attr->value = get<int>(lhs_attr->value) * rhs_expr.ival;
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar mango '" + lhs_full_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); YYABORT;}
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar mango '" + lhs_full_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (holds_alternative<float>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<float>(lhs_attr->value) * rhs_expr.fval; }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<float>(lhs_attr->value) * static_cast<float>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar manguita '" + lhs_full_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Elemento de array manguita '" + lhs_full_name + "' no contiene un valor flotante para '*='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar manguita '" + lhs_full_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Elemento de array manguita '" + lhs_full_name + "' no contiene un valor flotante para '*='.").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                      if (holds_alternative<double>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = get<double>(lhs_attr->value) * rhs_expr.dval; }
                         else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<double>(lhs_attr->value) * static_cast<double>(rhs_expr.fval); }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<double>(lhs_attr->value) * static_cast<double>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar manguangua '" + lhs_full_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); YYABORT;}
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Elemento de array manguangua '" + lhs_full_name + "' no contiene un valor double para '*='.").c_str()); YYABORT;}
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' inválida: no se puede multiplicar manguangua '" + lhs_full_name + "' por " + string(typeToString(rhs_expr.type))).c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Elemento de array manguangua '" + lhs_full_name + "' no contiene un valor double para '*='.").c_str()); }
                 }
-                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' no soportada para el tipo '" + lhs_declared_type_name + "' del elemento de array '" + lhs_full_name + "'").c_str()); YYABORT;}
+                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' no soportada para el tipo '" + lhs_declared_type_name + "' del elemento de array '" + lhs_full_name + "'").c_str()); }
                 break;
             default:
                 yyerror("Operador de asignación desconocido internamente.");
-                YYABORT;
+                
         }
         // --- End copy of switch(op_type) for array element ---
         // --- End Inlined execute_assignment_logic for array element ---
@@ -1280,13 +1291,13 @@ expresion:
             if (!var_attr) { 
                 ERROR_TYPE = NON_DEF_VAR; 
                 yyerror(_op_not.sval); 
-                YYABORT; 
+                 
             }
             if (!var_attr->type || var_attr->type->symbol_name != "tas_claro") {
                 ERROR_TYPE = TYPE_ERROR; 
                 std::string err_msg = "Operación 'Nelson (!)' requiere operando booleano (tas_claro), pero '" + std::string(_op_not.sval) + "' es de tipo '" + (var_attr->type ? var_attr->type->symbol_name : "desconocido") + "'.";
                 yyerror(err_msg.c_str()); 
-                YYABORT;
+                
             }
             if (std::holds_alternative<bool>(var_attr->value)) {
                 val_not = std::get<bool>(var_attr->value);
@@ -1294,19 +1305,19 @@ expresion:
                 ERROR_TYPE = NON_DEF_VAR;
                 std::string err_msg = "Variable 'tas_claro' '" + std::string(_op_not.sval) + "' no inicializada y usada en operación 'Nelson (!)'.";
                 yyerror(err_msg.c_str());
-                YYABORT;
+                
             } 
             else {
                 ERROR_TYPE = TYPE_ERROR; 
                 std::string err_msg = "Variable 'tas_claro' '" + std::string(_op_not.sval) + "' no contiene un valor booleano válido para 'Nelson (!)'.";
                 yyerror(err_msg.c_str()); 
-                YYABORT;
+                
             }
         } else {
             ERROR_TYPE = TYPE_ERROR; 
             std::string err_msg = "Operación 'Nelson (!)' requiere operando booleano, pero se recibió tipo '" + std::string(typeToString(_op_not.type)) + "'.";
             yyerror(err_msg.c_str()); 
-            YYABORT;
+            
         }
 
         $$.type = ExpresionAttribute::BOOL;
@@ -1372,10 +1383,10 @@ expresion:
         // Resolve Left Operand
         if (_left_op_eq.type == ExpresionAttribute::ID) {
             Attributes* attr = symbolTable.search_symbol(_left_op_eq.sval);
-            if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_eq.sval); YYABORT; }
-            if (!attr->type) { yyerror("Error interno: Atributo ID sin tipo."); YYABORT; }
+            if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_eq.sval);  }
+            if (!attr->type) { yyerror("Error interno: Atributo ID sin tipo.");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { 
-                ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + std::string(_left_op_eq.sval) + "' no inicializada.").c_str()); YYABORT; 
+                ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + std::string(_left_op_eq.sval) + "' no inicializada.").c_str());  
             }
             type_l_eq = stringToType(attr->type->symbol_name);
             if (type_l_eq == ExpresionAttribute::INT) num_l_eq = std::get<int>(attr->value);
@@ -1384,7 +1395,7 @@ expresion:
             else if (type_l_eq == ExpresionAttribute::CHAR) char_l_eq = std::get<char>(attr->value);
             else if (type_l_eq == ExpresionAttribute::STRING) str_l_eq = std::get<std::string>(attr->value);
             else if (type_l_eq == ExpresionAttribute::BOOL && attr->type->symbol_name == "tas_claro") bool_l_eq = std::get<bool>(attr->value);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo '" + attr->type->symbol_name + "' no soportado para '=='.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo '" + attr->type->symbol_name + "' no soportado para '=='.").c_str());  }
         } else {
             type_l_eq = _left_op_eq.type;
             if (type_l_eq == ExpresionAttribute::INT) num_l_eq = _left_op_eq.ival;
@@ -1393,16 +1404,16 @@ expresion:
             else if (type_l_eq == ExpresionAttribute::CHAR) char_l_eq = _left_op_eq.cval;
             else if (type_l_eq == ExpresionAttribute::STRING) str_l_eq = std::string(_left_op_eq.sval);
             else if (type_l_eq == ExpresionAttribute::BOOL) bool_l_eq = (bool)_left_op_eq.ival;
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo '" + std::string(typeToString(type_l_eq)) + "' no soportado para '=='.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo '" + std::string(typeToString(type_l_eq)) + "' no soportado para '=='.").c_str());  }
         }
 
         // Resolve Right Operand
         if (_right_op_eq.type == ExpresionAttribute::ID) {
             Attributes* attr = symbolTable.search_symbol(_right_op_eq.sval);
-            if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_eq.sval); YYABORT; }
-            if (!attr->type) { yyerror("Error interno: Atributo ID sin tipo."); YYABORT; }
+            if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_eq.sval);  }
+            if (!attr->type) { yyerror("Error interno: Atributo ID sin tipo.");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { 
-                ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + std::string(_right_op_eq.sval) + "' no inicializada.").c_str()); YYABORT; 
+                ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + std::string(_right_op_eq.sval) + "' no inicializada.").c_str());  
             }
             type_r_eq = stringToType(attr->type->symbol_name);
             if (type_r_eq == ExpresionAttribute::INT) num_r_eq = std::get<int>(attr->value);
@@ -1411,7 +1422,7 @@ expresion:
             else if (type_r_eq == ExpresionAttribute::CHAR) char_r_eq = std::get<char>(attr->value);
             else if (type_r_eq == ExpresionAttribute::STRING) str_r_eq = std::get<std::string>(attr->value);
             else if (type_r_eq == ExpresionAttribute::BOOL && attr->type->symbol_name == "tas_claro") bool_r_eq = std::get<bool>(attr->value);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo '" + attr->type->symbol_name + "' no soportado para '=='.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo '" + attr->type->symbol_name + "' no soportado para '=='.").c_str());  }
         } else {
             type_r_eq = _right_op_eq.type;
             if (type_r_eq == ExpresionAttribute::INT) num_r_eq = _right_op_eq.ival;
@@ -1420,7 +1431,7 @@ expresion:
             else if (type_r_eq == ExpresionAttribute::CHAR) char_r_eq = _right_op_eq.cval;
             else if (type_r_eq == ExpresionAttribute::STRING) str_r_eq = std::string(_right_op_eq.sval);
             else if (type_r_eq == ExpresionAttribute::BOOL) bool_r_eq = (bool)_right_op_eq.ival;
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo '" + std::string(typeToString(type_r_eq)) + "' no soportado para '=='.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo '" + std::string(typeToString(type_r_eq)) + "' no soportado para '=='.").c_str());  }
         }
         
         bool _res_eq = false;
@@ -1436,7 +1447,7 @@ expresion:
         } else {
             ERROR_TYPE = TYPE_ERROR; 
             yyerror(("Tipos incompatibles para '==': " + std::string(typeToString(type_l_eq)) + " y " + std::string(typeToString(type_r_eq))).c_str()); 
-            YYABORT;
+            
         }
         $$.type = ExpresionAttribute::BOOL; $$.ival = _res_eq ? 1 : 0;
     }
@@ -1447,30 +1458,30 @@ expresion:
         ExpresionAttribute::Type type_l_ne, type_r_ne;
 
         if (_left_op_ne.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_left_op_ne.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_ne.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; } 
-            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_ne.sval) + "' no init.").c_str()); YYABORT; }
+            Attributes* attr = symbolTable.search_symbol(_left_op_ne.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_ne.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  } 
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_ne.sval) + "' no init.").c_str());  }
             type_l_ne = stringToType(attr->type->symbol_name);
             if (type_l_ne == ExpresionAttribute::INT) num_l_ne = std::get<int>(attr->value); else if (type_l_ne == ExpresionAttribute::FLOAT) num_l_ne = std::get<float>(attr->value); else if (type_l_ne == ExpresionAttribute::DOUBLE) num_l_ne = std::get<double>(attr->value);
             else if (type_l_ne == ExpresionAttribute::CHAR) char_l_ne = std::get<char>(attr->value); else if (type_l_ne == ExpresionAttribute::STRING) str_l_ne = std::get<std::string>(attr->value);
-            else if (type_l_ne == ExpresionAttribute::BOOL && attr->type->symbol_name == "tas_claro") bool_l_ne = std::get<bool>(attr->value); else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '!='.").c_str()); YYABORT; }
+            else if (type_l_ne == ExpresionAttribute::BOOL && attr->type->symbol_name == "tas_claro") bool_l_ne = std::get<bool>(attr->value); else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '!='.").c_str());  }
         } else {
             type_l_ne = _left_op_ne.type;
             if (type_l_ne == ExpresionAttribute::INT) num_l_ne = _left_op_ne.ival; else if (type_l_ne == ExpresionAttribute::FLOAT) num_l_ne = _left_op_ne.fval; else if (type_l_ne == ExpresionAttribute::DOUBLE) num_l_ne = _left_op_ne.dval;
             else if (type_l_ne == ExpresionAttribute::CHAR) char_l_ne = _left_op_ne.cval; else if (type_l_ne == ExpresionAttribute::STRING) str_l_ne = std::string(_left_op_ne.sval);
-            else if (type_l_ne == ExpresionAttribute::BOOL) bool_l_ne = (bool)_left_op_ne.ival; else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_ne)) + "' no sop. para '!='.").c_str()); YYABORT; }
+            else if (type_l_ne == ExpresionAttribute::BOOL) bool_l_ne = (bool)_left_op_ne.ival; else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_ne)) + "' no sop. para '!='.").c_str());  }
         }
         if (_right_op_ne.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_right_op_ne.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_ne.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
-            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_ne.sval) + "' no init.").c_str()); YYABORT; }
+            Attributes* attr = symbolTable.search_symbol(_right_op_ne.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_ne.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_ne.sval) + "' no init.").c_str());  }
             type_r_ne = stringToType(attr->type->symbol_name);
             if (type_r_ne == ExpresionAttribute::INT) num_r_ne = std::get<int>(attr->value); else if (type_r_ne == ExpresionAttribute::FLOAT) num_r_ne = std::get<float>(attr->value); else if (type_r_ne == ExpresionAttribute::DOUBLE) num_r_ne = std::get<double>(attr->value);
             else if (type_r_ne == ExpresionAttribute::CHAR) char_r_ne = std::get<char>(attr->value); else if (type_r_ne == ExpresionAttribute::STRING) str_r_ne = std::get<std::string>(attr->value);
-            else if (type_r_ne == ExpresionAttribute::BOOL && attr->type->symbol_name == "tas_claro") bool_r_ne = std::get<bool>(attr->value); else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '!='.").c_str()); YYABORT; }
+            else if (type_r_ne == ExpresionAttribute::BOOL && attr->type->symbol_name == "tas_claro") bool_r_ne = std::get<bool>(attr->value); else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '!='.").c_str());  }
         } else {
             type_r_ne = _right_op_ne.type;
             if (type_r_ne == ExpresionAttribute::INT) num_r_ne = _right_op_ne.ival; else if (type_r_ne == ExpresionAttribute::FLOAT) num_r_ne = _right_op_ne.fval; else if (type_r_ne == ExpresionAttribute::DOUBLE) num_r_ne = _right_op_ne.dval;
             else if (type_r_ne == ExpresionAttribute::CHAR) char_r_ne = _right_op_ne.cval; else if (type_r_ne == ExpresionAttribute::STRING) str_r_ne = std::string(_right_op_ne.sval);
-            else if (type_r_ne == ExpresionAttribute::BOOL) bool_r_ne = (bool)_right_op_ne.ival; else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_ne)) + "' no sop. para '!='.").c_str()); YYABORT; }
+            else if (type_r_ne == ExpresionAttribute::BOOL) bool_r_ne = (bool)_right_op_ne.ival; else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_ne)) + "' no sop. para '!='.").c_str());  }
         }
         bool _res_ne = false;
         if ((type_l_ne == ExpresionAttribute::INT || type_l_ne == ExpresionAttribute::FLOAT || type_l_ne == ExpresionAttribute::DOUBLE) &&
@@ -1478,155 +1489,155 @@ expresion:
         else if (type_l_ne == ExpresionAttribute::CHAR && type_r_ne == ExpresionAttribute::CHAR) { _res_ne = (char_l_ne != char_r_ne); }
         else if (type_l_ne == ExpresionAttribute::STRING && type_r_ne == ExpresionAttribute::STRING) { _res_ne = (str_l_ne != str_r_ne); }
         else if (type_l_ne == ExpresionAttribute::BOOL && type_r_ne == ExpresionAttribute::BOOL) { _res_ne = (bool_l_ne != bool_r_ne); }
-        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '!=': " + std::string(typeToString(type_l_ne)) + " y " + std::string(typeToString(type_r_ne))).c_str()); YYABORT; }
+        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '!=': " + std::string(typeToString(type_l_ne)) + " y " + std::string(typeToString(type_r_ne))).c_str());  }
         $$.type = ExpresionAttribute::BOOL; $$.ival = _res_ne ? 1 : 0;
     }
     | expresion T_OPMAYOR expresion {
         ExpresionAttribute _left_op_gt = $1; ExpresionAttribute _right_op_gt = $3; double num_l_gt = 0, num_r_gt = 0; char char_l_gt = 0, char_r_gt = 0; std::string str_l_gt, str_r_gt;
         ExpresionAttribute::Type type_l_gt, type_r_gt;
         if (_left_op_gt.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_left_op_gt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_gt.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
-            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_gt.sval) + "' no init.").c_str()); YYABORT; }
+            Attributes* attr = symbolTable.search_symbol(_left_op_gt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_gt.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_gt.sval) + "' no init.").c_str());  }
             type_l_gt = stringToType(attr->type->symbol_name);
             if (type_l_gt == ExpresionAttribute::INT) num_l_gt = std::get<int>(attr->value); else if (type_l_gt == ExpresionAttribute::FLOAT) num_l_gt = std::get<float>(attr->value); else if (type_l_gt == ExpresionAttribute::DOUBLE) num_l_gt = std::get<double>(attr->value);
             else if (type_l_gt == ExpresionAttribute::CHAR) char_l_gt = std::get<char>(attr->value); else if (type_l_gt == ExpresionAttribute::STRING) str_l_gt = std::get<std::string>(attr->value);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '>'.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '>'.").c_str());  }
         } else {
             type_l_gt = _left_op_gt.type;
             if (type_l_gt == ExpresionAttribute::INT) num_l_gt = _left_op_gt.ival; else if (type_l_gt == ExpresionAttribute::FLOAT) num_l_gt = _left_op_gt.fval; else if (type_l_gt == ExpresionAttribute::DOUBLE) num_l_gt = _left_op_gt.dval;
             else if (type_l_gt == ExpresionAttribute::CHAR) char_l_gt = _left_op_gt.cval; else if (type_l_gt == ExpresionAttribute::STRING) str_l_gt = std::string(_left_op_gt.sval);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_gt)) + "' no sop. para '>'.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_gt)) + "' no sop. para '>'.").c_str());  }
         }
         if (_right_op_gt.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_right_op_gt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_gt.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
-            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_gt.sval) + "' no init.").c_str()); YYABORT; }
+            Attributes* attr = symbolTable.search_symbol(_right_op_gt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_gt.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_gt.sval) + "' no init.").c_str());  }
             type_r_gt = stringToType(attr->type->symbol_name);
             if (type_r_gt == ExpresionAttribute::INT) num_r_gt = std::get<int>(attr->value); else if (type_r_gt == ExpresionAttribute::FLOAT) num_r_gt = std::get<float>(attr->value); else if (type_r_gt == ExpresionAttribute::DOUBLE) num_r_gt = std::get<double>(attr->value);
             else if (type_r_gt == ExpresionAttribute::CHAR) char_r_gt = std::get<char>(attr->value); else if (type_r_gt == ExpresionAttribute::STRING) str_r_gt = std::get<std::string>(attr->value);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '>'.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '>'.").c_str());  }
         } else {
             type_r_gt = _right_op_gt.type;
             if (type_r_gt == ExpresionAttribute::INT) num_r_gt = _right_op_gt.ival; else if (type_r_gt == ExpresionAttribute::FLOAT) num_r_gt = _right_op_gt.fval; else if (type_r_gt == ExpresionAttribute::DOUBLE) num_r_gt = _right_op_gt.dval;
             else if (type_r_gt == ExpresionAttribute::CHAR) char_r_gt = _right_op_gt.cval; else if (type_r_gt == ExpresionAttribute::STRING) str_r_gt = std::string(_right_op_gt.sval);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_gt)) + "' no sop. para '>'.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_gt)) + "' no sop. para '>'.").c_str());  }
         }
         bool _res_gt = false;
         if ((type_l_gt == ExpresionAttribute::INT || type_l_gt == ExpresionAttribute::FLOAT || type_l_gt == ExpresionAttribute::DOUBLE) &&
             (type_r_gt == ExpresionAttribute::INT || type_r_gt == ExpresionAttribute::FLOAT || type_r_gt == ExpresionAttribute::DOUBLE)) { _res_gt = (num_l_gt > num_r_gt); }
         else if (type_l_gt == ExpresionAttribute::CHAR && type_r_gt == ExpresionAttribute::CHAR) { _res_gt = (char_l_gt > char_r_gt); }
         else if (type_l_gt == ExpresionAttribute::STRING && type_r_gt == ExpresionAttribute::STRING) { _res_gt = (str_l_gt > str_r_gt); }
-        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '>': " + std::string(typeToString(type_l_gt)) + " y " + std::string(typeToString(type_r_gt))).c_str()); YYABORT; }
+        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '>': " + std::string(typeToString(type_l_gt)) + " y " + std::string(typeToString(type_r_gt))).c_str());  }
         $$.type = ExpresionAttribute::BOOL; $$.ival = _res_gt ? 1 : 0;
     }
     | expresion T_OPMAYORIGUAL expresion {
         ExpresionAttribute _left_op_ge = $1; ExpresionAttribute _right_op_ge = $3; double num_l_ge = 0, num_r_ge = 0; char char_l_ge = 0, char_r_ge = 0; std::string str_l_ge, str_r_ge;
         ExpresionAttribute::Type type_l_ge, type_r_ge;
         if (_left_op_ge.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_left_op_ge.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_ge.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
-            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_ge.sval) + "' no init.").c_str()); YYABORT; }
+            Attributes* attr = symbolTable.search_symbol(_left_op_ge.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_ge.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_ge.sval) + "' no init.").c_str());  }
             type_l_ge = stringToType(attr->type->symbol_name);
             if (type_l_ge == ExpresionAttribute::INT) num_l_ge = std::get<int>(attr->value); else if (type_l_ge == ExpresionAttribute::FLOAT) num_l_ge = std::get<float>(attr->value); else if (type_l_ge == ExpresionAttribute::DOUBLE) num_l_ge = std::get<double>(attr->value);
             else if (type_l_ge == ExpresionAttribute::CHAR) char_l_ge = std::get<char>(attr->value); else if (type_l_ge == ExpresionAttribute::STRING) str_l_ge = std::get<std::string>(attr->value);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '>='.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '>='.").c_str());  }
         } else {
             type_l_ge = _left_op_ge.type;
             if (type_l_ge == ExpresionAttribute::INT) num_l_ge = _left_op_ge.ival; else if (type_l_ge == ExpresionAttribute::FLOAT) num_l_ge = _left_op_ge.fval; else if (type_l_ge == ExpresionAttribute::DOUBLE) num_l_ge = _left_op_ge.dval;
             else if (type_l_ge == ExpresionAttribute::CHAR) char_l_ge = _left_op_ge.cval; else if (type_l_ge == ExpresionAttribute::STRING) str_l_ge = std::string(_left_op_ge.sval);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_ge)) + "' no sop. para '>='.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_ge)) + "' no sop. para '>='.").c_str());  }
         }
         if (_right_op_ge.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_right_op_ge.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_ge.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
-            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_ge.sval) + "' no init.").c_str()); YYABORT; }
+            Attributes* attr = symbolTable.search_symbol(_right_op_ge.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_ge.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_ge.sval) + "' no init.").c_str());  }
             type_r_ge = stringToType(attr->type->symbol_name);
             if (type_r_ge == ExpresionAttribute::INT) num_r_ge = std::get<int>(attr->value); else if (type_r_ge == ExpresionAttribute::FLOAT) num_r_ge = std::get<float>(attr->value); else if (type_r_ge == ExpresionAttribute::DOUBLE) num_r_ge = std::get<double>(attr->value);
             else if (type_r_ge == ExpresionAttribute::CHAR) char_r_ge = std::get<char>(attr->value); else if (type_r_ge == ExpresionAttribute::STRING) str_r_ge = std::get<std::string>(attr->value);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '>='.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '>='.").c_str());  }
         } else {
             type_r_ge = _right_op_ge.type;
             if (type_r_ge == ExpresionAttribute::INT) num_r_ge = _right_op_ge.ival; else if (type_r_ge == ExpresionAttribute::FLOAT) num_r_ge = _right_op_ge.fval; else if (type_r_ge == ExpresionAttribute::DOUBLE) num_r_ge = _right_op_ge.dval;
             else if (type_r_ge == ExpresionAttribute::CHAR) char_r_ge = _right_op_ge.cval; else if (type_r_ge == ExpresionAttribute::STRING) str_r_ge = std::string(_right_op_ge.sval);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_ge)) + "' no sop. para '>='.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_ge)) + "' no sop. para '>='.").c_str());  }
         }
         bool _res_ge = false;
         if ((type_l_ge == ExpresionAttribute::INT || type_l_ge == ExpresionAttribute::FLOAT || type_l_ge == ExpresionAttribute::DOUBLE) &&
             (type_r_ge == ExpresionAttribute::INT || type_r_ge == ExpresionAttribute::FLOAT || type_r_ge == ExpresionAttribute::DOUBLE)) { _res_ge = (num_l_ge >= num_r_ge); }
         else if (type_l_ge == ExpresionAttribute::CHAR && type_r_ge == ExpresionAttribute::CHAR) { _res_ge = (char_l_ge >= char_r_ge); }
         else if (type_l_ge == ExpresionAttribute::STRING && type_r_ge == ExpresionAttribute::STRING) { _res_ge = (str_l_ge >= str_r_ge); }
-        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '>=': " + std::string(typeToString(type_l_ge)) + " y " + std::string(typeToString(type_r_ge))).c_str()); YYABORT; }
+        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '>=': " + std::string(typeToString(type_l_ge)) + " y " + std::string(typeToString(type_r_ge))).c_str());  }
         $$.type = ExpresionAttribute::BOOL; $$.ival = _res_ge ? 1 : 0;
     }
     | expresion T_OPMENOR expresion {
         ExpresionAttribute _left_op_lt = $1; ExpresionAttribute _right_op_lt = $3; double num_l_lt = 0, num_r_lt = 0; char char_l_lt = 0, char_r_lt = 0; std::string str_l_lt, str_r_lt;
         ExpresionAttribute::Type type_l_lt, type_r_lt;
         if (_left_op_lt.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_left_op_lt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_lt.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
-            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_lt.sval) + "' no init.").c_str()); YYABORT; }
+            Attributes* attr = symbolTable.search_symbol(_left_op_lt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_lt.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_lt.sval) + "' no init.").c_str());  }
             type_l_lt = stringToType(attr->type->symbol_name);
             if (type_l_lt == ExpresionAttribute::INT) num_l_lt = std::get<int>(attr->value); else if (type_l_lt == ExpresionAttribute::FLOAT) num_l_lt = std::get<float>(attr->value); else if (type_l_lt == ExpresionAttribute::DOUBLE) num_l_lt = std::get<double>(attr->value);
             else if (type_l_lt == ExpresionAttribute::CHAR) char_l_lt = std::get<char>(attr->value); else if (type_l_lt == ExpresionAttribute::STRING) str_l_lt = std::get<std::string>(attr->value);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '<'.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '<'.").c_str());  }
         } else {
             type_l_lt = _left_op_lt.type;
             if (type_l_lt == ExpresionAttribute::INT) num_l_lt = _left_op_lt.ival; else if (type_l_lt == ExpresionAttribute::FLOAT) num_l_lt = _left_op_lt.fval; else if (type_l_lt == ExpresionAttribute::DOUBLE) num_l_lt = _left_op_lt.dval;
             else if (type_l_lt == ExpresionAttribute::CHAR) char_l_lt = _left_op_lt.cval; else if (type_l_lt == ExpresionAttribute::STRING) str_l_lt = std::string(_left_op_lt.sval);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_lt)) + "' no sop. para '<'.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_lt)) + "' no sop. para '<'.").c_str());  }
         }
         if (_right_op_lt.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_right_op_lt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_lt.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
-            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_lt.sval) + "' no init.").c_str()); YYABORT; }
+            Attributes* attr = symbolTable.search_symbol(_right_op_lt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_lt.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_lt.sval) + "' no init.").c_str());  }
             type_r_lt = stringToType(attr->type->symbol_name);
             if (type_r_lt == ExpresionAttribute::INT) num_r_lt = std::get<int>(attr->value); else if (type_r_lt == ExpresionAttribute::FLOAT) num_r_lt = std::get<float>(attr->value); else if (type_r_lt == ExpresionAttribute::DOUBLE) num_r_lt = std::get<double>(attr->value);
             else if (type_r_lt == ExpresionAttribute::CHAR) char_r_lt = std::get<char>(attr->value); else if (type_r_lt == ExpresionAttribute::STRING) str_r_lt = std::get<std::string>(attr->value);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '<'.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '<'.").c_str());  }
         } else {
             type_r_lt = _right_op_lt.type;
             if (type_r_lt == ExpresionAttribute::INT) num_r_lt = _right_op_lt.ival; else if (type_r_lt == ExpresionAttribute::FLOAT) num_r_lt = _right_op_lt.fval; else if (type_r_lt == ExpresionAttribute::DOUBLE) num_r_lt = _right_op_lt.dval;
             else if (type_r_lt == ExpresionAttribute::CHAR) char_r_lt = _right_op_lt.cval; else if (type_r_lt == ExpresionAttribute::STRING) str_r_lt = std::string(_right_op_lt.sval);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_lt)) + "' no sop. para '<'.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_lt)) + "' no sop. para '<'.").c_str());  }
         }
         bool _res_lt = false;
         if ((type_l_lt == ExpresionAttribute::INT || type_l_lt == ExpresionAttribute::FLOAT || type_l_lt == ExpresionAttribute::DOUBLE) &&
             (type_r_lt == ExpresionAttribute::INT || type_r_lt == ExpresionAttribute::FLOAT || type_r_lt == ExpresionAttribute::DOUBLE)) { _res_lt = (num_l_lt < num_r_lt); }
         else if (type_l_lt == ExpresionAttribute::CHAR && type_r_lt == ExpresionAttribute::CHAR) { _res_lt = (char_l_lt < char_r_lt); }
         else if (type_l_lt == ExpresionAttribute::STRING && type_r_lt == ExpresionAttribute::STRING) { _res_lt = (str_l_lt < str_r_lt); }
-        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '<': " + std::string(typeToString(type_l_lt)) + " y " + std::string(typeToString(type_r_lt))).c_str()); YYABORT; }
+        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '<': " + std::string(typeToString(type_l_lt)) + " y " + std::string(typeToString(type_r_lt))).c_str());  }
         $$.type = ExpresionAttribute::BOOL; $$.ival = _res_lt ? 1 : 0;
     }
     | expresion T_OPMENORIGUAL expresion {
         ExpresionAttribute _left_op_le = $1; ExpresionAttribute _right_op_le = $3; double num_l_le = 0, num_r_le = 0; char char_l_le = 0, char_r_le = 0; std::string str_l_le, str_r_le;
         ExpresionAttribute::Type type_l_le, type_r_le;
         if (_left_op_le.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_left_op_le.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_le.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
-            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_le.sval) + "' no init.").c_str()); YYABORT; }
+            Attributes* attr = symbolTable.search_symbol(_left_op_le.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_le.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_le.sval) + "' no init.").c_str());  }
             type_l_le = stringToType(attr->type->symbol_name);
             if (type_l_le == ExpresionAttribute::INT) num_l_le = std::get<int>(attr->value); else if (type_l_le == ExpresionAttribute::FLOAT) num_l_le = std::get<float>(attr->value); else if (type_l_le == ExpresionAttribute::DOUBLE) num_l_le = std::get<double>(attr->value);
             else if (type_l_le == ExpresionAttribute::CHAR) char_l_le = std::get<char>(attr->value); else if (type_l_le == ExpresionAttribute::STRING) str_l_le = std::get<std::string>(attr->value);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '<='.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '<='.").c_str());  }
         } else {
             type_l_le = _left_op_le.type;
             if (type_l_le == ExpresionAttribute::INT) num_l_le = _left_op_le.ival; else if (type_l_le == ExpresionAttribute::FLOAT) num_l_le = _left_op_le.fval; else if (type_l_le == ExpresionAttribute::DOUBLE) num_l_le = _left_op_le.dval;
             else if (type_l_le == ExpresionAttribute::CHAR) char_l_le = _left_op_le.cval; else if (type_l_le == ExpresionAttribute::STRING) str_l_le = std::string(_left_op_le.sval);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_le)) + "' no sop. para '<='.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_le)) + "' no sop. para '<='.").c_str());  }
         }
         if (_right_op_le.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_right_op_le.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_le.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
-            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_le.sval) + "' no init.").c_str()); YYABORT; }
+            Attributes* attr = symbolTable.search_symbol(_right_op_le.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_le.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_le.sval) + "' no init.").c_str());  }
             type_r_le = stringToType(attr->type->symbol_name);
             if (type_r_le == ExpresionAttribute::INT) num_r_le = std::get<int>(attr->value); else if (type_r_le == ExpresionAttribute::FLOAT) num_r_le = std::get<float>(attr->value); else if (type_r_le == ExpresionAttribute::DOUBLE) num_r_le = std::get<double>(attr->value);
             else if (type_r_le == ExpresionAttribute::CHAR) char_r_le = std::get<char>(attr->value); else if (type_r_le == ExpresionAttribute::STRING) str_r_le = std::get<std::string>(attr->value);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '<='.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '<='.").c_str());  }
         } else {
             type_r_le = _right_op_le.type;
             if (type_r_le == ExpresionAttribute::INT) num_r_le = _right_op_le.ival; else if (type_r_le == ExpresionAttribute::FLOAT) num_r_le = _right_op_le.fval; else if (type_r_le == ExpresionAttribute::DOUBLE) num_r_le = _right_op_le.dval;
             else if (type_r_le == ExpresionAttribute::CHAR) char_r_le = _right_op_le.cval; else if (type_r_le == ExpresionAttribute::STRING) str_r_le = std::string(_right_op_le.sval);
-            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_le)) + "' no sop. para '<='.").c_str()); YYABORT; }
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_le)) + "' no sop. para '<='.").c_str());  }
         }
         bool _res_le = false;
         if ((type_l_le == ExpresionAttribute::INT || type_l_le == ExpresionAttribute::FLOAT || type_l_le == ExpresionAttribute::DOUBLE) &&
             (type_r_le == ExpresionAttribute::INT || type_r_le == ExpresionAttribute::FLOAT || type_r_le == ExpresionAttribute::DOUBLE)) { _res_le = (num_l_le <= num_r_le); }
         else if (type_l_le == ExpresionAttribute::CHAR && type_r_le == ExpresionAttribute::CHAR) { _res_le = (char_l_le <= char_r_le); }
         else if (type_l_le == ExpresionAttribute::STRING && type_r_le == ExpresionAttribute::STRING) { _res_le = (str_l_le <= str_r_le); }
-        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '<=': " + std::string(typeToString(type_l_le)) + " y " + std::string(typeToString(type_r_le))).c_str()); YYABORT; }
+        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '<=': " + std::string(typeToString(type_l_le)) + " y " + std::string(typeToString(type_r_le))).c_str());  }
         $$.type = ExpresionAttribute::BOOL; $$.ival = _res_le ? 1 : 0;
     }
     | expresion T_OSEA expresion { // Logical OR (||)
@@ -1639,23 +1650,23 @@ expresion:
             b1_or = (bool)_left_op_or.ival;
         } else if (_left_op_or.type == ExpresionAttribute::ID) {
             Attributes* var_attr1 = symbolTable.search_symbol(_left_op_or.sval);
-            if (!var_attr1) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_or.sval); YYABORT; }
+            if (!var_attr1) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_or.sval);  }
             if (!var_attr1->type || var_attr1->type->symbol_name != "tas_claro") {
                 ERROR_TYPE = TYPE_ERROR; 
                 string err_msg = "Operación 'OSea (||)' requiere operando booleano (tas_claro), pero '" + string(_left_op_or.sval) + "' es de tipo '" + (var_attr1->type ? var_attr1->type->symbol_name : "desconocido") + "'.";
-                yyerror(err_msg.c_str()); YYABORT;
+                yyerror(err_msg.c_str()); 
             }
             if (holds_alternative<bool>(var_attr1->value)) {
                 b1_or = get<bool>(var_attr1->value);
             } else {
                 ERROR_TYPE = TYPE_ERROR; 
                 string err_msg = "Variable 'tas_claro' '" + string(_left_op_or.sval) + "' no contiene un valor booleano válido para 'OSea (||)'.";
-                yyerror(err_msg.c_str()); YYABORT;
+                yyerror(err_msg.c_str()); 
             }
         } else {
             ERROR_TYPE = TYPE_ERROR; 
             string err_msg = "Operación 'OSea (||)' requiere operando booleano, pero se recibió tipo '" + string(typeToString(_left_op_or.type)) + "'.";
-            yyerror(err_msg.c_str()); YYABORT;
+            yyerror(err_msg.c_str()); 
         }
 
         // Evaluate $3
@@ -1663,23 +1674,23 @@ expresion:
             b2_or = (bool)_right_op_or.ival;
         } else if (_right_op_or.type == ExpresionAttribute::ID) {
             Attributes* var_attr2 = symbolTable.search_symbol(_right_op_or.sval);
-            if (!var_attr2) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_or.sval); YYABORT; }
+            if (!var_attr2) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_or.sval);  }
             if (!var_attr2->type || var_attr2->type->symbol_name != "tas_claro") {
                 ERROR_TYPE = TYPE_ERROR; 
                 string err_msg = "Operación 'OSea (||)' requiere operando booleano (tas_claro), pero '" + string(_right_op_or.sval) + "' es de tipo '" + (var_attr2->type ? var_attr2->type->symbol_name : "desconocido") + "'.";
-                yyerror(err_msg.c_str()); YYABORT;
+                yyerror(err_msg.c_str()); 
             }
             if (holds_alternative<bool>(var_attr2->value)) {
                 b2_or = get<bool>(var_attr2->value);
             } else {
                 ERROR_TYPE = TYPE_ERROR; 
                 string err_msg = "Variable 'tas_claro' '" + string(_right_op_or.sval) + "' no contiene un valor booleano válido para 'OSea (||)'.";
-                yyerror(err_msg.c_str()); YYABORT;
+                yyerror(err_msg.c_str()); 
             }
         } else {
             ERROR_TYPE = TYPE_ERROR; 
             string err_msg = "Operación 'OSea (||)' requiere operando booleano, pero se recibió tipo '" + string(typeToString(_right_op_or.type)) + "'.";
-            yyerror(err_msg.c_str()); YYABORT;
+            yyerror(err_msg.c_str()); 
         }
 
         $$.type = ExpresionAttribute::BOOL;
@@ -1695,23 +1706,23 @@ expresion:
             b1_and = (bool)_left_op_and.ival;
         } else if (_left_op_and.type == ExpresionAttribute::ID) {
             Attributes* var_attr1 = symbolTable.search_symbol(_left_op_and.sval);
-            if (!var_attr1) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_and.sval); YYABORT; }
+            if (!var_attr1) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_and.sval);  }
             if (!var_attr1->type || var_attr1->type->symbol_name != "tas_claro") {
                 ERROR_TYPE = TYPE_ERROR; 
                 string err_msg = "Operación 'Yunta (&&)' requiere operando booleano (tas_claro), pero '" + string(_left_op_and.sval) + "' es de tipo '" + (var_attr1->type ? var_attr1->type->symbol_name : "desconocido") + "'.";
-                yyerror(err_msg.c_str()); YYABORT;
+                yyerror(err_msg.c_str()); 
             }
             if (holds_alternative<bool>(var_attr1->value)) {
                 b1_and = get<bool>(var_attr1->value);
             } else {
                 ERROR_TYPE = TYPE_ERROR; 
                 string err_msg = "Variable 'tas_claro' '" + string(_left_op_and.sval) + "' no contiene un valor booleano válido para 'Yunta (&&)'.";
-                yyerror(err_msg.c_str()); YYABORT;
+                yyerror(err_msg.c_str()); 
             }
         } else {
             ERROR_TYPE = TYPE_ERROR; 
             string err_msg = "Operación 'Yunta (&&)' requiere operando booleano, pero se recibió tipo '" + string(typeToString(_left_op_and.type)) + "'.";
-            yyerror(err_msg.c_str()); YYABORT;
+            yyerror(err_msg.c_str()); 
         }
 
         // Evaluate $3
@@ -1719,23 +1730,23 @@ expresion:
             b2_and = (bool)_right_op_and.ival;
         } else if (_right_op_and.type == ExpresionAttribute::ID) {
             Attributes* var_attr2 = symbolTable.search_symbol(_right_op_and.sval);
-            if (!var_attr2) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_and.sval); YYABORT; }
+            if (!var_attr2) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_and.sval);  }
             if (!var_attr2->type || var_attr2->type->symbol_name != "tas_claro") {
                 ERROR_TYPE = TYPE_ERROR; 
                 string err_msg = "Operación 'Yunta (&&)' requiere operando booleano (tas_claro), pero '" + string(_right_op_and.sval) + "' es de tipo '" + (var_attr2->type ? var_attr2->type->symbol_name : "desconocido") + "'.";
-                yyerror(err_msg.c_str()); YYABORT;
+                yyerror(err_msg.c_str()); 
             }
             if (holds_alternative<bool>(var_attr2->value)) {
                 b2_and = get<bool>(var_attr2->value);
             } else {
                 ERROR_TYPE = TYPE_ERROR; 
                 string err_msg = "Variable 'tas_claro' '" + string(_right_op_and.sval) + "' no contiene un valor booleano válido para 'Yunta (&&)'.";
-                yyerror(err_msg.c_str()); YYABORT;
+                yyerror(err_msg.c_str()); 
             }
         } else {
             ERROR_TYPE = TYPE_ERROR; 
             string err_msg = "Operación 'Yunta (&&)' requiere operando booleano, pero se recibió tipo '" + string(typeToString(_right_op_and.type)) + "'.";
-            yyerror(err_msg.c_str()); YYABORT;
+            yyerror(err_msg.c_str()); 
         }
 
         $$.type = ExpresionAttribute::BOOL;
@@ -1744,8 +1755,21 @@ expresion:
     | entrada_salida
 	| variante
     | funcion {
-		// POR IMPLEMENTAR: La funcion debe retornar un valor asociado segun sea el caso.
-		$$.type = ExpresionAttribute::ID;
+		Attributes* func_attr = symbolTable.search_symbol(current_function_name);
+        if (func_attr == nullptr) {
+            yyerror("Funcion no definida");
+            //exit(1);
+        }
+		if (func_attr->category != FUNCTION) {
+            yyerror("El identificador no es una funcion");
+            //exit(1);
+        }
+
+		current_function_type = get<string>(func_attr->info[func_attr->info.size()-1].first);
+		$$.type = stringToType(current_function_type);
+		
+		// POR IMPLEMENTAR: Retornar el valor asociado a la funcion.
+		// $$.ival = func_attr->value;
 	}
     | casting
     | T_IDENTIFICADOR T_IZQCORCHE expresion T_DERCORCHE {
@@ -1804,12 +1828,12 @@ expresion:
 ;
 
 condicion:
-    T_SIESASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope alternativa
+    T_SIESASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instruccionesopt T_DERLLAVE cerrar_scope alternativa
     ;
 
 alternativa:
-    | T_OASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope alternativa
-    | T_NOJODA abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+    | T_OASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instruccionesopt T_DERLLAVE cerrar_scope alternativa
+    | T_NOJODA abrir_scope T_IZQLLAVE instruccionesopt T_DERLLAVE cerrar_scope
     ;
 
 bucle:
@@ -2119,8 +2143,6 @@ funcion:
 			yyerror(error_message.c_str());
 			//exit(1);
 		}
-		current_function_name = "";
-		current_function_parameters = 0;
 	}
 
 arreglo:
