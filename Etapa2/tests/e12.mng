@@ -12,7 +12,7 @@ se_prende(){
     num2--;
     num2--;
 
-    culito tas_claro0: tas_claro = Sisa;
+    culito tas_claro0: tas_claro = (Sisa o_sea Nolsa) yunta (Nolsa o_sea (Nolsa o_sea (nelson Nolsa)));
 
     rescata("Hola ", nombre);
 };

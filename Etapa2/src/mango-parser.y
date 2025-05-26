@@ -264,9 +264,6 @@ instruccion:
             if (holds_alternative<int>(var->value)) {
                 int old_val = get<int>(var->value);
                 var->value = old_val + 1; // Actualiza el valor en la tabla de símbolos (efecto secundario)
-                std::cout << "DEBUG [Instruccion]: Postincremento de variable '" << $1 
-                          << "', valor original = " << old_val 
-                          << ", nuevo valor en tabla = " << get<int>(var->value) << std::endl;
                 // No se asigna a $$ porque 'instruccion' no devuelve un valor aquí
             } else {
                 string error_msg = "La variable '" + string($1) + "' es de tipo mango pero no contiene un valor entero para incrementar (en instruccion).";
@@ -1266,12 +1263,55 @@ expresion:
         }
     }
     | T_PELABOLA
-    | T_IZQPAREN expresion T_DERPAREN
+    | T_IZQPAREN expresion T_DERPAREN { $$ = $2; }
     | valores_booleanos { $$ = $1; }
     | expresion_apuntador 
     | expresion_nuevo
     | arreglo
-    | T_NELSON expresion
+    | T_NELSON expresion {
+        ExpresionAttribute _op_not = $2;
+        bool val_not;
+
+        // Evaluate the operand
+        if (_op_not.type == ExpresionAttribute::BOOL) {
+            val_not = (bool)_op_not.ival;
+        } else if (_op_not.type == ExpresionAttribute::ID) {
+            Attributes* var_attr = symbolTable.search_symbol(_op_not.sval);
+            if (!var_attr) { 
+                ERROR_TYPE = NON_DEF_VAR; 
+                yyerror(_op_not.sval); 
+                YYABORT; 
+            }
+            if (!var_attr->type || var_attr->type->symbol_name != "tas_claro") {
+                ERROR_TYPE = TYPE_ERROR; 
+                std::string err_msg = "Operación 'Nelson (!)' requiere operando booleano (tas_claro), pero '" + std::string(_op_not.sval) + "' es de tipo '" + (var_attr->type ? var_attr->type->symbol_name : "desconocido") + "'.";
+                yyerror(err_msg.c_str()); 
+                YYABORT;
+            }
+            if (std::holds_alternative<bool>(var_attr->value)) {
+                val_not = std::get<bool>(var_attr->value);
+            } else if (std::holds_alternative<std::nullptr_t>(var_attr->value)) {
+                ERROR_TYPE = NON_DEF_VAR;
+                std::string err_msg = "Variable 'tas_claro' '" + std::string(_op_not.sval) + "' no inicializada y usada en operación 'Nelson (!)'.";
+                yyerror(err_msg.c_str());
+                YYABORT;
+            } 
+            else {
+                ERROR_TYPE = TYPE_ERROR; 
+                std::string err_msg = "Variable 'tas_claro' '" + std::string(_op_not.sval) + "' no contiene un valor booleano válido para 'Nelson (!)'.";
+                yyerror(err_msg.c_str()); 
+                YYABORT;
+            }
+        } else {
+            ERROR_TYPE = TYPE_ERROR; 
+            std::string err_msg = "Operación 'Nelson (!)' requiere operando booleano, pero se recibió tipo '" + std::string(typeToString(_op_not.type)) + "'.";
+            yyerror(err_msg.c_str()); 
+            YYABORT;
+        }
+
+        $$.type = ExpresionAttribute::BOOL;
+        $$.ival = !val_not ? 1 : 0;
+    }
     | T_OPRESTA expresion %prec T_OPRESTA {
         if ($2.type == ExpresionAttribute::INT) {
             $$.type = ExpresionAttribute::INT;
@@ -1319,14 +1359,388 @@ expresion:
     | expresion T_OPDIVENTERA expresion
     | expresion T_OPMOD expresion
     | expresion T_OPEXP expresion
-    | expresion T_OPIGUAL expresion
-    | expresion T_OPDIFERENTE expresion
-    | expresion T_OPMAYOR expresion
-    | expresion T_OPMAYORIGUAL expresion
-    | expresion T_OPMENOR expresion
-    | expresion T_OPMENORIGUAL expresion
-    | expresion T_OSEA expresion
-    | expresion T_YUNTA expresion
+    | expresion T_OPIGUAL expresion {
+        ExpresionAttribute _left_op_eq = $1;
+        ExpresionAttribute _right_op_eq = $3;
+        
+        double num_l_eq = 0, num_r_eq = 0;
+        char char_l_eq = 0, char_r_eq = 0;
+        std::string str_l_eq, str_r_eq;
+        bool bool_l_eq = false, bool_r_eq = false;
+        ExpresionAttribute::Type type_l_eq, type_r_eq;
+
+        // Resolve Left Operand
+        if (_left_op_eq.type == ExpresionAttribute::ID) {
+            Attributes* attr = symbolTable.search_symbol(_left_op_eq.sval);
+            if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_eq.sval); YYABORT; }
+            if (!attr->type) { yyerror("Error interno: Atributo ID sin tipo."); YYABORT; }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { 
+                ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + std::string(_left_op_eq.sval) + "' no inicializada.").c_str()); YYABORT; 
+            }
+            type_l_eq = stringToType(attr->type->symbol_name);
+            if (type_l_eq == ExpresionAttribute::INT) num_l_eq = std::get<int>(attr->value);
+            else if (type_l_eq == ExpresionAttribute::FLOAT) num_l_eq = std::get<float>(attr->value);
+            else if (type_l_eq == ExpresionAttribute::DOUBLE) num_l_eq = std::get<double>(attr->value);
+            else if (type_l_eq == ExpresionAttribute::CHAR) char_l_eq = std::get<char>(attr->value);
+            else if (type_l_eq == ExpresionAttribute::STRING) str_l_eq = std::get<std::string>(attr->value);
+            else if (type_l_eq == ExpresionAttribute::BOOL && attr->type->symbol_name == "tas_claro") bool_l_eq = std::get<bool>(attr->value);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo '" + attr->type->symbol_name + "' no soportado para '=='.").c_str()); YYABORT; }
+        } else {
+            type_l_eq = _left_op_eq.type;
+            if (type_l_eq == ExpresionAttribute::INT) num_l_eq = _left_op_eq.ival;
+            else if (type_l_eq == ExpresionAttribute::FLOAT) num_l_eq = _left_op_eq.fval;
+            else if (type_l_eq == ExpresionAttribute::DOUBLE) num_l_eq = _left_op_eq.dval;
+            else if (type_l_eq == ExpresionAttribute::CHAR) char_l_eq = _left_op_eq.cval;
+            else if (type_l_eq == ExpresionAttribute::STRING) str_l_eq = std::string(_left_op_eq.sval);
+            else if (type_l_eq == ExpresionAttribute::BOOL) bool_l_eq = (bool)_left_op_eq.ival;
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo '" + std::string(typeToString(type_l_eq)) + "' no soportado para '=='.").c_str()); YYABORT; }
+        }
+
+        // Resolve Right Operand
+        if (_right_op_eq.type == ExpresionAttribute::ID) {
+            Attributes* attr = symbolTable.search_symbol(_right_op_eq.sval);
+            if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_eq.sval); YYABORT; }
+            if (!attr->type) { yyerror("Error interno: Atributo ID sin tipo."); YYABORT; }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { 
+                ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + std::string(_right_op_eq.sval) + "' no inicializada.").c_str()); YYABORT; 
+            }
+            type_r_eq = stringToType(attr->type->symbol_name);
+            if (type_r_eq == ExpresionAttribute::INT) num_r_eq = std::get<int>(attr->value);
+            else if (type_r_eq == ExpresionAttribute::FLOAT) num_r_eq = std::get<float>(attr->value);
+            else if (type_r_eq == ExpresionAttribute::DOUBLE) num_r_eq = std::get<double>(attr->value);
+            else if (type_r_eq == ExpresionAttribute::CHAR) char_r_eq = std::get<char>(attr->value);
+            else if (type_r_eq == ExpresionAttribute::STRING) str_r_eq = std::get<std::string>(attr->value);
+            else if (type_r_eq == ExpresionAttribute::BOOL && attr->type->symbol_name == "tas_claro") bool_r_eq = std::get<bool>(attr->value);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo '" + attr->type->symbol_name + "' no soportado para '=='.").c_str()); YYABORT; }
+        } else {
+            type_r_eq = _right_op_eq.type;
+            if (type_r_eq == ExpresionAttribute::INT) num_r_eq = _right_op_eq.ival;
+            else if (type_r_eq == ExpresionAttribute::FLOAT) num_r_eq = _right_op_eq.fval;
+            else if (type_r_eq == ExpresionAttribute::DOUBLE) num_r_eq = _right_op_eq.dval;
+            else if (type_r_eq == ExpresionAttribute::CHAR) char_r_eq = _right_op_eq.cval;
+            else if (type_r_eq == ExpresionAttribute::STRING) str_r_eq = std::string(_right_op_eq.sval);
+            else if (type_r_eq == ExpresionAttribute::BOOL) bool_r_eq = (bool)_right_op_eq.ival;
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo '" + std::string(typeToString(type_r_eq)) + "' no soportado para '=='.").c_str()); YYABORT; }
+        }
+        
+        bool _res_eq = false;
+        if ((type_l_eq == ExpresionAttribute::INT || type_l_eq == ExpresionAttribute::FLOAT || type_l_eq == ExpresionAttribute::DOUBLE) &&
+            (type_r_eq == ExpresionAttribute::INT || type_r_eq == ExpresionAttribute::FLOAT || type_r_eq == ExpresionAttribute::DOUBLE)) {
+            _res_eq = (num_l_eq == num_r_eq);
+        } else if (type_l_eq == ExpresionAttribute::CHAR && type_r_eq == ExpresionAttribute::CHAR) {
+            _res_eq = (char_l_eq == char_r_eq);
+        } else if (type_l_eq == ExpresionAttribute::STRING && type_r_eq == ExpresionAttribute::STRING) {
+            _res_eq = (str_l_eq == str_r_eq);
+        } else if (type_l_eq == ExpresionAttribute::BOOL && type_r_eq == ExpresionAttribute::BOOL) {
+            _res_eq = (bool_l_eq == bool_r_eq);
+        } else {
+            ERROR_TYPE = TYPE_ERROR; 
+            yyerror(("Tipos incompatibles para '==': " + std::string(typeToString(type_l_eq)) + " y " + std::string(typeToString(type_r_eq))).c_str()); 
+            YYABORT;
+        }
+        $$.type = ExpresionAttribute::BOOL; $$.ival = _res_eq ? 1 : 0;
+    }
+    | expresion T_OPDIFERENTE expresion {
+        ExpresionAttribute _left_op_ne = $1;
+        ExpresionAttribute _right_op_ne = $3;
+        double num_l_ne = 0, num_r_ne = 0; char char_l_ne = 0, char_r_ne = 0; std::string str_l_ne, str_r_ne; bool bool_l_ne = false, bool_r_ne = false;
+        ExpresionAttribute::Type type_l_ne, type_r_ne;
+
+        if (_left_op_ne.type == ExpresionAttribute::ID) {
+            Attributes* attr = symbolTable.search_symbol(_left_op_ne.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_ne.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; } 
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_ne.sval) + "' no init.").c_str()); YYABORT; }
+            type_l_ne = stringToType(attr->type->symbol_name);
+            if (type_l_ne == ExpresionAttribute::INT) num_l_ne = std::get<int>(attr->value); else if (type_l_ne == ExpresionAttribute::FLOAT) num_l_ne = std::get<float>(attr->value); else if (type_l_ne == ExpresionAttribute::DOUBLE) num_l_ne = std::get<double>(attr->value);
+            else if (type_l_ne == ExpresionAttribute::CHAR) char_l_ne = std::get<char>(attr->value); else if (type_l_ne == ExpresionAttribute::STRING) str_l_ne = std::get<std::string>(attr->value);
+            else if (type_l_ne == ExpresionAttribute::BOOL && attr->type->symbol_name == "tas_claro") bool_l_ne = std::get<bool>(attr->value); else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '!='.").c_str()); YYABORT; }
+        } else {
+            type_l_ne = _left_op_ne.type;
+            if (type_l_ne == ExpresionAttribute::INT) num_l_ne = _left_op_ne.ival; else if (type_l_ne == ExpresionAttribute::FLOAT) num_l_ne = _left_op_ne.fval; else if (type_l_ne == ExpresionAttribute::DOUBLE) num_l_ne = _left_op_ne.dval;
+            else if (type_l_ne == ExpresionAttribute::CHAR) char_l_ne = _left_op_ne.cval; else if (type_l_ne == ExpresionAttribute::STRING) str_l_ne = std::string(_left_op_ne.sval);
+            else if (type_l_ne == ExpresionAttribute::BOOL) bool_l_ne = (bool)_left_op_ne.ival; else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_ne)) + "' no sop. para '!='.").c_str()); YYABORT; }
+        }
+        if (_right_op_ne.type == ExpresionAttribute::ID) {
+            Attributes* attr = symbolTable.search_symbol(_right_op_ne.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_ne.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_ne.sval) + "' no init.").c_str()); YYABORT; }
+            type_r_ne = stringToType(attr->type->symbol_name);
+            if (type_r_ne == ExpresionAttribute::INT) num_r_ne = std::get<int>(attr->value); else if (type_r_ne == ExpresionAttribute::FLOAT) num_r_ne = std::get<float>(attr->value); else if (type_r_ne == ExpresionAttribute::DOUBLE) num_r_ne = std::get<double>(attr->value);
+            else if (type_r_ne == ExpresionAttribute::CHAR) char_r_ne = std::get<char>(attr->value); else if (type_r_ne == ExpresionAttribute::STRING) str_r_ne = std::get<std::string>(attr->value);
+            else if (type_r_ne == ExpresionAttribute::BOOL && attr->type->symbol_name == "tas_claro") bool_r_ne = std::get<bool>(attr->value); else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '!='.").c_str()); YYABORT; }
+        } else {
+            type_r_ne = _right_op_ne.type;
+            if (type_r_ne == ExpresionAttribute::INT) num_r_ne = _right_op_ne.ival; else if (type_r_ne == ExpresionAttribute::FLOAT) num_r_ne = _right_op_ne.fval; else if (type_r_ne == ExpresionAttribute::DOUBLE) num_r_ne = _right_op_ne.dval;
+            else if (type_r_ne == ExpresionAttribute::CHAR) char_r_ne = _right_op_ne.cval; else if (type_r_ne == ExpresionAttribute::STRING) str_r_ne = std::string(_right_op_ne.sval);
+            else if (type_r_ne == ExpresionAttribute::BOOL) bool_r_ne = (bool)_right_op_ne.ival; else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_ne)) + "' no sop. para '!='.").c_str()); YYABORT; }
+        }
+        bool _res_ne = false;
+        if ((type_l_ne == ExpresionAttribute::INT || type_l_ne == ExpresionAttribute::FLOAT || type_l_ne == ExpresionAttribute::DOUBLE) &&
+            (type_r_ne == ExpresionAttribute::INT || type_r_ne == ExpresionAttribute::FLOAT || type_r_ne == ExpresionAttribute::DOUBLE)) { _res_ne = (num_l_ne != num_r_ne); }
+        else if (type_l_ne == ExpresionAttribute::CHAR && type_r_ne == ExpresionAttribute::CHAR) { _res_ne = (char_l_ne != char_r_ne); }
+        else if (type_l_ne == ExpresionAttribute::STRING && type_r_ne == ExpresionAttribute::STRING) { _res_ne = (str_l_ne != str_r_ne); }
+        else if (type_l_ne == ExpresionAttribute::BOOL && type_r_ne == ExpresionAttribute::BOOL) { _res_ne = (bool_l_ne != bool_r_ne); }
+        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '!=': " + std::string(typeToString(type_l_ne)) + " y " + std::string(typeToString(type_r_ne))).c_str()); YYABORT; }
+        $$.type = ExpresionAttribute::BOOL; $$.ival = _res_ne ? 1 : 0;
+    }
+    | expresion T_OPMAYOR expresion {
+        ExpresionAttribute _left_op_gt = $1; ExpresionAttribute _right_op_gt = $3; double num_l_gt = 0, num_r_gt = 0; char char_l_gt = 0, char_r_gt = 0; std::string str_l_gt, str_r_gt;
+        ExpresionAttribute::Type type_l_gt, type_r_gt;
+        if (_left_op_gt.type == ExpresionAttribute::ID) {
+            Attributes* attr = symbolTable.search_symbol(_left_op_gt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_gt.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_gt.sval) + "' no init.").c_str()); YYABORT; }
+            type_l_gt = stringToType(attr->type->symbol_name);
+            if (type_l_gt == ExpresionAttribute::INT) num_l_gt = std::get<int>(attr->value); else if (type_l_gt == ExpresionAttribute::FLOAT) num_l_gt = std::get<float>(attr->value); else if (type_l_gt == ExpresionAttribute::DOUBLE) num_l_gt = std::get<double>(attr->value);
+            else if (type_l_gt == ExpresionAttribute::CHAR) char_l_gt = std::get<char>(attr->value); else if (type_l_gt == ExpresionAttribute::STRING) str_l_gt = std::get<std::string>(attr->value);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '>'.").c_str()); YYABORT; }
+        } else {
+            type_l_gt = _left_op_gt.type;
+            if (type_l_gt == ExpresionAttribute::INT) num_l_gt = _left_op_gt.ival; else if (type_l_gt == ExpresionAttribute::FLOAT) num_l_gt = _left_op_gt.fval; else if (type_l_gt == ExpresionAttribute::DOUBLE) num_l_gt = _left_op_gt.dval;
+            else if (type_l_gt == ExpresionAttribute::CHAR) char_l_gt = _left_op_gt.cval; else if (type_l_gt == ExpresionAttribute::STRING) str_l_gt = std::string(_left_op_gt.sval);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_gt)) + "' no sop. para '>'.").c_str()); YYABORT; }
+        }
+        if (_right_op_gt.type == ExpresionAttribute::ID) {
+            Attributes* attr = symbolTable.search_symbol(_right_op_gt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_gt.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_gt.sval) + "' no init.").c_str()); YYABORT; }
+            type_r_gt = stringToType(attr->type->symbol_name);
+            if (type_r_gt == ExpresionAttribute::INT) num_r_gt = std::get<int>(attr->value); else if (type_r_gt == ExpresionAttribute::FLOAT) num_r_gt = std::get<float>(attr->value); else if (type_r_gt == ExpresionAttribute::DOUBLE) num_r_gt = std::get<double>(attr->value);
+            else if (type_r_gt == ExpresionAttribute::CHAR) char_r_gt = std::get<char>(attr->value); else if (type_r_gt == ExpresionAttribute::STRING) str_r_gt = std::get<std::string>(attr->value);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '>'.").c_str()); YYABORT; }
+        } else {
+            type_r_gt = _right_op_gt.type;
+            if (type_r_gt == ExpresionAttribute::INT) num_r_gt = _right_op_gt.ival; else if (type_r_gt == ExpresionAttribute::FLOAT) num_r_gt = _right_op_gt.fval; else if (type_r_gt == ExpresionAttribute::DOUBLE) num_r_gt = _right_op_gt.dval;
+            else if (type_r_gt == ExpresionAttribute::CHAR) char_r_gt = _right_op_gt.cval; else if (type_r_gt == ExpresionAttribute::STRING) str_r_gt = std::string(_right_op_gt.sval);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_gt)) + "' no sop. para '>'.").c_str()); YYABORT; }
+        }
+        bool _res_gt = false;
+        if ((type_l_gt == ExpresionAttribute::INT || type_l_gt == ExpresionAttribute::FLOAT || type_l_gt == ExpresionAttribute::DOUBLE) &&
+            (type_r_gt == ExpresionAttribute::INT || type_r_gt == ExpresionAttribute::FLOAT || type_r_gt == ExpresionAttribute::DOUBLE)) { _res_gt = (num_l_gt > num_r_gt); }
+        else if (type_l_gt == ExpresionAttribute::CHAR && type_r_gt == ExpresionAttribute::CHAR) { _res_gt = (char_l_gt > char_r_gt); }
+        else if (type_l_gt == ExpresionAttribute::STRING && type_r_gt == ExpresionAttribute::STRING) { _res_gt = (str_l_gt > str_r_gt); }
+        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '>': " + std::string(typeToString(type_l_gt)) + " y " + std::string(typeToString(type_r_gt))).c_str()); YYABORT; }
+        $$.type = ExpresionAttribute::BOOL; $$.ival = _res_gt ? 1 : 0;
+    }
+    | expresion T_OPMAYORIGUAL expresion {
+        ExpresionAttribute _left_op_ge = $1; ExpresionAttribute _right_op_ge = $3; double num_l_ge = 0, num_r_ge = 0; char char_l_ge = 0, char_r_ge = 0; std::string str_l_ge, str_r_ge;
+        ExpresionAttribute::Type type_l_ge, type_r_ge;
+        if (_left_op_ge.type == ExpresionAttribute::ID) {
+            Attributes* attr = symbolTable.search_symbol(_left_op_ge.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_ge.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_ge.sval) + "' no init.").c_str()); YYABORT; }
+            type_l_ge = stringToType(attr->type->symbol_name);
+            if (type_l_ge == ExpresionAttribute::INT) num_l_ge = std::get<int>(attr->value); else if (type_l_ge == ExpresionAttribute::FLOAT) num_l_ge = std::get<float>(attr->value); else if (type_l_ge == ExpresionAttribute::DOUBLE) num_l_ge = std::get<double>(attr->value);
+            else if (type_l_ge == ExpresionAttribute::CHAR) char_l_ge = std::get<char>(attr->value); else if (type_l_ge == ExpresionAttribute::STRING) str_l_ge = std::get<std::string>(attr->value);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '>='.").c_str()); YYABORT; }
+        } else {
+            type_l_ge = _left_op_ge.type;
+            if (type_l_ge == ExpresionAttribute::INT) num_l_ge = _left_op_ge.ival; else if (type_l_ge == ExpresionAttribute::FLOAT) num_l_ge = _left_op_ge.fval; else if (type_l_ge == ExpresionAttribute::DOUBLE) num_l_ge = _left_op_ge.dval;
+            else if (type_l_ge == ExpresionAttribute::CHAR) char_l_ge = _left_op_ge.cval; else if (type_l_ge == ExpresionAttribute::STRING) str_l_ge = std::string(_left_op_ge.sval);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_ge)) + "' no sop. para '>='.").c_str()); YYABORT; }
+        }
+        if (_right_op_ge.type == ExpresionAttribute::ID) {
+            Attributes* attr = symbolTable.search_symbol(_right_op_ge.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_ge.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_ge.sval) + "' no init.").c_str()); YYABORT; }
+            type_r_ge = stringToType(attr->type->symbol_name);
+            if (type_r_ge == ExpresionAttribute::INT) num_r_ge = std::get<int>(attr->value); else if (type_r_ge == ExpresionAttribute::FLOAT) num_r_ge = std::get<float>(attr->value); else if (type_r_ge == ExpresionAttribute::DOUBLE) num_r_ge = std::get<double>(attr->value);
+            else if (type_r_ge == ExpresionAttribute::CHAR) char_r_ge = std::get<char>(attr->value); else if (type_r_ge == ExpresionAttribute::STRING) str_r_ge = std::get<std::string>(attr->value);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '>='.").c_str()); YYABORT; }
+        } else {
+            type_r_ge = _right_op_ge.type;
+            if (type_r_ge == ExpresionAttribute::INT) num_r_ge = _right_op_ge.ival; else if (type_r_ge == ExpresionAttribute::FLOAT) num_r_ge = _right_op_ge.fval; else if (type_r_ge == ExpresionAttribute::DOUBLE) num_r_ge = _right_op_ge.dval;
+            else if (type_r_ge == ExpresionAttribute::CHAR) char_r_ge = _right_op_ge.cval; else if (type_r_ge == ExpresionAttribute::STRING) str_r_ge = std::string(_right_op_ge.sval);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_ge)) + "' no sop. para '>='.").c_str()); YYABORT; }
+        }
+        bool _res_ge = false;
+        if ((type_l_ge == ExpresionAttribute::INT || type_l_ge == ExpresionAttribute::FLOAT || type_l_ge == ExpresionAttribute::DOUBLE) &&
+            (type_r_ge == ExpresionAttribute::INT || type_r_ge == ExpresionAttribute::FLOAT || type_r_ge == ExpresionAttribute::DOUBLE)) { _res_ge = (num_l_ge >= num_r_ge); }
+        else if (type_l_ge == ExpresionAttribute::CHAR && type_r_ge == ExpresionAttribute::CHAR) { _res_ge = (char_l_ge >= char_r_ge); }
+        else if (type_l_ge == ExpresionAttribute::STRING && type_r_ge == ExpresionAttribute::STRING) { _res_ge = (str_l_ge >= str_r_ge); }
+        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '>=': " + std::string(typeToString(type_l_ge)) + " y " + std::string(typeToString(type_r_ge))).c_str()); YYABORT; }
+        $$.type = ExpresionAttribute::BOOL; $$.ival = _res_ge ? 1 : 0;
+    }
+    | expresion T_OPMENOR expresion {
+        ExpresionAttribute _left_op_lt = $1; ExpresionAttribute _right_op_lt = $3; double num_l_lt = 0, num_r_lt = 0; char char_l_lt = 0, char_r_lt = 0; std::string str_l_lt, str_r_lt;
+        ExpresionAttribute::Type type_l_lt, type_r_lt;
+        if (_left_op_lt.type == ExpresionAttribute::ID) {
+            Attributes* attr = symbolTable.search_symbol(_left_op_lt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_lt.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_lt.sval) + "' no init.").c_str()); YYABORT; }
+            type_l_lt = stringToType(attr->type->symbol_name);
+            if (type_l_lt == ExpresionAttribute::INT) num_l_lt = std::get<int>(attr->value); else if (type_l_lt == ExpresionAttribute::FLOAT) num_l_lt = std::get<float>(attr->value); else if (type_l_lt == ExpresionAttribute::DOUBLE) num_l_lt = std::get<double>(attr->value);
+            else if (type_l_lt == ExpresionAttribute::CHAR) char_l_lt = std::get<char>(attr->value); else if (type_l_lt == ExpresionAttribute::STRING) str_l_lt = std::get<std::string>(attr->value);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '<'.").c_str()); YYABORT; }
+        } else {
+            type_l_lt = _left_op_lt.type;
+            if (type_l_lt == ExpresionAttribute::INT) num_l_lt = _left_op_lt.ival; else if (type_l_lt == ExpresionAttribute::FLOAT) num_l_lt = _left_op_lt.fval; else if (type_l_lt == ExpresionAttribute::DOUBLE) num_l_lt = _left_op_lt.dval;
+            else if (type_l_lt == ExpresionAttribute::CHAR) char_l_lt = _left_op_lt.cval; else if (type_l_lt == ExpresionAttribute::STRING) str_l_lt = std::string(_left_op_lt.sval);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_lt)) + "' no sop. para '<'.").c_str()); YYABORT; }
+        }
+        if (_right_op_lt.type == ExpresionAttribute::ID) {
+            Attributes* attr = symbolTable.search_symbol(_right_op_lt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_lt.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_lt.sval) + "' no init.").c_str()); YYABORT; }
+            type_r_lt = stringToType(attr->type->symbol_name);
+            if (type_r_lt == ExpresionAttribute::INT) num_r_lt = std::get<int>(attr->value); else if (type_r_lt == ExpresionAttribute::FLOAT) num_r_lt = std::get<float>(attr->value); else if (type_r_lt == ExpresionAttribute::DOUBLE) num_r_lt = std::get<double>(attr->value);
+            else if (type_r_lt == ExpresionAttribute::CHAR) char_r_lt = std::get<char>(attr->value); else if (type_r_lt == ExpresionAttribute::STRING) str_r_lt = std::get<std::string>(attr->value);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '<'.").c_str()); YYABORT; }
+        } else {
+            type_r_lt = _right_op_lt.type;
+            if (type_r_lt == ExpresionAttribute::INT) num_r_lt = _right_op_lt.ival; else if (type_r_lt == ExpresionAttribute::FLOAT) num_r_lt = _right_op_lt.fval; else if (type_r_lt == ExpresionAttribute::DOUBLE) num_r_lt = _right_op_lt.dval;
+            else if (type_r_lt == ExpresionAttribute::CHAR) char_r_lt = _right_op_lt.cval; else if (type_r_lt == ExpresionAttribute::STRING) str_r_lt = std::string(_right_op_lt.sval);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_lt)) + "' no sop. para '<'.").c_str()); YYABORT; }
+        }
+        bool _res_lt = false;
+        if ((type_l_lt == ExpresionAttribute::INT || type_l_lt == ExpresionAttribute::FLOAT || type_l_lt == ExpresionAttribute::DOUBLE) &&
+            (type_r_lt == ExpresionAttribute::INT || type_r_lt == ExpresionAttribute::FLOAT || type_r_lt == ExpresionAttribute::DOUBLE)) { _res_lt = (num_l_lt < num_r_lt); }
+        else if (type_l_lt == ExpresionAttribute::CHAR && type_r_lt == ExpresionAttribute::CHAR) { _res_lt = (char_l_lt < char_r_lt); }
+        else if (type_l_lt == ExpresionAttribute::STRING && type_r_lt == ExpresionAttribute::STRING) { _res_lt = (str_l_lt < str_r_lt); }
+        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '<': " + std::string(typeToString(type_l_lt)) + " y " + std::string(typeToString(type_r_lt))).c_str()); YYABORT; }
+        $$.type = ExpresionAttribute::BOOL; $$.ival = _res_lt ? 1 : 0;
+    }
+    | expresion T_OPMENORIGUAL expresion {
+        ExpresionAttribute _left_op_le = $1; ExpresionAttribute _right_op_le = $3; double num_l_le = 0, num_r_le = 0; char char_l_le = 0, char_r_le = 0; std::string str_l_le, str_r_le;
+        ExpresionAttribute::Type type_l_le, type_r_le;
+        if (_left_op_le.type == ExpresionAttribute::ID) {
+            Attributes* attr = symbolTable.search_symbol(_left_op_le.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_le.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_le.sval) + "' no init.").c_str()); YYABORT; }
+            type_l_le = stringToType(attr->type->symbol_name);
+            if (type_l_le == ExpresionAttribute::INT) num_l_le = std::get<int>(attr->value); else if (type_l_le == ExpresionAttribute::FLOAT) num_l_le = std::get<float>(attr->value); else if (type_l_le == ExpresionAttribute::DOUBLE) num_l_le = std::get<double>(attr->value);
+            else if (type_l_le == ExpresionAttribute::CHAR) char_l_le = std::get<char>(attr->value); else if (type_l_le == ExpresionAttribute::STRING) str_l_le = std::get<std::string>(attr->value);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '<='.").c_str()); YYABORT; }
+        } else {
+            type_l_le = _left_op_le.type;
+            if (type_l_le == ExpresionAttribute::INT) num_l_le = _left_op_le.ival; else if (type_l_le == ExpresionAttribute::FLOAT) num_l_le = _left_op_le.fval; else if (type_l_le == ExpresionAttribute::DOUBLE) num_l_le = _left_op_le.dval;
+            else if (type_l_le == ExpresionAttribute::CHAR) char_l_le = _left_op_le.cval; else if (type_l_le == ExpresionAttribute::STRING) str_l_le = std::string(_left_op_le.sval);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_le)) + "' no sop. para '<='.").c_str()); YYABORT; }
+        }
+        if (_right_op_le.type == ExpresionAttribute::ID) {
+            Attributes* attr = symbolTable.search_symbol(_right_op_le.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_le.sval); YYABORT; } if (!attr->type) { yyerror("E: Attr ID sin tipo"); YYABORT; }
+            if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_le.sval) + "' no init.").c_str()); YYABORT; }
+            type_r_le = stringToType(attr->type->symbol_name);
+            if (type_r_le == ExpresionAttribute::INT) num_r_le = std::get<int>(attr->value); else if (type_r_le == ExpresionAttribute::FLOAT) num_r_le = std::get<float>(attr->value); else if (type_r_le == ExpresionAttribute::DOUBLE) num_r_le = std::get<double>(attr->value);
+            else if (type_r_le == ExpresionAttribute::CHAR) char_r_le = std::get<char>(attr->value); else if (type_r_le == ExpresionAttribute::STRING) str_r_le = std::get<std::string>(attr->value);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + attr->type->symbol_name + "' no sop. para '<='.").c_str()); YYABORT; }
+        } else {
+            type_r_le = _right_op_le.type;
+            if (type_r_le == ExpresionAttribute::INT) num_r_le = _right_op_le.ival; else if (type_r_le == ExpresionAttribute::FLOAT) num_r_le = _right_op_le.fval; else if (type_r_le == ExpresionAttribute::DOUBLE) num_r_le = _right_op_le.dval;
+            else if (type_r_le == ExpresionAttribute::CHAR) char_r_le = _right_op_le.cval; else if (type_r_le == ExpresionAttribute::STRING) str_r_le = std::string(_right_op_le.sval);
+            else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_r_le)) + "' no sop. para '<='.").c_str()); YYABORT; }
+        }
+        bool _res_le = false;
+        if ((type_l_le == ExpresionAttribute::INT || type_l_le == ExpresionAttribute::FLOAT || type_l_le == ExpresionAttribute::DOUBLE) &&
+            (type_r_le == ExpresionAttribute::INT || type_r_le == ExpresionAttribute::FLOAT || type_r_le == ExpresionAttribute::DOUBLE)) { _res_le = (num_l_le <= num_r_le); }
+        else if (type_l_le == ExpresionAttribute::CHAR && type_r_le == ExpresionAttribute::CHAR) { _res_le = (char_l_le <= char_r_le); }
+        else if (type_l_le == ExpresionAttribute::STRING && type_r_le == ExpresionAttribute::STRING) { _res_le = (str_l_le <= str_r_le); }
+        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Tipos incompatibles para '<=': " + std::string(typeToString(type_l_le)) + " y " + std::string(typeToString(type_r_le))).c_str()); YYABORT; }
+        $$.type = ExpresionAttribute::BOOL; $$.ival = _res_le ? 1 : 0;
+    }
+    | expresion T_OSEA expresion { // Logical OR (||)
+        bool b1_or, b2_or;
+        ExpresionAttribute _left_op_or = $1;
+        ExpresionAttribute _right_op_or = $3;
+
+        // Evaluate $1
+        if (_left_op_or.type == ExpresionAttribute::BOOL) {
+            b1_or = (bool)_left_op_or.ival;
+        } else if (_left_op_or.type == ExpresionAttribute::ID) {
+            Attributes* var_attr1 = symbolTable.search_symbol(_left_op_or.sval);
+            if (!var_attr1) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_or.sval); YYABORT; }
+            if (!var_attr1->type || var_attr1->type->symbol_name != "tas_claro") {
+                ERROR_TYPE = TYPE_ERROR; 
+                string err_msg = "Operación 'OSea (||)' requiere operando booleano (tas_claro), pero '" + string(_left_op_or.sval) + "' es de tipo '" + (var_attr1->type ? var_attr1->type->symbol_name : "desconocido") + "'.";
+                yyerror(err_msg.c_str()); YYABORT;
+            }
+            if (holds_alternative<bool>(var_attr1->value)) {
+                b1_or = get<bool>(var_attr1->value);
+            } else {
+                ERROR_TYPE = TYPE_ERROR; 
+                string err_msg = "Variable 'tas_claro' '" + string(_left_op_or.sval) + "' no contiene un valor booleano válido para 'OSea (||)'.";
+                yyerror(err_msg.c_str()); YYABORT;
+            }
+        } else {
+            ERROR_TYPE = TYPE_ERROR; 
+            string err_msg = "Operación 'OSea (||)' requiere operando booleano, pero se recibió tipo '" + string(typeToString(_left_op_or.type)) + "'.";
+            yyerror(err_msg.c_str()); YYABORT;
+        }
+
+        // Evaluate $3
+        if (_right_op_or.type == ExpresionAttribute::BOOL) {
+            b2_or = (bool)_right_op_or.ival;
+        } else if (_right_op_or.type == ExpresionAttribute::ID) {
+            Attributes* var_attr2 = symbolTable.search_symbol(_right_op_or.sval);
+            if (!var_attr2) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_or.sval); YYABORT; }
+            if (!var_attr2->type || var_attr2->type->symbol_name != "tas_claro") {
+                ERROR_TYPE = TYPE_ERROR; 
+                string err_msg = "Operación 'OSea (||)' requiere operando booleano (tas_claro), pero '" + string(_right_op_or.sval) + "' es de tipo '" + (var_attr2->type ? var_attr2->type->symbol_name : "desconocido") + "'.";
+                yyerror(err_msg.c_str()); YYABORT;
+            }
+            if (holds_alternative<bool>(var_attr2->value)) {
+                b2_or = get<bool>(var_attr2->value);
+            } else {
+                ERROR_TYPE = TYPE_ERROR; 
+                string err_msg = "Variable 'tas_claro' '" + string(_right_op_or.sval) + "' no contiene un valor booleano válido para 'OSea (||)'.";
+                yyerror(err_msg.c_str()); YYABORT;
+            }
+        } else {
+            ERROR_TYPE = TYPE_ERROR; 
+            string err_msg = "Operación 'OSea (||)' requiere operando booleano, pero se recibió tipo '" + string(typeToString(_right_op_or.type)) + "'.";
+            yyerror(err_msg.c_str()); YYABORT;
+        }
+
+        $$.type = ExpresionAttribute::BOOL;
+        $$.ival = (b1_or || b2_or) ? 1 : 0;
+    }
+    | expresion T_YUNTA expresion { // Logical AND (&&)
+        bool b1_and, b2_and;
+        ExpresionAttribute _left_op_and = $1;
+        ExpresionAttribute _right_op_and = $3;
+
+        // Evaluate $1
+        if (_left_op_and.type == ExpresionAttribute::BOOL) {
+            b1_and = (bool)_left_op_and.ival;
+        } else if (_left_op_and.type == ExpresionAttribute::ID) {
+            Attributes* var_attr1 = symbolTable.search_symbol(_left_op_and.sval);
+            if (!var_attr1) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_and.sval); YYABORT; }
+            if (!var_attr1->type || var_attr1->type->symbol_name != "tas_claro") {
+                ERROR_TYPE = TYPE_ERROR; 
+                string err_msg = "Operación 'Yunta (&&)' requiere operando booleano (tas_claro), pero '" + string(_left_op_and.sval) + "' es de tipo '" + (var_attr1->type ? var_attr1->type->symbol_name : "desconocido") + "'.";
+                yyerror(err_msg.c_str()); YYABORT;
+            }
+            if (holds_alternative<bool>(var_attr1->value)) {
+                b1_and = get<bool>(var_attr1->value);
+            } else {
+                ERROR_TYPE = TYPE_ERROR; 
+                string err_msg = "Variable 'tas_claro' '" + string(_left_op_and.sval) + "' no contiene un valor booleano válido para 'Yunta (&&)'.";
+                yyerror(err_msg.c_str()); YYABORT;
+            }
+        } else {
+            ERROR_TYPE = TYPE_ERROR; 
+            string err_msg = "Operación 'Yunta (&&)' requiere operando booleano, pero se recibió tipo '" + string(typeToString(_left_op_and.type)) + "'.";
+            yyerror(err_msg.c_str()); YYABORT;
+        }
+
+        // Evaluate $3
+        if (_right_op_and.type == ExpresionAttribute::BOOL) {
+            b2_and = (bool)_right_op_and.ival;
+        } else if (_right_op_and.type == ExpresionAttribute::ID) {
+            Attributes* var_attr2 = symbolTable.search_symbol(_right_op_and.sval);
+            if (!var_attr2) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_and.sval); YYABORT; }
+            if (!var_attr2->type || var_attr2->type->symbol_name != "tas_claro") {
+                ERROR_TYPE = TYPE_ERROR; 
+                string err_msg = "Operación 'Yunta (&&)' requiere operando booleano (tas_claro), pero '" + string(_right_op_and.sval) + "' es de tipo '" + (var_attr2->type ? var_attr2->type->symbol_name : "desconocido") + "'.";
+                yyerror(err_msg.c_str()); YYABORT;
+            }
+            if (holds_alternative<bool>(var_attr2->value)) {
+                b2_and = get<bool>(var_attr2->value);
+            } else {
+                ERROR_TYPE = TYPE_ERROR; 
+                string err_msg = "Variable 'tas_claro' '" + string(_right_op_and.sval) + "' no contiene un valor booleano válido para 'Yunta (&&)'.";
+                yyerror(err_msg.c_str()); YYABORT;
+            }
+        } else {
+            ERROR_TYPE = TYPE_ERROR; 
+            string err_msg = "Operación 'Yunta (&&)' requiere operando booleano, pero se recibió tipo '" + string(typeToString(_right_op_and.type)) + "'.";
+            yyerror(err_msg.c_str()); YYABORT;
+        }
+
+        $$.type = ExpresionAttribute::BOOL;
+        $$.ival = (b1_and && b2_and) ? 1 : 0;
+    }
     | entrada_salida
 	| variante
     | funcion {
