@@ -1,0 +1,5 @@
+# Test 05: Operacion de decremento.
+se_prende(){
+	culito n: mango = -8;
+	n--;
+};

@@ -1,0 +1,13 @@
+# Test 11: Definicion y tipo Coliao.
+se_prende(){
+	coliao MyUnion {
+		attr_u_1 : mango;
+		attr_u_2 : manguita;
+	};
+
+	culito var_union : MyUnion;
+
+	# REVISAR STRUCTS COMO TYPES: La asignacion no funciona
+	
+	var_union.attr_u_1 = 32;
+};

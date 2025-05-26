@@ -1,0 +1,6 @@
+# Test 2: Tipo manguangua.
+se_prende(){
+	culito decl0: manguangua = 123.123456789012345; # Maximo 15 decimales.
+	culito decl1: manguangua = 1.79769e+308; # Double mas grande
+	jeva decl2: manguangua = -1.79769e+308; # Double mas pequeño
+};

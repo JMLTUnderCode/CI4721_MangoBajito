@@ -1,0 +1,7 @@
+# Test 08: Tipo array manguangua.
+se_prende(){
+	# REVISAR ARRAYS: Solo admite arrays de tipo MANGO, arreglar para los demas tipos
+
+	culito decl0 : manguangua[3];
+	culito decl1 : manguangua[3] = [3.22e+12, 1.22e-10, 3.3E-15];
+};

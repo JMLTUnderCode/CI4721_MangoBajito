@@ -1,0 +1,9 @@
+# Test 03: Operacion de division decimal.
+culito mult: manguita = 2.0;
+se_prende(){
+	culito n: manguita = -8.0;
+	n = -11.12;
+	n = 8.0/4.0;
+	n = -5.0/10.1;
+	mult = 1/n;
+};
