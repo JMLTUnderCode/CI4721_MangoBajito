@@ -1,0 +1,6 @@
+se_prende(){
+	culito a: mango = 5;
+    si_es_asi (a menol 3){
+		culito b: negro = 'a';
+	};
+};

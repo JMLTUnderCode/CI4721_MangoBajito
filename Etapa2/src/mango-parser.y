@@ -61,10 +61,13 @@ int current_array_size = 0;
 const char* current_array_base_type = nullptr;
 vector<TACInstruction> tac_instructions; // Instrucciones TAC
 LabelGenerator labelGen; // Generador de etiquetas para TAC
+tac_if current_tac_if; // Estructura para manejar etiquetas de control
 %}
 
 %code requires {
     #include <cstring>
+    #include <vector>
+    
 	struct ExpresionAttribute {
 		enum Type { INT, FLOAT, DOUBLE, BOOL, STRING, POINTER, ID, CHAR} type;
 		union {
@@ -75,7 +78,7 @@ LabelGenerator labelGen; // Generador de etiquetas para TAC
             char cval;
 		};
         char* temp;
-	};       
+	};
 }
 
 %code requires {
@@ -155,7 +158,6 @@ LabelGenerator labelGen; // Generador de etiquetas para TAC
 // Declaracion de tipos de retorno para las producciones 
 %type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion
 %type <att_val> expresion
-
 // Declaracion de precedencia y asociatividad de Operadores
 // Asignacion
 %right T_ASIGNACION 
@@ -1061,11 +1063,41 @@ expresion:
 ;
 
 condicion:
-    T_SIESASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope alternativa
+    T_SIESASI T_IZQPAREN expresion T_DERPAREN {
+        current_tac_if.if_label = labelGen.newLabel();
+        current_tac_if.else_label = labelGen.newLabel();
+        current_tac_if.end_label = labelGen.newLabel();
+
+        // Generar IFGOTO para la condición del if
+        tac_instructions.emplace_back("IFGOTO", $3.temp, current_tac_if.if_label, "");
+        tac_instructions.emplace_back("GOTO", current_tac_if.else_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_if.if_label);
+        
+    } abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope{
+        // Salto al final después del bloque if
+        tac_instructions.emplace_back("GOTO", current_tac_if.end_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_if.else_label);
+    } alternativa{
+        // Etiqueta final para continuar
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_if.end_label);
+    }
     ;
 
 alternativa:
-    | T_OASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope alternativa
+    | T_OASI T_IZQPAREN expresion T_DERPAREN {
+        // Nuevas etiquetas para else if
+        current_tac_if.if_label = labelGen.newLabel();
+        current_tac_if.else_label = labelGen.newLabel();
+
+        // Generar IFGOTO para else if
+        tac_instructions.emplace_back("IFGOTO", $3.temp, current_tac_if.if_label, "");
+        tac_instructions.emplace_back("GOTO", current_tac_if.else_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_if.if_label);
+    }
+    abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope{
+        tac_instructions.emplace_back("GOTO", current_tac_if.end_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_if.else_label);
+    } alternativa
     | T_NOJODA abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
     ;
 

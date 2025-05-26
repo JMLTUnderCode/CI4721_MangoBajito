@@ -105,4 +105,22 @@ public:
 	}
 };
 
+/**
+ * @struct tac_if
+ * @brief Estructura que representa una condición if en TAC.
+ * @param if_label Etiqueta para el inicio del bloque if.
+ * @param else_label Etiqueta para el bloque else (si aplica).
+ * @param end_label Etiqueta para el final del bloque if/else.
+ * @details Esta estructura se utiliza para almacenar las etiquetas asociadas a una condición if en TAC.
+ *          Permite gestionar el flujo de control en instrucciones condicionales.
+ */
+struct tac_if{
+	string if_label;
+	string else_label;
+	string end_label;
+
+	tac_if(string if_label = "", string else_label = "", string end_label = "")
+		: if_label(if_label), else_label(else_label), end_label(end_label) {}
+};
+
 #endif // TAC_HPP
