@@ -12,5 +12,7 @@ se_prende(){
     num2--;
     num2--;
 
+    culito tas_claro0: tas_claro = Sisa;
+
     rescata("Hola ", nombre);
 };

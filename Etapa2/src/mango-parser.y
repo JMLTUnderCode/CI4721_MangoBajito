@@ -152,6 +152,7 @@ const char* current_array_base_type = nullptr;
 %type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion
 %type <att_val> expresion
 %type <ival> operadores_asignacion
+%type <att_val> valores_booleanos
 
 // Declaracion de precedencia y asociatividad de Operadores
 // Asignacion
@@ -442,12 +443,13 @@ declaracion:
 	            break;
 
 	        case ExpresionAttribute::BOOL:
+            
 				if(string($4) != "tas_claro") {
 					ERROR_TYPE = TYPE_ERROR;
 					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
 					yyerror(error_message.c_str());
 				}
-	            attributes->value = strcmp($6.sval, "Sisa") == 0 ? true : false;
+	            attributes->value = (bool)$6.ival;
 	            break;
 	        
 	        case ExpresionAttribute::STRING:
@@ -1100,8 +1102,14 @@ asignacion:
     ;
 
 valores_booleanos:
-    T_SISA
-    | T_NOLSA
+    T_SISA {
+        $$.type = ExpresionAttribute::BOOL;
+        $$.ival = 1;
+    }
+    | T_NOLSA {
+        $$.type = ExpresionAttribute::BOOL;
+        $$.ival = 0;
+    }
     ;
 
 expresion_apuntador:
@@ -1253,7 +1261,7 @@ expresion:
     }
     | T_PELABOLA
     | T_IZQPAREN expresion T_DERPAREN
-    | valores_booleanos 
+    | valores_booleanos { $$ = $1; }
     | expresion_apuntador 
     | expresion_nuevo
     | arreglo
