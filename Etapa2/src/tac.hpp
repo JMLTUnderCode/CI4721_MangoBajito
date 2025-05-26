@@ -23,7 +23,7 @@ using namespace std;
 */
 class TACInstruction {
 public:
-    string op;      // Operación ("ADD", "SUB", "GOTO", "LABEL", etc.)
+    string op;      // Operación ("+", "-", "GOTO", "LABEL", etc.)
     string arg1;    // Primer operando o destino de salto/etiqueta
     string arg2;    // Segundo operando
     string result;  // Variable resultado o temporal
@@ -121,6 +121,34 @@ struct tac_if{
 
 	tac_if(string if_label = "", string else_label = "", string end_label = "")
 		: if_label(if_label), else_label(else_label), end_label(end_label) {}
+};
+
+/**
+ * @struct tac_while
+ * @brief Estructura que representa un bucle while en TAC.
+ * @param while_label Etiqueta para el inicio del bucle while.
+ * @param end_label Etiqueta para el final del bucle while.
+ * @details Esta estructura se utiliza para almacenar las etiquetas asociadas a un bucle while en TAC.
+ *          Permite gestionar el flujo de control en instrucciones de bucle.
+ */
+struct tac_while{
+    string loop_label;
+    string end_label;
+
+    tac_while(string loop_label = "", string end_label = "")
+        : loop_label(loop_label), end_label(end_label) {}
+};
+
+struct tac_for{
+    string cond_label;
+    string init_label;
+    string var;
+    string val_limit;
+    string loop_label;
+    string end_label;
+
+    tac_for(string cond_label = "", string init_label = "", string var="", string val_limit="", string loop_label = "", string end_label = "")
+        : cond_label(cond_label), init_label(init_label), var(var), val_limit(val_limit), loop_label(loop_label), end_label(end_label) {}
 };
 
 #endif // TAC_HPP

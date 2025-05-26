@@ -59,9 +59,12 @@ string current_function_type = "";
 string current_array_name = "";
 int current_array_size = 0;
 const char* current_array_base_type = nullptr;
+
 vector<TACInstruction> tac_instructions; // Instrucciones TAC
 LabelGenerator labelGen; // Generador de etiquetas para TAC
-tac_if current_tac_if; // Estructura para manejar etiquetas de control
+tac_if current_tac_if; // Estructura para manejar etiquetas de control de if
+tac_while current_tac_while; // Estructura para manejar etiquetas de control de bucles
+tac_for current_tac_for; // Estructura para manejar etiquetas de control de for
 %}
 
 %code requires {
@@ -1107,8 +1110,24 @@ bucle:
     ;
 
 indeterminado:
-    T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+    T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN {
+        current_tac_while.loop_label = labelGen.newLabel();
+        current_tac_while.end_label = labelGen.newLabel();
+
+        // Generar IFGOTO para la condición del while
+        tac_instructions.emplace_back("IFGOTO", $3.temp, current_tac_while.loop_label, "");
+        // Generar GOTO para salir del while
+        tac_instructions.emplace_back("GOTO", current_tac_while.end_label, "", "");
+        // Generar etiqueta de inicio del bucle
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_while.loop_label);
+        
+    } abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope {
+        // Salto al final después del bloque while
+        tac_instructions.emplace_back("GOTO", current_tac_while.loop_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_while.end_label);
+    }
     ;
+
 var_ciclo_determinado:
     T_IDENTIFICADOR T_ENTRE expresion T_HASTA expresion {
         if (symbolTable.search_symbol($1) != nullptr){
@@ -1157,10 +1176,44 @@ var_ciclo_determinado:
             yyerror($1);
             //exit(1);
         };
+
+        // Generar instrucciones TAC para la variable del ciclo for
+        // i = valor inicial
+        tac_instructions.emplace_back("ASSIGN", $3.temp, "", $1);
+        current_tac_for.var = $1;
+
+        // hacer la comparación i < valor final
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("<", $1, $5.temp, temp);
+        current_tac_for.cond_label = temp;
+        current_tac_for.val_limit = $5.temp;
+
+        // Generar etiquetas para el ciclo for
+        current_tac_for.init_label = labelGen.newLabel();
+        current_tac_for.loop_label = labelGen.newLabel();
+        current_tac_for.end_label = labelGen.newLabel();
+
+        // Generar condicional if cond_label goto loop_label
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_for.init_label);
+        tac_instructions.emplace_back("IFGOTO", current_tac_for.cond_label, current_tac_for.loop_label, "");
+
+        // Generar goto end_label
+        tac_instructions.emplace_back("GOTO", current_tac_for.end_label, "", "");
+
+        // Generar etiqueta de inicio del bucle
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_for.loop_label);
     }
     ;
 determinado:
-    T_REPITEBURDA abrir_scope var_ciclo_determinado T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+    T_REPITEBURDA abrir_scope var_ciclo_determinado T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope{
+        // Generar instrucciones TAC para el ciclo for
+        // Incrementar la variable del ciclo for
+        string increment_temp = labelGen.newTemp();
+        tac_instructions.emplace_back("+", current_tac_for.var, "1", increment_temp);
+        tac_instructions.emplace_back("<", increment_temp, current_tac_for.val_limit, current_tac_for.cond_label);
+        tac_instructions.emplace_back("GOTO", current_tac_for.init_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_for.end_label);
+    }
     | T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW T_VALUE T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
     ;
 

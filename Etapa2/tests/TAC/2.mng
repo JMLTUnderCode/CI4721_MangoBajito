@@ -1,0 +1,7 @@
+se_prende(){
+	culito n: mango = 5;
+	culito a: mango = 0;
+	repite_burda i entre 1 hasta n-1{
+		a = a + i;
+	};
+};
