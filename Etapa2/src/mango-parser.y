@@ -1214,7 +1214,15 @@ determinado:
         tac_instructions.emplace_back("GOTO", current_tac_for.init_label, "", "");
         tac_instructions.emplace_back("LABEL", "", "", "", current_tac_for.end_label);
     }
-    | T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW T_VALUE T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+    | T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW T_VALUE T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope{
+        // Generar instrucciones TAC para el ciclo for
+        // Incrementar la variable del ciclo for
+        string increment_temp = labelGen.newTemp();
+        tac_instructions.emplace_back("+", current_tac_for.var, $5.temp, increment_temp);
+        tac_instructions.emplace_back("<", increment_temp, current_tac_for.val_limit, current_tac_for.cond_label);
+        tac_instructions.emplace_back("GOTO", current_tac_for.init_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_for.end_label);
+    }
     ;
 
 entrada_salida:
