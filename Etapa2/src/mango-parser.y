@@ -443,14 +443,20 @@ declaracion:
 	            break;
 
 	        case ExpresionAttribute::BOOL:
-            
-				if(string($4) != "tas_claro") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
-					yyerror(error_message.c_str());
-				}
-	            attributes->value = (bool)$6.ival;
-	            break;
+                if(string($4) == "tas_claro") {
+                    attributes->value = (bool)$6.ival;
+                    if (!attributes->info.empty()) {
+                        attributes->info[0].first = ($6.ival ? std::string("Sisa") : std::string("Nolsa"));
+                    } else {
+                        attributes->info.push_back({($6.ival ? std::string("Sisa") : std::string("Nolsa")), nullptr});
+                    }
+                } else { 
+                    ERROR_TYPE = TYPE_ERROR;
+                    string error_message = "No se puede asignar un valor booleano al tipo '" + string($4) + "'.";
+                    yyerror(error_message.c_str());
+                    YYABORT;
+                }
+                break;
 	        
 	        case ExpresionAttribute::STRING:
 				if(string($4) != "higuerote") {
