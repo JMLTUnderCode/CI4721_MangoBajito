@@ -1355,10 +1355,12 @@ valores_booleanos:
     T_SISA {
         $$.type = ExpresionAttribute::BOOL;
         $$.ival = 1;
+        $$.temp = "true"; // Optional: Set a temporary representation for true
     }
     | T_NOLSA {
         $$.type = ExpresionAttribute::BOOL;
         $$.ival = 0;
+        $$.temp = "false"; // Optional: Set a temporary representation for false
     }
     ;
 
