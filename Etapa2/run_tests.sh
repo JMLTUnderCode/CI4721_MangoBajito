@@ -56,7 +56,7 @@ for error_dir in $(find "$ROOT" -type d \( -iname "Errores" \) | sort); do
       PASSED=$((PASSED+1))
     else
 	  echo " "
-      echo -e "${RED}${BLINK} - [FAIL]${NC} $file [ESPERADO válido]"
+      echo -e "${RED}${BLINK} - [FAIL]${NC} $file [ESPERADO error]"
       echo "$OUTPUT"
       FAILED=$((FAILED+1))
 	  echo " "
