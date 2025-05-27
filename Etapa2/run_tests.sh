@@ -1,5 +1,5 @@
 #!/bin/bash
-BIN=./build/mango_bajito
+BIN=./mango_bajito
 ROOT=./suit_test
 TOTAL=0
 PASSED=0
