@@ -139,10 +139,11 @@ Para esta segunda etapa del proyecto de creación del lenguaje MangoBajito se re
 	- [x] Modificacion del valor de una variable asociada a un try/catch.
 	- [ ] Errores de Mango Bajito (lo usados en meando/fueral_del_perol: piaso e copion por ejemplo)
 	- [ ] Cuando haya un syntax error retorna "Escribe bien esa vaina", entre otros.
-	- [ ] Mostrar errores de context más informativos
+	- [ ] Mostrar errores de context más informativos.
 - [ ] Suit de pruebas
-    - [x] Construir un script para una suit de pruebas
-    - [ ] Incluir casos de prueba por categorias y secciones.
+    - [x] Construir un script para una suit de pruebas.
+    - [x] Incluir casos de prueba por categorias y secciones.
+    - [ ] Validación de errores fuerte.
     - [ ] Suits
         - [x] Asignaciones
             - [x] Validos
