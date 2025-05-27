@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cstdlib>
 #include "mango-bajito.hpp"
+#include "tac.hpp"
+#include <vector>
 #include <cstring>
 #include <vector>
 #include <string>
@@ -65,6 +67,13 @@ string current_array_name = "";
 int current_array_size = 0;
 const char* current_array_base_type = nullptr;
 
+vector<TACInstruction> tac_instructions; // Instrucciones TAC
+LabelGenerator labelGen; // Generador de etiquetas para TAC
+vector<tac_if> tac_if_stack; // Pila para manejar etiquetas de control de if
+vector<tac_while> tac_while_stack; // Pila para manejar etiquetas de control de while
+vector<tac_for> tac_for_stack; // Pila para manejar etiquetas de control de for
+vector<tac_func> tac_func_stack; // Pila para manejar etiquetas de control de funciones
+vector<tac_params> tac_params_stack; // Pila para manejar parámetros de funciones
 %}
 
 // ...existing code...
@@ -86,6 +95,8 @@ const char* current_array_base_type = nullptr;
             ArrayValue* arr_val;
         };
     };
+    char* temp;
+
 
 struct ArrayValue {
     std::vector<ExpresionAttribute> elements;
@@ -187,7 +198,7 @@ struct ArrayValue {
 %token T_CASTEO
 
 // Declaracion de tipos de retorno para las producciones 
-%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion
+%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion valores_booleanos operadores_asignacion funcion
 %type <att_val> expresion
 %type <ival> operadores_asignacion
 %type <att_val> valores_booleanos
@@ -236,7 +247,10 @@ main:
 		if (FIRST_ERROR) {
 			printErrors();
 		} else {
-			symbolTable.print_table(); 
+			symbolTable.print_table();
+            for (const auto& instruction : tac_instructions) {
+                cout << instruction.toString() << endl;
+            }
 			cout << "Programa válido: "; 
 		}
 	} 
@@ -291,6 +305,10 @@ instruccion:
             string error_msg = "\"" + string($1) + "\" de tipo '" + var->type->symbol_name + "' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.";
             yyerror(error_msg.c_str());
         }
+
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("-", $1, "1", temp);
+        tac_instructions.emplace_back("ASSIGN", temp, "", $1);
     }
     | T_IDENTIFICADOR T_OPINCREMENTO {
         Attributes *var = symbolTable.search_symbol($1);
@@ -321,8 +339,14 @@ instruccion:
             string error_msg = "\"" + string($1) + "\" de tipo '" + var->type->symbol_name + "' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.";
             yyerror(error_msg.c_str());
         }
+
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("+", $1, "1", temp);
+        tac_instructions.emplace_back("ASSIGN", temp, "", $1);
     }
-    | T_LANZATE expresion
+    | T_LANZATE expresion {
+        tac_instructions.emplace_back("RETURN", $2.temp, "", ""); // Asumiendo que $2 es una expresión válida
+    }
     | T_BORRADOL T_IDENTIFICADOR 
     | T_BORRADOL T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR 
     ;
@@ -688,6 +712,13 @@ declaracion:
             yyerror($2);
             exit(1);
         };
+
+        // TAC para declaracion de variables + asignacion
+        if ($6.temp == nullptr){
+            cout << "temp attribute set to null"<<endl;
+        }else{
+            tac_instructions.emplace_back("ASSIGN", $6.temp, "", $2);
+        }
     }
     }
 	| declaracion_funcion
@@ -813,6 +844,98 @@ asignacion:
                 string op_str = (op_type == 1 ? "+=" : (op_type == 2 ? "-=" : (op_type == 3 ? "*=" : "OP_COMPUESTO")));
                 yyerror(("Variable/Elemento '" + lhs_name + "' no inicializada antes de usarla en operación '" + op_str + "'.").c_str());
             }
+	        case ExpresionAttribute::POINTER:
+	            // Manejar punteros según sea necesario
+	            attr_var->value = nullptr; // O el valor adecuado
+	            break;
+			case ExpresionAttribute::ID:
+				// Para el caso de funciones, provicionalmente se maneja asi.
+				attr_var->value = nullptr;
+				break;
+	        default:
+                Attributes *attr = symbolTable.search_symbol($3.sval);
+                if(attr != nullptr){
+                    if(attr->category == VARIABLE || attr->category == CONSTANT){
+                        attr_var->value = attr->value;
+                    } 
+                } else {
+                    attr_var->value = nullptr;
+                }
+                break;
+	    }
+
+        if ($3.temp == nullptr){
+            cout << "temp attribute set to null"<<endl;
+        }else{
+            if (strcmp("ASSIGN", $2) == 0) tac_instructions.emplace_back("ASSIGN", $3.temp, "", $1);
+            string temp = labelGen.newTemp();
+            tac_instructions.emplace_back($2, $1, $3.temp, temp);
+            tac_instructions.emplace_back("ASSIGN", temp, "", $1);
+        }
+    }    
+    | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asignacion expresion
+    | T_IDENTIFICADOR T_IZQCORCHE expresion T_DERCORCHE operadores_asignacion expresion {
+        Attributes* array_attr = symbolTable.search_symbol($1);
+        if (!array_attr || array_attr->category != ARRAY) {
+            ERROR_TYPE = NON_DEF_VAR;
+            yyerror($1);
+            //exit(1);
+        }
+        if ($3.type != ExpresionAttribute::INT) {
+            ERROR_TYPE = INT_INDEX_ARRAY;
+            yyerror(typeToString($3.type));
+            //exit(1);
+        }
+        
+        int index = $3.ival;
+        int array_size = get<int>(array_attr->value);
+        if (index < 0 || index >= array_size) {
+            string error = to_string(index);
+            ERROR_TYPE = SEGMENTATION_FAULT;
+            yyerror(error.c_str());
+            //exit(1);
+        }
+        std::string element_name = std::string($1) + "[" + std::to_string(index) + "]";
+        Attributes* array_element_attributes = symbolTable.search_symbol(element_name.c_str());
+        
+        if (array_attr->type->symbol_name != typeToString($6.type)) {
+            string error = array_attr->type->symbol_name;
+            ERROR_TYPE = TYPE_ERROR;
+            yyerror(error.c_str());
+            //exit(1);
+        }
+  
+        // Asignar valor
+        switch ($6.type) {
+            case ExpresionAttribute::INT:
+                array_element_attributes->value = $6.ival;
+                break;
+            case ExpresionAttribute::FLOAT:
+                array_element_attributes->value = $6.fval;
+                break;
+            case ExpresionAttribute::DOUBLE:
+                array_element_attributes->value = $6.dval;
+                break;
+            case ExpresionAttribute::BOOL:
+                array_element_attributes->value = (bool)$6.ival; // Asumiendo que el valor booleano está en ival
+                break;
+            case ExpresionAttribute::STRING:
+                if ($6.sval) {
+                    array_element_attributes->value = std::string($6.sval);
+                } else {
+                    array_element_attributes->value = std::string("");
+                }
+                break;
+            case ExpresionAttribute::CHAR:
+                array_element_attributes->value =  $6.cval;
+                break;
+            case ExpresionAttribute::POINTER:
+                array_element_attributes->value = nullptr; // Manejar punteros según sea necesario
+                break;
+            default:
+                ERROR_TYPE = NON_DEF_TYPE;
+                yyerror($1);
+                //exit(1);
         }
 
         switch (op_type) {
@@ -1335,7 +1458,7 @@ expresion_nuevo:
 
 expresion:
     T_IDENTIFICADOR {
-		$$.sval = $1; $$.type = ExpresionAttribute::ID;
+		$$.sval = $1; $$.type = ExpresionAttribute::ID; $$.temp = $1;
 
 		if (current_function_name != "") {
 			Attributes* func_attr = symbolTable.search_symbol(current_function_name);
@@ -1470,6 +1593,7 @@ expresion:
                 yyerror("Tipo no soportado");
                 //exit(1);
         }
+        $$.temp = $1.temp; // Asignar el valor temporal
     }
     | T_PELABOLA
     | T_IZQPAREN expresion T_DERPAREN { $$ = $2; }
@@ -1481,6 +1605,9 @@ expresion:
         $$.arr_val = $1;
     }
     | T_NELSON expresion {
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("NEG", $2.temp, "", temp);
+        $$.temp = strdup(temp.c_str());
         ExpresionAttribute _op_not = $2;
         bool val_not;
 
@@ -1539,6 +1666,9 @@ expresion:
             yyerror("Operación de signo negativo no soportada para este tipo");
             //exit(1);
         }
+        char* aux = (char*)malloc(strlen($2.temp)+2); aux[0]='-';
+        strcat(aux, $2.temp);
+        $$.temp = aux;
     }
     | expresion T_FLECHA expresion
     | expresion T_OPSUMA expresion {
@@ -1563,7 +1693,80 @@ expresion:
 
             $$.type = ExpresionAttribute::INT;
             $$.ival = get<int>(var1->value) + get<int>(var2->value);
-        }       
+        }
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("+", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());       
+    }
+    | expresion T_OPRESTA expresion {
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("-", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPMULT expresion {
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("*", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPDIVDECIMAL expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("/", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPDIVENTERA expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("//", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPMOD expresion {
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("%", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPEXP expresion {
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("**", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPIGUAL expresion {
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("==", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPDIFERENTE expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("!=", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPMAYOR expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back(">", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPMAYORIGUAL expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back(">=", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPMENOR expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("<", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OPMENORIGUAL expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("<=", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_OSEA expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("||", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
+    }
+    | expresion T_YUNTA expresion{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("&&", $1.temp, $3.temp, temp);
+        strcpy($$.temp, temp.c_str());
     }
     | expresion T_OPRESTA expresion
     | expresion T_OPMULT expresion
@@ -2000,41 +2203,97 @@ expresion:
 
         std::string element_name = std::string($1) + "[" + std::to_string(index) + "]";
         Attributes* array_element_attributes = symbolTable.search_symbol(element_name.c_str());
-
+        string index_temp = labelGen.newTemp();
         // Retornar el valor almacenado en el elemento del array
         if (array_element_attributes->type->symbol_name == "mango") { // INT
             $$.type = ExpresionAttribute::INT;
             $$.ival = get<int>(array_element_attributes->value);
+            tac_instructions.emplace_back("*", $3.temp, "4", index_temp);
         } else if (array_element_attributes->type->symbol_name == "manguita") { // FLOAT
             $$.type = ExpresionAttribute::FLOAT;
             $$.fval = get<float>(array_element_attributes->value);
+            tac_instructions.emplace_back("*", $3.temp, "8", index_temp);
         } else if (array_element_attributes->type->symbol_name == "manguangua") { // DOUBLE
             $$.type = ExpresionAttribute::DOUBLE;
             $$.dval = get<double>(array_element_attributes->value);
+            tac_instructions.emplace_back("*", $3.temp, "16", index_temp);
         } else if (array_element_attributes->type->symbol_name == "negro") { // CHAR
             $$.type = ExpresionAttribute::CHAR;
             $$.ival = get<char>(array_element_attributes->value);
+            tac_instructions.emplace_back("*", $3.temp, "1", index_temp);
         } else if (array_element_attributes->type->symbol_name == "higuerote") { // STRING
             $$.type = ExpresionAttribute::STRING;
             $$.sval = strdup(get<string>(array_element_attributes->value).c_str());
+            tac_instructions.emplace_back("*", $3.temp, to_string(get<string>(array_element_attributes->value).length()), index_temp);
         } else if (array_element_attributes->type->symbol_name == "tas_claro") { // BOOL
             $$.type = ExpresionAttribute::BOOL;
             $$.ival = get<bool>(array_element_attributes->value);
+            tac_instructions.emplace_back("*", $3.temp, "1", index_temp);
         } else {
             ERROR_TYPE = SEMANTIC_TYPE;
             yyerror("Tipo no soportado para retorno de array");
             //exit(1);
-        }    
+        }
+        char* full_aux = (char*)malloc(strlen($1)+index_temp.length()+5);
+        char* aux1 = (char*)malloc(strlen($1)+2);
+        char* aux2 = (char*)malloc(index_temp.length()+2);
+        strcpy(aux1, $1); aux1[strlen($1)] = '[';
+        strcpy(aux2, index_temp.c_str()); aux2[index_temp.length()] = ']';
+        strcpy(full_aux, aux1); strcat(full_aux, aux2);
+        $$.temp = full_aux; 
     }  
 ;
 
 condicion:
-    T_SIESASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instruccionesopt T_DERLLAVE cerrar_scope alternativa
+    T_SIESASI T_IZQPAREN expresion T_DERPAREN {
+        tac_if current_tac_if; // Estructura para manejar etiquetas de control de if
+        current_tac_if.if_label = labelGen.newLabel();
+        current_tac_if.else_label = labelGen.newLabel();
+        current_tac_if.end_label = labelGen.newLabel();
+
+        // Generar IFGOTO para la condición del if
+        tac_instructions.emplace_back("IFGOTO", $3.temp, current_tac_if.if_label, "");
+        tac_instructions.emplace_back("GOTO", current_tac_if.else_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_if.if_label);
+
+        tac_if_stack.push_back(current_tac_if);
+        
+    } abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope{
+        tac_if current_tac_if = tac_if_stack.back();
+        // Salto al final después del bloque if
+        tac_instructions.emplace_back("GOTO", current_tac_if.end_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_if.else_label);
+    } alternativa{
+        tac_if current_tac_if = tac_if_stack.back();
+        // Etiqueta final para continuar
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_if.end_label);
+        tac_if_stack.pop_back();
+    }
     ;
 
 alternativa:
-    | T_OASI T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instruccionesopt T_DERLLAVE cerrar_scope alternativa
-    | T_NOJODA abrir_scope T_IZQLLAVE instruccionesopt T_DERLLAVE cerrar_scope
+    | T_OASI T_IZQPAREN expresion T_DERPAREN {
+        tac_if current_tac_if; // Estructura para manejar etiquetas de control de if
+        
+        // Nuevas etiquetas para else if
+        current_tac_if.if_label = labelGen.newLabel();
+        current_tac_if.else_label = labelGen.newLabel();
+        current_tac_if.end_label = tac_if_stack.back().end_label;
+
+        // Generar IFGOTO para else if
+        tac_instructions.emplace_back("IFGOTO", $3.temp, current_tac_if.if_label, "");
+        tac_instructions.emplace_back("GOTO", current_tac_if.else_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_if.if_label);
+
+        tac_if_stack.push_back(current_tac_if);
+    }
+    abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope{
+        tac_if current_tac_if = tac_if_stack.back();
+
+        tac_instructions.emplace_back("GOTO", current_tac_if.end_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_if.else_label);
+    } alternativa {tac_if_stack.pop_back();}
+    | T_NOJODA abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
     ;
 
 bucle:
@@ -2043,8 +2302,32 @@ bucle:
     ;
 
 indeterminado:
-    T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+    T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN {
+        tac_while current_tac_while; // Estructura para manejar etiquetas de control de bucles
+        current_tac_while.init_label = labelGen.newLabel();
+        current_tac_while.loop_label = labelGen.newLabel();
+        current_tac_while.end_label = labelGen.newLabel();
+
+        // Generar etiqueta de inicio del bucle
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_while.init_label);
+        // Generar IFGOTO para la condición del while
+        tac_instructions.emplace_back("IFGOTO", $3.temp, current_tac_while.loop_label, "");
+        // Generar GOTO para salir del while
+        tac_instructions.emplace_back("GOTO", current_tac_while.end_label, "", "");
+        // Generar etiqueta de inicio del bucle
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_while.loop_label);
+
+        tac_while_stack.push_back(current_tac_while);
+        
+    } abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope {
+        tac_while current_tac_while = tac_while_stack.back();
+        // Salto al final después del bloque while
+        tac_instructions.emplace_back("GOTO", current_tac_while.init_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_while.end_label);
+        tac_while_stack.pop_back();
+    }
     ;
+
 var_ciclo_determinado:
     T_IDENTIFICADOR T_ENTRE expresion T_HASTA expresion {
         if (symbolTable.search_symbol($1) != nullptr){
@@ -2093,11 +2376,63 @@ var_ciclo_determinado:
             yyerror($1);
             //exit(1);
         };
+
+        // Generar instrucciones TAC para la variable del ciclo for
+        tac_for current_tac_for; // Estructura para manejar etiquetas de control de for
+        // i = valor inicial
+        tac_instructions.emplace_back("ASSIGN", $3.temp, "", $1);
+        current_tac_for.var = $1;
+
+        // hacer la comparación i < valor final
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("<", $1, $5.temp, temp);
+        current_tac_for.cond_label = temp;
+        current_tac_for.val_limit = $5.temp;
+
+        // Generar etiquetas para el ciclo for
+        current_tac_for.init_label = labelGen.newLabel();
+        current_tac_for.loop_label = labelGen.newLabel();
+        current_tac_for.end_label = labelGen.newLabel();
+
+        // Generar condicional if cond_label goto loop_label
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_for.init_label);
+        tac_instructions.emplace_back("IFGOTO", current_tac_for.cond_label, current_tac_for.loop_label, "");
+
+        // Generar goto end_label
+        tac_instructions.emplace_back("GOTO", current_tac_for.end_label, "", "");
+
+        // Generar etiqueta de inicio del bucle
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_for.loop_label);
+
+        tac_for_stack.push_back(current_tac_for);
     }
     ;
+
 determinado:
-    T_REPITEBURDA abrir_scope var_ciclo_determinado T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
-    | T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW T_VALUE T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope
+    T_REPITEBURDA abrir_scope var_ciclo_determinado T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope{
+        tac_for current_tac_for = tac_for_stack.back();
+        // Generar instrucciones TAC para el ciclo for
+        // Incrementar la variable del ciclo for
+        string increment_temp = labelGen.newTemp();
+        tac_instructions.emplace_back("+", current_tac_for.var, "1", increment_temp);
+        tac_instructions.emplace_back("ASSIGN", increment_temp, "", current_tac_for.var);
+        tac_instructions.emplace_back("GOTO", current_tac_for.init_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_for.end_label);
+
+        tac_for_stack.pop_back();
+    }
+    | T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW T_VALUE T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope{
+        tac_for current_tac_for = tac_for_stack.back();
+        // Generar instrucciones TAC para el ciclo for
+        // Incrementar la variable del ciclo for
+        string increment_temp = labelGen.newTemp();
+        tac_instructions.emplace_back("+", current_tac_for.var, $5.temp, increment_temp);
+        tac_instructions.emplace_back("ASSIGN", increment_temp, "", current_tac_for.var);
+        tac_instructions.emplace_back("GOTO", current_tac_for.init_label, "", "");
+        tac_instructions.emplace_back("LABEL", "", "", "", current_tac_for.end_label);
+
+        tac_for_stack.pop_back();
+    }
     ;
 
 entrada_salida:
@@ -2116,11 +2451,15 @@ secuencia:
         // Agregar elemento al vector
         $1->elements.push_back($3);
         $$ = $1;
+        tac_params_stack.back().params.push_back($3.temp);
     }
     | expresion {
         // Crear nuevo array con el primer elemento
         $$ = new ArrayValue(typeToString($1.type)); 
         $$->elements.push_back($1);
+        tac_params current_tac_params;
+        current_tac_params.params.push_back($1.temp);
+        tac_params_stack.push_back(current_tac_params);
     }
     ;
 
@@ -2231,7 +2570,7 @@ struct:
 
 firma_funcion: 
     T_ECHARCUENTO T_IDENTIFICADOR {
-
+        tac_instructions.emplace_back("LABEL", "", "", "", $2);
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
@@ -2337,6 +2676,10 @@ declaracion_funcion:
 
 funcion:
 	T_IDENTIFICADOR {
+        tac_func current_tac_func;
+        current_tac_func.func_name = $1;
+        current_tac_func.end_label = labelGen.newLabel("end_func");
+
 		Attributes* func_attr = symbolTable.search_symbol(string($1));
         if (func_attr == nullptr) {
             yyerror("Funcion no definida");
@@ -2349,8 +2692,12 @@ funcion:
 		current_function_name = func_attr->symbol_name;
 		current_function_parameters = 0;
 		current_function_type = get<string>(func_attr->info[func_attr->info.size()-1].first);
-
+        
+        current_tac_func.func_type = current_function_type; 
+        tac_func_stack.push_back(current_tac_func);
 	} T_IZQPAREN secuencia T_DERPAREN {
+        tac_func current_tac_func = tac_func_stack.back();
+
 		Attributes* func_attr = symbolTable.search_symbol(strdup($1));
 		if ( current_function_parameters < func_attr->info.size() - 1) {
 			ERROR_TYPE = FUNC_PARAM_EXCEEDED;
@@ -2358,6 +2705,25 @@ funcion:
 			yyerror(error_message.c_str());
 			//exit(1);
 		}
+		current_function_name = "";
+		current_function_parameters = 0;
+
+        tac_params current_tac_params = tac_params_stack.back();
+        
+        for (auto & param : current_tac_params.params) {
+            tac_instructions.emplace_back("PARAM", param, "", "");
+        }
+
+        if (current_tac_func.func_type != "un_coño"){
+            string temp = labelGen.newTemp();
+            tac_instructions.emplace_back("CALL", $1, to_string(current_tac_params.params.size()), temp);
+            $$ = strdup(temp.c_str());
+        } else {
+            tac_instructions.emplace_back("CALL", $1, to_string(current_tac_params.params.size()), "");
+            $$ = "";
+        }
+        tac_params_stack.pop_back();
+        tac_func_stack.pop_back();
 	}
 
 arreglo:
