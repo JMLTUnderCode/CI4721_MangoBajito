@@ -985,12 +985,12 @@ expresion:
     }
     | expresion T_OSEA expresion{
         string temp = labelGen.newTemp();
-        tac_instructions.emplace_back("or", $1.temp, $3.temp, temp);
+        tac_instructions.emplace_back("||", $1.temp, $3.temp, temp);
         strcpy($$.temp, temp.c_str());
     }
     | expresion T_YUNTA expresion{
         string temp = labelGen.newTemp();
-        tac_instructions.emplace_back("and", $1.temp, $3.temp, temp);
+        tac_instructions.emplace_back("&&", $1.temp, $3.temp, temp);
         strcpy($$.temp, temp.c_str());
     }
     | entrada_salida
