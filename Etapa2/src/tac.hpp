@@ -46,6 +46,10 @@ public:
             tac_code += "if " + arg1 + " goto " + arg2;
         } else if (op == "ASSIGN") {
             tac_code += result + " := " + arg1;
+        } else if (op == "NEG") {
+            tac_code += result + " := !" + arg1;
+        } else if (op == "IF_FALSE") {
+            tac_code += "ifFalse " + arg1 + " goto " + arg2;
         } else if (op == "IF_FALSE_GOTO") {
             tac_code += "ifFalse " + arg1 + " goto " + arg2;
         } else {

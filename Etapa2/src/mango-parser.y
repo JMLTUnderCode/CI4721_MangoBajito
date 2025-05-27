@@ -65,9 +65,6 @@ LabelGenerator labelGen; // Generador de etiquetas para TAC
 vector<tac_if> tac_if_stack; // Pila para manejar etiquetas de control de if
 vector<tac_while> tac_while_stack; // Pila para manejar etiquetas de control de bucles
 vector<tac_for> tac_for_stack; // Pila para manejar etiquetas de control de for
-tac_if current_tac_if; // Estructura para manejar etiquetas de control de if
-tac_while current_tac_while; // Estructura para manejar etiquetas de control de bucles
-tac_for current_tac_for; // Estructura para manejar etiquetas de control de for
 %}
 
 %code requires {
@@ -162,7 +159,7 @@ tac_for current_tac_for; // Estructura para manejar etiquetas de control de for
 %token T_CASTEO
 
 // Declaracion de tipos de retorno para las producciones 
-%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion
+%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion valores_booleanos operadores_asignacion
 %type <att_val> expresion
 // Declaracion de precedencia y asociatividad de Operadores
 // Asignacion
@@ -262,6 +259,10 @@ instruccion:
             yyerror(error_msg.c_str());
             YYABORT;
         }
+
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("-", $1, "1", temp);
+        tac_instructions.emplace_back("ASSIGN", temp, "", $1);
     }
     | T_IDENTIFICADOR T_OPINCREMENTO {
         // Acción para la sentencia: identificador++
@@ -294,6 +295,10 @@ instruccion:
             yyerror(error_msg.c_str());
             YYABORT;
         }
+
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("+", $1, "1", temp);
+        tac_instructions.emplace_back("ASSIGN", temp, "", $1);
     }
     | T_LANZATE expresion
     | T_BORRADOL T_IDENTIFICADOR 
@@ -561,10 +566,10 @@ tipo_valor:
     ;
 
 operadores_asignacion:
-    T_ASIGNACION
-    | T_OPASIGSUMA
-    | T_OPASIGRESTA
-    | T_OPASIGMULT
+    T_ASIGNACION {$$ = strdup("ASSIGN");}
+    | T_OPASIGSUMA {$$ = strdup("+");}
+    | T_OPASIGRESTA {$$ = strdup("-");}
+    | T_OPASIGMULT {$$ = strdup("*");}
     ;
 
 asignacion:
@@ -643,7 +648,10 @@ asignacion:
         if ($3.temp == nullptr){
             cout << "temp attribute set to null"<<endl;
         }else{
-            tac_instructions.emplace_back("ASSIGN", $3.temp, "", $1);
+            if (strcmp("ASSIGN", $2) == 0) tac_instructions.emplace_back("ASSIGN", $3.temp, "", $1);
+            string temp = labelGen.newTemp();
+            tac_instructions.emplace_back($2, $1, $3.temp, temp);
+            tac_instructions.emplace_back("ASSIGN", temp, "", $1);
         }
     }    
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asignacion expresion
@@ -717,8 +725,8 @@ asignacion:
     ;
 
 valores_booleanos:
-    T_SISA
-    | T_NOLSA
+    T_SISA {$$ = strdup("true"); }
+    | T_NOLSA {$$ = strdup("false"); }
     ;
 
 expresion_apuntador:
@@ -871,11 +879,15 @@ expresion:
     }
     | T_PELABOLA
     | T_IZQPAREN expresion T_DERPAREN
-    | valores_booleanos 
+    | valores_booleanos {$$.temp = $1;}
     | expresion_apuntador 
     | expresion_nuevo
     | arreglo
-    | T_NELSON expresion
+    | T_NELSON expresion {
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("NEG", $2.temp, "", temp);
+        $$.temp = strdup(temp.c_str());
+    }
     | T_OPRESTA expresion %prec T_OPRESTA {
         if ($2.type == ExpresionAttribute::INT) {
             $$.type = ExpresionAttribute::INT;
