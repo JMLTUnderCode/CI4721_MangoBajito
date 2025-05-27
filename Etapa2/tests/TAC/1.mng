@@ -1,6 +1,10 @@
 se_prende(){
 	culito a: mango = 0;
 	echale_bolas_si (a menol 10){
+		echale_bolas_si (a mayol 7){
+			culito b: mango = 5;
+			a = a + 1;
+		};
 		a = a + 2;
 	};
 };

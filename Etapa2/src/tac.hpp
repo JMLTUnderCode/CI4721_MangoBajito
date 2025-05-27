@@ -37,22 +37,22 @@ public:
         : op(op), arg1(arg1), arg2(arg2), result(result), label(label) {}
 
     string toString() const {
-        string oss = "";
+        string tac_code = "";
         if (op == "LABEL") {
-            oss += label + ":";
+            tac_code += label + ":";
         } else if (op == "GOTO") {
-            oss += "goto " + arg1;
+            tac_code += "goto " + arg1;
         } else if (op == "IFGOTO") {
-            oss += "if " + arg1 + " goto " + arg2;
+            tac_code += "if " + arg1 + " goto " + arg2;
         } else if (op == "ASSIGN") {
-            oss += result + " = " + arg1;
+            tac_code += result + " := " + arg1;
         } else if (op == "IF_FALSE_GOTO") {
-            oss += "ifFalse " + arg1 + " goto " + arg2;
+            tac_code += "ifFalse " + arg1 + " goto " + arg2;
         } else {
             // Operaciones aritméticas y otras de 3 direcciones
-            oss += result + " = " + arg1 + " " + op + " " + arg2;
+            tac_code += result + " := " + arg1 + " " + op + " " + arg2;
         }
-        return oss;
+        return tac_code;
     }
 };
 /** 
@@ -126,19 +126,32 @@ struct tac_if{
 /**
  * @struct tac_while
  * @brief Estructura que representa un bucle while en TAC.
- * @param while_label Etiqueta para el inicio del bucle while.
+ * @param init_label Etiqueta para la inicialización del bucle while.
+ * @param loop_label Etiqueta para el inicio del bloque de instruccion del bucle while.
  * @param end_label Etiqueta para el final del bucle while.
  * @details Esta estructura se utiliza para almacenar las etiquetas asociadas a un bucle while en TAC.
  *          Permite gestionar el flujo de control en instrucciones de bucle.
  */
 struct tac_while{
+    string init_label;
     string loop_label;
     string end_label;
 
-    tac_while(string loop_label = "", string end_label = "")
-        : loop_label(loop_label), end_label(end_label) {}
+    tac_while(string init_label = "", string loop_label = "", string end_label = "")
+        : init_label(init_label), loop_label(loop_label), end_label(end_label) {}
 };
-
+/**
+ * @struct tac_for
+ * @brief Estructura que representa un bucle for en TAC.
+ * @param cond_label Etiqueta para la condición del bucle for.
+ * @param init_label Etiqueta para la inicialización del bucle for.
+ * @param var Variable de control del bucle for.
+ * @param val_limit Límite de valor para la variable de control del bucle for.
+ * @param loop_label Etiqueta para el inicio del bloque de instruccion del bucle for.
+ * @param end_label Etiqueta para el final del bucle for.
+ * @details Esta estructura se utiliza para almacenar las etiquetas y variables asociadas a un bucle for en TAC.
+ *          Permite gestionar el flujo de control en instrucciones de bucle for.
+ */
 struct tac_for{
     string cond_label;
     string init_label;

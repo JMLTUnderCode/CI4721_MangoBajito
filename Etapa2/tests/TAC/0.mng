@@ -2,5 +2,14 @@ se_prende(){
 	culito a: mango = 5;
     si_es_asi (a menol 3){
 		culito b: negro = 'a';
+	}o_asi (a lidel 5){
+		culito c: mango = 0;
+		si_es_asi (a mayol 7){
+			c = c + 1;
+		}nojoda{
+			c = c + 2;
+		};
+	}nojoda{
+		culito d: mango = 2*3+1;
 	};
 };
