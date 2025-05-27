@@ -117,7 +117,11 @@ const char* current_array_base_type = nullptr;
         } else {
             throw std::invalid_argument("Tipo desconocido: " + typeStr);
         }
-    }   
+    }
+
+	inline bool isNumeric(const std::string& typeStr) {
+		return typeStr == "mango" || typeStr == "manguita" || typeStr == "manguangua";
+	}		   
 }
 
 %union {
@@ -179,7 +183,7 @@ const char* current_array_base_type = nullptr;
 
 // Operaciones unarias
 %left T_OPINCREMENTO T_OPDECREMENTO
-%right T_SIGNO_MENOS T_NELSON
+%right T_NELSON
 %left T_FLECHA
 
 %right T_CASTEO  // Precedencia más alta para el casting
@@ -238,17 +242,26 @@ instruccion:
             yyerror($1);
         }
 
-        if (var->type != nullptr && var->type->symbol_name == "mango") {
-            if (holds_alternative<int>(var->value)) {
-                int old_val = get<int>(var->value);
-                var->value = old_val - 1;
-            } else {
-				ERROR_TYPE = NON_VALUE;
-                yyerror($1);
-            }
+        if (var->type != nullptr && isNumeric(var->type->symbol_name)) { // Verificar si es de tipo numerico.
+			string info_var_check = get<string>(var->info[0].first);
+			if (info_var_check != "PARAMETRO"){ // Si es parametro de una funcion no hay problema.
+				if (holds_alternative<int>(var->value)) { // De lo contrario hay que verificar si tiene valor numero asignado.
+	                int old_val = get<int>(var->value);
+	                var->value = old_val - 1;
+	            } else if (holds_alternative<float>(var->value)) {
+					float old_val = get<float>(var->value);
+	                var->value = old_val - 1.0;
+	            } else if (holds_alternative<double>(var->value)) {
+					double old_val = get<double>(var->value);
+	                var->value = old_val - 1.0;
+				} else {
+					ERROR_TYPE = NON_VALUE;
+	                yyerror($1);
+				}
+			}
         } else {
 			ERROR_TYPE = TYPE_ERROR;
-            string error_msg = "\"" + string($1) + "\" de tipo '" + var->type->symbol_name + "' y debe ser de tipo 'mango', locota.";
+            string error_msg = "\"" + string($1) + "\" de tipo '" + var->type->symbol_name + "' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.";
             yyerror(error_msg.c_str());
         }
     }
@@ -259,17 +272,26 @@ instruccion:
             yyerror($1);
         }
 
-        if (var->type != nullptr && var->type->symbol_name == "mango") {
-            if (holds_alternative<int>(var->value)) {
-                int old_val = get<int>(var->value);
-                var->value = old_val + 1;
-            } else {
-                ERROR_TYPE = NON_VALUE;
-                yyerror($1);
-            }
+        if (var->type != nullptr && isNumeric(var->type->symbol_name)) { // Verificar si es de tipo numerico.
+			string info_var_check = get<string>(var->info[0].first);
+			if (info_var_check != "PARAMETRO"){ // Si es parametro de una funcion no hay problema.
+				if (holds_alternative<int>(var->value)) { // De lo contrario hay que verificar si tiene valor numero asignado.
+	                int old_val = get<int>(var->value);
+	                var->value = old_val + 1;
+	            } else if (holds_alternative<float>(var->value)) {
+					float old_val = get<float>(var->value);
+	                var->value = old_val + 1.0;
+	            } else if (holds_alternative<double>(var->value)) {
+					double old_val = get<double>(var->value);
+	                var->value = old_val + 1.0;
+				} else {
+					ERROR_TYPE = NON_VALUE;
+	                yyerror($1);
+				}
+			}
         } else {
             ERROR_TYPE = TYPE_ERROR;
-            string error_msg = "\"" + string($1) + "\" de tipo '" + var->type->symbol_name + "' y debe ser de tipo 'mango', locota.";
+            string error_msg = "\"" + string($1) + "\" de tipo '" + var->type->symbol_name + "' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.";
             yyerror(error_msg.c_str());
         }
     }
@@ -2237,7 +2259,7 @@ void yyerror(const char *var) {
                 break;
 
 			case NON_VALUE: 
-				error_msg = "Ese mango \"" + string(var) + "\" anda sin pepa. Ay vale!.";
+				error_msg += "Ese mango \"" + string(var) + "\" anda sin pepa. Ay vale!.";
 				break;
 
             case TYPE_ERROR:
@@ -2284,5 +2306,6 @@ void yyerror(const char *var) {
                 break;
         }
         addError(ERROR_TYPE, error_msg); // Agrega el mensaje al diccionario de errores
+		ERROR_TYPE = SEMANTIC_TYPE; // Resetea el tipo de error
     }
 }
