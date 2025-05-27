@@ -2,6 +2,7 @@
 #define TAC_HPP
 
 #include <string>
+#include <vector>
 #include <sstream>
 
 using namespace std;
@@ -50,8 +51,18 @@ public:
             tac_code += result + " := !" + arg1;
         } else if (op == "IF_FALSE") {
             tac_code += "ifFalse " + arg1 + " goto " + arg2;
-        } else if (op == "IF_FALSE_GOTO") {
-            tac_code += "ifFalse " + arg1 + " goto " + arg2;
+        } else if (op == "PARAM") {
+            tac_code += "param " + arg1;
+        } else if (op == "CALL" && result != "") {
+            tac_code += result + " := call " + arg1 + ", " + arg2;
+        } else if (op == "CALL"){
+            tac_code += "call " + arg1 + ", " + arg2;
+        } else if (op == "RETURN") {
+            tac_code += "return " + arg1;
+        } else if (op == "PRINT") {
+            tac_code += "print " + arg1;
+        } else if (op == "READ") {
+            tac_code += "read " + result;
         } else {
             // Operaciones aritméticas y otras de 3 direcciones
             tac_code += result + " := " + arg1 + " " + op + " " + arg2;
@@ -168,4 +179,30 @@ struct tac_for{
         : cond_label(cond_label), init_label(init_label), var(var), val_limit(val_limit), loop_label(loop_label), end_label(end_label) {}
 };
 
+/**
+ * @struct tac_func
+ * @brief Estructura que representa el tac de llamada y definiciones de funciones
+ * @param func_name Nombre de la funcion (representado como una etiqueta).
+ * @param func_type Tipo de retorno de la funcion.
+ * @param end_label Etiqueta de finalizacion de la funcion.
+ * @param params Cantidad de parametros pasados a la funcion.
+ * @details Esta estructura se utiliza para almacenar las etiquetas e informacion asociadas a una funcion en TAC
+ *          Permite gestionar el flujo de control en instrucciones de las funciones
+ */
+struct tac_func{
+    string func_name; // Nombre de la función
+    string func_type; // Etiqueta de retorno de la función
+    string end_label; // Etiqueta de finalización de la función
+    int params; // Parámetros de la función
+
+    tac_func(string func_name = "", string func_type = "", string end_label = "", int params = 0)
+        : func_name(func_name), func_type(func_type), end_label(end_label), params(params) {}
+};
+
+struct tac_params{
+    vector<string> params; // Lista de parámetros
+
+    tac_params() = default;
+    tac_params(const vector<string>& params) : params(params) {};
+};
 #endif // TAC_HPP

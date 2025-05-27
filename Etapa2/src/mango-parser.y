@@ -63,8 +63,10 @@ const char* current_array_base_type = nullptr;
 vector<TACInstruction> tac_instructions; // Instrucciones TAC
 LabelGenerator labelGen; // Generador de etiquetas para TAC
 vector<tac_if> tac_if_stack; // Pila para manejar etiquetas de control de if
-vector<tac_while> tac_while_stack; // Pila para manejar etiquetas de control de bucles
+vector<tac_while> tac_while_stack; // Pila para manejar etiquetas de control de while
 vector<tac_for> tac_for_stack; // Pila para manejar etiquetas de control de for
+vector<tac_func> tac_func_stack; // Pila para manejar etiquetas de control de funciones
+vector<tac_params> tac_params_stack; // Pila para manejar parámetros de funciones
 %}
 
 %code requires {
@@ -159,7 +161,7 @@ vector<tac_for> tac_for_stack; // Pila para manejar etiquetas de control de for
 %token T_CASTEO
 
 // Declaracion de tipos de retorno para las producciones 
-%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion valores_booleanos operadores_asignacion
+%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion valores_booleanos operadores_asignacion funcion
 %type <att_val> expresion
 // Declaracion de precedencia y asociatividad de Operadores
 // Asignacion
@@ -1010,6 +1012,7 @@ expresion:
     | funcion {
 		// POR IMPLEMENTAR: La funcion debe retornar un valor asociado segun sea el caso.
 		$$.type = ExpresionAttribute::ID;
+        $$.temp = $1;
 	}
     | casting
     | T_IDENTIFICADOR T_IZQCORCHE expresion T_DERCORCHE {
@@ -1277,8 +1280,14 @@ entrada_salida:
     ;
 
 secuencia:
-    | secuencia T_COMA expresion 
-    | expresion 
+    | secuencia T_COMA expresion {
+        tac_params_stack.back().params.push_back($3.temp);
+    }
+    | expresion {
+        tac_params current_tac_params;
+        current_tac_params.params.push_back($1.temp);
+        tac_params_stack.push_back(current_tac_params);
+    }
     ;
 
 secuencia_declaraciones:
@@ -1388,7 +1397,7 @@ struct:
 
 firma_funcion: 
     T_ECHARCUENTO T_IDENTIFICADOR {
-
+        tac_instructions.emplace_back("LABEL", "", "", "", $2);
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
@@ -1494,6 +1503,10 @@ declaracion_funcion:
 
 funcion:
 	T_IDENTIFICADOR {
+        tac_func current_tac_func;
+        current_tac_func.func_name = $1;
+        current_tac_func.end_label = labelGen.newLabel("end_func");
+
 		Attributes* func_attr = symbolTable.search_symbol(string($1));
         if (func_attr == nullptr) {
             yyerror("Funcion no definida");
@@ -1506,8 +1519,12 @@ funcion:
 		current_function_name = func_attr->symbol_name;
 		current_function_parameters = 0;
 		current_function_type = get<string>(func_attr->info[func_attr->info.size()-1].first);
-
+        
+        current_tac_func.func_type = current_function_type; 
+        tac_func_stack.push_back(current_tac_func);
 	} T_IZQPAREN secuencia T_DERPAREN {
+        tac_func current_tac_func = tac_func_stack.back();
+
 		Attributes* func_attr = symbolTable.search_symbol(strdup($1));
 		if ( current_function_parameters < func_attr->info.size() - 1) {
 			ERROR_TYPE = PARAMETERS_ERROR;
@@ -1517,6 +1534,23 @@ funcion:
 		}
 		current_function_name = "";
 		current_function_parameters = 0;
+
+        tac_params current_tac_params = tac_params_stack.back();
+        
+        for (auto & param : current_tac_params.params) {
+            tac_instructions.emplace_back("PARAM", param, "", "");
+        }
+
+        if (current_tac_func.func_type != "un_coño"){
+            string temp = labelGen.newTemp();
+            tac_instructions.emplace_back("CALL", $1, to_string(current_tac_params.params.size()), temp);
+            $$ = strdup(temp.c_str());
+        } else {
+            tac_instructions.emplace_back("CALL", $1, to_string(current_tac_params.params.size()), "");
+            $$ = "";
+        }
+        tac_params_stack.pop_back();
+        tac_func_stack.pop_back();
 	}
 
 arreglo:

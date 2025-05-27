@@ -1,0 +1,12 @@
+se_prende(){
+	echar_cuento foo(n: mango, m: mango) lanza tas_claro{
+		lanzate n igualito m;
+	};
+
+	echar_cuento bar(x: mango) lanza un_coño{
+		culito d: mango = x + 10;
+	};
+
+	culito a: tas_claro = foo(4, 5);
+	bar(12);
+};
