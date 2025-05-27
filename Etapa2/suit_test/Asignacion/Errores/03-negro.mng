@@ -1,0 +1,9 @@
+# Test 03: Error de Tipo negro.
+se_prende(){
+	culito decl0: negro = 2;
+	culito decl1: negro = 1.79;
+	culito decl2: negro = 1.79769e+308;
+	culito decl3: negro = "hola";
+	culito decl4: negro = Nolsa;
+	culito decl5: negro = [1, 2, 3];
+};

@@ -1,4 +1,4 @@
-# Test 11: Definicion y tipo arroz_con_mango.
+# Test 12: Definicion y tipo arroz_con_mango.
 se_prende(){
 	arroz_con_mango MyStruct {
 		attr_s_1 : mango;
