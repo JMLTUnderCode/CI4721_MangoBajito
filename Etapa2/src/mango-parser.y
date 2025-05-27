@@ -329,7 +329,6 @@ instruccion:
 
 declaracion:
     tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos {
-        std::cout << "2" << std::endl; 
         // Caso para arrays (detectado por variables globales)
         if (current_array_size > 0 && current_array_base_type != nullptr) {
             // Verificar que el tipo base existe
