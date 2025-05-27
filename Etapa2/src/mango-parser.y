@@ -37,7 +37,9 @@ unordered_map<errorType, vector<string>> errorDictionary = {
     {ALREADY_DEF_ATTR, {}},
     {VAR_FOR, {}},
     {VAR_TRY, {}},
+	{NON_VALUE, {}},
     {TYPE_ERROR, {}},
+	{MODIFY_CONST, {}},
     {SEGMENTATION_FAULT, {}},
     {FUNC_PARAM_EXCEEDED, {}},
     {FUNC_PARAM_MISSING, {}},
@@ -227,62 +229,48 @@ instruccion:
     | manejo_error 
     | struct
     | variante
-    | T_KIETO 
+    | T_KIETO
     | T_ROTALO
     | T_IDENTIFICADOR T_OPDECREMENTO {
         Attributes *var = symbolTable.search_symbol($1);
         if (var == nullptr) {
             ERROR_TYPE = NON_DEF_VAR;
             yyerror($1);
-            
         }
 
         if (var->type != nullptr && var->type->symbol_name == "mango") {
             if (holds_alternative<int>(var->value)) {
                 int old_val = get<int>(var->value);
                 var->value = old_val - 1;
-                // No se asigna a $$ porque 'instruccion' no devuelve un valor aquí
             } else {
-                string error_msg = "La variable '" + string($1) + "' es de tipo mango pero no contiene un valor entero para decrementar (en instruccion).";
-                yyerror(error_msg.c_str());
-                
+				ERROR_TYPE = NON_VALUE;
+                yyerror($1);
             }
         } else {
-            string error_msg = "El operador -- (en instruccion) no se puede aplicar a la variable '" + string($1) + "'. ";
-            error_msg += "Se esperaba tipo mango, pero se obtuvo: ";
-            if (var->type != nullptr) error_msg += var->type->symbol_name; else error_msg += "desconocido";
-            error_msg += ".";
+			ERROR_TYPE = TYPE_ERROR;
+            string error_msg = "\"" + string($1) + "\" de tipo '" + var->type->symbol_name + "' y debe ser de tipo 'mango', locota.";
             yyerror(error_msg.c_str());
-            
         }
     }
     | T_IDENTIFICADOR T_OPINCREMENTO {
-        // Acción para la sentencia: identificador++
-        // $1 es el T_IDENTIFICADOR (char* nombre_variable)
-        Attributes *var = symbolTable.search_symbol($1); // Usar $1 directamente
+        Attributes *var = symbolTable.search_symbol($1);
         if (var == nullptr) {
             ERROR_TYPE = NON_DEF_VAR;
-            yyerror($1); // $1 es el nombre del identificador
-            
+            yyerror($1);
         }
 
         if (var->type != nullptr && var->type->symbol_name == "mango") {
             if (holds_alternative<int>(var->value)) {
                 int old_val = get<int>(var->value);
-                var->value = old_val + 1; // Actualiza el valor en la tabla de símbolos (efecto secundario)
-                // No se asigna a $$ porque 'instruccion' no devuelve un valor aquí
+                var->value = old_val + 1;
             } else {
-                string error_msg = "La variable '" + string($1) + "' es de tipo mango pero no contiene un valor entero para incrementar (en instruccion).";
-                yyerror(error_msg.c_str());
-                
+                ERROR_TYPE = NON_VALUE;
+                yyerror($1);
             }
         } else {
-            string error_msg = "El operador ++ (en instruccion) no se puede aplicar a la variable '" + string($1) + "'. ";
-            error_msg += "Se esperaba tipo mango, pero se obtuvo: ";
-            if (var->type != nullptr) error_msg += var->type->symbol_name; else error_msg += "desconocido";
-            error_msg += ".";
+            ERROR_TYPE = TYPE_ERROR;
+            string error_msg = "\"" + string($1) + "\" de tipo '" + var->type->symbol_name + "' y debe ser de tipo 'mango', locota.";
             yyerror(error_msg.c_str());
-            
         }
     }
     | T_LANZATE expresion
@@ -299,19 +287,16 @@ declaracion:
             if (base_type_attr == nullptr) {
                 ERROR_TYPE = NON_DEF_TYPE;
                 yyerror(current_array_base_type);
-                //exit(1);
             }
 
             // Validar categoría de declaración
             if (strcmp($1, "CONSTANTE") == 0) {
                 ERROR_TYPE = EMPTY_ARRAY_CONSTANT;
                 yyerror($2);
-                //exit(1);
             }
             if (strcmp($1, "POINTER_C") == 0 || strcmp($1, "POINTER_V") == 0) {
                 ERROR_TYPE = POINTER_ARRAY;
                 yyerror($2);
-                //exit(1);
             }
 
             // Crear atributos del array
@@ -333,11 +318,10 @@ declaracion:
                 // Usar el índice como clave en formato string
                 attributes->info.push_back({std::string($2) + "[" + std::to_string(i) + "]", elem});
     
-                // Opcional: Insertar elemento en tabla de símbolos
+                // \Insertar elemento en tabla de símbolos
                 if (!symbolTable.insert_symbol(elem->symbol_name, *elem)) {
                     ERROR_TYPE = ALREADY_DEF_VAR;
                     yyerror(elem->symbol_name.c_str());
-                    //exit(1);
                 }
             }
 
@@ -345,19 +329,17 @@ declaracion:
             if (!symbolTable.insert_symbol($2, *attributes)) {
                 ERROR_TYPE = ALREADY_DEF_VAR;
                 yyerror($2);
-                //exit(1);
             }
 
             string current_array_name = "";
-            int current_array_size = 0;
-            const char* current_array_base_type = nullptr;            
+            current_array_size = 0;
+            current_array_base_type = nullptr;            
         }
         // Caso normal (no array)
         else {
             if (symbolTable.search_symbol($4) == nullptr) {
                 ERROR_TYPE = NON_DEF_TYPE;
                 yyerror($4);
-                //exit(1);
             }
 
             Attributes *attributes = new Attributes();
@@ -379,7 +361,6 @@ declaracion:
             if (!symbolTable.insert_symbol($2, *attributes)) {
                 ERROR_TYPE = ALREADY_DEF_VAR;
                 yyerror($2);
-                //exit(1);
             }
         }
     }
@@ -387,16 +368,15 @@ declaracion:
         if (symbolTable.search_symbol($4) == nullptr){
 			ERROR_TYPE = NON_DEF_TYPE;
             yyerror($4);
-            //exit(1);
         };
 
 		if (current_function_type != ""){ // En caso de asignacion de funciones.
 			string type_id = symbolTable.search_symbol($4)->symbol_name;
 			if (current_function_type != type_id){
 				ERROR_TYPE = TYPE_ERROR;
-				string error_message = type_id + "\". Recibido: \"" + current_function_type;
+				string error_message = "\"" + string($2) + "\" de tipo '" + type_id + 
+					"' y le quieres meter un cuento de tipo '" + current_function_type + "\", marbaa' bruja.";
 				yyerror(error_message.c_str());
-				//exit(1);
 			}
 			current_function_type = "";
 		}
@@ -421,7 +401,7 @@ declaracion:
 	        case ExpresionAttribute::INT:
 				if(string($4) != "mango") {
 					ERROR_TYPE = TYPE_ERROR;
-					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
+					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
 					yyerror(error_message.c_str());
 				}
 	            attributes->value = $6.ival;
@@ -430,7 +410,7 @@ declaracion:
 	        case ExpresionAttribute::FLOAT:
 				if(string($4) != "manguita") {
 					ERROR_TYPE = TYPE_ERROR;
-					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
+					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
 					yyerror(error_message.c_str());
 				}
 	            attributes->value = $6.fval;
@@ -439,7 +419,7 @@ declaracion:
 			case ExpresionAttribute::DOUBLE:
 				if(string($4) != "manguangua") {
 					ERROR_TYPE = TYPE_ERROR;
-					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
+					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
 					yyerror(error_message.c_str());
 				}
 	            attributes->value = $6.dval;
@@ -455,7 +435,7 @@ declaracion:
                     }
                 } else { 
                     ERROR_TYPE = TYPE_ERROR;
-                    string error_message = "No se puede asignar un valor booleano al tipo '" + string($4) + "'.";
+					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
                     yyerror(error_message.c_str());
                     
                 }
@@ -464,7 +444,7 @@ declaracion:
 	        case ExpresionAttribute::STRING:
 				if(string($4) != "higuerote") {
 					ERROR_TYPE = TYPE_ERROR;
-					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
+					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
 					yyerror(error_message.c_str());
 				}
 	            attributes->value = string($6.sval);
@@ -473,7 +453,7 @@ declaracion:
             case ExpresionAttribute::CHAR:
 				if(string($4) != "negro") {
 					ERROR_TYPE = TYPE_ERROR;
-					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
+					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
 					yyerror(error_message.c_str());
 				}
                 attributes->value = $6.cval;
@@ -516,7 +496,6 @@ tipos:
         if ($3.type != ExpresionAttribute::INT) {
             ERROR_TYPE = INT_SIZE_ARRAY;
             yyerror(typeToString($3.type));
-            //exit(1);
         }
 
 	    // Obtener tipo base y tamaño
@@ -560,15 +539,15 @@ operadores_asignacion:
 asignacion:
     T_IDENTIFICADOR operadores_asignacion expresion {
         Attributes *lhs_attr = symbolTable.search_symbol(string($1));
-        const std::string lhs_name = string($1);
+        if (lhs_attr == nullptr){
+            ERROR_TYPE = NON_DEF_VAR;
+            yyerror($1);
+        }
+        
+		const string lhs_name = string($1);
         int op_type = $2;
         const ExpresionAttribute& rhs_expr = $3;
 
-        if (lhs_attr == nullptr){
-            ERROR_TYPE = NON_DEF_VAR;
-            yyerror(lhs_name.c_str());
-        }
-        
         // Specific checks from your original rule
         if (!lhs_attr->info.empty()) { // Check if info has elements before accessing
             string info_var_check = get<string>(lhs_attr->info[0].first);
@@ -583,28 +562,26 @@ asignacion:
         }
 
         if (lhs_attr->category == CONSTANT && op_type == 0 && !holds_alternative<nullptr_t>(lhs_attr->value)) {
-            ERROR_TYPE = ALREADY_DEF_VAR; // Or a specific "CANNOT_MODIFY_CONSTANT"
-            yyerror(("No se puede modificar la constante '" + lhs_name + "' después de su inicialización.").c_str());
+            ERROR_TYPE = MODIFY_CONST;
+            yyerror(lhs_name.c_str());
             
         }
          if (lhs_attr->category == CONSTANT && op_type != 0) {
-            ERROR_TYPE = ALREADY_DEF_VAR; // Or a specific "CANNOT_MODIFY_CONSTANT"
-            yyerror(("No se puede usar operador de asignación compuesta en constante '" + lhs_name + "'.").c_str());
-            
+            ERROR_TYPE = MODIFY_CONST; 
+            yyerror(lhs_name.c_str());
         }
-
-
-        // --- Inlined execute_assignment_logic ---
         if (!lhs_attr->type) {
-            yyerror(("Error interno: El tipo del lado izquierdo es nulo para '" + lhs_name + "'").c_str());
-            
+			ERROR_TYPE = DEBUGGING_TYPE;
+			string error_message = "Error interno: El tipo de \"" + lhs_name + "\" no esta definido.";
+            yyerror(error_message.c_str());
         }
         string lhs_declared_type_name = lhs_attr->type->symbol_name;
 
 		if (current_function_name != ""){ // En caso de asignacion de funciones.
 			if (current_function_type != lhs_declared_type_name){
 				ERROR_TYPE = TYPE_ERROR;
-				string error_message = lhs_declared_type_name + "\". Recibido: \"" + current_function_type;
+				string error_message = "\"" + string($1) + "\" de tipo '" + lhs_declared_type_name + 
+					"' y le quieres meter un cuento de tipo '" + current_function_type + "\", marbaa' bruja.";
 				yyerror(error_message.c_str());
 			}
 			current_function_name = "";
@@ -612,12 +589,11 @@ asignacion:
 			current_function_type = "";
 		}
 
-        if (op_type != 0) { // Compound assignments
+        if (op_type != 0) {
             if (holds_alternative<nullptr_t>(lhs_attr->value)) {
                 ERROR_TYPE = NON_DEF_VAR;
                 string op_str = (op_type == 1 ? "+=" : (op_type == 2 ? "-=" : (op_type == 3 ? "*=" : "OP_COMPUESTO")));
                 yyerror(("Variable/Elemento '" + lhs_name + "' no inicializada antes de usarla en operación '" + op_str + "'.").c_str());
-                
             }
         }
 
@@ -2214,14 +2190,14 @@ void yyerror(const char *var) {
                 error_msg += "Esta variable \"" + string(var) + "\" es burro e' fantasma.";
                 break;
             case ALREADY_DEF_VAR:
-                error_msg += "Esta variable \"" + string(var) + "\" es convive, copion.";
+                error_msg += "Esta variable \"" + string(var) + "\" es convive, marbao' copion.";
                 break;
 
             case NON_DEF_FUNC:
-                error_msg += "Este cuento \"" + string(var) + "\" no lo echaste locota.";
+                error_msg += "Este cuento \"" + string(var) + "\" no lo echaste, marbaa' locota.";
                 break;
             case ALREADY_DEF_FUNC:
-                error_msg += "Este cuento \"" + string(var) + "\" ya lo echaron, copion.";
+                error_msg += "Este cuento \"" + string(var) + "\" ya lo echaron, marbao' copion.";
                 break;
 
             case NON_DEF_STRUCT:
@@ -2235,7 +2211,7 @@ void yyerror(const char *var) {
                 error_msg += "Este coliao \"" + string(var) + "\" esta en tu cabeza nada más. Deja la droga.";
                 break;
             case ALREADY_DEF_UNION:
-                error_msg += "Quieres colear a \"" + string(var) + "\" dos veces, abusador.";
+                error_msg += "Quieres colear a \"" + string(var) + "\" dos veces, marbao' abusador.";
                 break;
 
             case NON_DEF_TYPE:
@@ -2249,7 +2225,7 @@ void yyerror(const char *var) {
                 error_msg += "Este atributo \"" + string(var) + "\" esta en tu cabeza nada más. Deja la droga.";
                 break;
             case ALREADY_DEF_ATTR:
-                error_msg += "Este atributo \"" + string(var) + "\" es de otro peo, copion.";
+                error_msg += "Este atributo \"" + string(var) + "\" es de otro peo, marbao' copion.";
                 break;
 
             case VAR_FOR:
@@ -2257,12 +2233,19 @@ void yyerror(const char *var) {
                 break;
 
             case VAR_TRY:
-                error_msg += "Esta variable \"" + string(var) + "\" es de `Meando_fuera_del_perol`. Déjala quieta, no se cambia. Men tiende?";
+                error_msg += "Esta variable \"" + string(var) + "\" es de `Meando_fuera_del_perol`. Déjala quieta, no se cambia. Men tiendes marbao'?";
                 break;
 
+			case NON_VALUE: 
+				error_msg = "Ese mango \"" + string(var) + "\" anda sin pepa. Ay vale!.";
+				break;
+
             case TYPE_ERROR:
-                error_msg += "Tas en droga?. Manda un \"" + string(var) + "\" sino no va a furular.";
+                error_msg += "Tas en droga?. Tienes " + string(var);
                 break;
+
+			case MODIFY_CONST:
+				error_msg += "Aja y despues que cambies \"" + string(var) + "\" vas a pedir que un Chavista reparta plata, hasta err diablo rinde.";
 
             case SEGMENTATION_FAULT:
                 error_msg += "Te fuiste pal quinto c#%o. Índice \"" + string(var) + "\" fuera de rango.";
@@ -2276,7 +2259,7 @@ void yyerror(const char *var) {
 				break;
 
             case EMPTY_ARRAY_CONSTANT:
-                error_msg += "El array \"" + string(var) + "\" es una jeva. No se cambio loco, respeta.";
+                error_msg += "El array \"" + string(var) + "\" es una jeva. No se cambia loco, respeta.";
                 break;
 
             case POINTER_ARRAY:
@@ -2288,7 +2271,7 @@ void yyerror(const char *var) {
                 break;
 
             case INT_INDEX_ARRAY:
-                error_msg += "Al array no se le entra con \"" + string(var) + "\" solo mangos chamo. Aprende."; 
+                error_msg += "Al array no se le entra con \"" + string(var) + "\" solo con mangos piaso e' mongolico."; 
                 break;
 
             case DEBUGGING_TYPE:
