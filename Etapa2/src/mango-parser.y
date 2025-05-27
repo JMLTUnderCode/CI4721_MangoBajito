@@ -302,7 +302,9 @@ instruccion:
         tac_instructions.emplace_back("+", $1, "1", temp);
         tac_instructions.emplace_back("ASSIGN", temp, "", $1);
     }
-    | T_LANZATE expresion
+    | T_LANZATE expresion {
+        tac_instructions.emplace_back("RETURN", $2.temp, "", ""); // Asumiendo que $2 es una expresión válida
+    }
     | T_BORRADOL T_IDENTIFICADOR 
     | T_BORRADOL T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR 
     ;
