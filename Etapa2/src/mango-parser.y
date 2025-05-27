@@ -22,10 +22,9 @@ SymbolTable symbolTable = SymbolTable();
 
 // Inicialización del diccionario de errores
 unordered_map<errorType, vector<string>> errorDictionary = {
+    {SEMANTIC_TYPE, {}},
     {NON_DEF_VAR, {}},
     {ALREADY_DEF_VAR, {}},
-    {VAR_FOR, {}},
-    {VAR_TRY, {}},
     {NON_DEF_FUNC, {}},
     {ALREADY_DEF_FUNC, {}},
     {NON_DEF_STRUCT, {}},
@@ -33,16 +32,20 @@ unordered_map<errorType, vector<string>> errorDictionary = {
     {NON_DEF_UNION, {}},
     {ALREADY_DEF_UNION, {}},
     {NON_DEF_TYPE, {}},
+    {ALREADY_DEF_TYPE, {}},
+    {NON_DEF_ATTR, {}},
     {ALREADY_DEF_ATTR, {}},
-    {DEBUGGING_TYPE, {}},
-    {SEMANTIC_TYPE, {}},
+    {VAR_FOR, {}},
+    {VAR_TRY, {}},
     {TYPE_ERROR, {}},
     {SEGMENTATION_FAULT, {}},
-    {PARAMETERS_ERROR, {}},
+    {FUNC_PARAM_EXCEEDED, {}},
+    {FUNC_PARAM_MISSING, {}},
     {EMPTY_ARRAY_CONSTANT, {}},
     {POINTER_ARRAY, {}},
     {INT_SIZE_ARRAY,{}},
-    {INT_INDEX_ARRAY, {}}
+    {INT_INDEX_ARRAY, {}},
+    {DEBUGGING_TYPE, {}}
 };
 
 errorType ERROR_TYPE = SEMANTIC_TYPE; // Permite manejar un error particular de tipo errorType
@@ -1153,7 +1156,7 @@ expresion:
 				current_function_parameters++;
 
 			} else { // Excede la cantidad de parametros.
-				ERROR_TYPE = PARAMETERS_ERROR;
+				ERROR_TYPE = FUNC_PARAM_EXCEEDED;
 				yyerror(current_function_name.c_str());
 				//exit(1);
 			}
@@ -1239,7 +1242,7 @@ expresion:
 				current_function_parameters++;
 
 			} else { // Excede la cantidad de parametros.
-				ERROR_TYPE = PARAMETERS_ERROR;
+				ERROR_TYPE = FUNC_PARAM_EXCEEDED;
 				string error_message = "Error en la función '" + current_function_name + "': Excede la cantidad de parámetros.";
 				yyerror(error_message.c_str());
 				//exit(1);
@@ -2138,7 +2141,7 @@ funcion:
 	} T_IZQPAREN secuencia T_DERPAREN {
 		Attributes* func_attr = symbolTable.search_symbol(strdup($1));
 		if ( current_function_parameters < func_attr->info.size() - 1) {
-			ERROR_TYPE = PARAMETERS_ERROR;
+			ERROR_TYPE = FUNC_PARAM_EXCEEDED;
 			string error_message = "Falta de parametros en la llamada a la funcion '" + string($1) + "'";
 			yyerror(error_message.c_str());
 			//exit(1);
@@ -2194,80 +2197,106 @@ casting:
 void yyerror(const char *var) {
     FIRST_ERROR = true;
 
-    std::string error_msg; // Variable para construir el mensaje de error
+    string error_msg; // Variable para construir el mensaje de error
 
     if (ERROR_TYPE == SEMANTIC_TYPE) {
         extern char* yytext;
-        error_msg = "Error sintáctico en línea " + std::to_string(yylineno) +
-                    ", columna " + std::to_string(yylloc.first_column) +
+        error_msg = "Qué garabato escribiste en línea " + to_string(yylineno) +
+                    ", columna " + to_string(yylloc.first_column) +
                     ": '" + yytext + "'\n" + var;
         addError(ERROR_TYPE, error_msg);
     } else {
-        error_msg = "Error en línea " + std::to_string(yylineno) +
-                    ", columna " + std::to_string(yylloc.first_column) + ": ";
+        error_msg = "Sendo peo en la linea " + to_string(yylineno) +
+                    ", columna " + to_string(yylloc.first_column) + ": ";
         switch (ERROR_TYPE) {
+
             case NON_DEF_VAR:
-                error_msg += "Variable \"" + std::string(var) + "\" no definida.";
+                error_msg += "Esta variable \"" + string(var) + "\" es burro e' fantasma.";
                 break;
             case ALREADY_DEF_VAR:
-                error_msg += "Variable \"" + std::string(var) + "\" ya fue definida.";
+                error_msg += "Esta variable \"" + string(var) + "\" es convive, copion.";
                 break;
+
             case NON_DEF_FUNC:
-                error_msg += "Función \"" + std::string(var) + "\" no definida.";
+                error_msg += "Este cuento \"" + string(var) + "\" no lo echaste locota.";
                 break;
             case ALREADY_DEF_FUNC:
-                error_msg += "Función \"" + std::string(var) + "\" ya fue definida.";
+                error_msg += "Este cuento \"" + string(var) + "\" ya lo echaron, copion.";
                 break;
+
             case NON_DEF_STRUCT:
-                error_msg += "Estructura \"" + std::string(var) + "\" no definida.";
+                error_msg += "Este arroz_con_mango \"" + string(var) + "\" esta en tu cabeza nada más. Deja la droga.";
                 break;
             case ALREADY_DEF_STRUCT:
-                error_msg += "Estructura \"" + std::string(var) + "\" ya fue definida.";
+                error_msg += "Este arroz_con_mango \"" + string(var) + "\" ya se prendió locota.";
                 break;
+
             case NON_DEF_UNION:
-                error_msg += "Variante \"" + std::string(var) + "\" no definida.";
+                error_msg += "Este coliao \"" + string(var) + "\" esta en tu cabeza nada más. Deja la droga.";
                 break;
             case ALREADY_DEF_UNION:
-                error_msg += "Variante \"" + std::string(var) + "\" ya fue definida.";
+                error_msg += "Quieres colear a \"" + string(var) + "\" dos veces, abusador.";
+                break;
+
+            case NON_DEF_TYPE:
+                error_msg += "El tipo este \"" + string(var) + "\" lo tienes adentro debe ser. Nadie lo ve.";
+                break;
+			case ALREADY_DEF_TYPE:
+				error_msg += "El tipo este \"" + string(var) + "\" ya existe. Dice que te extraña de anoche.";
+				break;
+
+            case NON_DEF_ATTR:
+                error_msg += "Este atributo \"" + string(var) + "\" esta en tu cabeza nada más. Deja la droga.";
                 break;
             case ALREADY_DEF_ATTR:
-                error_msg += "Atributo \"" + std::string(var) + "\" ya fue definido.";
+                error_msg += "Este atributo \"" + string(var) + "\" es de otro peo, copion.";
                 break;
-            case NON_DEF_TYPE:
-                error_msg += "Tipo \"" + std::string(var) + "\" no definido.";
-                break;
+
             case VAR_FOR:
-                error_msg += "Variable \"" + std::string(var) + "\" es de ciclo `repite_burda`. No se admite cambiar su valor.";
+                error_msg += "Esta variable \"" + string(var) + "\" es de `repite_burda`. Déjala quieta, no se cambia. Men tiende?";
                 break;
+
             case VAR_TRY:
-                error_msg += "Variable \"" + std::string(var) + "\" es de estructura `fuera_del_perol`. No se admite cambiar su valor.";
+                error_msg += "Esta variable \"" + string(var) + "\" es de `Meando_fuera_del_perol`. Déjala quieta, no se cambia. Men tiende?";
                 break;
+
             case TYPE_ERROR:
-                error_msg += "Tipo incompatible. Esperado: \"" + std::string(var) + "\".";
+                error_msg += "Tas en droga?. Manda un \"" + string(var) + "\" sino no va a furular.";
                 break;
+
             case SEGMENTATION_FAULT:
-                error_msg += "Índice \"" + std::string(var) + "\" fuera de rango.";
+                error_msg += "Te fuiste pal quinto c#%o. Índice \"" + string(var) + "\" fuera de rango.";
                 break;
-            case PARAMETERS_ERROR:
-                error_msg += "Error en la función \"" + std::string(var) + "\": Excede la cantidad de parámetros.";
+
+            case FUNC_PARAM_EXCEEDED:
+                error_msg += "No le metas al cuento \"" + string(var) + "\" más vainas, no caben loco.";
                 break;
+			case FUNC_PARAM_MISSING:
+				error_msg += "Párale bolas al cuento \"" + string(var) + "\" que faltan más vainas.";
+				break;
+
             case EMPTY_ARRAY_CONSTANT:
-                error_msg += "Array \"" + std::string(var) + "\" declarado constante.";
+                error_msg += "El array \"" + string(var) + "\" es una jeva. No se cambio loco, respeta.";
                 break;
+
             case POINTER_ARRAY:
-                error_msg += "Array \"" + std::string(var) + "\" declarado apuntador.";
+                error_msg += "El array \"" + string(var) + "\" es un apuntador. Cuidao te dá.";
                 break;
+
             case INT_SIZE_ARRAY:
-                error_msg += "Tamano de array no puede ser definido como: \"" + std::string(var) + "\". Solo admite enteros";
+                error_msg += "El array \"" + string(var) + "\" solo recibe mangos.";
                 break;
+
             case INT_INDEX_ARRAY:
-                error_msg += "El indice del array no puede ser definido como: \"" + std::string(var) + "\". Solo admite enteros"; 
-                break;           
-            case DEBUGGING_TYPE:
-                error_msg += std::string(var);
+                error_msg += "Al array no se le entra con \"" + string(var) + "\" solo mangos chamo. Aprende."; 
                 break;
+
+            case DEBUGGING_TYPE:
+                error_msg += string(var);
+                break;
+
             default:
-                cout << "AAAAAAA" << ERROR_TYPE;
+                cout << "Este beta es: " << ERROR_TYPE;
                 error_msg += "Error desconocido.";
                 break;
         }
