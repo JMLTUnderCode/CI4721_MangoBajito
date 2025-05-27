@@ -24,7 +24,6 @@ extern YYLTYPE yylloc;
 
 SymbolTable symbolTable = SymbolTable();
 
-// Inicialización del diccionario de errores
 unordered_map<errorType, vector<string>> errorDictionary = {
     {SEMANTIC_TYPE, {}},
     {NON_DEF_VAR, {}},
@@ -76,7 +75,6 @@ vector<tac_func> tac_func_stack; // Pila para manejar etiquetas de control de fu
 vector<tac_params> tac_params_stack; // Pila para manejar parámetros de funciones
 %}
 
-// ...existing code...
 %code requires {
     #include <cstring>
     #include <vector>
@@ -97,8 +95,6 @@ vector<tac_params> tac_params_stack; // Pila para manejar parámetros de funcion
         char* temp;
     };
     
-
-
 struct ArrayValue {
     std::vector<ExpresionAttribute> elements;
     std::string type;
@@ -121,7 +117,7 @@ struct ArrayValue {
             case ExpresionAttribute::INT:    return "mango";
             case ExpresionAttribute::FLOAT:  return "manguita";
             case ExpresionAttribute::DOUBLE: return "manguangua";
-            case ExpresionAttribute::BOOL:   return "bool";
+            case ExpresionAttribute::BOOL:   return "tas_claro";
             case ExpresionAttribute::CHAR:   return "negro";
             case ExpresionAttribute::STRING: return "higuerote";
             case ExpresionAttribute::POINTER:return "pointer";
@@ -439,29 +435,26 @@ declaracion:
     | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
         if(current_array_size > 0 && current_array_base_type != nullptr){
             // Verificar que el tipo base existe
+
             Attributes* base_type_attr = symbolTable.search_symbol(current_array_base_type);
             if (symbolTable.search_symbol($4) == nullptr){
                 ERROR_TYPE = NON_DEF_TYPE;
                 yyerror(current_array_base_type);
-                exit(1);
             };
 
             if (base_type_attr == nullptr){ // Check if the base type (e.g., "mango") is defined
                 ERROR_TYPE = NON_DEF_TYPE;
                 yyerror(current_array_base_type); // Error with the base type name
-                exit(1);
             }
 
             if (strcmp($1, "POINTER_C") == 0 || strcmp($1, "POINTER_V") == 0) {
                 ERROR_TYPE = SEMANTIC_TYPE;
                 yyerror("No se pueden declarar punteros a arrays");
-                exit(1);
             }
 
             if ($6.type != ExpresionAttribute::ARRAY_LITERAL) {
                 ERROR_TYPE = TYPE_ERROR;
                 yyerror(("Se esperaba un literal de array para la inicialización del array '" + std::string($2) + "'").c_str());
-                exit(1);
             }
 
             ArrayValue* assigned_array_literal = $6.arr_val;
@@ -471,15 +464,14 @@ declaracion:
                 yyerror(("El tamaño del literal de array (" + std::to_string(assigned_array_literal->elements.size()) +
                          ") no coincide con el tamaño declarado del array '" + std::string($2) + "' (" +
                          std::to_string(current_array_size) + ")").c_str());
-                exit(1);
             }
 
             if (assigned_array_literal->type != base_type_attr->symbol_name) {
+
                 ERROR_TYPE = TYPE_ERROR;
                 yyerror(("El tipo de los elementos del literal de array ('" + assigned_array_literal->type +
                          "') no coincide con el tipo base declarado del array '" + std::string($2) +
                          "' ('" + base_type_attr->symbol_name + "')").c_str());
-                exit(1);
             }
 
             // Crear los atributos del array
@@ -491,15 +483,22 @@ declaracion:
             // Se asume que current_array_size contiene el tamaño del array
             attributes->value = current_array_size;
 
+
             // Crear cada elemento del array
            for (int i = 0; i < current_array_size; i++) {
+
                 Attributes* elem_attr = new Attributes(); // Attribute for the array element
+
                 elem_attr->symbol_name = std::string($2) + "[" + std::to_string(i) + "]";
+
                 elem_attr->scope = symbolTable.current_scope;
+
                 elem_attr->category = ARRAY_ELEMENT;
+
                 // If array is CONSTANTE, its elements are also effectively constant after initialization
                 // You might need a flag in Attributes or a different category if this has further implications.
                 elem_attr->type = base_type_attr; // Element type is the array's base type
+
 
                 ExpresionAttribute current_literal_element = assigned_array_literal->elements[i];
                 std::string expected_element_type_str = base_type_attr->symbol_name;
@@ -698,7 +697,6 @@ declaracion:
                 break;
 
 	        case ExpresionAttribute::POINTER:
-	            //cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
 	            attributes->value = nullptr;
 	            break;
 	        
@@ -1399,7 +1397,6 @@ expresion:
 	}
     | T_VALUE {
        if (current_array_name != "") {
-            std::cout << "Current array name: " << current_array_name << std::endl; 
             Attributes *array_attr = symbolTable.search_symbol(current_array_name.c_str());
             if (array_attr == nullptr) {
                 yyerror("Array no definido");
