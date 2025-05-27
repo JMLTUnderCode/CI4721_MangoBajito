@@ -296,19 +296,19 @@ declaracion:
             if (base_type_attr == nullptr) {
                 ERROR_TYPE = NON_DEF_TYPE;
                 yyerror(current_array_base_type);
-                //exit(1);
+                exit(1);
             }
 
             // Validar categoría de declaración
             if (strcmp($1, "CONSTANTE") == 0) {
-                ERROR_TYPE = EMPTY_ARRAY_CONSTANT;
-                yyerror($2);
-                //exit(1);
+                ERROR_TYPE = SEMANTIC_TYPE;
+                yyerror("No se pueden declarar arrays constantes");
+                exit(1);
             }
             if (strcmp($1, "POINTER_C") == 0 || strcmp($1, "POINTER_V") == 0) {
-                ERROR_TYPE = POINTER_ARRAY;
-                yyerror($2);
-                //exit(1);
+                ERROR_TYPE = SEMANTIC_TYPE;
+                yyerror("No se pueden declarar punteros a arrays");
+                exit(1);
             }
 
             // Crear atributos del array
@@ -334,7 +334,7 @@ declaracion:
                 if (!symbolTable.insert_symbol(elem->symbol_name, *elem)) {
                     ERROR_TYPE = ALREADY_DEF_VAR;
                     yyerror(elem->symbol_name.c_str());
-                    //exit(1);
+                    exit(1);
                 }
             }
 
@@ -342,24 +342,23 @@ declaracion:
             if (!symbolTable.insert_symbol($2, *attributes)) {
                 ERROR_TYPE = ALREADY_DEF_VAR;
                 yyerror($2);
-                //exit(1);
+                exit(1);
             }
 
-            string current_array_name = "";
-            int current_array_size = 0;
-            const char* current_array_base_type = nullptr;            
+            current_array_name = "";
+            current_array_size = 0;
+            current_array_base_type = nullptr;            
         }
         // Caso normal (no array)
         else {
             if (symbolTable.search_symbol($4) == nullptr) {
                 ERROR_TYPE = NON_DEF_TYPE;
                 yyerror($4);
-                //exit(1);
+                exit(1);
             }
 
             Attributes *attributes = new Attributes();
             attributes->symbol_name = $2;
-			attributes->info.push_back({"-", nullptr});
             attributes->scope = symbolTable.current_scope;
             attributes->type = symbolTable.search_symbol($4);
 
@@ -376,15 +375,73 @@ declaracion:
             if (!symbolTable.insert_symbol($2, *attributes)) {
                 ERROR_TYPE = ALREADY_DEF_VAR;
                 yyerror($2);
-                //exit(1);
+                exit(1);
             }
         }
     }
     | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
+        std::cout << "Current array size: " << current_array_size << std::endl; 
+        if(current_array_size > 0 && current_array_base_type != nullptr){
+            // Verificar que el tipo base existe
+            Attributes* base_type_attr = symbolTable.search_symbol(current_array_base_type);
+            if (symbolTable.search_symbol($4) == nullptr){
+                ERROR_TYPE = NON_DEF_TYPE;
+                yyerror(current_array_base_type);
+                exit(1);
+            };
+
+            if (strcmp($1, "POINTER_C") == 0 || strcmp($1, "POINTER_V") == 0) {
+                ERROR_TYPE = SEMANTIC_TYPE;
+                yyerror("No se pueden declarar punteros a arrays");
+                exit(1);
+            }
+
+            // Crear los atributos del array
+            Attributes* attributes = new Attributes();
+            attributes->symbol_name = $2;
+            attributes->category = ARRAY;
+            attributes->scope = symbolTable.current_scope;
+            attributes->type = base_type_attr;
+            // Se asume que current_array_size contiene el tamaño del array
+            attributes->value = current_array_size;
+
+            // Crear cada elemento del array
+            for (int i = 0; i < current_array_size; i++) {
+                Attributes* elem = new Attributes();
+                elem->symbol_name = std::string($2) + "[" + std::to_string(i) + "]";
+                elem->scope = symbolTable.current_scope;
+                elem->category = ARRAY_ELEMENT;
+                elem->type = base_type_attr;
+                elem->value = nullptr;
+            
+                // Registrar el elemento en el atributo del array
+                attributes->info.push_back({std::string($2) + "[" + std::to_string(i) + "]", elem});
+            
+                // Insertar el elemento en la tabla de símbolos (opcional)
+                if (!symbolTable.insert_symbol(elem->symbol_name, *elem)) {
+                    ERROR_TYPE = ALREADY_DEF_VAR;
+                    yyerror(elem->symbol_name.c_str());
+                    exit(1);
+                }
+            }                      
+
+            // Insertar el atributo del array en la tabla de símbolos
+            if (!symbolTable.insert_symbol($2, *attributes)) {
+                ERROR_TYPE = ALREADY_DEF_VAR;
+                yyerror($2);
+                exit(1);
+            }
+        
+            // Resetear las variables globales relativas al array
+            current_array_name = "";
+            current_array_size = 0;
+            current_array_base_type = nullptr;
+        }
+        else {
         if (symbolTable.search_symbol($4) == nullptr){
 			ERROR_TYPE = NON_DEF_TYPE;
             yyerror($4);
-            //exit(1);
+            exit(1);
         };
 
 		if (current_function_type != ""){ // En caso de asignacion de funciones.
@@ -393,7 +450,7 @@ declaracion:
 				ERROR_TYPE = TYPE_ERROR;
 				string error_message = type_id + "\". Recibido: \"" + current_function_type;
 				yyerror(error_message.c_str());
-				//exit(1);
+				exit(1);
 			}
 			current_function_type = "";
 		}
@@ -416,79 +473,50 @@ declaracion:
 
 	    switch($6.type) {
 	        case ExpresionAttribute::INT:
-				if(string($4) != "mango") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
-					yyerror(error_message.c_str());
-				}
+	            cout << "ASIGNANDO ENTERO: valor = " << $6.ival << endl;
 	            attributes->value = $6.ival;
 	            break;
 	        
 	        case ExpresionAttribute::FLOAT:
-				if(string($4) != "manguita") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
-					yyerror(error_message.c_str());
-				}
+	            //cout << "ASIGNANDO FLOAT: valor = " << $6.fval << endl;
 	            attributes->value = $6.fval;
 	            break;
 	        
 			case ExpresionAttribute::DOUBLE:
-				if(string($4) != "manguangua") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
-					yyerror(error_message.c_str());
-				}
+	            //cout << "ASIGNANDO DOUBLE: valor = " << $6.dval << endl;
 	            attributes->value = $6.dval;
 	            break;
 
 	        case ExpresionAttribute::BOOL:
-                if(string($4) == "tas_claro") {
-                    attributes->value = (bool)$6.ival;
-                    if (!attributes->info.empty()) {
-                        attributes->info[0].first = ($6.ival ? std::string("Sisa") : std::string("Nolsa"));
-                    } else {
-                        attributes->info.push_back({($6.ival ? std::string("Sisa") : std::string("Nolsa")), nullptr});
-                    }
-                } else { 
-                    ERROR_TYPE = TYPE_ERROR;
-                    string error_message = "No se puede asignar un valor booleano al tipo '" + string($4) + "'.";
-                    yyerror(error_message.c_str());
-                    
-                }
-                break;
+	            //cout << "ASIGNANDO BOOL: valor = " << (strcmp($6.sval, "Sisa") == 0 ? "true" : "false") << endl;
+	            attributes->value = strcmp($6.sval, "Sisa") == 0 ? true : false;
+	            break;
 	        
 	        case ExpresionAttribute::STRING:
-				if(string($4) != "higuerote") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
-					yyerror(error_message.c_str());
-				}
+	            //cout << "ASIGNANDO STRING: valor = \"" << $6.sval << "\"" << endl;
 	            attributes->value = string($6.sval);
 	            break;
 
             case ExpresionAttribute::CHAR:
-				if(string($4) != "negro") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = string($4) + "\". Recibido: \"" + string(typeToString($6.type));
-					yyerror(error_message.c_str());
-				}
                 attributes->value = $6.cval;
                 break;
 
 	        case ExpresionAttribute::POINTER:
+	            //cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
 	            attributes->value = nullptr;
 	            break;
 	        
 	        default:
+	            cout << "TIPO DESCONOCIDO: Asignando nullptr a: " << $2 << endl;
 	            attributes->value = nullptr;
 	    }
 
         if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($2);
-            //exit(1);
+            exit(1);
         };
+    }
     }
 	| declaracion_funcion
     ;
@@ -519,6 +547,10 @@ tipos:
 	    // Obtener tipo base y tamaño
 	    char* base_type = $1;
 	    int array_size = $3.ival;
+
+        std::cout << "[DEBUG] Array Type Declaration: Base type identified as '" 
+                  << (base_type ? base_type : "null") 
+                  << "' for an array of size " << array_size << std::endl;
 
 	    // Registrar tamaño en variable global temporal
 	    current_array_size = array_size; // Variable global para tamaño
@@ -1161,6 +1193,7 @@ expresion:
 	}
     | T_VALUE {
        if (current_array_name != "") {
+            std::cout << "Current array name: " << current_array_name << std::endl; 
             Attributes *array_attr = symbolTable.search_symbol(current_array_name.c_str());
             if (array_attr == nullptr) {
                 yyerror("Array no definido");
@@ -2146,11 +2179,7 @@ funcion:
 	}
 
 arreglo:
-    T_IZQCORCHE secuencia T_DERCORCHE {
-		current_array_name = "";
-        current_array_size = 0;
-        const char* current_array_base_type = nullptr;
-	}
+    T_IZQCORCHE secuencia T_DERCORCHE
     ;
 
 var_manejo_error:
