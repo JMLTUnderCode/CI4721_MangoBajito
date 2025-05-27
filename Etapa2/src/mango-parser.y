@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include "mango-bajito.hpp"
 #include <cstring>
+#include <vector>
+#include <string>
 
 using namespace std;
 
@@ -65,19 +67,42 @@ const char* current_array_base_type = nullptr;
 
 %}
 
+// ...existing code...
 %code requires {
     #include <cstring>
-	struct ExpresionAttribute {
-		enum Type { INT, FLOAT, DOUBLE, BOOL, STRING, POINTER, ID, CHAR, VOID} type;
-		union {
-			int ival;
-			float fval;
-			double dval;
-			char* sval;
+    #include <vector>
+
+    // Forward declare ArrayValue
+    struct ArrayValue;
+
+    struct ExpresionAttribute {
+        enum Type { INT, FLOAT, DOUBLE, BOOL, STRING, POINTER, ID, CHAR, VOID, ARRAY_LITERAL } type; // Keep ARRAY_LITERAL if you added it from previous suggestion
+        union {
+            int ival;
+            float fval;
+            double dval;
+            char* sval;
             char cval;
-		};
-	};       
+            ArrayValue* arr_val;
+        };
+    };
+
+struct ArrayValue {
+    std::vector<ExpresionAttribute> elements;
+    std::string type;
+    
+    ArrayValue(const std::string& t) : type(t) {}
+    
+    ~ArrayValue() {
+        for(auto& elem : elements) {
+            if(elem.type == ExpresionAttribute::STRING && elem.sval) {
+                delete[] elem.sval;
+            }
+        }
+    }
+};
 }
+// ...existing code...
 
 %code requires {
     inline char* typeToString(ExpresionAttribute::Type type) {
@@ -126,6 +151,7 @@ const char* current_array_base_type = nullptr;
 
 %union {
 	ExpresionAttribute att_val; // Usa el struct definido
+    ArrayValue* array; 
     int ival;
     float fval;
     double dval;
@@ -165,6 +191,7 @@ const char* current_array_base_type = nullptr;
 %type <att_val> expresion
 %type <ival> operadores_asignacion
 %type <att_val> valores_booleanos
+%type <array> secuencia arreglo
 
 // Declaracion de precedencia y asociatividad de Operadores
 // Asignacion
@@ -302,6 +329,7 @@ instruccion:
 
 declaracion:
     tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos {
+        std::cout << "2" << std::endl; 
         // Caso para arrays (detectado por variables globales)
         if (current_array_size > 0 && current_array_base_type != nullptr) {
             // Verificar que el tipo base existe
@@ -366,7 +394,6 @@ declaracion:
 
             Attributes *attributes = new Attributes();
             attributes->symbol_name = $2;
-			attributes->info.push_back({"-", nullptr});
             attributes->scope = symbolTable.current_scope;
             attributes->type = symbolTable.search_symbol($4);
 
@@ -387,6 +414,172 @@ declaracion:
         }
     }
     | tipo_declaracion T_IDENTIFICADOR T_DOSPUNTOS tipos T_ASIGNACION expresion {
+        if(current_array_size > 0 && current_array_base_type != nullptr){
+            // Verificar que el tipo base existe
+            Attributes* base_type_attr = symbolTable.search_symbol(current_array_base_type);
+            if (symbolTable.search_symbol($4) == nullptr){
+                ERROR_TYPE = NON_DEF_TYPE;
+                yyerror(current_array_base_type);
+                exit(1);
+            };
+
+            if (base_type_attr == nullptr){ // Check if the base type (e.g., "mango") is defined
+                ERROR_TYPE = NON_DEF_TYPE;
+                yyerror(current_array_base_type); // Error with the base type name
+                exit(1);
+            }
+
+            if (strcmp($1, "POINTER_C") == 0 || strcmp($1, "POINTER_V") == 0) {
+                ERROR_TYPE = SEMANTIC_TYPE;
+                yyerror("No se pueden declarar punteros a arrays");
+                exit(1);
+            }
+
+            if ($6.type != ExpresionAttribute::ARRAY_LITERAL) {
+                ERROR_TYPE = TYPE_ERROR;
+                yyerror(("Se esperaba un literal de array para la inicialización del array '" + std::string($2) + "'").c_str());
+                exit(1);
+            }
+
+            ArrayValue* assigned_array_literal = $6.arr_val;
+
+            if (static_cast<int>(assigned_array_literal->elements.size()) != current_array_size) {
+                ERROR_TYPE = SEMANTIC_TYPE; // Or a more specific "ARRAY_LITERAL_SIZE_MISMATCH"
+                yyerror(("El tamaño del literal de array (" + std::to_string(assigned_array_literal->elements.size()) +
+                         ") no coincide con el tamaño declarado del array '" + std::string($2) + "' (" +
+                         std::to_string(current_array_size) + ")").c_str());
+                exit(1);
+            }
+
+            if (assigned_array_literal->type != base_type_attr->symbol_name) {
+                ERROR_TYPE = TYPE_ERROR;
+                yyerror(("El tipo de los elementos del literal de array ('" + assigned_array_literal->type +
+                         "') no coincide con el tipo base declarado del array '" + std::string($2) +
+                         "' ('" + base_type_attr->symbol_name + "')").c_str());
+                exit(1);
+            }
+
+            // Crear los atributos del array
+            Attributes* attributes = new Attributes();
+            attributes->symbol_name = $2;
+            attributes->category = ARRAY;
+            attributes->scope = symbolTable.current_scope;
+            attributes->type = base_type_attr;
+            // Se asume que current_array_size contiene el tamaño del array
+            attributes->value = current_array_size;
+
+            // Crear cada elemento del array
+           for (int i = 0; i < current_array_size; i++) {
+                Attributes* elem_attr = new Attributes(); // Attribute for the array element
+                elem_attr->symbol_name = std::string($2) + "[" + std::to_string(i) + "]";
+                elem_attr->scope = symbolTable.current_scope;
+                elem_attr->category = ARRAY_ELEMENT;
+                // If array is CONSTANTE, its elements are also effectively constant after initialization
+                // You might need a flag in Attributes or a different category if this has further implications.
+                elem_attr->type = base_type_attr; // Element type is the array's base type
+
+                ExpresionAttribute current_literal_element = assigned_array_literal->elements[i];
+                std::string expected_element_type_str = base_type_attr->symbol_name;
+
+                // Assign value to elem_attr->value based on current_literal_element
+                // This switch handles direct values and resolves IDs if they appear in the literal.
+                switch(current_literal_element.type) {
+                    case ExpresionAttribute::INT:
+                        if (expected_element_type_str != "mango") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo mango del literal.").c_str()); exit(1); }
+                        elem_attr->value = current_literal_element.ival;
+                        break;
+                    case ExpresionAttribute::FLOAT:
+                        if (expected_element_type_str != "manguita") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo manguita del literal.").c_str()); exit(1); }
+                        elem_attr->value = current_literal_element.fval;
+                        break;
+                    case ExpresionAttribute::DOUBLE:
+                        if (expected_element_type_str != "manguangua") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo manguangua del literal.").c_str()); exit(1); }
+                        elem_attr->value = current_literal_element.dval;
+                        break;
+                    case ExpresionAttribute::BOOL:
+                        if (expected_element_type_str != "tas_claro") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo tas_claro (bool) del literal.").c_str()); exit(1); }
+                        elem_attr->value = (bool)current_literal_element.ival; // Assuming ival stores 0 or 1
+                        break;
+                    case ExpresionAttribute::STRING:
+                        if (expected_element_type_str != "higuerote") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo higuerote del literal.").c_str()); exit(1); }
+                        elem_attr->value = std::string(current_literal_element.sval); // Create a copy for the variant
+                        break;
+                    case ExpresionAttribute::CHAR:
+                        if (expected_element_type_str != "negro") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo negro del literal.").c_str()); exit(1); }
+                        elem_attr->value = current_literal_element.cval;
+                        break;
+                    case ExpresionAttribute::POINTER:
+                        // Check if expected_element_type_str is a known pointer type if you have specific pointer types
+                        // For a generic pointer type, this might be okay.
+                        // if (expected_element_type_str != "name_of_pointer_type") { ERROR_TYPE = TYPE_ERROR; ... exit(1); }
+                        elem_attr->value = nullptr; // Assuming pointer literals evaluate to nullptr or a specific address if supported
+                        break;
+                    case ExpresionAttribute::ID:
+                        {
+                            Attributes* id_attr_in_literal = symbolTable.search_symbol(current_literal_element.sval);
+                            if (!id_attr_in_literal) { ERROR_TYPE = NON_DEF_VAR; yyerror(current_literal_element.sval); exit(1); }
+                            if (!id_attr_in_literal->type) { ERROR_TYPE = SEMANTIC_TYPE; yyerror(("Variable '" + std::string(current_literal_element.sval) + "' en literal no tiene tipo.").c_str()); exit(1); }
+
+                            // Check if the ID's type matches the array's expected element type
+                            if (id_attr_in_literal->type->symbol_name != expected_element_type_str) {
+                                ERROR_TYPE = TYPE_ERROR;
+                                yyerror(("El tipo de la variable '" + std::string(current_literal_element.sval) + "' (" + id_attr_in_literal->type->symbol_name +
+                                         ") en el literal no coincide con el tipo esperado del elemento del array ('" + expected_element_type_str + "').").c_str());
+                                exit(1);
+                            }
+                            if (std::holds_alternative<std::nullptr_t>(id_attr_in_literal->value) && id_attr_in_literal->type->symbol_name != "pointer") { // Allow uninitialized pointers
+                                ERROR_TYPE = NON_DEF_VAR;
+                                yyerror(("Variable '" + std::string(current_literal_element.sval) + "' usada en literal de array antes de ser inicializada.").c_str());
+                                exit(1);
+                            }
+
+                            // Assign from the ID's value based on its (now confirmed) type
+                            if (expected_element_type_str == "mango" && std::holds_alternative<int>(id_attr_in_literal->value)) elem_attr->value = std::get<int>(id_attr_in_literal->value);
+                            else if (expected_element_type_str == "manguita" && std::holds_alternative<float>(id_attr_in_literal->value)) elem_attr->value = std::get<float>(id_attr_in_literal->value);
+                            else if (expected_element_type_str == "manguangua" && std::holds_alternative<double>(id_attr_in_literal->value)) elem_attr->value = std::get<double>(id_attr_in_literal->value);
+                            else if (expected_element_type_str == "tas_claro" && std::holds_alternative<bool>(id_attr_in_literal->value)) elem_attr->value = std::get<bool>(id_attr_in_literal->value);
+                            else if (expected_element_type_str == "higuerote" && std::holds_alternative<std::string>(id_attr_in_literal->value)) elem_attr->value = std::get<std::string>(id_attr_in_literal->value);
+                            else if (expected_element_type_str == "negro" && std::holds_alternative<char>(id_attr_in_literal->value)) elem_attr->value = std::get<char>(id_attr_in_literal->value);
+                            // Add more types as needed, including pointers if they can be assigned from variables
+                            else if (std::holds_alternative<std::nullptr_t>(id_attr_in_literal->value) && id_attr_in_literal->type->symbol_name == "pointer") { // Example for generic pointer
+                                elem_attr->value = nullptr; // Or copy the pointer value if it's more complex
+                            }
+                            else {
+                                ERROR_TYPE = TYPE_ERROR;
+                                yyerror(("Error al obtener el valor de la variable '" + std::string(current_literal_element.sval) + "' para el literal del array (tipo de variante no coincide).").c_str());
+                                exit(1);
+                            }
+                        }
+                        break;
+                    default:
+                        ERROR_TYPE = TYPE_ERROR;
+                        yyerror(("Tipo de dato inesperado '" + std::string(typeToString(current_literal_element.type)) +
+                                 "' en el literal del array para el elemento '" + elem_attr->symbol_name + "'.").c_str());
+                        exit(1);
+                }
+            
+                attributes->info.push_back({elem_attr->symbol_name, elem_attr}); // Store element info in parent array
+            
+                if (!symbolTable.insert_symbol(elem_attr->symbol_name, *elem_attr)) {
+                    ERROR_TYPE = ALREADY_DEF_VAR;
+                    yyerror(elem_attr->symbol_name.c_str());
+                    exit(1);
+                }
+            }                        
+
+            // Insertar el atributo del array en la tabla de símbolos
+            if (!symbolTable.insert_symbol($2, *attributes)) {
+                ERROR_TYPE = ALREADY_DEF_VAR;
+                yyerror($2);
+                exit(1);
+            }
+        
+            // Resetear las variables globales relativas al array
+            current_array_name = "";
+            current_array_size = 0;
+            current_array_base_type = nullptr;
+        }
+        else {
         if (symbolTable.search_symbol($4) == nullptr){
 			ERROR_TYPE = NON_DEF_TYPE;
             yyerror($4);
@@ -482,18 +675,21 @@ declaracion:
                 break;
 
 	        case ExpresionAttribute::POINTER:
+	            //cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
 	            attributes->value = nullptr;
 	            break;
 	        
 	        default:
+	            cout << "TIPO DESCONOCIDO: Asignando nullptr a: " << $2 << endl;
 	            attributes->value = nullptr;
 	    }
 
         if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($2);
-            //exit(1);
+            exit(1);
         };
+    }
     }
 	| declaracion_funcion
     ;
@@ -523,6 +719,7 @@ tipos:
 	    // Obtener tipo base y tamaño
 	    char* base_type = $1;
 	    int array_size = $3.ival;
+
 
 	    // Registrar tamaño en variable global temporal
 	    current_array_size = array_size; // Variable global para tamaño
@@ -1162,6 +1359,7 @@ expresion:
 	}
     | T_VALUE {
        if (current_array_name != "") {
+            std::cout << "Current array name: " << current_array_name << std::endl; 
             Attributes *array_attr = symbolTable.search_symbol(current_array_name.c_str());
             if (array_attr == nullptr) {
                 yyerror("Array no definido");
@@ -1279,7 +1477,10 @@ expresion:
     | valores_booleanos { $$ = $1; }
     | expresion_apuntador 
     | expresion_nuevo
-    | arreglo
+    | arreglo {
+        $$.type = ExpresionAttribute::ARRAY_LITERAL;
+        $$.arr_val = $1;
+    }
     | T_NELSON expresion {
         ExpresionAttribute _op_not = $2;
         bool val_not;
@@ -1906,8 +2107,22 @@ entrada_salida:
     ;
 
 secuencia:
-    | secuencia T_COMA expresion 
-    | expresion 
+    | secuencia T_COMA expresion {
+        // Verificar consistencia de tipos
+        if ($1->type != typeToString($3.type)) {
+            yyerror("Todos los elementos del array deben ser del mismo tipo");
+            YYERROR;
+        }
+        
+        // Agregar elemento al vector
+        $1->elements.push_back($3);
+        $$ = $1;
+    }
+    | expresion {
+        // Crear nuevo array con el primer elemento
+        $$ = new ArrayValue(typeToString($1.type)); 
+        $$->elements.push_back($1);
+    }
     ;
 
 secuencia_declaraciones:
@@ -2147,11 +2362,7 @@ funcion:
 	}
 
 arreglo:
-    T_IZQCORCHE secuencia T_DERCORCHE {
-		current_array_name = "";
-        current_array_size = 0;
-        const char* current_array_base_type = nullptr;
-	}
+    T_IZQCORCHE secuencia T_DERCORCHE { $$ = $2; }
     ;
 
 var_manejo_error:
