@@ -601,125 +601,126 @@ declaracion:
             current_array_name = "";
             current_array_size = 0;
             current_array_base_type = nullptr;
-        }
-        else {
-        if (symbolTable.search_symbol($4) == nullptr){
-			ERROR_TYPE = NON_DEF_TYPE;
-            yyerror($4);
-        };
 
-		if (current_function_type != ""){ // En caso de asignacion de funciones.
-			string type_id = symbolTable.search_symbol($4)->symbol_name;
-			if (current_function_type != type_id){
-				ERROR_TYPE = TYPE_ERROR;
-				string error_message = "\"" + string($2) + "\" de tipo '" + type_id + 
-					"' y le quieres meter un cuento de tipo '" + current_function_type + "\", marbaa' bruja.";
-				yyerror(error_message.c_str());
+        } else {
+	        if (symbolTable.search_symbol($4) == nullptr){
+				ERROR_TYPE = NON_DEF_TYPE;
+	            yyerror($4);
+	        };
+
+			if (current_function_type != ""){ // En caso de asignacion de funciones.
+				string type_id = symbolTable.search_symbol($4)->symbol_name;
+				if (current_function_type != type_id){
+					ERROR_TYPE = TYPE_ERROR;
+					string error_message = "\"" + string($2) + "\" de tipo '" + type_id + 
+						"' y le quieres meter un cuento de tipo '" + current_function_type + "\", marbaa' bruja.";
+					yyerror(error_message.c_str());
+				}
+				current_function_type = "";
 			}
-			current_function_type = "";
-		}
 
-		Attributes *attributes = new Attributes();
-        attributes->symbol_name = $2;
-        attributes->scope = symbolTable.current_scope;
-        attributes->info.push_back({"-", nullptr});
-        attributes->type = symbolTable.search_symbol($4);
+			Attributes *attributes = new Attributes();
+	        attributes->symbol_name = $2;
+	        attributes->scope = symbolTable.current_scope;
+	        attributes->info.push_back({"-", nullptr});
+	        attributes->type = symbolTable.search_symbol($4);
 
-        if (strcmp($1, "POINTER_V") == 0){
-            attributes->category = POINTER_V;
-        } else if (strcmp($1, "POINTER_C") == 0){
-            attributes->category = POINTER_C;
-        } else if (strcmp($1, "VARIABLE") == 0){
-            attributes->category = VARIABLE;
-        } else if (strcmp($1, "CONSTANTE") == 0){
-            attributes->category = CONSTANT;
-        };
+	        if (strcmp($1, "POINTER_V") == 0){
+	            attributes->category = POINTER_V;
+	        } else if (strcmp($1, "POINTER_C") == 0){
+	            attributes->category = POINTER_C;
+	        } else if (strcmp($1, "VARIABLE") == 0){
+	            attributes->category = VARIABLE;
+	        } else if (strcmp($1, "CONSTANTE") == 0){
+	            attributes->category = CONSTANT;
+	        };
 
-	    switch($6.type) {
-	        case ExpresionAttribute::INT:
-				if(string($4) != "mango") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+		    switch($6.type) {
+		        case ExpresionAttribute::INT:
+					if(string($4) != "mango") {
+						ERROR_TYPE = TYPE_ERROR;
+						string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+						yyerror(error_message.c_str());
+					}
+		            attributes->value = $6.ival;
+		            break;
+		        
+		        case ExpresionAttribute::FLOAT:
+					if(string($4) != "manguita") {
+						ERROR_TYPE = TYPE_ERROR;
+						string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+						yyerror(error_message.c_str());
+					}
+		            attributes->value = $6.fval;
+		            break;
+		        
+				case ExpresionAttribute::DOUBLE:
+					if(string($4) != "manguangua") {
+						ERROR_TYPE = TYPE_ERROR;
+						string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+						yyerror(error_message.c_str());
+					}
+		            attributes->value = $6.dval;
+		            break;
+
+		        case ExpresionAttribute::BOOL:
+	                if(string($4) == "tas_claro") {
+	                    attributes->value = (bool)$6.ival;
+	                    if (!attributes->info.empty()) {
+	                        attributes->info[0].first = ($6.ival ? std::string("Sisa") : std::string("Nolsa"));
+	                    } else {
+	                        attributes->info.push_back({($6.ival ? std::string("Sisa") : std::string("Nolsa")), nullptr});
+	                    }
+	                } else { 
+	                    ERROR_TYPE = TYPE_ERROR;
+						string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+	                    yyerror(error_message.c_str());
+	                    
+	                }
+	                break;
+		        
+		        case ExpresionAttribute::STRING:
+					if(string($4) != "higuerote") {
+						ERROR_TYPE = TYPE_ERROR;
+						string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+						yyerror(error_message.c_str());
+					}
+		            attributes->value = string($6.sval);
+		            break;
+
+	            case ExpresionAttribute::CHAR:
+					if(string($4) != "negro") {
+						ERROR_TYPE = TYPE_ERROR;
+						string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+						yyerror(error_message.c_str());
+					}
+	                attributes->value = $6.cval;
+	                break;
+
+		        case ExpresionAttribute::POINTER:
+		            //cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
+		            attributes->value = nullptr;
+		            break;
+		        
+		        default:
+					ERROR_TYPE = DEBUGGING_TYPE;
+					string error_message = "TIPO DESCONOCIDO: Asignando nullptr a: " + string($2);
 					yyerror(error_message.c_str());
-				}
-	            attributes->value = $6.ival;
-	            break;
-	        
-	        case ExpresionAttribute::FLOAT:
-				if(string($4) != "manguita") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
-					yyerror(error_message.c_str());
-				}
-	            attributes->value = $6.fval;
-	            break;
-	        
-			case ExpresionAttribute::DOUBLE:
-				if(string($4) != "manguangua") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
-					yyerror(error_message.c_str());
-				}
-	            attributes->value = $6.dval;
-	            break;
+		            attributes->value = nullptr;
+		    }
 
-	        case ExpresionAttribute::BOOL:
-                if(string($4) == "tas_claro") {
-                    attributes->value = (bool)$6.ival;
-                    if (!attributes->info.empty()) {
-                        attributes->info[0].first = ($6.ival ? std::string("Sisa") : std::string("Nolsa"));
-                    } else {
-                        attributes->info.push_back({($6.ival ? std::string("Sisa") : std::string("Nolsa")), nullptr});
-                    }
-                } else { 
-                    ERROR_TYPE = TYPE_ERROR;
-					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
-                    yyerror(error_message.c_str());
-                    
-                }
-                break;
-	        
-	        case ExpresionAttribute::STRING:
-				if(string($4) != "higuerote") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
-					yyerror(error_message.c_str());
-				}
-	            attributes->value = string($6.sval);
-	            break;
+	        if (!symbolTable.insert_symbol($2, *attributes)){
+				ERROR_TYPE = ALREADY_DEF_VAR;
+	            yyerror($2);
+	        };
 
-            case ExpresionAttribute::CHAR:
-				if(string($4) != "negro") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
-					yyerror(error_message.c_str());
-				}
-                attributes->value = $6.cval;
-                break;
-
-	        case ExpresionAttribute::POINTER:
-	            //cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
-	            attributes->value = nullptr;
-	            break;
-	        
-	        default:
-	            cout << "TIPO DESCONOCIDO: Asignando nullptr a: " << $2 << endl;
-	            attributes->value = nullptr;
+	        // TAC para declaracion de variables + asignacion
+	        if ($6.temp == nullptr){
+	            cout << "temp attribute set to null"<<endl;
+	        }else{
+	            tac_instructions.emplace_back("ASSIGN", $6.temp, "", $2);
+	        }
 	    }
-
-        if (!symbolTable.insert_symbol($2, *attributes)){
-			ERROR_TYPE = ALREADY_DEF_VAR;
-            yyerror($2);
-            exit(1);
-        };
-
-        // TAC para declaracion de variables + asignacion
-        if ($6.temp == nullptr){
-            cout << "temp attribute set to null"<<endl;
-        }else{
-            tac_instructions.emplace_back("ASSIGN", $6.temp, "", $2);
-        }
-    }
     }
 	| declaracion_funcion
     ;
@@ -749,7 +750,6 @@ tipos:
 	    // Obtener tipo base y tamaño
 	    char* base_type = $1;
 	    int array_size = $3.ival;
-
 
 	    // Registrar tamaño en variable global temporal
 	    current_array_size = array_size; // Variable global para tamaño
@@ -816,7 +816,7 @@ asignacion:
             
         }
          if (lhs_attr->category == CONSTANT && op_type != 0) {
-            ERROR_TYPE = MODIFY_CONST; 
+            ERROR_TYPE = MODIFY_CONST;
             yyerror(lhs_name.c_str());
         }
         if (!lhs_attr->type) {
