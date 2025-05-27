@@ -975,12 +975,12 @@ asignacion:
         if ($3.temp == nullptr){
             cout << "temp attribute set to null"<<endl;
         }else{
-            /*AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA*/
-            /*AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA*/
-            /*if (strcmp("ASSIGN", $2) == 0) tac_instructions.emplace_back("ASSIGN", $3.temp, "", $1);
+            if ($2 == 0) tac_instructions.emplace_back("ASSIGN", $3.temp, "", $1);
             string temp = labelGen.newTemp();
-            tac_instructions.emplace_back($2, $1, $3.temp, temp);
-            tac_instructions.emplace_back("ASSIGN", temp, "", $1);*/
+            if ($2 == 1) tac_instructions.emplace_back("+", $1, $3.temp, temp);
+            if ($2 == 2) tac_instructions.emplace_back("-", $1, $3.temp, temp);
+            if ($2 == 3) tac_instructions.emplace_back("*", $1, $3.temp, temp);
+            tac_instructions.emplace_back("ASSIGN", temp, "", $1);
         }
     }    
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asignacion expresion {
