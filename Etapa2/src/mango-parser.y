@@ -523,25 +523,23 @@ declaracion:
                 // This switch handles direct values and resolves IDs if they appear in the literal.
                 switch(current_literal_element.type) {
                     case ExpresionAttribute::INT:
-                        if (expected_element_type_str != "mango") { 
-                            ERROR_TYPE = TYPE_ERROR; 
-                            yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo mango del literal.").c_str()); }
+                        if (expected_element_type_str != "mango") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo mango del literal.").c_str()); }
                         elem_attr->value = current_literal_element.ival;
                         break;
                     case ExpresionAttribute::FLOAT:
-                        if (expected_element_type_str != "manguita") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo manguita del literal.").c_str()); }
+                        if (expected_element_type_str != "manguita") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo manguita del literal.").c_str());  }
                         elem_attr->value = current_literal_element.fval;
                         break;
                     case ExpresionAttribute::DOUBLE:
-                        if (expected_element_type_str != "manguangua") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo manguangua del literal.").c_str());}
+                        if (expected_element_type_str != "manguangua") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo manguangua del literal.").c_str());  }
                         elem_attr->value = current_literal_element.dval;
                         break;
                     case ExpresionAttribute::BOOL:
-                        if (expected_element_type_str != "tas_claro") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo tas_claro (bool) del literal.").c_str());}
+                        if (expected_element_type_str != "tas_claro") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo tas_claro (bool) del literal.").c_str());  }
                         elem_attr->value = (bool)current_literal_element.ival; // Assuming ival stores 0 or 1
                         break;
                     case ExpresionAttribute::STRING:
-                        if (expected_element_type_str != "higuerote") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo higuerote del literal.").c_str()); }
+                        if (expected_element_type_str != "higuerote") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo higuerote del literal.").c_str());  }
                         elem_attr->value = std::string(current_literal_element.sval); // Create a copy for the variant
                         break;
                     case ExpresionAttribute::CHAR:
@@ -551,14 +549,14 @@ declaracion:
                     case ExpresionAttribute::POINTER:
                         // Check if expected_element_type_str is a known pointer type if you have specific pointer types
                         // For a generic pointer type, this might be okay.
-                        // if (expected_element_type_str != "name_of_pointer_type") { ERROR_TYPE = TYPE_ERROR; ... exit(1); }
+                        // if (expected_element_type_str != "name_of_pointer_type") { ERROR_TYPE = TYPE_ERROR; ...  }
                         elem_attr->value = nullptr; // Assuming pointer literals evaluate to nullptr or a specific address if supported
                         break;
                     case ExpresionAttribute::ID:
                         {
                             Attributes* id_attr_in_literal = symbolTable.search_symbol(current_literal_element.sval);
-                            if (!id_attr_in_literal) { ERROR_TYPE = NON_DEF_VAR; yyerror(current_literal_element.sval); exit(1); }
-                            if (!id_attr_in_literal->type) { ERROR_TYPE = SEMANTIC_TYPE; yyerror(("Variable '" + std::string(current_literal_element.sval) + "' en literal no tiene tipo.").c_str()); exit(1); }
+                            if (!id_attr_in_literal) { ERROR_TYPE = NON_DEF_VAR; yyerror(current_literal_element.sval);  }
+                            if (!id_attr_in_literal->type) { ERROR_TYPE = SEMANTIC_TYPE; yyerror(("Variable '" + std::string(current_literal_element.sval) + "' en literal no tiene tipo.").c_str());  }
 
                             // Check if the ID's type matches the array's expected element type
                             if (id_attr_in_literal->type->symbol_name != expected_element_type_str) {
@@ -615,123 +613,126 @@ declaracion:
             current_array_name = "";
             current_array_size = 0;
             current_array_base_type = nullptr;
-        }
-        else {
-        if (symbolTable.search_symbol($4) == nullptr){
-			ERROR_TYPE = NON_DEF_TYPE;
-            yyerror($4);
-        };
 
-		if (current_function_type != ""){ // En caso de asignacion de funciones.
-			string type_id = symbolTable.search_symbol($4)->symbol_name;
-			if (current_function_type != type_id){
-				ERROR_TYPE = TYPE_ERROR;
-				string error_message = "\"" + string($2) + "\" de tipo '" + type_id + 
-					"' y le quieres meter un cuento de tipo '" + current_function_type + "\", marbaa' bruja.";
-				yyerror(error_message.c_str());
+        } else {
+	        if (symbolTable.search_symbol($4) == nullptr){
+				ERROR_TYPE = NON_DEF_TYPE;
+	            yyerror($4);
+	        };
+
+			if (current_function_type != ""){ // En caso de asignacion de funciones.
+				string type_id = symbolTable.search_symbol($4)->symbol_name;
+				if (current_function_type != type_id){
+					ERROR_TYPE = TYPE_ERROR;
+					string error_message = "\"" + string($2) + "\" de tipo '" + type_id + 
+						"' y le quieres meter un cuento de tipo '" + current_function_type + "\", marbaa' bruja.";
+					yyerror(error_message.c_str());
+				}
+				current_function_type = "";
 			}
-			current_function_type = "";
-		}
 
-		Attributes *attributes = new Attributes();
-        attributes->symbol_name = $2;
-        attributes->scope = symbolTable.current_scope;
-        attributes->info.push_back({"-", nullptr});
-        attributes->type = symbolTable.search_symbol($4);
+			Attributes *attributes = new Attributes();
+	        attributes->symbol_name = $2;
+	        attributes->scope = symbolTable.current_scope;
+	        attributes->info.push_back({"-", nullptr});
+	        attributes->type = symbolTable.search_symbol($4);
 
-        if (strcmp($1, "POINTER_V") == 0){
-            attributes->category = POINTER_V;
-        } else if (strcmp($1, "POINTER_C") == 0){
-            attributes->category = POINTER_C;
-        } else if (strcmp($1, "VARIABLE") == 0){
-            attributes->category = VARIABLE;
-        } else if (strcmp($1, "CONSTANTE") == 0){
-            attributes->category = CONSTANT;
-        };
+	        if (strcmp($1, "POINTER_V") == 0){
+	            attributes->category = POINTER_V;
+	        } else if (strcmp($1, "POINTER_C") == 0){
+	            attributes->category = POINTER_C;
+	        } else if (strcmp($1, "VARIABLE") == 0){
+	            attributes->category = VARIABLE;
+	        } else if (strcmp($1, "CONSTANTE") == 0){
+	            attributes->category = CONSTANT;
+	        };
 
-	    switch($6.type) {
-	        case ExpresionAttribute::INT:
-				if(string($4) != "mango") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+		    switch($6.type) {
+		        case ExpresionAttribute::INT:
+					if(string($4) != "mango") {
+						ERROR_TYPE = TYPE_ERROR;
+						string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+						yyerror(error_message.c_str());
+					}
+		            attributes->value = $6.ival;
+		            break;
+		        
+		        case ExpresionAttribute::FLOAT:
+					if(string($4) != "manguita") {
+						ERROR_TYPE = TYPE_ERROR;
+						string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+						yyerror(error_message.c_str());
+					}
+		            attributes->value = $6.fval;
+		            break;
+		        
+				case ExpresionAttribute::DOUBLE:
+					if(string($4) != "manguangua") {
+						ERROR_TYPE = TYPE_ERROR;
+						string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+						yyerror(error_message.c_str());
+					}
+		            attributes->value = $6.dval;
+		            break;
+
+		        case ExpresionAttribute::BOOL:
+	                if(string($4) == "tas_claro") {
+	                    attributes->value = (bool)$6.ival;
+	                    if (!attributes->info.empty()) {
+	                        attributes->info[0].first = ($6.ival ? std::string("Sisa") : std::string("Nolsa"));
+	                    } else {
+	                        attributes->info.push_back({($6.ival ? std::string("Sisa") : std::string("Nolsa")), nullptr});
+	                    }
+	                } else { 
+	                    ERROR_TYPE = TYPE_ERROR;
+						string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+	                    yyerror(error_message.c_str());
+	                    
+	                }
+	                break;
+		        
+		        case ExpresionAttribute::STRING:
+					if(string($4) != "higuerote") {
+						ERROR_TYPE = TYPE_ERROR;
+						string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+						yyerror(error_message.c_str());
+					}
+		            attributes->value = string($6.sval);
+		            break;
+
+	            case ExpresionAttribute::CHAR:
+					if(string($4) != "negro") {
+						ERROR_TYPE = TYPE_ERROR;
+						string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
+						yyerror(error_message.c_str());
+					}
+	                attributes->value = $6.cval;
+	                break;
+
+		        case ExpresionAttribute::POINTER:
+		            //cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
+		            attributes->value = nullptr;
+		            break;
+		        
+		        default:
+					ERROR_TYPE = DEBUGGING_TYPE;
+					string error_message = "TIPO DESCONOCIDO: Asignando nullptr a: " + string($2);
 					yyerror(error_message.c_str());
-				}
-	            attributes->value = $6.ival;
-	            break;
-	        
-	        case ExpresionAttribute::FLOAT:
-				if(string($4) != "manguita") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
-					yyerror(error_message.c_str());
-				}
-	            attributes->value = $6.fval;
-	            break;
-	        
-			case ExpresionAttribute::DOUBLE:
-				if(string($4) != "manguangua") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
-					yyerror(error_message.c_str());
-				}
-	            attributes->value = $6.dval;
-	            break;
+		            attributes->value = nullptr;
+		    }
 
-	        case ExpresionAttribute::BOOL:
-                if(string($4) == "tas_claro") {
-                    attributes->value = (bool)$6.ival;
-                    if (!attributes->info.empty()) {
-                        attributes->info[0].first = ($6.ival ? std::string("Sisa") : std::string("Nolsa"));
-                    } else {
-                        attributes->info.push_back({($6.ival ? std::string("Sisa") : std::string("Nolsa")), nullptr});
-                    }
-                } else { 
-                    ERROR_TYPE = TYPE_ERROR;
-					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
-                    yyerror(error_message.c_str());
-                    
-                }
-                break;
-	        
-	        case ExpresionAttribute::STRING:
-				if(string($4) != "higuerote") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
-					yyerror(error_message.c_str());
-				}
-	            attributes->value = string($6.sval);
-	            break;
+	        if (!symbolTable.insert_symbol($2, *attributes)){
+				ERROR_TYPE = ALREADY_DEF_VAR;
+	            yyerror($2);
+	        };
 
-            case ExpresionAttribute::CHAR:
-				if(string($4) != "negro") {
-					ERROR_TYPE = TYPE_ERROR;
-					string error_message = "\"" + string($2) + "\" de tipo '" + string($4) + "' y le quieres meter un tipo '" + string(typeToString($6.type)) + "', marbaa' bruja.";
-					yyerror(error_message.c_str());
-				}
-                attributes->value = $6.cval;
-                break;
-
-	        case ExpresionAttribute::POINTER:
-	            attributes->value = nullptr;
-	            break;
-	        
-	        default:
-	            cout << "TIPO DESCONOCIDO: Asignando nullptr a: " << $2 << endl;
-	            attributes->value = nullptr;
+	        // TAC para declaracion de variables + asignacion
+	        if ($6.temp == nullptr){
+	            cout << "temp attribute set to null"<<endl;
+	        }else{
+	            tac_instructions.emplace_back("ASSIGN", $6.temp, "", $2);
+	        }
 	    }
-
-        if (!symbolTable.insert_symbol($2, *attributes)){
-			ERROR_TYPE = ALREADY_DEF_VAR;
-            yyerror($2);
-        };
-
-        // TAC para declaracion de variables + asignacion
-        if ($6.temp == nullptr){
-            cout << "temp attribute set to null"<<endl;
-        }else{
-            tac_instructions.emplace_back("ASSIGN", $6.temp, "", $2);
-        }
-    }
     }
 	| declaracion_funcion
     ;
@@ -761,7 +762,6 @@ tipos:
 	    // Obtener tipo base y tamaño
 	    char* base_type = $1;
 	    int array_size = $3.ival;
-
 
 	    // Registrar tamaño en variable global temporal
 	    current_array_size = array_size; // Variable global para tamaño
@@ -828,7 +828,7 @@ asignacion:
             
         }
          if (lhs_attr->category == CONSTANT && op_type != 0) {
-            ERROR_TYPE = MODIFY_CONST; 
+            ERROR_TYPE = MODIFY_CONST;
             yyerror(lhs_name.c_str());
         }
         if (!lhs_attr->type) {
@@ -989,12 +989,12 @@ asignacion:
         if ($3.temp == nullptr){
             cout << "temp attribute set to null"<<endl;
         }else{
-            /*AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA*/
-            /*AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA*/
-            /*if (strcmp("ASSIGN", $2) == 0) tac_instructions.emplace_back("ASSIGN", $3.temp, "", $1);
+            if ($2 == 0) tac_instructions.emplace_back("ASSIGN", $3.temp, "", $1);
             string temp = labelGen.newTemp();
-            tac_instructions.emplace_back($2, $1, $3.temp, temp);
-            tac_instructions.emplace_back("ASSIGN", temp, "", $1);*/
+            if ($2 == 1) tac_instructions.emplace_back("+", $1, $3.temp, temp);
+            if ($2 == 2) tac_instructions.emplace_back("-", $1, $3.temp, temp);
+            if ($2 == 3) tac_instructions.emplace_back("*", $1, $3.temp, temp);
+            tac_instructions.emplace_back("ASSIGN", temp, "", $1);
         }
     }    
     | T_IDENTIFICADOR T_PUNTO T_IDENTIFICADOR operadores_asignacion expresion {
@@ -1400,14 +1400,12 @@ expresion:
 				if (param_attr->type->symbol_name != var_attr->type->symbol_name) {
 					ERROR_TYPE = TYPE_ERROR;
 					yyerror(param_attr->type->symbol_name.c_str());
-					//exit(1);
 				}
 				current_function_parameters++;
 
 			} else { // Excede la cantidad de parametros.
 				ERROR_TYPE = FUNC_PARAM_EXCEEDED;
 				yyerror(current_function_name.c_str());
-				//exit(1);
 			}
 		}
 	}
@@ -1417,13 +1415,11 @@ expresion:
             if (array_attr == nullptr) {
                 ERROR_TYPE = SEMANTIC_TYPE;
                 yyerror("Array no definido");
-                //exit(1);
             }
 
             if (array_attr->category != ARRAY) {  // Asumiendo que ARRAY es una nueva categoría
                 ERROR_TYPE = SEMANTIC_TYPE;
                 yyerror("El identificador no es un array");
-                //exit(1);
             }
 
             if (array_attr->category == VARIABLE) {
@@ -1473,11 +1469,9 @@ expresion:
 			        }
 			        default:
 			            yyerror("Tipo no soportado para agregar al array");
-			            //exit(1);
 				}
             } else {
                 yyerror("El identificador no es un array");
-                //exit(1);
             }
 		}
 
@@ -1488,7 +1482,6 @@ expresion:
 				if (param_attr->type->symbol_name != typeToString($1.type)) {
 					ERROR_TYPE = TYPE_ERROR;
 					yyerror(param_attr->type->symbol_name.c_str());
-					//exit(1);
 				}
 				current_function_parameters++;
 
@@ -1496,7 +1489,6 @@ expresion:
 				ERROR_TYPE = FUNC_PARAM_EXCEEDED;
 				string error_message = "Error en la función '" + current_function_name + "': Excede la cantidad de parámetros.";
 				yyerror(error_message.c_str());
-				//exit(1);
 			}
 		}
 		
@@ -1524,7 +1516,6 @@ expresion:
                 break;
             default:
                 yyerror("Tipo no soportado");
-                //exit(1);
         }
         $$.temp = $1.temp; // Asignar el valor temporal
     }
@@ -1597,7 +1588,6 @@ expresion:
         }
         else {
             yyerror("Operación de signo negativo no soportada para este tipo");
-            //exit(1);
         }
         char* aux = (char*)malloc(strlen($2.temp)+2); aux[0]='-';
         strcat(aux, $2.temp);
@@ -2073,16 +2063,14 @@ expresion:
 		Attributes* func_attr = symbolTable.search_symbol(current_function_name);
         if (func_attr == nullptr) {
             yyerror("Funcion no definida");
-            //exit(1);
         }
 		if (func_attr->category != FUNCTION) {
             yyerror("El identificador no es una funcion");
-            //exit(1);
         }
 
 		current_function_type = get<string>(func_attr->info[func_attr->info.size()-1].first);
 		$$.type = stringToType(current_function_type);
-		
+		$$.temp = $1;
 		// POR IMPLEMENTAR: Retornar el valor asociado a la funcion.
 		// $$.ival = func_attr->value;
 	}
@@ -2093,13 +2081,11 @@ expresion:
         if (!array_attr || array_attr->category != ARRAY) {
             ERROR_TYPE = NON_DEF_VAR;
             yyerror($1);
-            //exit(1);
         }
         
         if ($3.type != ExpresionAttribute::INT) {
             ERROR_TYPE = SEMANTIC_TYPE;
             yyerror("Índice de array debe ser entero");
-            //exit(1);
         }
         
         int index = $3.ival;
@@ -2109,7 +2095,6 @@ expresion:
             string error = to_string(index);
             ERROR_TYPE = SEGMENTATION_FAULT;
             yyerror(error.c_str());
-            //exit(1);
         }
 
         std::string element_name = std::string($1) + "[" + std::to_string(index) + "]";
@@ -2143,7 +2128,6 @@ expresion:
         } else {
             ERROR_TYPE = SEMANTIC_TYPE;
             yyerror("Tipo no soportado para retorno de array");
-            //exit(1);
         }
         char* full_aux = (char*)malloc(strlen($1)+index_temp.length()+5);
         char* aux1 = (char*)malloc(strlen($1)+2);
@@ -2244,7 +2228,6 @@ var_ciclo_determinado:
         if (symbolTable.search_symbol($1) != nullptr){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($1);
-            //exit(1);
         };
 
         Attributes *attributes = new Attributes();
@@ -2279,13 +2262,11 @@ var_ciclo_determinado:
             default:
                 attributes->value = nullptr;
                 yyerror("Tipo no soportado");
-                //exit(1);
         }
 
         if (!symbolTable.insert_symbol($1, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($1);
-            //exit(1);
         };
 
         // Generar instrucciones TAC para la variable del ciclo for
@@ -2379,14 +2360,12 @@ secuencia_declaraciones:
 		if (current_struct_name == "") {
 			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay estructura actual");
-            //exit(1);
         }
         
 		Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
         if (struct_attr == nullptr) {
 			ERROR_TYPE = NON_DEF_STRUCT;
             yyerror(current_struct_name.c_str());
-            //exit(1);
         }
         
         Attributes *attr = new Attributes();
@@ -2399,7 +2378,6 @@ secuencia_declaraciones:
         if (!symbolTable.insert_symbol($3, *attr)) {
 			ERROR_TYPE = ALREADY_DEF_ATTR;
             yyerror($3);
-            //exit(1);
         }
         
         struct_attr->info.push_back({string($3), attr});
@@ -2408,14 +2386,12 @@ secuencia_declaraciones:
         if (current_struct_name == "") {
 			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay estructura actual");
-            //exit(1);
         }
 
         Attributes* struct_attr = symbolTable.search_symbol(current_struct_name);
         if (struct_attr == nullptr) {
 			ERROR_TYPE = NON_DEF_STRUCT;
             yyerror(current_struct_name.c_str());
-            //exit(1);
         }
         
         Attributes *attr = new Attributes();
@@ -2428,7 +2404,6 @@ secuencia_declaraciones:
         if (!symbolTable.insert_symbol($1, *attr)) {
 			ERROR_TYPE = ALREADY_DEF_ATTR;
             yyerror($1);
-            //exit(1);
         }
 		
         struct_attr->info.push_back({string($1), attr});
@@ -2449,7 +2424,6 @@ variante:
 		if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_UNION;
             yyerror($2);
-            //exit(1);
         };
         
 	} abrir_scope T_IZQLLAVE secuencia_declaraciones T_PUNTOCOMA T_DERLLAVE {
@@ -2471,7 +2445,6 @@ struct:
         if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_STRUCT;
             yyerror($2);
-            //exit(1);
         };
         
     } abrir_scope T_IZQLLAVE secuencia_declaraciones T_PUNTOCOMA T_DERLLAVE {
@@ -2485,7 +2458,6 @@ firma_funcion:
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $2;
         attributes->scope = symbolTable.current_scope;
-        //attributes->info.clear();
         attributes->type = symbolTable.search_symbol("funcion$");
         attributes->category = FUNCTION;
         attributes->value = nullptr;
@@ -2493,7 +2465,6 @@ firma_funcion:
         if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_FUNC;
             yyerror($2);
-            //exit(1);
         };
 
         current_function_name = string($2);
@@ -2517,14 +2488,12 @@ parametro:
 		if (current_function_name == "") {
 			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay funcion actual");
-            //exit(1);
         }
         
 		Attributes* funct_attr = symbolTable.search_symbol(current_function_name);
         if (funct_attr == nullptr) {
 			ERROR_TYPE = NON_DEF_FUNC;
             yyerror(current_function_name.c_str());
-            //exit(1);
         }
 
         Attributes *attributes = new Attributes();
@@ -2538,7 +2507,6 @@ parametro:
         if (!symbolTable.insert_symbol($2, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($2);
-            //exit(1);
         };
 
 		funct_attr->info.push_back({string($2), attributes});
@@ -2547,20 +2515,17 @@ parametro:
 		if (current_function_name == "") {
 			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror("No hay funcion actual");
-            //exit(1);
         }
         
 		Attributes* funct_attr = symbolTable.search_symbol(current_function_name);
         if (funct_attr == nullptr) {
 			ERROR_TYPE = NON_DEF_FUNC;
             yyerror(current_function_name.c_str());
-            //exit(1);
         }
 		
         Attributes *attributes = new Attributes();
         attributes->symbol_name = $1;
         attributes->scope = symbolTable.current_scope;
-        //attributes->info.clear();
         attributes->info.push_back({"PARAMETRO", nullptr});
         attributes->type = symbolTable.search_symbol($3);
         attributes->category = VARIABLE;
@@ -2569,7 +2534,6 @@ parametro:
         if (!symbolTable.insert_symbol($1, *attributes)){
 			ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($1);
-            //exit(1);
         };
 
 		funct_attr->info.push_back({string($1), attributes});
@@ -2594,11 +2558,9 @@ funcion:
 		Attributes* func_attr = symbolTable.search_symbol(string($1));
         if (func_attr == nullptr) {
             yyerror("Funcion no definida");
-            //exit(1);
         }
 		if (func_attr->category != FUNCTION) {
             yyerror("El identificador no es una funcion");
-            //exit(1);
         }
 		current_function_name = func_attr->symbol_name;
 		current_function_parameters = 0;
@@ -2614,7 +2576,6 @@ funcion:
 			ERROR_TYPE = FUNC_PARAM_EXCEEDED;
 			string error_message = "Falta de parametros en la llamada a la funcion '" + string($1) + "'";
 			yyerror(error_message.c_str());
-			//exit(1);
 		}
 		current_function_name = "";
 		current_function_parameters = 0;
@@ -2646,7 +2607,6 @@ var_manejo_error:
         if (symbolTable.search_symbol($3) != nullptr){
             ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($3);
-            //exit(1);
         };
 
         Attributes *attributes = new Attributes();
@@ -2659,7 +2619,6 @@ var_manejo_error:
         if (!symbolTable.insert_symbol($3, *attributes)){
             ERROR_TYPE = ALREADY_DEF_VAR;
             yyerror($3);
-            //exit(1);
         };
     }
     ;
