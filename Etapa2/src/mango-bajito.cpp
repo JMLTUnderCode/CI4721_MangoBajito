@@ -1,6 +1,7 @@
 #include "mango-bajito.hpp"
 
 vector<string> errorTypeToString = {
+	"ARRAY_LITERAL_SIZE_MISMATCH",
 	"SEMANTIC_TYPE",
     "NON_DEF_VAR",
     "ALREADY_DEF_VAR",
