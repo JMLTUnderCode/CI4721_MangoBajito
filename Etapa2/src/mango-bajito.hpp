@@ -76,6 +76,7 @@ void print_info(vector<pair<Information, Attributes*> > informations);
 
 // ERROR_TYPE enum
 enum errorType {
+	ARRAY_LITERAL_SIZE_MISMATCH,
 	SEMANTIC_TYPE,
     NON_DEF_VAR,
     ALREADY_DEF_VAR,
