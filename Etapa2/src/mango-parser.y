@@ -460,158 +460,140 @@ declaracion:
                 yyerror(("Se esperaba un literal de array para la inicialización del array '" + std::string($2) + "'").c_str());
             }
 
-           if($6.type == ExpresionAttribute::ARRAY_LITERAL){
+			if($6.type == ExpresionAttribute::ARRAY_LITERAL) {
+		        if ($6.arr_val == nullptr) {
+		            ERROR_TYPE = SEMANTIC_TYPE; 
+		            yyerror(("Error interno: El literal de array para '" + std::string($2) + "' es nulo.").c_str());
+		        }
 
-            if ($6.arr_val == nullptr) {
+		        ArrayValue* assigned_array_literal = $6.arr_val;
 
-                ERROR_TYPE = SEMANTIC_TYPE; 
-                yyerror(("Error interno: El literal de array para '" + std::string($2) + "' es nulo.").c_str());
+	            if (static_cast<int>(assigned_array_literal->elements.size()) != current_array_size) {
+	                ERROR_TYPE = ARRAY_LITERAL_SIZE_MISMATCH;
+	                yyerror(("El tamaño del literal de array (" + std::to_string(assigned_array_literal->elements.size()) +
+	                         ") no coincide con el tamaño declarado del array '" + std::string($2) + "' (" +
+	                         std::to_string(current_array_size) + ")").c_str());
+	            }
+
+	            if (assigned_array_literal->type != base_type_attr->symbol_name) {
+	                ERROR_TYPE = TYPE_ERROR;
+	                yyerror(("El tipo de los elementos del literal de array ('" + assigned_array_literal->type +
+	                         "') no coincide con el tipo base declarado del array '" + std::string($2) +
+	                         "' ('" + base_type_attr->symbol_name + "')").c_str());
+	            }
+
+	            // Crear los atributos del array
+	            Attributes* attributes = new Attributes();
+	            attributes->symbol_name = $2;
+	            attributes->category = ARRAY;
+	            attributes->scope = symbolTable.current_scope;
+	            attributes->type = base_type_attr;
+	            // Se asume que current_array_size contiene el tamaño del array
+	            attributes->value = current_array_size;
+
+		        // Crear cada elemento del array
+				for (int i = 0; i < current_array_size; i++) {
+		            Attributes* elem_attr = new Attributes(); // Attribute for the array element
+		            elem_attr->symbol_name = std::string($2) + "[" + std::to_string(i) + "]";
+		            elem_attr->scope = symbolTable.current_scope;
+		            elem_attr->category = ARRAY_ELEMENT;
+
+		            // If array is CONSTANTE, its elements are also effectively constant after initialization
+		            // You might need a flag in Attributes or a different category if this has further implications.
+		            elem_attr->type = base_type_attr; // Element type is the array's base type
+
+		            ExpresionAttribute current_literal_element = assigned_array_literal->elements[i];
+		            std::string expected_element_type_str = base_type_attr->symbol_name;
+
+		            // Assign value to elem_attr->value based on current_literal_element
+		            // This switch handles direct values and resolves IDs if they appear in the literal.
+		            switch(current_literal_element.type) {
+		                case ExpresionAttribute::INT:
+		                    if (expected_element_type_str != "mango") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo mango del literal.").c_str()); }
+		                    elem_attr->value = current_literal_element.ival;
+		                    break;
+		                case ExpresionAttribute::FLOAT:
+		                    if (expected_element_type_str != "manguita") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo manguita del literal.").c_str());  }
+		                    elem_attr->value = current_literal_element.fval;
+		                    break;
+		                case ExpresionAttribute::DOUBLE:
+		                    if (expected_element_type_str != "manguangua") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo manguangua del literal.").c_str());  }
+		                    elem_attr->value = current_literal_element.dval;
+		                    break;
+		                case ExpresionAttribute::BOOL:
+		                    if (expected_element_type_str != "tas_claro") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo tas_claro (bool) del literal.").c_str());  }
+		                    elem_attr->value = (bool)current_literal_element.ival; // Assuming ival stores 0 or 1
+		                    break;
+		                case ExpresionAttribute::STRING:
+		                    if (expected_element_type_str != "higuerote") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo higuerote del literal.").c_str());  }
+		                    elem_attr->value = std::string(current_literal_element.sval); // Create a copy for the variant
+		                    break;
+		                case ExpresionAttribute::CHAR:
+		                    if (expected_element_type_str != "negro") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo negro del literal.").c_str());}
+		                    elem_attr->value = current_literal_element.cval;
+		                    break;
+		                case ExpresionAttribute::POINTER:
+		                    // Check if expected_element_type_str is a known pointer type if you have specific pointer types
+		                    // For a generic pointer type, this might be okay.
+		                    // if (expected_element_type_str != "name_of_pointer_type") { ERROR_TYPE = TYPE_ERROR; ...  }
+		                    elem_attr->value = nullptr; // Assuming pointer literals evaluate to nullptr or a specific address if supported
+		                    break;
+		                case ExpresionAttribute::ID:
+						{
+		                    Attributes* id_attr_in_literal = symbolTable.search_symbol(current_literal_element.sval);
+		                    if (!id_attr_in_literal) { ERROR_TYPE = NON_DEF_VAR; yyerror(current_literal_element.sval);  }
+		                    if (!id_attr_in_literal->type) { ERROR_TYPE = SEMANTIC_TYPE; yyerror(("Variable '" + std::string(current_literal_element.sval) + "' en literal no tiene tipo.").c_str());  }
+
+		                    // Check if the ID's type matches the array's expected element type
+		                    if (id_attr_in_literal->type->symbol_name != expected_element_type_str) {
+		                        ERROR_TYPE = TYPE_ERROR;
+		                        yyerror(("El tipo de la variable '" + std::string(current_literal_element.sval) + "' (" + id_attr_in_literal->type->symbol_name +
+		                                 ") en el literal no coincide con el tipo esperado del elemento del array ('" + expected_element_type_str + "').").c_str());
+		                    }
+		                    if (std::holds_alternative<std::nullptr_t>(id_attr_in_literal->value) && id_attr_in_literal->type->symbol_name != "pointer") { // Allow uninitialized pointers
+		                        ERROR_TYPE = NON_DEF_VAR;
+		                        yyerror(("Variable '" + std::string(current_literal_element.sval) + "' usada en literal de array antes de ser inicializada.").c_str());
+		                    }
+
+		                    // Assign from the ID's value based on its (now confirmed) type
+		                    if (expected_element_type_str == "mango" && std::holds_alternative<int>(id_attr_in_literal->value)) elem_attr->value = std::get<int>(id_attr_in_literal->value);
+		                    else if (expected_element_type_str == "manguita" && std::holds_alternative<float>(id_attr_in_literal->value)) elem_attr->value = std::get<float>(id_attr_in_literal->value);
+		                    else if (expected_element_type_str == "manguangua" && std::holds_alternative<double>(id_attr_in_literal->value)) elem_attr->value = std::get<double>(id_attr_in_literal->value);
+		                    else if (expected_element_type_str == "tas_claro" && std::holds_alternative<bool>(id_attr_in_literal->value)) elem_attr->value = std::get<bool>(id_attr_in_literal->value);
+		                    else if (expected_element_type_str == "higuerote" && std::holds_alternative<std::string>(id_attr_in_literal->value)) elem_attr->value = std::get<std::string>(id_attr_in_literal->value);
+		                    else if (expected_element_type_str == "negro" && std::holds_alternative<char>(id_attr_in_literal->value)) elem_attr->value = std::get<char>(id_attr_in_literal->value);
+		                    // Add more types as needed, including pointers if they can be assigned from variables
+		                    else if (std::holds_alternative<std::nullptr_t>(id_attr_in_literal->value) && id_attr_in_literal->type->symbol_name == "pointer") { // Example for generic pointer
+		                        elem_attr->value = nullptr; // Or copy the pointer value if it's more complex
+		                    } else {
+		                        ERROR_TYPE = TYPE_ERROR;
+		                        yyerror(("Error al obtener el valor de la variable '" + std::string(current_literal_element.sval) + "' para el literal del array (tipo de variante no coincide).").c_str());
+		                    }
+		                    break;
+						}
+		                default:
+		                    ERROR_TYPE = TYPE_ERROR;
+		                    yyerror(("Tipo de dato inesperado '" + std::string(typeToString(current_literal_element.type)) +
+		                             "' en el literal del array para el elemento '" + elem_attr->symbol_name + "'.").c_str());
+		            }
+		        
+		            attributes->info.push_back({elem_attr->symbol_name, elem_attr}); // Store element info in parent array
+		            if (!symbolTable.insert_symbol(elem_attr->symbol_name, *elem_attr)) {
+		                ERROR_TYPE = ALREADY_DEF_VAR;
+		                yyerror(elem_attr->symbol_name.c_str());
+		            }
+		        }
+
+		        // Insertar el atributo del array en la tabla de símbolos
+		        if (!symbolTable.insert_symbol($2, *attributes)) {
+		            ERROR_TYPE = ALREADY_DEF_VAR;
+		            yyerror($2);
+		        }
             }
-
-            ArrayValue* assigned_array_literal = $6.arr_val;
-
-            if (static_cast<int>(assigned_array_literal->elements.size()) != current_array_size) {
-
-                ERROR_TYPE = ARRAY_LITERAL_SIZE_MISMATCH;
-                yyerror(("El tamaño del literal de array (" + std::to_string(assigned_array_literal->elements.size()) +
-                         ") no coincide con el tamaño declarado del array '" + std::string($2) + "' (" +
-                         std::to_string(current_array_size) + ")").c_str());
-
-            }
-
-
-            if (assigned_array_literal->type != base_type_attr->symbol_name) {
-
-                ERROR_TYPE = TYPE_ERROR;
-                yyerror(("El tipo de los elementos del literal de array ('" + assigned_array_literal->type +
-                         "') no coincide con el tipo base declarado del array '" + std::string($2) +
-                         "' ('" + base_type_attr->symbol_name + "')").c_str());
-
-            }
-
-            // Crear los atributos del array
-            Attributes* attributes = new Attributes();
-            attributes->symbol_name = $2;
-            attributes->category = ARRAY;
-            attributes->scope = symbolTable.current_scope;
-            attributes->type = base_type_attr;
-            // Se asume que current_array_size contiene el tamaño del array
-            attributes->value = current_array_size;
-
-            // Crear cada elemento del array
-           for (int i = 0; i < current_array_size; i++) {
-
-                Attributes* elem_attr = new Attributes(); // Attribute for the array element
-
-                elem_attr->symbol_name = std::string($2) + "[" + std::to_string(i) + "]";
-
-                elem_attr->scope = symbolTable.current_scope;
-
-                elem_attr->category = ARRAY_ELEMENT;
-
-                // If array is CONSTANTE, its elements are also effectively constant after initialization
-                // You might need a flag in Attributes or a different category if this has further implications.
-                elem_attr->type = base_type_attr; // Element type is the array's base type
-
-
-                ExpresionAttribute current_literal_element = assigned_array_literal->elements[i];
-                std::string expected_element_type_str = base_type_attr->symbol_name;
-
-                // Assign value to elem_attr->value based on current_literal_element
-                // This switch handles direct values and resolves IDs if they appear in the literal.
-                switch(current_literal_element.type) {
-                    case ExpresionAttribute::INT:
-                        if (expected_element_type_str != "mango") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo mango del literal.").c_str()); }
-                        elem_attr->value = current_literal_element.ival;
-                        break;
-                    case ExpresionAttribute::FLOAT:
-                        if (expected_element_type_str != "manguita") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo manguita del literal.").c_str());  }
-                        elem_attr->value = current_literal_element.fval;
-                        break;
-                    case ExpresionAttribute::DOUBLE:
-                        if (expected_element_type_str != "manguangua") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo manguangua del literal.").c_str());  }
-                        elem_attr->value = current_literal_element.dval;
-                        break;
-                    case ExpresionAttribute::BOOL:
-                        if (expected_element_type_str != "tas_claro") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo tas_claro (bool) del literal.").c_str());  }
-                        elem_attr->value = (bool)current_literal_element.ival; // Assuming ival stores 0 or 1
-                        break;
-                    case ExpresionAttribute::STRING:
-                        if (expected_element_type_str != "higuerote") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo higuerote del literal.").c_str());  }
-                        elem_attr->value = std::string(current_literal_element.sval); // Create a copy for the variant
-                        break;
-                    case ExpresionAttribute::CHAR:
-                        if (expected_element_type_str != "negro") { ERROR_TYPE = TYPE_ERROR; yyerror(("Conflicto de tipo para elemento de array '" + elem_attr->symbol_name + "': se esperaba " + expected_element_type_str + " pero se obtuvo negro del literal.").c_str());}
-                        elem_attr->value = current_literal_element.cval;
-                        break;
-                    case ExpresionAttribute::POINTER:
-                        // Check if expected_element_type_str is a known pointer type if you have specific pointer types
-                        // For a generic pointer type, this might be okay.
-                        // if (expected_element_type_str != "name_of_pointer_type") { ERROR_TYPE = TYPE_ERROR; ...  }
-                        elem_attr->value = nullptr; // Assuming pointer literals evaluate to nullptr or a specific address if supported
-                        break;
-                    case ExpresionAttribute::ID:
-                        {
-                            Attributes* id_attr_in_literal = symbolTable.search_symbol(current_literal_element.sval);
-                            if (!id_attr_in_literal) { ERROR_TYPE = NON_DEF_VAR; yyerror(current_literal_element.sval);  }
-                            if (!id_attr_in_literal->type) { ERROR_TYPE = SEMANTIC_TYPE; yyerror(("Variable '" + std::string(current_literal_element.sval) + "' en literal no tiene tipo.").c_str());  }
-
-                            // Check if the ID's type matches the array's expected element type
-                            if (id_attr_in_literal->type->symbol_name != expected_element_type_str) {
-                                ERROR_TYPE = TYPE_ERROR;
-                                yyerror(("El tipo de la variable '" + std::string(current_literal_element.sval) + "' (" + id_attr_in_literal->type->symbol_name +
-                                         ") en el literal no coincide con el tipo esperado del elemento del array ('" + expected_element_type_str + "').").c_str());
-                            }
-                            if (std::holds_alternative<std::nullptr_t>(id_attr_in_literal->value) && id_attr_in_literal->type->symbol_name != "pointer") { // Allow uninitialized pointers
-                                ERROR_TYPE = NON_DEF_VAR;
-                                yyerror(("Variable '" + std::string(current_literal_element.sval) + "' usada en literal de array antes de ser inicializada.").c_str());
-                            }
-
-                            // Assign from the ID's value based on its (now confirmed) type
-                            if (expected_element_type_str == "mango" && std::holds_alternative<int>(id_attr_in_literal->value)) elem_attr->value = std::get<int>(id_attr_in_literal->value);
-                            else if (expected_element_type_str == "manguita" && std::holds_alternative<float>(id_attr_in_literal->value)) elem_attr->value = std::get<float>(id_attr_in_literal->value);
-                            else if (expected_element_type_str == "manguangua" && std::holds_alternative<double>(id_attr_in_literal->value)) elem_attr->value = std::get<double>(id_attr_in_literal->value);
-                            else if (expected_element_type_str == "tas_claro" && std::holds_alternative<bool>(id_attr_in_literal->value)) elem_attr->value = std::get<bool>(id_attr_in_literal->value);
-                            else if (expected_element_type_str == "higuerote" && std::holds_alternative<std::string>(id_attr_in_literal->value)) elem_attr->value = std::get<std::string>(id_attr_in_literal->value);
-                            else if (expected_element_type_str == "negro" && std::holds_alternative<char>(id_attr_in_literal->value)) elem_attr->value = std::get<char>(id_attr_in_literal->value);
-                            // Add more types as needed, including pointers if they can be assigned from variables
-                            else if (std::holds_alternative<std::nullptr_t>(id_attr_in_literal->value) && id_attr_in_literal->type->symbol_name == "pointer") { // Example for generic pointer
-                                elem_attr->value = nullptr; // Or copy the pointer value if it's more complex
-                            }
-                            else {
-                                ERROR_TYPE = TYPE_ERROR;
-                                yyerror(("Error al obtener el valor de la variable '" + std::string(current_literal_element.sval) + "' para el literal del array (tipo de variante no coincide).").c_str());
-                            }
-                        }
-                        break;
-                    default:
-                        ERROR_TYPE = TYPE_ERROR;
-                        yyerror(("Tipo de dato inesperado '" + std::string(typeToString(current_literal_element.type)) +
-                                 "' en el literal del array para el elemento '" + elem_attr->symbol_name + "'.").c_str());
-                }
-            
-                attributes->info.push_back({elem_attr->symbol_name, elem_attr}); // Store element info in parent array
-            
-                if (!symbolTable.insert_symbol(elem_attr->symbol_name, *elem_attr)) {
-                    ERROR_TYPE = ALREADY_DEF_VAR;
-                    yyerror(elem_attr->symbol_name.c_str());
-                }
-            }   
-                             
-
-            // Insertar el atributo del array en la tabla de símbolos
-            if (!symbolTable.insert_symbol($2, *attributes)) {
-                ERROR_TYPE = ALREADY_DEF_VAR;
-                yyerror($2);
-            }
-
-            }
-        
             // Resetear las variables globales relativas al array
             current_array_name = "";
             current_array_size = 0;
             current_array_base_type = nullptr;
-
         } else {
 	        if (symbolTable.search_symbol($4) == nullptr){
 				ERROR_TYPE = NON_DEF_TYPE;
@@ -714,7 +696,7 @@ declaracion:
 		        
 		        default:
 					ERROR_TYPE = DEBUGGING_TYPE;
-					string error_message = "TIPO DESCONOCIDO: Asignando nullptr a: " + string($2);
+					string error_message = "TIPO DESCONOCIDO: Asignando 'nullptr' a: '" + string($2) + "'.";
 					yyerror(error_message.c_str());
 		            attributes->value = nullptr;
 		    }
@@ -737,7 +719,7 @@ declaracion:
 
 declaracion_aputador:
     { $$ = strdup(""); }
-    | T_AHITA   { $$ = strdup("POINTER"); }
+    | T_AHITA { $$ = strdup("POINTER"); }
     ;
 
 tipo_declaracion:
@@ -823,7 +805,6 @@ asignacion:
         if (lhs_attr->category == CONSTANT && op_type == 0 && !holds_alternative<nullptr_t>(lhs_attr->value)) {
             ERROR_TYPE = MODIFY_CONST;
             yyerror(lhs_name.c_str());
-            
         }
          if (lhs_attr->category == CONSTANT && op_type != 0) {
             ERROR_TYPE = MODIFY_CONST;
@@ -831,7 +812,7 @@ asignacion:
         }
         if (!lhs_attr->type) {
 			ERROR_TYPE = DEBUGGING_TYPE;
-			string error_message = "Error interno: El tipo de \"" + lhs_name + "\" no esta definido.";
+			string error_message = "ERROR INTERNO: El tipo de \"" + lhs_name + "\" no esta definido.";
             yyerror(error_message.c_str());
         }
         string lhs_declared_type_name = lhs_attr->type->symbol_name;
@@ -852,7 +833,7 @@ asignacion:
             if (holds_alternative<nullptr_t>(lhs_attr->value)) {
                 ERROR_TYPE = NON_DEF_VAR;
                 string op_str = (op_type == 1 ? "+=" : (op_type == 2 ? "-=" : (op_type == 3 ? "*=" : "OP_COMPUESTO")));
-                yyerror(("Variable/Elemento '" + lhs_name + "' no inicializada antes de usarla en operación '" + op_str + "'.").c_str());
+                yyerror(("Esta vaina '" + lhs_name + "' no tiene nada para que la andes usando en '" + op_str + "'.").c_str());
             }
         }
     
@@ -860,31 +841,31 @@ asignacion:
             case 0: // Simple Assignment (=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = rhs_expr.ival; }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_name + "'").c_str()); }
+                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("a '" + lhs_name + "' de tipo 'mango' y le quieres meter '" + string(typeToString(rhs_expr.type)) + "', marbaa' bruja.").c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = rhs_expr.fval; }
                     else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = static_cast<float>(rhs_expr.ival); }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_name + "'").c_str()); }
+					else { ERROR_TYPE = TYPE_ERROR; yyerror(("a '" + lhs_name + "' de tipo 'manguita' y le quieres meter '" + string(typeToString(rhs_expr.type)) + "', marbaa' bruja.").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                     if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = rhs_expr.dval; }
                     else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = static_cast<double>(rhs_expr.fval); }
                     else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = static_cast<double>(rhs_expr.ival); }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_name + "'").c_str()); }
+					else { ERROR_TYPE = TYPE_ERROR; yyerror(("a '" + lhs_name + "' de tipo 'manguangua' y le quieres meter '" + string(typeToString(rhs_expr.type)) + "', marbaa' bruja.").c_str()); }
                 } else if (lhs_declared_type_name == "tas_claro") {
                     if (rhs_expr.type == ExpresionAttribute::BOOL) { lhs_attr->value = (bool)rhs_expr.ival; }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a tas_claro '" + lhs_name + "'").c_str()); }
+					else { ERROR_TYPE = TYPE_ERROR; yyerror(("a '" + lhs_name + "' de tipo 'tas_claro' y le quieres meter '" + string(typeToString(rhs_expr.type)) + "', marbaa' bruja.").c_str()); }
                 } else if (lhs_declared_type_name == "higuerote") {
                     if (rhs_expr.type == ExpresionAttribute::STRING) { lhs_attr->value = string(rhs_expr.sval); }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_name + "'").c_str()); }
+					else { ERROR_TYPE = TYPE_ERROR; yyerror(("a '" + lhs_name + "' de tipo 'higuerote' y le quieres meter '" + string(typeToString(rhs_expr.type)) + "', marbaa' bruja.").c_str()); }
                 } else if (lhs_declared_type_name == "negro") {
                     if (rhs_expr.type == ExpresionAttribute::CHAR) { lhs_attr->value = rhs_expr.cval; }
-                    else { ERROR_TYPE = TYPE_ERROR; yyerror(("Asignación inválida: no se puede asignar " + string(typeToString(rhs_expr.type)) + " a negro '" + lhs_name + "'").c_str()); }
+					else { ERROR_TYPE = TYPE_ERROR; yyerror(("a '" + lhs_name + "' de tipo 'negro' y le quieres meter '" + string(typeToString(rhs_expr.type)) + "', marbaa' bruja.").c_str()); }
                 } else if (rhs_expr.type == ExpresionAttribute::ID) {
                     Attributes *rhs_id_attr = symbolTable.search_symbol(rhs_expr.sval);
                     if (rhs_id_attr) {
                         if (rhs_id_attr->category == VARIABLE || rhs_id_attr->category == CONSTANT || rhs_id_attr->category == ARRAY_ELEMENT || rhs_id_attr->category == POINTER_V || rhs_id_attr->category == POINTER_C) {
                             if (holds_alternative<nullptr_t>(rhs_id_attr->value) && rhs_id_attr->type && rhs_id_attr->type->symbol_name != "pointer") {
-                                 ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_id_attr->symbol_name.c_str()) + "' usada en asignación antes de ser inicializada.").c_str()); 
+								ERROR_TYPE = NON_DEF_VAR; yyerror(rhs_id_attr->symbol_name.c_str()); 
                             }
                             if (lhs_declared_type_name == rhs_id_attr->type->symbol_name) {
                                 lhs_attr->value = rhs_id_attr->value;
@@ -894,9 +875,9 @@ asignacion:
                                 lhs_attr->value = static_cast<double>(get<int>(rhs_id_attr->value));
                             } else if (lhs_declared_type_name == "manguangua" && rhs_id_attr->type->symbol_name == "manguita" && holds_alternative<float>(rhs_id_attr->value)) {
                                 lhs_attr->value = static_cast<double>(get<float>(rhs_id_attr->value));
-                            } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Error de tipo: no se puede asignar " + string(rhs_id_attr->type->symbol_name.c_str()) + " a " + lhs_declared_type_name + " '" + lhs_name + "'").c_str()); }
-                        } else { ERROR_TYPE = TYPE_ERROR; yyerror(("El lado derecho de la asignación ('" + string(rhs_expr.sval) + "') no es una variable o constante evaluable.").c_str()); }
-                    } else { ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + string(rhs_expr.sval) + "' no definida para asignación.").c_str()); }
+							} else { ERROR_TYPE = TYPE_ERROR; yyerror(("a '" + lhs_name + "' de tipo '" + lhs_declared_type_name + "' y le quieres meter '" + string(rhs_id_attr->type->symbol_name.c_str()) + "', marbaa' bruja.").c_str()); }
+                        } else { ERROR_TYPE = TYPE_ERROR; yyerror(("a '" + lhs_name + "' de tipo '" + lhs_declared_type_name + "' y le quieres meter '" + string(rhs_expr.sval) + "', marbaa' bruja.").c_str()); }
+                    } else { ERROR_TYPE = NON_DEF_VAR; yyerror(rhs_expr.sval); }
                 } else { // Assigning struct/union or other complex types
                     // This part needs specific logic for your complex types.
                     // For now, if types match by name, allow assignment.
@@ -909,44 +890,43 @@ asignacion:
                     //      (rhs_expr.type_name == lhs_declared_type_name) /* and rhs_expr holds a compatible struct/union value */ ) {
                     //      lhs_attr->value = rhs_expr.complex_value; // Needs ExpresionAttribute to hold complex values
                     // } else
-                    ERROR_TYPE = TYPE_ERROR; yyerror(("Tipo de asignación no soportado para variable '" + lhs_declared_type_name + "' desde expresión '" + string(typeToString(rhs_expr.type)) + "'").c_str()); 
+                    ERROR_TYPE = TYPE_ERROR; yyerror(("'" + lhs_declared_type_name + "' y le quieres meter '" + string(typeToString(rhs_expr.type)) + "'").c_str()); 
                 }
                 break;
             case 1: // Compound Assignment (+=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT && holds_alternative<int>(lhs_attr->value)) {
                         lhs_attr->value = get<int>(lhs_attr->value) + rhs_expr.ival;
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida, no se puede sumar " + string(typeToString(rhs_expr.type)) + " a mango '" + lhs_name + "', locota.").c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (holds_alternative<float>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<float>(lhs_attr->value) + rhs_expr.fval; }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<float>(lhs_attr->value) + static_cast<float>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_name + "'").c_str()); }
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguita '" + lhs_name + "' no contiene un valor flotante para '+='.").c_str()); }
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida, no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguita '" + lhs_name + "', locota.").c_str()); }
+                    } else { ERROR_TYPE = DEBUGGING_TYPE; yyerror(("Variable manguita '" + lhs_name + "' no contiene un valor flotante para '+='.").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                      if (holds_alternative<double>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::DOUBLE) { lhs_attr->value = get<double>(lhs_attr->value) + rhs_expr.dval; }
                         else if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<double>(lhs_attr->value) + static_cast<double>(rhs_expr.fval); }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<double>(lhs_attr->value) + static_cast<double>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_name + "'").c_str()); }
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguangua '" + lhs_name + "' no contiene un valor double para '+='.").c_str()); }
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida, no se puede sumar " + string(typeToString(rhs_expr.type)) + " a manguangua '" + lhs_name + "', locota.").c_str()); }
+                    } else { ERROR_TYPE = DEBUGGING_TYPE; yyerror(("Variable manguangua '" + lhs_name + "' no contiene un valor double para '+='.").c_str()); }
                 } else if (lhs_declared_type_name == "higuerote") {
                     if (rhs_expr.type == ExpresionAttribute::STRING && holds_alternative<string>(lhs_attr->value)) {
                         lhs_attr->value = get<string>(lhs_attr->value) + string(rhs_expr.sval);
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida: no se puede concatenar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_name + "'").c_str()); }
-                }
-                else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' no soportada para el tipo '" + lhs_declared_type_name + "' de la variable '" + lhs_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' inválida, no se puede concatenar " + string(typeToString(rhs_expr.type)) + " a higuerote '" + lhs_name + "', locota.").c_str()); }
+                } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '+=' no soportada para el tipo '" + lhs_declared_type_name + "' de la variable '" + lhs_name + "'").c_str()); }
                 break;
             case 2: // Compound Assignment (-=)
                 if (lhs_declared_type_name == "mango") {
                     if (rhs_expr.type == ExpresionAttribute::INT && holds_alternative<int>(lhs_attr->value)) {
                         lhs_attr->value = get<int>(lhs_attr->value) - rhs_expr.ival;
-                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de mango '" + lhs_name + "'").c_str()); }
+                    } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida, no se puede restar " + string(typeToString(rhs_expr.type)) + " de mango '" + lhs_name + "', locota.").c_str()); }
                 } else if (lhs_declared_type_name == "manguita") {
                     if (holds_alternative<float>(lhs_attr->value)) {
                         if (rhs_expr.type == ExpresionAttribute::FLOAT) { lhs_attr->value = get<float>(lhs_attr->value) - rhs_expr.fval; }
                         else if (rhs_expr.type == ExpresionAttribute::INT) { lhs_attr->value = get<float>(lhs_attr->value) - static_cast<float>(rhs_expr.ival); }
-                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida: no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguita '" + lhs_name + "'").c_str()); }
+                        else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '-=' inválida, no se puede restar " + string(typeToString(rhs_expr.type)) + " de manguita '" + lhs_name + "', locota.").c_str()); }
                     } else { ERROR_TYPE = TYPE_ERROR; yyerror(("Variable manguita '" + lhs_name + "' no contiene un valor flotante para '-='.").c_str()); }
                 } else if (lhs_declared_type_name == "manguangua") {
                      if (holds_alternative<double>(lhs_attr->value)) {
@@ -980,8 +960,8 @@ asignacion:
                 else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' no soportada para el tipo '" + lhs_declared_type_name + "' de la variable '" + lhs_name + "'").c_str()); }
                 break;
             default:
+				ERROR_TYPE = DEBUGGING_TYPE;
                 yyerror("Operador de asignación desconocido internamente.");
-                
         }
 
         if ($3.temp == nullptr){
@@ -1037,6 +1017,7 @@ asignacion:
 
         // --- Inlined execute_assignment_logic for struct member ---
         if (!lhs_attr->type) {
+            ERROR_TYPE = DEBUGGING_TYPE;
             yyerror(("Error interno: El tipo del miembro '" + lhs_full_name + "' es nulo.").c_str());
             
         }
@@ -1166,6 +1147,7 @@ asignacion:
                 else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' no soportada para el tipo '" + lhs_declared_type_name + "' del miembro '" + lhs_full_name + "'").c_str()); }
                 break;
             default:
+				ERROR_TYPE = DEBUGGING_TYPE;
                 yyerror("Operador de asignación desconocido internamente.");
                 
         }
@@ -1193,8 +1175,8 @@ asignacion:
         
         int index_val = index_expr.ival;
         if (!holds_alternative<int>(array_attr->value)) {
-             ERROR_TYPE = SEMANTIC_TYPE; // Or a more specific error
-             yyerror(("La variable array '" + string($1) + "' no tiene un tamaño entero almacenado.").c_str());
+            ERROR_TYPE = SEMANTIC_TYPE; // Or a more specific error
+            yyerror(("La variable array '" + string($1) + "' no tiene un tamaño entero almacenado.").c_str());
              
         }
         int array_size_val = get<int>(array_attr->value);
@@ -1221,6 +1203,7 @@ asignacion:
 
         // --- Inlined execute_assignment_logic for array element ---
         if (!lhs_attr->type) {
+			ERROR_TYPE = DEBUGGING_TYPE;
             yyerror(("Error interno: El tipo del elemento de array '" + lhs_full_name + "' es nulo.").c_str());
             
         }
@@ -1350,6 +1333,7 @@ asignacion:
                 else { ERROR_TYPE = TYPE_ERROR; yyerror(("Operación '*=' no soportada para el tipo '" + lhs_declared_type_name + "' del elemento de array '" + lhs_full_name + "'").c_str()); }
                 break;
             default:
+				ERROR_TYPE = DEBUGGING_TYPE;
                 yyerror("Operador de asignación desconocido internamente.");
                 
         }
@@ -1411,12 +1395,13 @@ expresion:
        if (current_array_name != "") {
             Attributes *array_attr = symbolTable.search_symbol(current_array_name.c_str());
             if (array_attr == nullptr) {
-                ERROR_TYPE = SEMANTIC_TYPE;
-                yyerror("Array no definido");
+				// AJUSTAR PARA ARRAYS
+				ERROR_TYPE = NON_DEF_VAR;
+                yyerror(current_array_name.c_str());
             }
 
             if (array_attr->category != ARRAY) {  // Asumiendo que ARRAY es una nueva categoría
-                ERROR_TYPE = SEMANTIC_TYPE;
+				ERROR_TYPE = TYPE_ERROR;
                 yyerror("El identificador no es un array");
             }
 
@@ -1466,9 +1451,11 @@ expresion:
 			            break;
 			        }
 			        default:
+						ERROR_TYPE = TYPE_ERROR;
 			            yyerror("Tipo no soportado para agregar al array");
 				}
             } else {
+				ERROR_TYPE = TYPE_ERROR;
                 yyerror("El identificador no es un array");
             }
 		}
@@ -1513,6 +1500,7 @@ expresion:
                 $$.ival = 0; // Manejar punteros según sea necesario
                 break;
             default:
+				ERROR_TYPE = TYPE_ERROR;
                 yyerror("Tipo no soportado");
         }
         $$.temp = $1.temp; // Asignar el valor temporal
@@ -1586,6 +1574,7 @@ expresion:
             $$.fval = -$2.dval;
         }
         else {
+			ERROR_TYPE = TYPE_ERROR;
             yyerror("Operación de signo negativo no soportada para este tipo");
         }
         char* aux = (char*)malloc(strlen($2.temp)+2); aux[0]='-';
@@ -1664,7 +1653,7 @@ expresion:
         if (_left_op_eq.type == ExpresionAttribute::ID) {
             Attributes* attr = symbolTable.search_symbol(_left_op_eq.sval);
             if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_eq.sval);  }
-            if (!attr->type) { yyerror("Error interno: Atributo ID sin tipo.");  }
+            if (!attr->type) { ERROR_TYPE = DEBUGGING_TYPE; yyerror("Error interno: Atributo ID sin tipo.");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { 
                 ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + std::string(_left_op_eq.sval) + "' no inicializada.").c_str());  
             }
@@ -1691,7 +1680,7 @@ expresion:
         if (_right_op_eq.type == ExpresionAttribute::ID) {
             Attributes* attr = symbolTable.search_symbol(_right_op_eq.sval);
             if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_eq.sval);  }
-            if (!attr->type) { yyerror("Error interno: Atributo ID sin tipo.");  }
+            if (!attr->type) { ERROR_TYPE = DEBUGGING_TYPE; yyerror("Error interno: Atributo ID sin tipo.");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { 
                 ERROR_TYPE = NON_DEF_VAR; yyerror(("Variable '" + std::string(_right_op_eq.sval) + "' no inicializada.").c_str());  
             }
@@ -1741,7 +1730,7 @@ expresion:
         ExpresionAttribute::Type type_l_ne, type_r_ne;
 
         if (_left_op_ne.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_left_op_ne.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_ne.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  } 
+            Attributes* attr = symbolTable.search_symbol(_left_op_ne.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_ne.sval);  } if (!attr->type) { ERROR_TYPE = DEBUGGING_TYPE; yyerror("E: Attr ID sin tipo");  } 
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_ne.sval) + "' no init.").c_str());  }
             type_l_ne = stringToType(attr->type->symbol_name);
             if (type_l_ne == ExpresionAttribute::INT) num_l_ne = std::get<int>(attr->value); else if (type_l_ne == ExpresionAttribute::FLOAT) num_l_ne = std::get<float>(attr->value); else if (type_l_ne == ExpresionAttribute::DOUBLE) num_l_ne = std::get<double>(attr->value);
@@ -1754,7 +1743,7 @@ expresion:
             else if (type_l_ne == ExpresionAttribute::BOOL) bool_l_ne = (bool)_left_op_ne.ival; else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_ne)) + "' no sop. para '!='.").c_str());  }
         }
         if (_right_op_ne.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_right_op_ne.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_ne.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            Attributes* attr = symbolTable.search_symbol(_right_op_ne.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_ne.sval);  } if (!attr->type) { ERROR_TYPE = DEBUGGING_TYPE; yyerror("E: Attr ID sin tipo");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_ne.sval) + "' no init.").c_str());  }
             type_r_ne = stringToType(attr->type->symbol_name);
             if (type_r_ne == ExpresionAttribute::INT) num_r_ne = std::get<int>(attr->value); else if (type_r_ne == ExpresionAttribute::FLOAT) num_r_ne = std::get<float>(attr->value); else if (type_r_ne == ExpresionAttribute::DOUBLE) num_r_ne = std::get<double>(attr->value);
@@ -1782,7 +1771,7 @@ expresion:
         ExpresionAttribute _left_op_gt = $1; ExpresionAttribute _right_op_gt = $3; double num_l_gt = 0, num_r_gt = 0; char char_l_gt = 0, char_r_gt = 0; std::string str_l_gt, str_r_gt;
         ExpresionAttribute::Type type_l_gt, type_r_gt;
         if (_left_op_gt.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_left_op_gt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_gt.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            Attributes* attr = symbolTable.search_symbol(_left_op_gt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_gt.sval);  } if (!attr->type) { ERROR_TYPE = DEBUGGING_TYPE; yyerror("E: Attr ID sin tipo");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_gt.sval) + "' no init.").c_str());  }
             type_l_gt = stringToType(attr->type->symbol_name);
             if (type_l_gt == ExpresionAttribute::INT) num_l_gt = std::get<int>(attr->value); else if (type_l_gt == ExpresionAttribute::FLOAT) num_l_gt = std::get<float>(attr->value); else if (type_l_gt == ExpresionAttribute::DOUBLE) num_l_gt = std::get<double>(attr->value);
@@ -1795,7 +1784,7 @@ expresion:
             else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_gt)) + "' no sop. para '>'.").c_str());  }
         }
         if (_right_op_gt.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_right_op_gt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_gt.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            Attributes* attr = symbolTable.search_symbol(_right_op_gt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_gt.sval);  } if (!attr->type) { ERROR_TYPE = DEBUGGING_TYPE; yyerror("E: Attr ID sin tipo");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_gt.sval) + "' no init.").c_str());  }
             type_r_gt = stringToType(attr->type->symbol_name);
             if (type_r_gt == ExpresionAttribute::INT) num_r_gt = std::get<int>(attr->value); else if (type_r_gt == ExpresionAttribute::FLOAT) num_r_gt = std::get<float>(attr->value); else if (type_r_gt == ExpresionAttribute::DOUBLE) num_r_gt = std::get<double>(attr->value);
@@ -1822,7 +1811,7 @@ expresion:
         ExpresionAttribute _left_op_ge = $1; ExpresionAttribute _right_op_ge = $3; double num_l_ge = 0, num_r_ge = 0; char char_l_ge = 0, char_r_ge = 0; std::string str_l_ge, str_r_ge;
         ExpresionAttribute::Type type_l_ge, type_r_ge;
         if (_left_op_ge.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_left_op_ge.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_ge.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            Attributes* attr = symbolTable.search_symbol(_left_op_ge.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_ge.sval);  } if (!attr->type) { ERROR_TYPE = DEBUGGING_TYPE; yyerror("E: Attr ID sin tipo");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_ge.sval) + "' no init.").c_str());  }
             type_l_ge = stringToType(attr->type->symbol_name);
             if (type_l_ge == ExpresionAttribute::INT) num_l_ge = std::get<int>(attr->value); else if (type_l_ge == ExpresionAttribute::FLOAT) num_l_ge = std::get<float>(attr->value); else if (type_l_ge == ExpresionAttribute::DOUBLE) num_l_ge = std::get<double>(attr->value);
@@ -1835,7 +1824,7 @@ expresion:
             else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_ge)) + "' no sop. para '>='.").c_str());  }
         }
         if (_right_op_ge.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_right_op_ge.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_ge.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            Attributes* attr = symbolTable.search_symbol(_right_op_ge.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_ge.sval);  } if (!attr->type) { ERROR_TYPE = DEBUGGING_TYPE; yyerror("E: Attr ID sin tipo");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_ge.sval) + "' no init.").c_str());  }
             type_r_ge = stringToType(attr->type->symbol_name);
             if (type_r_ge == ExpresionAttribute::INT) num_r_ge = std::get<int>(attr->value); else if (type_r_ge == ExpresionAttribute::FLOAT) num_r_ge = std::get<float>(attr->value); else if (type_r_ge == ExpresionAttribute::DOUBLE) num_r_ge = std::get<double>(attr->value);
@@ -1862,7 +1851,7 @@ expresion:
         ExpresionAttribute _left_op_lt = $1; ExpresionAttribute _right_op_lt = $3; double num_l_lt = 0, num_r_lt = 0; char char_l_lt = 0, char_r_lt = 0; std::string str_l_lt, str_r_lt;
         ExpresionAttribute::Type type_l_lt, type_r_lt;
         if (_left_op_lt.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_left_op_lt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_lt.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            Attributes* attr = symbolTable.search_symbol(_left_op_lt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_lt.sval);  } if (!attr->type) { ERROR_TYPE = DEBUGGING_TYPE; yyerror("E: Attr ID sin tipo");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_lt.sval) + "' no init.").c_str());  }
             type_l_lt = stringToType(attr->type->symbol_name);
             if (type_l_lt == ExpresionAttribute::INT) num_l_lt = std::get<int>(attr->value); else if (type_l_lt == ExpresionAttribute::FLOAT) num_l_lt = std::get<float>(attr->value); else if (type_l_lt == ExpresionAttribute::DOUBLE) num_l_lt = std::get<double>(attr->value);
@@ -1875,7 +1864,7 @@ expresion:
             else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_lt)) + "' no sop. para '<'.").c_str());  }
         }
         if (_right_op_lt.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_right_op_lt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_lt.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            Attributes* attr = symbolTable.search_symbol(_right_op_lt.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_lt.sval);  } if (!attr->type) { ERROR_TYPE = DEBUGGING_TYPE; yyerror("E: Attr ID sin tipo");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_lt.sval) + "' no init.").c_str());  }
             type_r_lt = stringToType(attr->type->symbol_name);
             if (type_r_lt == ExpresionAttribute::INT) num_r_lt = std::get<int>(attr->value); else if (type_r_lt == ExpresionAttribute::FLOAT) num_r_lt = std::get<float>(attr->value); else if (type_r_lt == ExpresionAttribute::DOUBLE) num_r_lt = std::get<double>(attr->value);
@@ -1902,7 +1891,7 @@ expresion:
         ExpresionAttribute _left_op_le = $1; ExpresionAttribute _right_op_le = $3; double num_l_le = 0, num_r_le = 0; char char_l_le = 0, char_r_le = 0; std::string str_l_le, str_r_le;
         ExpresionAttribute::Type type_l_le, type_r_le;
         if (_left_op_le.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_left_op_le.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_le.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            Attributes* attr = symbolTable.search_symbol(_left_op_le.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_left_op_le.sval);  } if (!attr->type) { ERROR_TYPE = DEBUGGING_TYPE; yyerror("E: Attr ID sin tipo");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_left_op_le.sval) + "' no init.").c_str());  }
             type_l_le = stringToType(attr->type->symbol_name);
             if (type_l_le == ExpresionAttribute::INT) num_l_le = std::get<int>(attr->value); else if (type_l_le == ExpresionAttribute::FLOAT) num_l_le = std::get<float>(attr->value); else if (type_l_le == ExpresionAttribute::DOUBLE) num_l_le = std::get<double>(attr->value);
@@ -1915,7 +1904,7 @@ expresion:
             else { ERROR_TYPE = TYPE_ERROR; yyerror(("T '" + std::string(typeToString(type_l_le)) + "' no sop. para '<='.").c_str());  }
         }
         if (_right_op_le.type == ExpresionAttribute::ID) {
-            Attributes* attr = symbolTable.search_symbol(_right_op_le.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_le.sval);  } if (!attr->type) { yyerror("E: Attr ID sin tipo");  }
+            Attributes* attr = symbolTable.search_symbol(_right_op_le.sval); if (!attr) { ERROR_TYPE = NON_DEF_VAR; yyerror(_right_op_le.sval);  } if (!attr->type) { ERROR_TYPE = DEBUGGING_TYPE; yyerror("E: Attr ID sin tipo");  }
             if (std::holds_alternative<std::nullptr_t>(attr->value) && attr->type->symbol_name != "pointer") { ERROR_TYPE = NON_DEF_VAR; yyerror(("V '" + std::string(_right_op_le.sval) + "' no init.").c_str());  }
             type_r_le = stringToType(attr->type->symbol_name);
             if (type_r_le == ExpresionAttribute::INT) num_r_le = std::get<int>(attr->value); else if (type_r_le == ExpresionAttribute::FLOAT) num_r_le = std::get<float>(attr->value); else if (type_r_le == ExpresionAttribute::DOUBLE) num_r_le = std::get<double>(attr->value);
@@ -2061,11 +2050,11 @@ expresion:
     | funcion {
 		Attributes* func_attr = symbolTable.search_symbol(current_function_name);
         if (func_attr == nullptr) {
-            ERROR_TYPE = SEMANTIC_TYPE;
+			ERROR_TYPE = NON_DEF_FUNC;
             yyerror("Funcion no definida");
         }
 		if (func_attr->category != FUNCTION) {
-            ERROR_TYPE = SEMANTIC_TYPE;        
+			ERROR_TYPE = TYPE_ERROR;
             yyerror("El identificador no es una funcion");
         }
 
@@ -2262,6 +2251,7 @@ var_ciclo_determinado:
                 break;
             default:
                 attributes->value = nullptr;
+				ERROR_TYPE = DEBUGGING_TYPE;
                 yyerror("Tipo no soportado");
         }
 
@@ -2337,7 +2327,7 @@ secuencia:
     | secuencia T_COMA expresion {
         // Verificar consistencia de tipos
         if ($1->type != typeToString($3.type)) {
-            ERROR_TYPE = TYPE_ERROR;
+			ERROR_TYPE = TYPE_ERROR;
             yyerror("Todos los elementos del array deben ser del mismo tipo");
         }
         
