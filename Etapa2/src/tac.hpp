@@ -62,7 +62,7 @@ public:
         } else if (op == "PRINT") {
             tac_code += "print " + arg1;
         } else if (op == "READ") {
-            tac_code += "read " + result;
+            tac_code += result + " := read " + arg1;
         } else {
             // Operaciones aritméticas y otras de 3 direcciones
             tac_code += result + " := " + arg1 + " " + op + " " + arg2;

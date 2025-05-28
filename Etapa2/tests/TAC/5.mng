@@ -1,0 +1,23 @@
+se_prende(){
+	echar_cuento fib(n: mango) lanza mango{
+		culito a: mango = 0;
+		culito b: mango = 1;
+
+		repite_burda i entre 0 hasta n-1{
+			culito c: mango = a + b;
+			a = b;
+			b = c;
+		};
+		lanzate a;
+	};
+
+	culito n: mango = 5;
+	culito resultado: mango = fib(n);
+	culito nombre: higuerote = hablame("Ingresa tu nombre: ");
+	
+	si_es_asi (resultado igualito 5){
+		rescata("El resultado es correcto");
+	} nojoda {
+		rescata("El resultado es incorrecto");
+	};
+};

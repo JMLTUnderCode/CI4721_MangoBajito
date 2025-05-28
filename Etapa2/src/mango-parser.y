@@ -161,7 +161,7 @@ vector<tac_params> tac_params_stack; // Pila para manejar parámetros de funcion
 %token T_CASTEO
 
 // Declaracion de tipos de retorno para las producciones 
-%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion valores_booleanos operadores_asignacion funcion
+%type <sval> tipo_declaracion declaracion_aputador tipo_valor tipos asignacion firma_funcion valores_booleanos operadores_asignacion funcion entrada_salida
 %type <att_val> expresion
 // Declaracion de precedencia y asociatividad de Operadores
 // Asignacion
@@ -1009,7 +1009,7 @@ expresion:
         tac_instructions.emplace_back("&&", $1.temp, $3.temp, temp);
         strcpy($$.temp, temp.c_str());
     }
-    | entrada_salida
+    | entrada_salida { $$.temp = $1;}
 	| variante
     | funcion {
 		// POR IMPLEMENTAR: La funcion debe retornar un valor asociado segun sea el caso.
@@ -1277,8 +1277,17 @@ determinado:
     ;
 
 entrada_salida:
-    T_RESCATA T_IZQPAREN secuencia T_DERPAREN
-    | T_HABLAME T_IZQPAREN expresion T_DERPAREN
+    T_RESCATA T_IZQPAREN secuencia T_DERPAREN {
+        for (const auto& param : tac_params_stack.back().params) {
+            tac_instructions.emplace_back("PRINT", param, "", "");
+        }
+        tac_params_stack.pop_back();
+    }
+    | T_HABLAME T_IZQPAREN expresion T_DERPAREN{
+        string temp = labelGen.newTemp();
+        tac_instructions.emplace_back("READ", $3.temp, "", temp);
+        $$ = strdup(temp.c_str());
+    }
     ;
 
 secuencia:
