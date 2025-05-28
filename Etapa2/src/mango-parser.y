@@ -2049,7 +2049,7 @@ expresion:
 
 		current_function_type = get<string>(func_attr->info[func_attr->info.size()-1].first);
 		$$.type = stringToType(current_function_type);
-		
+		$$.temp = $1;
 		// POR IMPLEMENTAR: Retornar el valor asociado a la funcion.
 		// $$.ival = func_attr->value;
 	}
