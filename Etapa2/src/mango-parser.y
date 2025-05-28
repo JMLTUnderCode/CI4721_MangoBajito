@@ -135,7 +135,7 @@ struct ArrayValue {
             return ExpresionAttribute::FLOAT;
         } else if (typeStr == "manguangua") {
             return ExpresionAttribute::DOUBLE;
-        } else if (typeStr == "bool") {
+        } else if (typeStr == "tas_claro") {
             return ExpresionAttribute::BOOL;
         } else if (typeStr == "negro") {
             return ExpresionAttribute::CHAR;
@@ -497,8 +497,6 @@ declaracion:
             attributes->type = base_type_attr;
             // Se asume que current_array_size contiene el tamaño del array
             attributes->value = current_array_size;
-
-                    std::cout << "Si " << std::endl; 
 
             // Crear cada elemento del array
            for (int i = 0; i < current_array_size; i++) {
@@ -1521,7 +1519,8 @@ expresion:
     }
     | T_PELABOLA
     | T_IZQPAREN expresion T_DERPAREN { $$ = $2; }
-    | valores_booleanos { $$ = $1; }
+    | valores_booleanos { 
+        $$ = $1; }
     | expresion_apuntador 
     | expresion_nuevo
     | arreglo {
@@ -1991,14 +1990,14 @@ expresion:
             string err_msg = "Operación 'OSea (||)' requiere operando booleano, pero se recibió tipo '" + string(typeToString(_right_op_or.type)) + "'.";
             yyerror(err_msg.c_str()); 
         }
-
         $$.type = ExpresionAttribute::BOOL;
         $$.ival = (b1_or || b2_or) ? 1 : 0;
-        string temp = labelGen.newTemp();
+        /*string temp = labelGen.newTemp();
         tac_instructions.emplace_back("||", $1.temp, $3.temp, temp);
-        strcpy($$.temp, temp.c_str());
+        strcpy($$.temp, temp.c_str());*/
     }
     | expresion T_YUNTA expresion { // Logical AND (&&)
+
         bool b1_and, b2_and;
         ExpresionAttribute _left_op_and = $1;
         ExpresionAttribute _right_op_and = $3;
@@ -2053,18 +2052,20 @@ expresion:
 
         $$.type = ExpresionAttribute::BOOL;
         $$.ival = (b1_and && b2_and) ? 1 : 0;
-        string temp = labelGen.newTemp();
+        /*string temp = labelGen.newTemp();
         tac_instructions.emplace_back("&&", $1.temp, $3.temp, temp);
-        strcpy($$.temp, temp.c_str());
+        strcpy($$.temp, temp.c_str());*/
     }
     | entrada_salida
 	| variante
     | funcion {
 		Attributes* func_attr = symbolTable.search_symbol(current_function_name);
         if (func_attr == nullptr) {
+            ERROR_TYPE = SEMANTIC_TYPE;
             yyerror("Funcion no definida");
         }
 		if (func_attr->category != FUNCTION) {
+            ERROR_TYPE = SEMANTIC_TYPE;        
             yyerror("El identificador no es una funcion");
         }
 
