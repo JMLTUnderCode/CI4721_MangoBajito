@@ -1,0 +1,7 @@
+# Test 01: Error de rangos de iteracion.
+se_prende(){
+	culito n : mango = 0;
+	repite_burda i entre 1 hasta -4 {
+		n = n + 1;
+	};
+};

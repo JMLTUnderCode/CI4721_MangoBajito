@@ -1,0 +1,9 @@
+# Test 05: Error de Tipo tas_claro.
+se_prende(){
+	culito decl0: tas_claro = 2;
+	culito decl1: tas_claro = 1.79;
+	culito decl2: tas_claro = 1.79769e+308;
+	culito decl3: tas_claro = 'c';
+	culito decl4: tas_claro = "hola";
+	culito decl5: tas_claro = [1, 2, 3];
+};
