@@ -1,0 +1,23 @@
+# Test 06: Operacion de incremento.
+se_prende(){
+	culito decl0: mango = -8;
+	decl0++;
+
+	culito decl1: manguita = 2.1;
+	decl1++;
+
+	culito decl2: manguangua = 1.21e+10;
+	decl2++;
+
+    echar_cuento bar0(x: mango) lanza un_coño {
+		x++;
+	};
+
+	echar_cuento bar1(x: manguita) lanza un_coño {
+		x++;
+	};
+
+	echar_cuento bar2(x: manguangua) lanza un_coño {
+		x++;
+	};
+};

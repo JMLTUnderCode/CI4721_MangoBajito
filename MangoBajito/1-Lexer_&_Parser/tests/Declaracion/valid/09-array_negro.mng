@@ -1,0 +1,10 @@
+# Test 09: Tipo array negro.
+se_prende(){
+	jeva n0: negro = 'c';
+	culito n1: negro = '$';
+	culito decl0 : negro[2];
+	decl0[0] = '?';
+	decl0[1] = n0;
+	jeva decl1 : negro[5] = ['a', 'e', 'i', 'o', 'u'];
+	jeva decl2 : negro[2] = [n0, n1];
+};

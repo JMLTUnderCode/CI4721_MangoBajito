@@ -1,0 +1,7 @@
+# Test 00: Bucle FOR.
+se_prende(){
+	culito n: mango = 5;
+	repite_burda i entre 1 hasta 4 {
+		n = n + i;
+	};
+};
