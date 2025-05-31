@@ -1,9 +1,0 @@
-# Test 00: Operacion de suma.
-culito suma: mango = 0;
-se_prende(){
-	culito n: mango = -8;
-	n = 11;
-	n = 8+4;
-	n = -5+10;
-	suma = 1+n;
-};

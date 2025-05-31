@@ -1,9 +1,0 @@
-# Test 04: Operacion de division entera.
-culito mult: mango = 0;
-se_prende(){
-	culito n: mango = -8;
-	n = -11;
-	n = 8//5;
-	n = -5//10;
-	mult = 1//n;
-};

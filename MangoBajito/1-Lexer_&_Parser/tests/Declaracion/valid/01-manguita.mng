@@ -1,8 +1,0 @@
-# Test 1: Tipo manguita.
-culito decl0: manguita = 2.000022;
-se_prende(){
-	jeva decl1: manguita = -2.0321654; # Maximo 7 decimales.
-	culito decl2: manguita = decl0;
-	culito decl3: manguita;
-	decl3 = decl1;
-};

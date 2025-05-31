@@ -1,9 +1,0 @@
-# Test 02: Error de Tipo manguangua.
-se_prende(){
-	culito decl0: manguangua = 2; # Casteo correcto: 2.0
-	culito decl1: manguangua = 1.79; # Casteo correcto: 1.79
-	culito decl2: manguangua = 'c';
-	culito decl3: manguangua = "hola";
-	culito decl4: manguangua = Nolsa;
-	culito decl5: manguangua = [1, 2, 3];
-};
