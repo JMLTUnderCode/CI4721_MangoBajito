@@ -5,10 +5,10 @@
                =======================================================
 [0m
     Clave: 1: decl2[1]
-       Símbolo: decl2[1], Categoría: 12, Scope: 2, Type: mango, Informacion: , Value: 3
+       Símbolo: decl2[1], Categoría: 12, Scope: 2, Type: mango, Informacion: , Value: 2
 
     Clave: 2: decl2[0]
-       Símbolo: decl2[0], Categoría: 12, Scope: 2, Type: mango, Informacion: , Value: 2
+       Símbolo: decl2[0], Categoría: 12, Scope: 2, Type: mango, Informacion: , Value: 3
 
     Clave: 3: decl1[2]
        Símbolo: decl1[2], Categoría: 12, Scope: 2, Type: mango, Informacion: , Value: 50
@@ -20,63 +20,66 @@
        Símbolo: decl1[0], Categoría: 12, Scope: 2, Type: mango, Informacion: , Value: 30
 
     Clave: 6: decl0[1]
-       Símbolo: decl0[1], Categoría: 12, Scope: 2, Type: mango, Informacion: , Value: 2
+       Símbolo: decl0[1], Categoría: 12, Scope: 2, Type: mango, Informacion: , Value: 3
 
     Clave: 7: decl0[0]
        Símbolo: decl0[0], Categoría: 12, Scope: 2, Type: mango, Informacion: , Value: 11
 
-    Clave: 8: n1
-       Símbolo: n1, Categoría: 1, Scope: 2, Type: mango, Informacion: - , Value: 3
+    Clave: 8: decl0[2]
+       Símbolo: decl0[2], Categoría: 12, Scope: 2, Type: mango, Informacion: , Value: 30
 
-    Clave: 9: n0
-       Símbolo: n0, Categoría: 0, Scope: 2, Type: mango, Informacion: - , Value: 2
+    Clave: 9: n1
+       Símbolo: n1, Categoría: 1, Scope: 2, Type: mango, Informacion: - , Value: 2
 
-    Clave: 10: decl2
+    Clave: 10: n0
+       Símbolo: n0, Categoría: 0, Scope: 2, Type: mango, Informacion: - , Value: 3
+
+    Clave: 11: decl2
        Símbolo: decl2, Categoría: 11, Scope: 2, Type: mango, Informacion: decl2[0] decl2[1] , Value: 2
 
-    Clave: 11: mango
+    Clave: 12: mango
        Símbolo: mango, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
 
-    Clave: 12: manguita
+    Clave: 13: manguita
        Símbolo: manguita, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
 
-    Clave: 13: decl0
-       Símbolo: decl0, Categoría: 11, Scope: 2, Type: mango, Informacion: decl0[0] decl0[1] , Value: 2
+    Clave: 14: decl0
+       Símbolo: decl0, Categoría: 11, Scope: 2, Type: mango, Informacion: decl0[0] decl0[1] decl0[2] , Value: 3
 
-    Clave: 14: manguangua
+    Clave: 15: manguangua
        Símbolo: manguangua, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
 
-    Clave: 15: negro
+    Clave: 16: negro
        Símbolo: negro, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
 
-    Clave: 16: tas_claro
+    Clave: 17: tas_claro
        Símbolo: tas_claro, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
 
-    Clave: 17: decl1
+    Clave: 18: decl1
        Símbolo: decl1, Categoría: 11, Scope: 2, Type: mango, Informacion: decl1[0] decl1[1] decl1[2] , Value: 3
 
-    Clave: 18: hablame
+    Clave: 19: hablame
        Símbolo: hablame, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
 
-    Clave: 19: un_coño
+    Clave: 20: un_coño
        Símbolo: un_coño, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
 
-    Clave: 20: array$
+    Clave: 21: array$
        Símbolo: array$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
 
-    Clave: 21: funcion$
+    Clave: 22: funcion$
        Símbolo: funcion$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
 
-    Clave: 22: error$
+    Clave: 23: error$
        Símbolo: error$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
 
-    Clave: 23: higuerote
+    Clave: 24: higuerote
        Símbolo: higuerote, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
 
-    Clave: 24: rescata
+    Clave: 25: rescata
        Símbolo: rescata, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
 
-    Clave: 25: se_prende
+    Clave: 26: se_prende
        Símbolo: se_prende, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
 
 --> Print AST? (s/n): [1;36m[5m
@@ -92,34 +95,38 @@ Programa
           |    |    |--> Instrucción
           |    |    |    |--> Instrucción
           |    |    |    |    |--> Instrucción
-          |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |--> n0 | Category: Declaración | Type: mango | Kind: CONSTANTE
-          |    |    |    |    |    |    |--> Literal | Category: Number | Type: mango | Value: 2
-          |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |         |--> n1 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |    |    |    |         |--> Literal | Category: Number | Type: mango | Value: 3
-          |    |    |    |    |--> decl0 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |    |    |         |--> n0 | Category: Array_Size | Type: mango | Value: 2
+          |    |    |    |    |    |--> Instrucción
+          |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |--> n0 | Category: Declaración | Type: mango | Kind: CONSTANTE
+          |    |    |    |    |    |    |    |--> Literal | Category: Number | Type: mango | Value: 3
+          |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |         |--> n1 | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |    |         |--> Literal | Category: Number | Type: mango | Value: 2
+          |    |    |    |    |    |--> decl0 | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |         |--> n0 | Category: Array_Size | Type: mango | Value: 3
+          |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |         |--> decl1 | Category: Declaración | Type: mango | Kind: CONSTANTE
+          |    |    |    |         |    |--> n0 | Category: Array_Size | Type: mango | Value: 3
+          |    |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |              |    |--> Literal | Category: Number | Type: mango | Value: 30
+          |    |    |    |              |    |--> Literal | Category: Number | Type: mango | Value: 40
+          |    |    |    |              |--> Literal | Category: Number | Type: mango | Value: 50
           |    |    |    |--> Asignación | Kind: =
-          |    |    |         |--> decl0 | Category: Identificador | Type: mango
-          |    |    |         |--> Literal | Category: Number | Type: mango | Value: 11
+          |    |    |         |--> decl2 | Category: Declaración | Type: mango | Kind: CONSTANTE
+          |    |    |         |    |--> n1 | Category: Array_Size | Type: mango | Value: 2
+          |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |              |--> n0 | Category: Identificador | Type: mango | Value: 3
+          |    |    |              |--> n1 | Category: Identificador | Type: mango | Value: 2
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl0 | Category: Identificador | Type: mango
-          |    |         |--> n0 | Category: Identificador | Type: mango | Value: 2
+          |    |         |--> Literal | Category: Number | Type: mango | Value: 11
           |    |--> Asignación | Kind: =
-          |         |--> decl1 | Category: Declaración | Type: mango | Kind: CONSTANTE
-          |         |    |--> n1 | Category: Array_Size | Type: mango | Value: 3
-          |         |--> Secuencia | Category: Expresión | Kind: ,
-          |              |--> Secuencia | Category: Expresión | Kind: ,
-          |              |    |--> Literal | Category: Number | Type: mango | Value: 30
-          |              |    |--> Literal | Category: Number | Type: mango | Value: 40
-          |              |--> Literal | Category: Number | Type: mango | Value: 50
+          |         |--> decl0 | Category: Identificador | Type: mango
+          |         |--> n0 | Category: Identificador | Type: mango | Value: 3
           |--> Asignación | Kind: =
-               |--> decl2 | Category: Declaración | Type: mango | Kind: CONSTANTE
-               |    |--> n0 | Category: Array_Size | Type: mango | Value: 2
-               |--> Secuencia | Category: Expresión | Kind: ,
-                    |--> n0 | Category: Identificador | Type: mango | Value: 2
-                    |--> n1 | Category: Identificador | Type: mango | Value: 3
+               |--> decl0 | Category: Identificador | Type: mango
+               |--> decl1 | Category: Elemento_Array | Type: mango | Value: 30
 [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        

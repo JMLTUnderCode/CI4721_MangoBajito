@@ -1,7 +1,11 @@
 # Test 11: Tipo array tas_claro.
 se_prende(){
-	# REVISAR ARRAYS: Solo admite arrays de tipo MANGO, arreglar para los demas tipos
-
-	culito decl0 : tas_claro[2];
-	jeva decl1 : tas_claro[3] = [Sisa, Sisa, Nolsa];
+	jeva n0: tas_claro = Sisa;
+	culito n1: tas_claro = Nolsa;
+	culito decl0 : tas_claro[3];
+	jeva decl1 : tas_claro[5] = [Sisa, Sisa, Sisa, Sisa, Nolsa];
+	jeva decl2 : tas_claro[2] = [n0, n1];
+	decl0[0] = Nolsa;
+	decl0[1] = n0;
+	
 };

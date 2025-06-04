@@ -2,9 +2,10 @@
 se_prende(){
 	jeva n0: manguita = 2.1;
 	culito n1: manguita = 3.3;
-	culito decl0 : manguita[2];
-	decl0[0] = 123.12;
-	decl0[1] = n0;
+	culito decl0 : manguita[3];
 	jeva decl1 : manguita[3] = [30.123, 40.123, 50.321];
 	jeva decl2 : manguita[2] = [n0, n1];
+	decl0[0] = 123.12;
+	decl0[1] = n0;
+	decl0[2] = decl1[0];
 };
