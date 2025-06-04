@@ -11,15 +11,15 @@ se_prende(){
 	decl2--;
 
 	# A excepcion de las funciones.
-    echar_cuento bar0(x: mango) lanza un_coño{
+    echar_cuento bar0(x: mango) lanza un_coño {
 		x--;
 	};
 
-	echar_cuento bar1(x: manguita) lanza un_coño{
+	echar_cuento bar1(x: manguita) lanza un_coño {
 		x--;
 	};
 
-	echar_cuento bar2(x: manguangua) lanza un_coño{
+	echar_cuento bar2(x: manguangua) lanza un_coño {
 		x--;
 	};
 };

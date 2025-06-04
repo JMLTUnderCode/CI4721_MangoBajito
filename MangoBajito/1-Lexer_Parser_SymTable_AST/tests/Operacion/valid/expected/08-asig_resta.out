@@ -57,26 +57,31 @@
                                    AST Representation                 
                =======================================================
 [0m
-Name: Programa
-    Name: Main
-        Name: = | Category: Asignación
-            Name: n0 | Category: Declaración | Type: mango | Kind: VARIABLE
-            Name: Literal | Category: Number | Type: mango | Value: -8
-        Name: -= | Category: Resta Compuesta
-            Name: n0 | Category: Identificador | Type: mango
-            Name: Literal | Category: Number | Type: mango | Value: 16
-        Name: = | Category: Asignación
-            Name: n1 | Category: Declaración | Type: manguita | Kind: VARIABLE
-            Name: Literal | Category: Number | Type: manguita | Value: -8.500000
-        Name: -= | Category: Resta Compuesta
-            Name: n1 | Category: Identificador | Type: manguita
-            Name: Literal | Category: Number | Type: manguita | Value: 16.200001
-        Name: = | Category: Asignación
-            Name: n2 | Category: Declaración | Type: manguangua | Kind: VARIABLE
-            Name: Literal | Category: Number | Type: manguangua | Value: -8.5412310000e+03
-        Name: -= | Category: Resta Compuesta
-            Name: n2 | Category: Identificador | Type: manguangua
-            Name: Literal | Category: Number | Type: manguangua | Value: 1.6212340000e+04
+Programa
+|--> Main
+     |--> Instrucción
+          |--> Instrucción
+          |    |--> Instrucción
+          |    |    |--> Instrucción
+          |    |    |    |--> Instrucción
+          |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |--> n0 | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |    |--> Literal | Category: Number | Type: mango | Value: -8
+          |    |    |    |    |--> Resta Compuesta | Kind: -=
+          |    |    |    |         |--> n0 | Category: Identificador | Type: mango
+          |    |    |    |         |--> Literal | Category: Number | Type: mango | Value: 16
+          |    |    |    |--> Asignación | Kind: =
+          |    |    |         |--> n1 | Category: Declaración | Type: manguita | Kind: VARIABLE
+          |    |    |         |--> Literal | Category: Number | Type: manguita | Value: -8.500000
+          |    |    |--> Resta Compuesta | Kind: -=
+          |    |         |--> n1 | Category: Identificador | Type: manguita
+          |    |         |--> Literal | Category: Number | Type: manguita | Value: 16.200001
+          |    |--> Asignación | Kind: =
+          |         |--> n2 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |         |--> Literal | Category: Number | Type: manguangua | Value: -8.5412310000e+03
+          |--> Resta Compuesta | Kind: -=
+               |--> n2 | Category: Identificador | Type: manguangua
+               |--> Literal | Category: Number | Type: manguangua | Value: 1.6212340000e+04
 [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
