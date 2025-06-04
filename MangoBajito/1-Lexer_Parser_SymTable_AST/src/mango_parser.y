@@ -523,7 +523,7 @@ declaracion:
 				attribute->value = size_array;
 
 				int count_elems = 0;
-				set<string> categories = {"Identificador", "Number", "Char", "String"};
+				set<string> categories = {"Identificador", "Number", "Char", "String", "Bool"};
 				vector<ASTNode*> array_elements;
 				collect_nodes_by_categories($6, categories, array_elements);
 				for (auto elem : array_elements) {
