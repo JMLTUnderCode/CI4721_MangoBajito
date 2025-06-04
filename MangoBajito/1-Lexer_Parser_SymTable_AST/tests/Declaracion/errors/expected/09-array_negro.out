@@ -1,0 +1,65 @@
+| Acomódate que te lo estan analizando d:-)
+Error: TYPE_ERROR
+  - Sendo peo en la linea 3, columna 30: Tas en droga?. Tienes "decl0" de tipo 'negro' y le quieres meter un tipo 'mango', marbaa' bruja.
+  - Sendo peo en la linea 4, columna 33: Tas en droga?. Tienes "decl1" de tipo 'negro' y le quieres meter un tipo 'manguita', marbaa' bruja.
+  - Sendo peo en la linea 5, columna 41: Tas en droga?. Tienes "decl2" de tipo 'negro' y le quieres meter un tipo 'manguangua', marbaa' bruja.
+  - Sendo peo en la linea 6, columna 35: Tas en droga?. Tienes "decl3" de tipo 'negro' y le quieres meter un tipo 'higuerote', marbaa' bruja.
+  - Sendo peo en la linea 7, columna 34: Tas en droga?. Tienes "decl4" de tipo 'negro' y le quieres meter un tipo 'tas_claro', marbaa' bruja.
+  - Sendo peo en la linea 8, columna 35: Tas en droga?. Tienes "decl5" de tipo 'negro' y le quieres meter un tipo '', marbaa' bruja.
+Error: ARRAY_LITERAL_SIZE_MISMATCH
+  - Sendo peo en la linea 3, columna 30: Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '0' de '1'.
+  - Sendo peo en la linea 4, columna 33: Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '0' de '1'.
+  - Sendo peo en la linea 5, columna 41: Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '0' de '1'.
+  - Sendo peo en la linea 6, columna 35: Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '0' de '1'.
+  - Sendo peo en la linea 7, columna 34: Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '0' de '1'.
+  - Sendo peo en la linea 8, columna 35: Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '0' de '2'.
+  - Sendo peo en la linea 9, columna 30: Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '0' de '1'.
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción
+          |--> Instrucción
+          |    |--> Instrucción
+          |    |    |--> Instrucción
+          |    |    |    |--> Instrucción
+          |    |    |    |    |--> Instrucción
+          |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |--> decl0 | Category: Declaración | Type: negro | Kind: VARIABLE
+          |    |    |    |    |    |    |    |--> Literal | Category: Array_Size | Type: mango | Value: 1
+          |    |    |    |    |    |    |--> Literal | Category: Number | Type: mango | Value: 2
+          |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |         |--> decl1 | Category: Declaración | Type: negro | Kind: VARIABLE
+          |    |    |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 1
+          |    |    |    |    |         |--> Literal | Category: Number | Type: manguita | Value: 1.790000
+          |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |         |--> decl2 | Category: Declaración | Type: negro | Kind: VARIABLE
+          |    |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 1
+          |    |    |    |         |--> Literal | Category: Number | Type: manguangua | Value: 1.7976900000e+308
+          |    |    |    |--> Asignación | Kind: =
+          |    |    |         |--> decl3 | Category: Declaración | Type: negro | Kind: VARIABLE
+          |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 1
+          |    |    |         |--> Literal | Category: String | Type: higuerote | Value: hola
+          |    |    |--> Asignación | Kind: =
+          |    |         |--> decl4 | Category: Declaración | Type: negro | Kind: VARIABLE
+          |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 1
+          |    |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+          |    |--> Asignación | Kind: =
+          |         |--> decl5 | Category: Declaración | Type: negro | Kind: VARIABLE
+          |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 2
+          |         |--> Secuencia | Category: Expresión | Kind: ,
+          |              |--> Literal | Category: Char | Type: negro | Value: 1
+          |              |--> Literal | Category: Number | Type: mango | Value: 2
+          |--> Asignación | Kind: =
+               |--> decl6 | Category: Declaración | Type: negro | Kind: VARIABLE
+               |    |--> Literal | Category: Array_Size | Type: mango | Value: 1
+               |--> Literal | Category: Char | Type: negro | Value: c
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

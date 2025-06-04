@@ -1,0 +1,88 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+    Clave: 1: p3
+       Símbolo: p3, Categoría: 3, Scope: 4, Type: mango, Informacion: , Value: null
+
+    Clave: 2: fun2
+       Símbolo: fun2, Categoría: 2, Scope: 2, Type: un_coño, Informacion: PARAM(p1) PARAM(p2) PARAM(p3) , Value: null
+
+    Clave: 3: fun1
+       Símbolo: fun1, Categoría: 2, Scope: 2, Type: un_coño, Informacion: , Value: null
+
+    Clave: 4: p1
+       Símbolo: p1, Categoría: 3, Scope: 4, Type: mango, Informacion: , Value: 2
+
+    Clave: 5: mango
+       Símbolo: mango, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+
+    Clave: 6: manguita
+       Símbolo: manguita, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+
+    Clave: 7: manguangua
+       Símbolo: manguangua, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+
+    Clave: 8: negro
+       Símbolo: negro, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+
+    Clave: 9: tas_claro
+       Símbolo: tas_claro, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+
+    Clave: 10: hablame
+       Símbolo: hablame, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
+
+    Clave: 11: un_coño
+       Símbolo: un_coño, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+
+    Clave: 12: array$
+       Símbolo: array$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+
+    Clave: 13: p2
+       Símbolo: p2, Categoría: 3, Scope: 4, Type: manguita, Informacion: , Value: 3
+
+    Clave: 14: funcion$
+       Símbolo: funcion$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+
+    Clave: 15: error$
+       Símbolo: error$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+
+    Clave: 16: higuerote
+       Símbolo: higuerote, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+
+    Clave: 17: rescata
+       Símbolo: rescata, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
+
+    Clave: 18: se_prende
+       Símbolo: se_prende, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción
+          |--> fun1 | Category: Declaración | Type: un_coño | Kind: Función
+          |--> fun2 | Category: Declaración | Type: un_coño | Kind: Función
+               |--> Secuencia | Category: Declaración | Kind: ,
+               |    |--> Secuencia | Category: Declaración | Kind: ,
+               |    |    |--> p1 | Category: Parámetro | Type: mango
+               |    |    |--> p2 | Category: Parámetro | Type: manguita
+               |    |--> p3 | Category: Parámetro | Type: mango
+               |--> Instrucción
+                    |--> Asignación | Kind: =
+                    |    |--> p1 | Category: Identificador | Type: mango
+                    |    |--> Literal | Category: Number | Type: mango | Value: 2
+                    |--> Asignación | Kind: =
+                         |--> p2 | Category: Identificador | Type: manguita
+                         |--> Literal | Category: Number | Type: manguita | Value: 3.000000
+[1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]
