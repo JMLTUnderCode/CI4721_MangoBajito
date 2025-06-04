@@ -4,11 +4,13 @@
 declare -A valid_tests
 valid_tests["Declaracion"]="00 01 02 03 04 05 06 07 08 09 10 11"
 valid_tests["Funcion"]="00 01 02"
+valid_tests["Operacion"]="05 06 07 08 09"
 
 # Define las secciones y los números de test a actualizar para errors
 declare -A error_tests
 error_tests["Declaracion"]=""
 error_tests["Funcion"]=""
+error_tests["Operacion"]=""
 
 # Ruta base de los tests
 BASE_DIR="tests"
