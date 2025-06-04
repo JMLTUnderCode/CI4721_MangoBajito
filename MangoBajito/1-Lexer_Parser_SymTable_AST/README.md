@@ -136,9 +136,9 @@ Módulo desarrollados del proyecto Mango Bajito.
     - [ ] Guardar apuntadores en la tabla de símbolos.
 	- [ ] Chequear la informacion de los elementos apuntadores(funcion print_info).
 - [ ] Arreglos Multidimensionales
-        - [ ] Guardado
-        - [ ] informacion
-        - [ ] Valores
+    - [ ] Guardado
+    - [ ] informacion
+    - [ ] Valores
 - [x] Errores
 	- [x] Utilizacion de variable sin definir.
 	- [x] Redeclaracion de una variable en un mismo scope.
