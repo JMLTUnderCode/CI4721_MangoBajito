@@ -243,11 +243,17 @@ void SymbolTable::print_table() {
 // =                Abstract Sintax Tree                =
 // ======================================================
 
-void showAST(const ASTNode* node, int indent) {
+void showAST(const ASTNode* node, int depth, const string& prefix, bool isLast) {
 	if (!node) return;
-	string ind(indent, ' ');
+	
+    // Imprimir el prefijo visual
+    cout << prefix;
+    if (depth > 0) {
+        cout << (isLast ? "|--> " : "|--> ");
+    }
 
-	cout << ind << "Name: " << node->name;
+    // Imprimir la línea del nodo
+    cout << node->name;
 	if (!node->category.empty()) cout << " | Category: " << node->category;
 	if (!node->type.empty())     cout << " | Type: " << node->type;
 	if (!node->kind.empty())     cout << " | Kind: " << node->kind;
@@ -280,11 +286,19 @@ void showAST(const ASTNode* node, int indent) {
 	    cout << "]";
 	}
 
-	cout << endl;
-	// Imprimir hijos recursivamente
-	for (const auto& child : node->children) {
-		showAST(child, indent + 4);
-	}
+    cout << endl;
+
+    // Construir el prefijo para los hijos
+    string childPrefix = prefix;
+    if (depth > 0) {
+        childPrefix += (isLast ? "     " : "|    ");
+    }
+
+    // Imprimir hijos recursivamente
+    for (size_t i = 0; i < node->children.size(); ++i) {
+        bool lastChild = (i == node->children.size() - 1);
+        showAST(node->children[i], depth + 1, childPrefix, lastChild);
+    }
 }
 
 void print_AST(const ASTNode* node) {

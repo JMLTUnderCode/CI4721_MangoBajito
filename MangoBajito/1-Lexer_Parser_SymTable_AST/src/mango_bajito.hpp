@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <stack>
 #include <variant>
+#include <set>
 
 using namespace std;
 
@@ -207,8 +208,15 @@ inline ASTNode* makeASTNode(const string& name, const string& category = "", con
 	return new ASTNode(name, category, type, kind, value);
 }
 
+// Recolecta nodos por una lista de categorías
+inline void collect_nodes_by_categories(ASTNode* node, const set<string>& categories, vector<ASTNode*>& out) {
+    if (!node) return;
+    if (categories.count(node->category)) out.push_back(node);
+    for (auto child : node->children) collect_nodes_by_categories(child, categories, out);
+}
+
 // Imprimir el AST (recursivo, para debug)
-void showAST(const ASTNode* node, int indent = 0);
+void showAST(const ASTNode* node, int depth = 0, const string& prefix = "", bool isLast = true);
 void print_AST(const ASTNode* node);
 
 #endif
