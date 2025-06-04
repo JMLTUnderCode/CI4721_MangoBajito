@@ -84,6 +84,7 @@ unordered_map<systemError, vector<string>> errorDictionary = {
 	{SEGMENTATION_FAULT, {}},
 	{FUNC_PARAM_EXCEEDED, {}},
 	{FUNC_PARAM_MISSING, {}},
+	{ALREADY_DEF_PARAM, {}},
 	{EMPTY_ARRAY_CONSTANT, {}},
 	{POINTER_ARRAY, {}},
 	{INT_SIZE_ARRAY,{}},
@@ -242,11 +243,11 @@ string current_func_type = "";
 
 // Declaracion de tipos de retorno para las producciones 
 %type <ast> programa main 
-%type <ast> asignacion operadores_asignacion
-%type <ast> instruccion secuencia_instrucciones instrucciones  
+%type <ast> asignacion operadores_asignacion operaciones_unitarias
+%type <ast> instruccion secuencia_instrucciones instrucciones   
 %type <ast> declaracion tipo_declaracion secuencia_declaraciones declaracion_aputador declaracion_funcion
 %type <ast> tipos tipo_valor
-%type <ast> expresion expresion_apuntador expresion_nuevo
+%type <ast> expresion expresion_apuntador expresion_nuevo 
 %type <ast> secuencia
 %type <ast> condicion alternativa
 %type <ast> bucle indeterminado determinado var_ciclo_determinado
@@ -319,9 +320,7 @@ programa:
 	;
 
 main:
-	T_SE_PRENDE abrir_scope T_IZQPAREN T_DERPAREN T_IZQLLAVE instrucciones T_DERLLAVE T_PUNTOCOMA cerrar_scope { 
-		$$ = $6;
-	}
+	T_SE_PRENDE abrir_scope T_IZQPAREN T_DERPAREN T_IZQLLAVE instrucciones T_DERLLAVE T_PUNTOCOMA cerrar_scope { $$ = $6; }
 	;
 
 instrucciones:
@@ -350,65 +349,42 @@ instruccion:
 	| T_KIETO { $$ = nullptr; }
 	| T_ROTALO { $$ = nullptr; }
 	| T_LANZATE expresion { $$ = $2; }
-	| T_ID T_OPDECREMENTO {
-		/*Attributes *var = symbolTable.search_symbol($1);
-		if (var == nullptr) {
-			ERROR_TYPE = NON_DEF_VAR;
-			yyerror($1);
-		}
-
-		if (var->type != nullptr && isNumeric(var->type->symbol_name)) { // Verificar si es de tipo numerico.
-			string info_var_check = get<string>(var->info[0].first);
-			if (info_var_check != "PARAMETRO"){ // Si es parametro de una funcion no hay problema.
-				if (holds_alternative<int>(var->value)) { // De lo contrario hay que verificar si tiene valor numero asignado.
-					int old_val = get<int>(var->value);
-					var->value = old_val - 1;
-				} else if (holds_alternative<float>(var->value)) {
-					float old_val = get<float>(var->value);
-					var->value = old_val - 1.0;
-				} else if (holds_alternative<double>(var->value)) {
-					double old_val = get<double>(var->value);
-					var->value = old_val - 1.0;
-				} else {
-					ERROR_TYPE = NON_VALUE;
-					yyerror($1);
-				}
-			}
+	| expresion operaciones_unitarias {
+		Attributes* var_attr = symbolTable.search_symbol($1->name);
+		string op = $2->name;
+		if (var_attr == nullptr) {
+			FLAG_ERROR = NON_DEF_VAR;
+			yyerror($1->name.c_str());
 		} else {
-			ERROR_TYPE = TYPE_ERROR;
-			string error_msg = "\"" + string($1) + "\" de tipo '" + var->type->symbol_name + "' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.";
-			yyerror(error_msg.c_str());
-		}*/
-	}
-	| T_ID T_OPINCREMENTO {
-		/*Attributes *var = symbolTable.search_symbol($1);
-		if (var == nullptr) {
-			ERROR_TYPE = NON_DEF_VAR;
-			yyerror($1);
-		}
-
-		if (var->type != nullptr && isNumeric(var->type->symbol_name)) { // Verificar si es de tipo numerico.
-			string info_var_check = get<string>(var->info[0].first);
-			if (info_var_check != "PARAMETRO"){ // Si es parametro de una funcion no hay problema.
-				if (holds_alternative<int>(var->value)) { // De lo contrario hay que verificar si tiene valor numero asignado.
-					int old_val = get<int>(var->value);
-					var->value = old_val + 1;
-				} else if (holds_alternative<float>(var->value)) {
-					float old_val = get<float>(var->value);
-					var->value = old_val + 1.0;
-				} else if (holds_alternative<double>(var->value)) {
-					double old_val = get<double>(var->value);
-					var->value = old_val + 1.0;
-				} else {
-					ERROR_TYPE = NON_VALUE;
-					yyerror($1);
+			if (var_attr->type != nullptr && isNumeric(var_attr->type->symbol_name)) { // Verificar si es de tipo numerico.
+				//string info_var_check = get<string>(var_attr->info[0].first);				
+				if (var_attr->category != PARAMETERS){ // Si es parametro de una funcion no hay problema.
+					if (holds_alternative<int>(var_attr->value)) { // De lo contrario hay que verificar si tiene valor numero asignado.
+						int old_val = get<int>(var_attr->value);
+						if (op == "--" ) var_attr->value = old_val - 1;
+						if (op == "++" ) var_attr->value = old_val + 1;
+					} else if (holds_alternative<float>(var_attr->value)) {
+						float old_val = get<float>(var_attr->value);
+						if (op == "--" ) var_attr->value = old_val - 1.0;
+						if (op == "++" ) var_attr->value = old_val + 1.0;
+					} else if (holds_alternative<double>(var_attr->value)) {
+						double old_val = get<double>(var_attr->value);
+						if (op == "--" ) var_attr->value = old_val - 1.0;
+						if (op == "++" ) var_attr->value = old_val + 1.0;
+					} else {
+						FLAG_ERROR = NON_VALUE;
+						yyerror($1->name.c_str());
+					}
 				}
+			} else {
+				FLAG_ERROR = TYPE_ERROR;
+				string error_msg = "\"" + $1->name + "\" de tipo '" + var_attr->type->symbol_name + "' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.";
+				yyerror(error_msg.c_str());
 			}
-		} else {
-			ERROR_TYPE = TYPE_ERROR;
-			string error_msg = "\"" + string($1) + "\" de tipo '" + var->type->symbol_name + "' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.";
-			yyerror(error_msg.c_str());
-		}*/
+		}
+		string category = op == "++" ? "Incremento" : "Decremento";
+		$$ = makeASTNode("Operación", category, "", op);
+		$$->children.push_back($1);
 	}
 	| T_BORRADOL T_ID { $$ = nullptr; }
 	| T_BORRADOL T_ID T_PUNTO T_ID { $$ = nullptr; }
@@ -1048,6 +1024,11 @@ expresion:
 	| casting
 	;
 
+operaciones_unitarias:
+	T_OPDECREMENTO { $$ = makeASTNode("--", "Operación_Unitaria"); }
+	| T_OPINCREMENTO { $$ = makeASTNode("++", "Operación_Unitaria"); }
+	;
+
 expresion_apuntador:
 	T_AKITOY T_ID { $$ = nullptr; }
 	| T_AKITOY T_ID T_PUNTO T_ID { $$ = nullptr; }
@@ -1177,10 +1158,17 @@ firma_funcion:
 parametro:
 	T_AKITOY T_ID T_DOSPUNTOS tipos { $$ = nullptr; }
 	| T_ID T_DOSPUNTOS tipos {
-		if (symbolTable.search_symbol($1) != nullptr) {
-			FLAG_ERROR = ALREADY_DEF_VAR;
-			yyerror($1);
-		} else {
+		Attributes* param_attr = symbolTable.search_symbol($1);
+		bool error = false;
+		if (param_attr != nullptr) {
+			if (param_attr->category == PARAMETERS && param_attr->scope == symbolTable.current_scope) {
+				FLAG_ERROR = ALREADY_DEF_PARAM;
+				string error_message = "'" + param_attr->symbol_name + "' dos veces en el mismo cuento?, te gusta la versatilidad locota.";
+				yyerror($1);
+				error = true;
+			}
+		}
+		if (!error) {
 			Attributes* param_attr = new Attributes();
 			param_attr->symbol_name = $1;
 			param_attr->scope = symbolTable.current_scope;
@@ -1189,7 +1177,7 @@ parametro:
 			param_attr->value = nullptr;
 			symbolTable.insert_symbol($1, *param_attr);
 		}
-		
+
 		$$ = makeASTNode($1, "Parámetro", $3->type);
 	}
 
@@ -1219,7 +1207,7 @@ declaracion_funcion:
 				vector<ASTNode*> param_nodes;
 				collect_nodes_by_categories($4, categories, param_nodes);
 				for (auto param : param_nodes) {
-				    Attributes* param_attr = symbolTable.search_symbol(param->name);
+					Attributes* param_attr = symbolTable.search_symbol(param->name);
 				    if (param_attr) func_attr->info.push_back({"PARAM("+ param->name +")", param_attr});
 				}
 			}
@@ -1403,6 +1391,9 @@ void yyerror(const char *var) {
 				break;
 			case FUNC_PARAM_MISSING:
 				error_msg += "Párale bolas al cuento \"" + string(var) + "\" que faltan más vainas.";
+				break;
+			case ALREADY_DEF_PARAM:
+				error_msg += "Ay vale!. Te gusta tener " + string(var);
 				break;
 
 			case EMPTY_ARRAY_CONSTANT:
