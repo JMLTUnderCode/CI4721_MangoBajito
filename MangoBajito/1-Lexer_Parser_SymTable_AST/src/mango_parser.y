@@ -174,7 +174,7 @@ string current_func_type = "";
 		}
 	}  
 
-	// Función auxiliar: String a enum
+	// Función auxiliar: string a enum
 	inline Type_and_Value::Type stringToType(const string& typeStr) {
 		if (typeStr == "mango") {
 			return Type_and_Value::INT;
@@ -464,14 +464,38 @@ declaracion:
 				Attributes* attribute = new Attributes();
 				attribute->symbol_name = $2;
 				attribute->scope = symbolTable.current_scope;
-				attribute->type = symbolTable.search_symbol($4->type);
+				Attributes* type_attr = symbolTable.search_symbol($4->type);
+				attribute->type = type_attr;
 				attribute->value = nullptr; // Inicializar valor como nulo
 
 				if ($1->kind == "POINTER_V") attribute->category = POINTER_V;
 				else if ($1->kind == "POINTER_C") attribute->category = POINTER_C;
 				else if ($1->kind == "VARIABLE") attribute->category = VARIABLE;
 				else if ($1->kind == "CONSTANTE") attribute->category = CONSTANT;
-				
+
+				if ($4->category == "Identificador") { // Estructuras
+					for (const auto& field : type_attr->info) {
+				        // field.first es "MyStruct.attr_var_1"
+				        string full_field = get<string>(field.first);
+				        size_t dot_pos = full_field.find('.');
+				        if (dot_pos == string::npos) continue; // No es un campo válido
+
+				        string attr_name = full_field.substr(dot_pos + 1); // "attr_var_1"
+				        string new_field_name = string($2) + "." + attr_name; // "var.attr_var_1"
+
+				        Attributes* new_attr = new Attributes();
+				        new_attr->symbol_name = new_field_name;
+				        new_attr->scope = symbolTable.current_scope;
+				        new_attr->type = field.second->type;
+				        new_attr->category = STRUCT_ATTRIBUTE;
+				        new_attr->value = nullptr;
+
+				        // Agregar a la info de la variable y a la tabla de símbolos
+				        attribute->info.push_back({new_field_name, new_attr});
+				        symbolTable.insert_symbol(new_field_name, *new_attr);
+			    	}
+				}
+
 				// Insertar en tabla de símbolos
 				symbolTable.insert_symbol($2, *attribute);
 			}
@@ -524,7 +548,7 @@ declaracion:
 				attribute->value = size_array;
 
 				int count_elems = 0;
-				set<string> categories = {"Identificador", "Number", "Char", "String", "Bool"};
+				set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool"};
 				vector<ASTNode*> array_elements;
 				collect_nodes_by_categories($6, categories, array_elements);
 				for (auto elem : array_elements) {
@@ -908,7 +932,99 @@ asignacion:
 		$$->children.push_back($6);
 	}
 	| T_ID T_PUNTO T_ID operadores_asignacion expresion { // Structs/Unions
-		$$ = $5;
+		Attributes* struct_attr = symbolTable.search_symbol($1);
+		string type_struct = "Desconocido";
+		string type_field = "Desconocido";
+		Category category_struct = UNKNOWN;
+		if (struct_attr == nullptr) {
+			FLAG_ERROR = NON_DEF_VAR;
+			yyerror($1);
+		} else if (struct_attr->type->category != STRUCT && struct_attr->type->category != UNION) {
+			FLAG_ERROR = TYPE_ERROR;
+			string error_message = "\"" + string($1) + "\" que ni es un 'arroz_con_mango' ni un 'coliao', marbaa' bruja.";
+			yyerror(error_message.c_str());
+		} else {
+			type_struct = struct_attr->type->symbol_name;
+			category_struct = struct_attr->type->category;
+			string field_name = string($1) + "." + string($3);
+			Attributes* field_attr = symbolTable.search_symbol(field_name);
+
+			if (field_attr == nullptr) {
+				FLAG_ERROR = NON_DEF_ATTR;
+				yyerror($3);
+			} else {
+				if (field_attr->type == nullptr) {
+					FLAG_ERROR = INTERNAL;
+					yyerror("ERROR INTERNO: El tipo del struct/union no esta definido.");
+				} else if (field_attr->type->symbol_name != $5->type && (field_attr->type->symbol_name != "manguangua" || $5->type != "manguita")) {
+					FLAG_ERROR = TYPE_ERROR;
+					string error_message = "\"" + string($1) + "\" de tipo '" + field_attr->type->symbol_name + 
+						"' y le quieres meter un tipo '" + $5->type + "', marbaa' bruja.";
+					yyerror(error_message.c_str());
+				} else {
+					// Vaciar los demas campos en caso de un UNION
+					string other_field_name = "";
+					if (category_struct == UNION) {
+						for (const auto& info : struct_attr->info) {
+							other_field_name = get<string>(info.first);
+							if (other_field_name != field_name) {
+								Attributes* other_field = symbolTable.search_symbol(other_field_name);
+								if (other_field != nullptr) other_field->value = nullptr; // Limpiar valor de otros campos
+							}
+						}
+					}
+					string op = $4->kind;
+					type_field = field_attr->type->symbol_name;
+					if (op != "=" && holds_alternative<nullptr_t>(field_attr->value)) {
+						FLAG_ERROR = NON_VALUE;
+						yyerror(field_name.c_str());
+					} else {
+						if (type_field == "mango") {
+							if (op == "=") field_attr->value = stoi($5->value);
+							if (op == "+=") field_attr->value = get<int>(field_attr->value) + stoi($5->value);
+							if (op == "-=") field_attr->value = get<int>(field_attr->value) - stoi($5->value);
+							if (op == "*=") field_attr->value = get<int>(field_attr->value) * stoi($5->value);
+						} else if (type_field == "manguita") {
+							if (op == "=") field_attr->value = stof($5->value);
+							if (op == "+=") field_attr->value = get<float>(field_attr->value) + stof($5->value);
+							if (op == "-=") field_attr->value = get<float>(field_attr->value) - stof($5->value);
+							if (op == "*=") field_attr->value = get<float>(field_attr->value) * stof($5->value);
+						} else if (type_field == "manguangua") {
+							if ($5->type == "manguita") {
+								if (op == "=") field_attr->value = stof($5->value);
+								if (op == "+=") field_attr->value = get<double>(field_attr->value) + stof($5->value);
+								if (op == "-=") field_attr->value = get<double>(field_attr->value) - stof($5->value);
+								if (op == "*=") field_attr->value = get<double>(field_attr->value) * stof($5->value);
+							} else { // Conserva precision con $5->dvalue
+								if (op == "=") field_attr->value = $5->dvalue;
+								if (op == "+=") field_attr->value = get<double>(field_attr->value) + $5->dvalue;
+								if (op == "-=") field_attr->value = get<double>(field_attr->value) - $5->dvalue;
+								if (op == "*=") field_attr->value = get<double>(field_attr->value) * $5->dvalue;
+							}
+						} else if (type_field == "tas_claro" && op == "="){
+							field_attr->value = stoi($5->value);
+							if (!field_attr->info.empty()) field_attr->info[0].first = ($5->value == "1" ? "Sisa" : "Nolsa");
+							else field_attr->info.push_back({($5->value == "1" ? "Sisa" : "Nolsa"), nullptr});
+						} else if (type_field == "higuerote" && op == "=") field_attr->value = $5->value;
+						else if (type_field == "negro" && op == "=") field_attr->value = $5->value.empty() ? '\0' : $5->value[0];
+						else if (type_field == "pointer"){
+							/* POR IMPLEMENTAR */
+							//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
+							field_attr->value = nullptr;
+						} else {
+							FLAG_ERROR = INTERNAL;
+							string error_message = "TIPO DESCONOCIDO: '" + type_field + "'.";
+							yyerror(error_message.c_str());
+							field_attr->value = nullptr;
+						}
+					}
+				}
+			}
+		}
+		$$ = $4;
+		$$->children.push_back(makeASTNode($1, "Identificador", type_struct));
+		$$->children.push_back(makeASTNode($3, "Atributo", type_field));
+		$$->children.push_back($5);
 	}
 	;
 
@@ -953,7 +1069,7 @@ expresion:
 	}
 	| T_VALUE {
 		string tipo = typeToString($1.type);
-		string category = "Number";
+		string category = "Numérico";
 		string kind, valor = "";
 		if (tipo == "mango") valor = to_string($1.ival);
 		else if (tipo == "manguita") valor = to_string($1.fval);
@@ -964,10 +1080,10 @@ expresion:
 			valor = oss.str();
 		} else if (tipo == "negro") {
 			valor = string(1, $1.cval);
-			category = "Char";
+			category = "Caracter";
 		} else if (tipo == "higuerote") {
 			valor = string($1.sval);
-			category = "String";
+			category = "Cadena de Caracteres";
 		} else {
 			FLAG_ERROR = INTERNAL;
 			yyerror("ERROR INTERNO: Lexer proporciona tipo un tipo invalido.");
@@ -1363,7 +1479,7 @@ llamada_funcion:
 			$$ = makeASTNode($1, "Llamada_Funcion", func_attr->type->symbol_name);
 		} else {
 			// Recolectar todos los nodos de argumentos.
-			set<string> arg_categories = {"Identificador", "Number", "Char", "String", "Bool"};
+			set<string> arg_categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool"};
 			vector<ASTNode*> arg_nodes;
 			collect_nodes_by_categories($3, arg_categories, arg_nodes);
 			
