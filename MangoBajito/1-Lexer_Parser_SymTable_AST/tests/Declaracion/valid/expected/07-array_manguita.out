@@ -5,82 +5,82 @@
                =======================================================
 [0m
     Clave: 1: decl2[1]
-       Símbolo: decl2[1], Categoría: 12, Scope: 2, Type: manguita, Informacion: , Value: 3.3
+       Símbolo: decl2[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguita, Value: 3.3
 
     Clave: 2: decl2[0]
-       Símbolo: decl2[0], Categoría: 12, Scope: 2, Type: manguita, Informacion: , Value: 2.1
+       Símbolo: decl2[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguita, Value: 2.1
 
     Clave: 3: decl1[2]
-       Símbolo: decl1[2], Categoría: 12, Scope: 2, Type: manguita, Informacion: , Value: 50.321
+       Símbolo: decl1[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguita, Value: 50.321
 
     Clave: 4: decl1[1]
-       Símbolo: decl1[1], Categoría: 12, Scope: 2, Type: manguita, Informacion: , Value: 40.123
+       Símbolo: decl1[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguita, Value: 40.123
 
     Clave: 5: decl1[0]
-       Símbolo: decl1[0], Categoría: 12, Scope: 2, Type: manguita, Informacion: , Value: 30.123
+       Símbolo: decl1[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguita, Value: 30.123
 
     Clave: 6: decl0[1]
-       Símbolo: decl0[1], Categoría: 12, Scope: 2, Type: manguita, Informacion: , Value: 2.1
+       Símbolo: decl0[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguita, Value: 2.1
 
     Clave: 7: decl0[0]
-       Símbolo: decl0[0], Categoría: 12, Scope: 2, Type: manguita, Informacion: , Value: 123.12
+       Símbolo: decl0[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguita, Value: 123.12
 
     Clave: 8: decl0[2]
-       Símbolo: decl0[2], Categoría: 12, Scope: 2, Type: manguita, Informacion: , Value: 30.123
+       Símbolo: decl0[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguita, Value: 30.123
 
     Clave: 9: n1
-       Símbolo: n1, Categoría: 1, Scope: 2, Type: manguita, Informacion: - , Value: 3.3
+       Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: manguita, Informacion: - , Value: 3.3
 
     Clave: 10: n0
-       Símbolo: n0, Categoría: 0, Scope: 2, Type: manguita, Informacion: - , Value: 2.1
+       Símbolo: n0, Categoría: (0)CONSTANT, Scope: 2, Type: manguita, Informacion: - , Value: 2.1
 
     Clave: 11: decl2
-       Símbolo: decl2, Categoría: 11, Scope: 2, Type: manguita, Informacion: decl2[0] decl2[1] , Value: 2
+       Símbolo: decl2, Categoría: (11)ARRAY, Scope: 2, Type: manguita, Informacion: decl2[0] decl2[1] , Value: 2
 
     Clave: 12: mango
-       Símbolo: mango, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: mango, Categoría: (7)TYPE, Scope: 0
 
     Clave: 13: manguita
-       Símbolo: manguita, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
     Clave: 14: decl0
-       Símbolo: decl0, Categoría: 11, Scope: 2, Type: manguita, Informacion: decl0[0] decl0[1] decl0[2] , Value: 3
+       Símbolo: decl0, Categoría: (11)ARRAY, Scope: 2, Type: manguita, Informacion: decl0[0] decl0[1] decl0[2] , Value: 3
 
     Clave: 15: manguangua
-       Símbolo: manguangua, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
     Clave: 16: negro
-       Símbolo: negro, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
     Clave: 17: tas_claro
-       Símbolo: tas_claro, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
     Clave: 18: decl1
-       Símbolo: decl1, Categoría: 11, Scope: 2, Type: manguita, Informacion: decl1[0] decl1[1] decl1[2] , Value: 3
+       Símbolo: decl1, Categoría: (11)ARRAY, Scope: 2, Type: manguita, Informacion: decl1[0] decl1[1] decl1[2] , Value: 3
 
     Clave: 19: hablame
-       Símbolo: hablame, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
     Clave: 20: un_coño
-       Símbolo: un_coño, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
     Clave: 21: array$
-       Símbolo: array$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: array$, Categoría: (7)TYPE, Scope: 0
 
     Clave: 22: funcion$
-       Símbolo: funcion$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
     Clave: 23: error$
-       Símbolo: error$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: error$, Categoría: (7)TYPE, Scope: 0
 
     Clave: 24: higuerote
-       Símbolo: higuerote, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
     Clave: 25: rescata
-       Símbolo: rescata, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
     Clave: 26: se_prende
-       Símbolo: se_prende, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
@@ -89,13 +89,13 @@
 [0m
 Programa
 |--> Main
-     |--> Instrucción
-          |--> Instrucción
-          |    |--> Instrucción
-          |    |    |--> Instrucción
-          |    |    |    |--> Instrucción
-          |    |    |    |    |--> Instrucción
-          |    |    |    |    |    |--> Instrucción
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Instrucción | Kind: ;
+          |    |    |--> Instrucción | Kind: ;
+          |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |--> n0 | Category: Declaración | Type: manguita | Kind: CONSTANTE
           |    |    |    |    |    |    |    |--> Literal | Category: Number | Type: manguita | Value: 2.100000

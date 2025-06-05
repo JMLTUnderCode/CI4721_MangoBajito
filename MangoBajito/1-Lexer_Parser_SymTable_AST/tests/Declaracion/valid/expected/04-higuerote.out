@@ -5,55 +5,55 @@
                =======================================================
 [0m
     Clave: 1: decl2
-       Símbolo: decl2, Categoría: 1, Scope: 2, Type: higuerote, Informacion: - , Value: hola
+       Símbolo: decl2, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Informacion: - , Value: hola
 
     Clave: 2: mango
-       Símbolo: mango, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: mango, Categoría: (7)TYPE, Scope: 0
 
     Clave: 3: manguita
-       Símbolo: manguita, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
     Clave: 4: decl0
-       Símbolo: decl0, Categoría: 1, Scope: 1, Type: higuerote, Informacion: - , Value: hola
+       Símbolo: decl0, Categoría: (1)VARIABLE, Scope: 1, Type: higuerote, Informacion: - , Value: hola
 
     Clave: 5: manguangua
-       Símbolo: manguangua, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
     Clave: 6: decl3
-       Símbolo: decl3, Categoría: 1, Scope: 2, Type: higuerote, Informacion: , Value:  mundo
+       Símbolo: decl3, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Value:  mundo
 
     Clave: 7: negro
-       Símbolo: negro, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
     Clave: 8: tas_claro
-       Símbolo: tas_claro, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
     Clave: 9: decl1
-       Símbolo: decl1, Categoría: 0, Scope: 2, Type: higuerote, Informacion: - , Value:  mundo
+       Símbolo: decl1, Categoría: (0)CONSTANT, Scope: 2, Type: higuerote, Informacion: - , Value:  mundo
 
     Clave: 10: hablame
-       Símbolo: hablame, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
     Clave: 11: un_coño
-       Símbolo: un_coño, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
     Clave: 12: array$
-       Símbolo: array$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: array$, Categoría: (7)TYPE, Scope: 0
 
     Clave: 13: funcion$
-       Símbolo: funcion$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
     Clave: 14: error$
-       Símbolo: error$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: error$, Categoría: (7)TYPE, Scope: 0
 
     Clave: 15: higuerote
-       Símbolo: higuerote, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
     Clave: 16: rescata
-       Símbolo: rescata, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
     Clave: 17: se_prende
-       Símbolo: se_prende, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
@@ -66,9 +66,9 @@ Programa
 |         |--> decl0 | Category: Declaración | Type: higuerote | Kind: VARIABLE
 |         |--> Literal | Category: String | Type: higuerote | Value: hola
 |--> Main
-     |--> Instrucción
-          |--> Instrucción
-          |    |--> Instrucción
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Instrucción | Kind: ;
           |    |    |--> Asignación | Kind: =
           |    |    |    |--> decl1 | Category: Declaración | Type: higuerote | Kind: CONSTANTE
           |    |    |    |--> Literal | Category: String | Type: higuerote | Value:  mundo

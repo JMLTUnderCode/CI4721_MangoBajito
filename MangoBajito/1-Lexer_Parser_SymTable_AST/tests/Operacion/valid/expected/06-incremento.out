@@ -5,68 +5,68 @@
                =======================================================
 [0m
     Clave: 1: bar2
-       Símbolo: bar2, Categoría: 2, Scope: 2, Type: un_coño, Informacion: PARAM(x) , Value: null
+       Símbolo: bar2, Categoría: (2)FUNCTION, Scope: 2, Type: un_coño, Informacion: PARAM(x) 
 
     Clave: 2: x
-       Símbolo: x, Categoría: 3, Scope: 3, Type: mango, Informacion: , Value: null
+       Símbolo: x, Categoría: (3)PARAMETERS, Scope: 3, Type: mango
 
-       Símbolo: x, Categoría: 3, Scope: 4, Type: manguita, Informacion: , Value: null
+       Símbolo: x, Categoría: (3)PARAMETERS, Scope: 4, Type: manguita
 
-       Símbolo: x, Categoría: 3, Scope: 5, Type: manguangua, Informacion: , Value: null
+       Símbolo: x, Categoría: (3)PARAMETERS, Scope: 5, Type: manguangua
 
     Clave: 3: decl2
-       Símbolo: decl2, Categoría: 1, Scope: 2, Type: manguangua, Informacion: - , Value: 1.21e+10
+       Símbolo: decl2, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Informacion: - , Value: 1.21e+10
 
     Clave: 4: mango
-       Símbolo: mango, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: mango, Categoría: (7)TYPE, Scope: 0
 
     Clave: 5: manguita
-       Símbolo: manguita, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
     Clave: 6: decl0
-       Símbolo: decl0, Categoría: 1, Scope: 2, Type: mango, Informacion: - , Value: -7
+       Símbolo: decl0, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Informacion: - , Value: -7
 
     Clave: 7: manguangua
-       Símbolo: manguangua, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
     Clave: 8: negro
-       Símbolo: negro, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
     Clave: 9: tas_claro
-       Símbolo: tas_claro, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
     Clave: 10: decl1
-       Símbolo: decl1, Categoría: 1, Scope: 2, Type: manguita, Informacion: - , Value: 3.1
+       Símbolo: decl1, Categoría: (1)VARIABLE, Scope: 2, Type: manguita, Informacion: - , Value: 3.1
 
     Clave: 11: hablame
-       Símbolo: hablame, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
     Clave: 12: bar0
-       Símbolo: bar0, Categoría: 2, Scope: 2, Type: un_coño, Informacion: PARAM(x) , Value: null
+       Símbolo: bar0, Categoría: (2)FUNCTION, Scope: 2, Type: un_coño, Informacion: PARAM(x) 
 
     Clave: 13: un_coño
-       Símbolo: un_coño, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
     Clave: 14: array$
-       Símbolo: array$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: array$, Categoría: (7)TYPE, Scope: 0
 
     Clave: 15: funcion$
-       Símbolo: funcion$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
     Clave: 16: error$
-       Símbolo: error$, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: error$, Categoría: (7)TYPE, Scope: 0
 
     Clave: 17: higuerote
-       Símbolo: higuerote, Categoría: 7, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
     Clave: 18: rescata
-       Símbolo: rescata, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
     Clave: 19: bar1
-       Símbolo: bar1, Categoría: 2, Scope: 2, Type: un_coño, Informacion: PARAM(x) , Value: null
+       Símbolo: bar1, Categoría: (2)FUNCTION, Scope: 2, Type: un_coño, Informacion: PARAM(x) 
 
     Clave: 20: se_prende
-       Símbolo: se_prende, Categoría: 2, Scope: 0, Type: , Informacion: , Value: null
+       Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
@@ -75,14 +75,14 @@
 [0m
 Programa
 |--> Main
-     |--> Instrucción
-          |--> Instrucción
-          |    |--> Instrucción
-          |    |    |--> Instrucción
-          |    |    |    |--> Instrucción
-          |    |    |    |    |--> Instrucción
-          |    |    |    |    |    |--> Instrucción
-          |    |    |    |    |    |    |--> Instrucción
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Instrucción | Kind: ;
+          |    |    |--> Instrucción | Kind: ;
+          |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |    |--> decl0 | Category: Declaración | Type: mango | Kind: VARIABLE
           |    |    |    |    |    |    |    |    |--> Literal | Category: Number | Type: mango | Value: -8

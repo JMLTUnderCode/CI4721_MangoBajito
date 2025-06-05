@@ -9,5 +9,5 @@ se_prende(){
 
 	# REVISAR STRUCTS COMO TYPES: La asignacion no funciona
 	
-	var_union.attr_u_1 = 32;
+	#var_union.attr_u_1 = 32;
 };
