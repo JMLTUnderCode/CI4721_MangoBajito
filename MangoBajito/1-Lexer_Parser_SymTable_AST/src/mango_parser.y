@@ -70,8 +70,10 @@ unordered_map<systemError, vector<string>> errorDictionary = {
 	{ALREADY_DEF_FUNC, {}},
 	{NON_DEF_STRUCT, {}},
 	{ALREADY_DEF_STRUCT, {}},
+	{EMPTY_STRUCT, {}},
 	{NON_DEF_UNION, {}},
 	{ALREADY_DEF_UNION, {}},
+	{EMPTY_UNION, {}},
 	{NON_DEF_TYPE, {}},
 	{ALREADY_DEF_TYPE, {}},
 	{NON_DEF_ATTR, {}},
@@ -245,16 +247,16 @@ string current_func_type = "";
 %type <ast> programa main 
 %type <ast> asignacion operadores_asignacion operaciones_unitarias
 %type <ast> instruccion secuencia_instrucciones instrucciones   
-%type <ast> declaracion tipo_declaracion secuencia_declaraciones declaracion_aputador declaracion_funcion
+%type <ast> declaracion tipo_declaracion declaracion_aputador 
+%type <ast> estructura firma_estructura clase_estructura atributo secuencia_atributos
 %type <ast> tipos tipo_valor
 %type <ast> expresion expresion_apuntador expresion_nuevo 
 %type <ast> secuencia
 %type <ast> condicion alternativa
 %type <ast> bucle indeterminado determinado var_ciclo_determinado
-%type <ast> firma_funcion funcion parametro secuencia_parametros entrada_salida
-%type <ast> variante struct
-%type <ast> casting
+%type <ast> firma_funcion parametro secuencia_parametros funcion llamada_funcion entrada_salida
 %type <ast> manejo_error manejador var_manejo_error
+%type <ast> casting
 
 // Declaracion de precedencia y asociatividad de Operadores
 // Asignacion
@@ -330,7 +332,7 @@ instrucciones:
 secuencia_instrucciones:
 	instruccion T_PUNTOCOMA { $$ = $1; }
 	| secuencia_instrucciones instruccion T_PUNTOCOMA {
-		$$ = makeASTNode("Instrucción");
+		$$ = makeASTNode("Instrucción", "", "", ";");
 		$$->children.push_back($1);
 		$$->children.push_back($2);
 	}
@@ -339,13 +341,11 @@ secuencia_instrucciones:
 instruccion:
 	declaracion { $$ = $1; }
 	| asignacion { $$ = $1; }
+	| llamada_funcion { $$ = $1; }
 	| condicion { $$ = $1; }
 	| bucle { $$ = $1; }
 	| entrada_salida { $$ = $1; }
-	| funcion { $$ = $1; }
 	| manejo_error { $$ = $1; }
-	| struct { $$ = $1; }
-	| variante { $$ = $1; }
 	| T_KIETO { $$ = nullptr; }
 	| T_ROTALO { $$ = nullptr; }
 	| T_LANZATE expresion { $$ = $2; }
@@ -451,7 +451,7 @@ declaracion:
 				symbolTable.insert_symbol($2, *array_attr);
 			}
 		// Declaracion de tipos basicos.
-		} else { 
+		} else {
 			if (symbolTable.search_symbol($4->type) == nullptr) {
 				FLAG_ERROR = NON_DEF_TYPE;
 				yyerror($4->type.c_str());
@@ -461,10 +461,11 @@ declaracion:
 				FLAG_ERROR = ALREADY_DEF_VAR;
 				yyerror($2);
 			} else {
-				Attributes *attribute = new Attributes();
+				Attributes* attribute = new Attributes();
 				attribute->symbol_name = $2;
 				attribute->scope = symbolTable.current_scope;
 				attribute->type = symbolTable.search_symbol($4->type);
+				attribute->value = nullptr; // Inicializar valor como nulo
 
 				if ($1->kind == "POINTER_V") attribute->category = POINTER_V;
 				else if ($1->kind == "POINTER_C") attribute->category = POINTER_C;
@@ -656,7 +657,8 @@ declaracion:
 		$$->children.push_back($6);
 		
 	}
-	| declaracion_funcion cerrar_scope { $$ = $1; }
+	| funcion cerrar_scope { $$ = $1; }
+	| estructura cerrar_scope { $$ = $1; }
 	;
 
 tipo_declaracion:
@@ -695,13 +697,13 @@ tipos:
 	}
 	| T_ID {
 		Attributes* attr = symbolTable.search_symbol($1);
+		string type = $1;
 		if (attr == nullptr) {
 			FLAG_ERROR = NON_DEF_TYPE;
 			yyerror($1);
-			$$ = makeASTNode($1, "Identificador", "Unknown");
-		} else {
-			$$ = makeASTNode($1, "Identificador", $1);
+			type = "Unknown"; // Asignar un valor por defecto para evitar errores posteriores
 		}
+		$$ = makeASTNode($1, "Identificador", type);
 	}
 	| T_UNCONO { $$ = makeASTNode("un_coño", "Tipo_Funcion"); }
 	;
@@ -1080,8 +1082,7 @@ expresion:
 	| expresion T_OSEA expresion
 	| expresion T_YUNTA expresion
 	| entrada_salida
-	| variante
-	| funcion
+	| llamada_funcion
 	| casting
 	;
 
@@ -1175,26 +1176,95 @@ entrada_salida:
 	| T_HABLAME T_IZQPAREN expresion T_DERPAREN { $$ = nullptr; }
 	;
 
-secuencia_declaraciones:
+firma_estructura:
+	clase_estructura T_ID {
+		string class_struct = $1->name;
+		if (symbolTable.search_symbol($2) != nullptr) {
+			FLAG_ERROR = class_struct == "arroz_con_mango" ? ALREADY_DEF_STRUCT : ALREADY_DEF_UNION;
+			yyerror($2);
+		} else {
+			Attributes* struct_attr = new Attributes();
+			struct_attr->symbol_name = $2;
+			struct_attr->scope = symbolTable.current_scope;
+			struct_attr->category = class_struct == "arroz_con_mango" ? STRUCT : UNION;
+			struct_attr->value = nullptr;
+
+			symbolTable.insert_symbol($2, *struct_attr);
+		}
+
+		$$ = makeASTNode($2, "Declaración", class_struct, "Estructura"); 
+	}
+
+clase_estructura:
+	T_COLIAO { $$ = makeASTNode("coliao"); }
+	| T_ARROZCONMANGO { $$ = makeASTNode("arroz_con_mango"); }
+	;
+
+atributo:
+	T_ID T_DOSPUNTOS tipos { $$ = makeASTNode($1, "Atributo", $3->type); }
+
+secuencia_atributos:
 	{ $$ = nullptr; }
-	| secuencia_declaraciones T_PUNTOCOMA T_ID T_DOSPUNTOS tipos { $$ = nullptr; }
-	| T_ID T_DOSPUNTOS tipos { $$ = nullptr; }
+	| atributo { $$ = $1; }
+	| secuencia_atributos T_PUNTOCOMA atributo {
+		$$ = makeASTNode("Instrucción", "", "", ";");
+		$$->children.push_back($1); // Agregar la secuencia de atributos
+		$$->children.push_back($3); // Agregar el atributo actual
+	}
 	;
 
-variante: 
-	T_COLIAO T_ID {
-		/* POR IMPLEMENTAR */
-	} abrir_scope T_IZQLLAVE secuencia_declaraciones T_PUNTOCOMA T_DERLLAVE {
-		/* POR IMPLEMENTAR */
-	} cerrar_scope { $$ = nullptr; }
-	;
+estructura: 
+	firma_estructura abrir_scope T_IZQLLAVE secuencia_atributos T_PUNTOCOMA T_DERLLAVE { 
+		string type_struct = $1->type;
+		Attributes* struct_attr = symbolTable.search_symbol($1->name);
+		if (struct_attr == nullptr) {
+			FLAG_ERROR = type_struct == "arroz_con_mango" ? NON_DEF_STRUCT : NON_DEF_UNION;
+			yyerror($1->name.c_str());
+		} else {
+			// Recolectar todos los nodos de parámetro
+			if ($4) {
+				string field_name = "";
+				set<string> categories = {"Atributo"};
+				vector<ASTNode*> attr_nodes;
+				collect_nodes_by_categories($4, categories, attr_nodes);
+				for (auto attr : attr_nodes) {
+					field_name = struct_attr->symbol_name + "." + attr->name;
+					
+					Attributes* field_attr = symbolTable.search_symbol(field_name);
+					bool error = false;
+					if (field_attr != nullptr) {
+						if (field_attr->category == STRUCT_ATTRIBUTE && field_attr->scope == symbolTable.current_scope) {
+							FLAG_ERROR = ALREADY_DEF_ATTR;
+							yyerror(attr->name.c_str());
+							error = true;
+						}
+					}
+					
+					if (!error) {
+						field_attr = new Attributes();
+						field_attr->symbol_name = field_name;
+						field_attr->scope = symbolTable.current_scope;
+						field_attr->type = symbolTable.search_symbol(attr->type);
+						if (field_attr->type == nullptr) {
+							FLAG_ERROR = NON_DEF_TYPE;
+							yyerror(attr->type.c_str());
+						}
+						field_attr->category = STRUCT_ATTRIBUTE;
 
-struct: 
-	T_ARROZCONMANGO T_ID {
-		/* POR IMPLEMENTAR */
-	} abrir_scope T_IZQLLAVE secuencia_declaraciones T_PUNTOCOMA T_DERLLAVE {
-		/* POR IMPLEMENTAR */
-	} cerrar_scope { $$ = nullptr; }
+						struct_attr->info.push_back({field_name, field_attr});
+
+						symbolTable.insert_symbol(field_name, *field_attr);
+					}
+				}
+			} else {
+				FLAG_ERROR = type_struct == "arroz_con_mango" ? EMPTY_STRUCT : EMPTY_UNION;
+				yyerror($1->name.c_str());
+			}
+			
+			$$ = $1;
+			if ($4) $$->children.push_back($4); // Agregar la secuencia de atributos
+		}
+	}
 	;
 
 firma_funcion: 
@@ -1252,7 +1322,7 @@ secuencia_parametros:
 	}
 	;
 
-declaracion_funcion:
+funcion:
 	firma_funcion abrir_scope T_IZQPAREN secuencia_parametros T_DERPAREN T_LANZA tipos T_IZQLLAVE instrucciones T_DERLLAVE { 
 		string func_name = $1->name;
 		string func_type = $7->name;
@@ -1279,7 +1349,7 @@ declaracion_funcion:
 	}
 	;
 
-funcion:
+llamada_funcion:
 	T_ID T_IZQPAREN secuencia T_DERPAREN {
 		Attributes* func_attr = symbolTable.search_symbol($1);
 		if (func_attr == nullptr) {
@@ -1402,12 +1472,18 @@ void yyerror(const char *var) {
 			case ALREADY_DEF_STRUCT:
 				error_msg += "Este arroz_con_mango \"" + string(var) + "\" ya se prendió locota.";
 				break;
+			case EMPTY_STRUCT:
+				error_msg += "Este arroz_con_mango \"" + string(var) + "\" está más pelao' que olla de pobre. No tiene atributos locota.";
+				break;
 
 			case NON_DEF_UNION:
 				error_msg += "Este coliao \"" + string(var) + "\" esta en tu cabeza nada más. Deja la droga.";
 				break;
 			case ALREADY_DEF_UNION:
 				error_msg += "Quieres colear a \"" + string(var) + "\" dos veces, marbao' abusador.";
+				break;
+			case EMPTY_UNION:
+				error_msg += "Este coliao \"" + string(var) + "\" vive en Europa, no hay cola donde coliarse. No tiene atributos locota.";
 				break;
 
 			case NON_DEF_TYPE:
@@ -1418,10 +1494,10 @@ void yyerror(const char *var) {
 				break;
 
 			case NON_DEF_ATTR:
-				error_msg += "Este atributo \"" + string(var) + "\" esta en tu cabeza nada más. Deja la droga.";
+				error_msg += "El atributo \"" + string(var) + "\" esta en tu cabeza nada más. Deja la droga.";
 				break;
 			case ALREADY_DEF_ATTR:
-				error_msg += "Este atributo \"" + string(var) + "\" es de otro peo, marbao' copion.";
+				error_msg += "El atributo \"" + string(var) + "\" ya existe, marbao' copion.";
 				break;
 
 			case VAR_FOR:
@@ -1442,6 +1518,7 @@ void yyerror(const char *var) {
 
 			case MODIFY_CONST:
 				error_msg += "Aja y despues que cambies \"" + string(var) + "\" vas a pedir que un Chavista reparta plata, hasta err diablo rinde.";
+				break;
 
 			case SEGMENTATION_FAULT:
 				error_msg += "Te fuiste pal quinto c#%o. Índice \"" + string(var) + "\" fuera de rango.";
