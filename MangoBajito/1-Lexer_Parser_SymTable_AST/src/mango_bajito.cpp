@@ -9,8 +9,10 @@ vector<string> sysErrorToString = {
 	"ALREADY_DEF_FUNC",
 	"NON_DEF_STRUCT",
 	"ALREADY_DEF_STRUCT",
+	"EMPTY_STRUCT",
 	"NON_DEF_UNION",
 	"ALREADY_DEF_UNION",
+	"EMPTY_UNION",
 	"NON_DEF_TYPE",
 	"ALREADY_DEF_TYPE",
 	"NON_DEF_ATTR",
@@ -182,6 +184,22 @@ bool SymbolTable::insert_symbol(string symbol_name, Attributes &attr) {
 	return true;
 }
 
+bool SymbolTable::remove_symbol(string symbol_name) {
+	auto symbols = this->table.find(symbol_name);
+	if (symbols != this->table.end()) {
+		for (auto it = symbols->second.begin(); it != symbols->second.end(); ++it) {
+			if (it->scope == this->current_scope) {
+				symbols->second.erase(it);
+				if (symbols->second.empty()) {
+					this->table.erase(symbols); // Eliminar la clave si no hay mas simbolos
+				}
+				return true;
+			}
+		}
+	}
+	return false; // No se encontro el simbolo en el scope actual
+}
+
 Attributes* SymbolTable::search_symbol(string symbol_name) {
 	Attributes *predef_symbol, *best_option = nullptr;
 	//vector<pair<int, bool> > scopes_aux = this->scopes;
@@ -214,13 +232,20 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 }
 
 void SymbolTable::print_attribute(Attributes &attr){
-	cout << "       Símbolo: " << attr.symbol_name 
-		<< ", Categoría: " << attr.category 
-		<< ", Scope: " << attr.scope 
-		<< ", Type: "<< (attr.type != nullptr ? attr.type->symbol_name : "")
-		<<  ", Informacion: "; print_info(attr.info); 
-		cout << ", Value: "; print_values(attr.value); cout << "\n\n";
-}
+	cout << "       Símbolo: " << attr.symbol_name;
+	cout << ", Categoría: (" << attr.category  << ")" << categoryToString(attr.category);
+	cout << ", Scope: " << attr.scope;
+	if (attr.type) cout << ", Type: "<< attr.type->symbol_name;
+	if (!attr.info.empty()) {
+		cout <<  ", Informacion: ";
+		print_info(attr.info);
+	} 
+	if (!holds_alternative<nullptr_t>(attr.value)) {
+		cout << ", Value: ";
+		print_values(attr.value);
+	}
+	cout << "\n\n";
+}	
 
 void SymbolTable::print_table() {
 	string ss;
@@ -259,33 +284,6 @@ void showAST(const ASTNode* node, int depth, const string& prefix, bool isLast) 
 	if (!node->type.empty())     cout << " | Type: " << node->type;
 	if (!node->kind.empty())     cout << " | Kind: " << node->kind;
 	if (!node->value.empty())    cout << " | Value: " << node->value;
-
-	// Imprimir parámetros si es función
-	if (!node->params.empty()) {
-		cout << " | Params (" << node->param_count << "): ";
-		for (const auto& param : node->params) {
-			cout << "[" << param.type << " " << param.name << "] ";
-		}
-	}
-
-	// Imprimir atributos si es struct/union/variant
-	if (!node->attributes.empty()) {
-		cout << " | Attributes: ";
-		for (const auto& attr : node->attributes) {
-			cout << "[" << attr.type << " " << attr.name << "] ";
-		}
-	}
-
-	// Imprimir elementos si es un array
-	if (!node->elements.empty()) {
-	    cout << " | Elements: [";
-	    for (size_t i = 0; i < node->elements.size(); ++i) {
-	        if (!node->elements[i].name.empty()) cout << node->elements[i].name;
-	        else { cout << node->elements[i].value; }
-	        if (i + 1 < node->elements.size()) cout << ", ";
-	    }
-	    cout << "]";
-	}
 
     cout << endl;
 

@@ -61,6 +61,26 @@ enum Category{
 	UNKNOWN
 };
 
+inline string categoryToString(Category cat) {
+    switch (cat) {
+        case CONSTANT:          return "CONSTANT";
+        case VARIABLE:          return "VARIABLE";
+        case FUNCTION:          return "FUNCTION";
+        case PARAMETERS:        return "PARAMETERS";
+        case STRUCT:            return "STRUCT";
+        case UNION:             return "UNION";
+        case FIELD:             return "FIELD";
+        case TYPE:              return "TYPE";
+        case POINTER_C:         return "POINTER_C";
+        case POINTER_V:         return "POINTER_V";
+        case STRUCT_ATTRIBUTE:  return "STRUCT_ATTRIBUTE";
+        case ARRAY:             return "ARRAY";
+        case ARRAY_ELEMENT:     return "ARRAY_ELEMENT";
+        case UNKNOWN:           return "UNKNOWN";
+        default:                return "UNKNOWN";
+    }
+}
+
 // Implementacion de la estructura de Atributos
 struct Attributes {
 	string symbol_name;
@@ -85,8 +105,10 @@ enum systemError {
 	ALREADY_DEF_FUNC,
 	NON_DEF_STRUCT,
 	ALREADY_DEF_STRUCT,
+	EMPTY_STRUCT,
 	NON_DEF_UNION,
 	ALREADY_DEF_UNION,
+	EMPTY_UNION,
 	NON_DEF_TYPE,
 	ALREADY_DEF_TYPE,
 	NON_DEF_ATTR,
@@ -145,6 +167,7 @@ class SymbolTable {
 		void open_scope();                                          //Abrir nuevo scope
 		void close_scope();											//Cerrar scope 
 		bool insert_symbol(string symbol_name, Attributes &attr);   //Insertar simbolo en la tabla
+		bool remove_symbol(string symbol_name);                     //Eliminar simbolo de la tabla
 		Attributes* search_symbol(string symbol_name);              //Buscar simbolo en la tabla
 		bool contains_key(string key);                              //Verifica si la tabla contiene el simbolo
 		void finding_variables_in_scope(int scope);
@@ -155,28 +178,6 @@ class SymbolTable {
 // =                Abstract Syntax Tree                =
 // ======================================================
 
-struct ASTParam {
-	string name;   // Nombre del parámetro
-	string type;   // Tipo del parámetro
-
-	ASTParam(const string& n, const string& t) : name(n), type(t) {}
-};
-
-struct ASTAttribute {
-	string name;   // Nombre del atributo (campo de struct/union)
-	string type;   // Tipo del atributo
-
-	ASTAttribute(const string& n, const string& t) : name(n), type(t) {}
-};
-
-struct ASTElement {
-	string name;   // Nombre del elemento (variable, constante, etc)
-	string type;   // Tipo de dato del elemento
-	string value;  // Valor del elemento (si aplica)
-
-	ASTElement(const string& n = "", const string& t = "", const string& v = "" ) : name(n), type(t), value(v) {}
-};
-
 struct ASTNode {
 	string name;    // Nombre del elemento (variable, función, struct, etc)
 	string category; // "declaration", "assignment", "function", "while", "for", "error_handling", "array", "pointer", "operation", etc.
@@ -186,16 +187,6 @@ struct ASTNode {
 	
 	// Conservar valores con precision
 	double dvalue = 0.0;
-
-	// Para funciones
-	vector<ASTParam> params; // Lista de parámetros (nombre y tipo)
-	int param_count = 0;     // Cantidad de parámetros
-
-	// Para structs/unions/variants
-	vector<ASTAttribute> attributes; // Lista de atributos (nombre y tipo)
-
-	// Para arrays: si este nodo es "ArrayElements", aquí van los valores como strings
-    vector<ASTElement> elements;
 
 	// Hijos del nodo (estructura de árbol)
 	vector<ASTNode*> children;
