@@ -98,10 +98,10 @@ Programa
           |    |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |--> n0 | Category: Declaración | Type: mango | Kind: CONSTANTE
-          |    |    |    |    |    |    |    |--> Literal | Category: Number | Type: mango | Value: 3
+          |    |    |    |    |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: 3
           |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |         |--> n1 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |    |    |    |    |         |--> Literal | Category: Number | Type: mango | Value: 2
+          |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 2
           |    |    |    |    |    |--> decl0 | Category: Declaración | Type: mango | Kind: VARIABLE
           |    |    |    |    |         |--> n0 | Category: Array_Size | Type: mango | Value: 3
           |    |    |    |    |--> Asignación | Kind: =
@@ -109,9 +109,9 @@ Programa
           |    |    |    |         |    |--> n0 | Category: Array_Size | Type: mango | Value: 3
           |    |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
           |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |    |              |    |--> Literal | Category: Number | Type: mango | Value: 30
-          |    |    |    |              |    |--> Literal | Category: Number | Type: mango | Value: 40
-          |    |    |    |              |--> Literal | Category: Number | Type: mango | Value: 50
+          |    |    |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 30
+          |    |    |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 40
+          |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 50
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> decl2 | Category: Declaración | Type: mango | Kind: CONSTANTE
           |    |    |         |    |--> n1 | Category: Array_Size | Type: mango | Value: 2
@@ -120,7 +120,7 @@ Programa
           |    |    |              |--> n1 | Category: Identificador | Type: mango | Value: 2
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl0 | Category: Identificador | Type: mango
-          |    |         |--> Literal | Category: Number | Type: mango | Value: 11
+          |    |         |--> Literal | Category: Numérico | Type: mango | Value: 11
           |    |--> Asignación | Kind: =
           |         |--> decl0 | Category: Identificador | Type: mango
           |         |--> n0 | Category: Identificador | Type: mango | Value: 3

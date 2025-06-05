@@ -7,7 +7,6 @@ se_prende(){
 
 	culito var_union : MyUnion;
 
-	# REVISAR STRUCTS COMO TYPES: La asignacion no funciona
-	
-	#var_union.attr_u_1 = 32;
+	var_union.attr_u_1 = 123;
+	var_union.attr_u_2 = 323.1;
 };

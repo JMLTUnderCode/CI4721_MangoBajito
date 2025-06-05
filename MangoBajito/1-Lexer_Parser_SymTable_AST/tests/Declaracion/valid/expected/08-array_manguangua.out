@@ -98,10 +98,10 @@ Programa
           |    |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |--> n0 | Category: Declaración | Type: manguangua | Kind: CONSTANTE
-          |    |    |    |    |    |    |    |--> Literal | Category: Number | Type: manguangua | Value: 3.2200000000e+12
+          |    |    |    |    |    |    |    |--> Literal | Category: Numérico | Type: manguangua | Value: 3.2200000000e+12
           |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |         |--> n1 | Category: Declaración | Type: manguangua | Kind: VARIABLE
-          |    |    |    |    |    |         |--> Literal | Category: Number | Type: manguangua | Value: 3.2200000000e-12
+          |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguangua | Value: 3.2200000000e-12
           |    |    |    |    |    |--> decl0 | Category: Declaración | Type: manguangua | Kind: VARIABLE
           |    |    |    |    |         |--> Literal | Category: Array_Size | Type: mango | Value: 3
           |    |    |    |    |--> Asignación | Kind: =
@@ -109,9 +109,9 @@ Programa
           |    |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 3
           |    |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
           |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |    |              |    |--> Literal | Category: Number | Type: manguangua | Value: 2.2200000000e+12
-          |    |    |    |              |    |--> Literal | Category: Number | Type: manguita | Value: 1.220000
-          |    |    |    |              |--> Literal | Category: Number | Type: manguangua | Value: 3.3000000000e-15
+          |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguangua | Value: 2.2200000000e+12
+          |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 1.220000
+          |    |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 3.3000000000e-15
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> decl2 | Category: Declaración | Type: manguangua | Kind: CONSTANTE
           |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 2
@@ -120,7 +120,7 @@ Programa
           |    |    |              |--> n1 | Category: Identificador | Type: manguangua | Value: 3.2200000000e-12
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl0 | Category: Identificador | Type: manguangua
-          |    |         |--> Literal | Category: Number | Type: manguita | Value: 123.120003
+          |    |         |--> Literal | Category: Numérico | Type: manguita | Value: 123.120003
           |    |--> Asignación | Kind: =
           |         |--> decl0 | Category: Identificador | Type: manguangua
           |         |--> n0 | Category: Identificador | Type: manguangua | Value: 3.2200000000e+12

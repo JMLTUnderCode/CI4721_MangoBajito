@@ -85,17 +85,17 @@ Programa
           |    |    |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |    |--> decl0 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |    |    |    |    |    |    |    |--> Literal | Category: Number | Type: mango | Value: -8
+          |    |    |    |    |    |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: -8
           |    |    |    |    |    |    |    |--> Operación | Category: Incremento | Kind: ++
           |    |    |    |    |    |    |         |--> decl0 | Category: Identificador | Type: mango | Value: -8
           |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |         |--> decl1 | Category: Declaración | Type: manguita | Kind: VARIABLE
-          |    |    |    |    |    |         |--> Literal | Category: Number | Type: manguita | Value: 2.100000
+          |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguita | Value: 2.100000
           |    |    |    |    |    |--> Operación | Category: Incremento | Kind: ++
           |    |    |    |    |         |--> decl1 | Category: Identificador | Type: manguita | Value: 2.100000
           |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |         |--> decl2 | Category: Declaración | Type: manguangua | Kind: VARIABLE
-          |    |    |    |         |--> Literal | Category: Number | Type: manguangua | Value: 1.2100000000e+10
+          |    |    |    |         |--> Literal | Category: Numérico | Type: manguangua | Value: 1.2100000000e+10
           |    |    |    |--> Operación | Category: Incremento | Kind: ++
           |    |    |         |--> decl2 | Category: Identificador | Type: manguangua | Value: 1.2100000000e+10
           |    |    |--> bar0 | Category: Declaración | Type: un_coño | Kind: Función

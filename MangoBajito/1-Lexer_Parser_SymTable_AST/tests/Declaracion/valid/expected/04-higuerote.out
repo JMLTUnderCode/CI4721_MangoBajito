@@ -64,14 +64,14 @@ Programa
 |--> Global
 |    |--> Asignación | Kind: =
 |         |--> decl0 | Category: Declaración | Type: higuerote | Kind: VARIABLE
-|         |--> Literal | Category: String | Type: higuerote | Value: hola
+|         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: hola
 |--> Main
      |--> Instrucción | Kind: ;
           |--> Instrucción | Kind: ;
           |    |--> Instrucción | Kind: ;
           |    |    |--> Asignación | Kind: =
           |    |    |    |--> decl1 | Category: Declaración | Type: higuerote | Kind: CONSTANTE
-          |    |    |    |--> Literal | Category: String | Type: higuerote | Value:  mundo
+          |    |    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value:  mundo
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl2 | Category: Declaración | Type: higuerote | Kind: VARIABLE
           |    |         |--> decl0 | Category: Identificador | Type: higuerote | Value: hola

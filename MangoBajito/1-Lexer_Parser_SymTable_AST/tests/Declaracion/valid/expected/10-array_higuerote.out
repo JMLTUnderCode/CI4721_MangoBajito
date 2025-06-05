@@ -104,10 +104,10 @@ Programa
           |    |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |--> n0 | Category: Declaración | Type: higuerote | Kind: CONSTANTE
-          |    |    |    |    |    |    |    |--> Literal | Category: String | Type: higuerote | Value: string 1
+          |    |    |    |    |    |    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: string 1
           |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |         |--> n1 | Category: Declaración | Type: higuerote | Kind: VARIABLE
-          |    |    |    |    |    |         |--> Literal | Category: String | Type: higuerote | Value: string 2
+          |    |    |    |    |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: string 2
           |    |    |    |    |    |--> decl0 | Category: Declaración | Type: higuerote | Kind: VARIABLE
           |    |    |    |    |         |--> Literal | Category: Array_Size | Type: mango | Value: 3
           |    |    |    |    |--> Asignación | Kind: =
@@ -117,11 +117,11 @@ Programa
           |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
           |    |    |    |              |    |--> Secuencia | Category: Expresión | Kind: ,
           |    |    |    |              |    |    |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |    |              |    |    |    |--> Literal | Category: String | Type: higuerote | Value: Etapa 1
-          |    |    |    |              |    |    |    |--> Literal | Category: String | Type: higuerote | Value: Etapa 2
-          |    |    |    |              |    |    |--> Literal | Category: String | Type: higuerote | Value: Etapa 3
-          |    |    |    |              |    |--> Literal | Category: String | Type: higuerote | Value: Etapa 4
-          |    |    |    |              |--> Literal | Category: String | Type: higuerote | Value: Etapa 5
+          |    |    |    |              |    |    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: Etapa 1
+          |    |    |    |              |    |    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: Etapa 2
+          |    |    |    |              |    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: Etapa 3
+          |    |    |    |              |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: Etapa 4
+          |    |    |    |              |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: Etapa 5
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> decl2 | Category: Declaración | Type: higuerote | Kind: CONSTANTE
           |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 2
@@ -130,7 +130,7 @@ Programa
           |    |    |              |--> n1 | Category: Identificador | Type: higuerote | Value: string 2
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl0 | Category: Identificador | Type: higuerote
-          |    |         |--> Literal | Category: String | Type: higuerote | Value: sirve?
+          |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: sirve?
           |    |--> Asignación | Kind: =
           |         |--> decl0 | Category: Identificador | Type: higuerote
           |         |--> n0 | Category: Identificador | Type: higuerote | Value: string 1

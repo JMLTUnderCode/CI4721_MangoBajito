@@ -64,14 +64,14 @@ Programa
 |--> Global
 |    |--> Asignación | Kind: =
 |         |--> decl0 | Category: Declaración | Type: mango | Kind: VARIABLE
-|         |--> Literal | Category: Number | Type: mango | Value: 2147483647
+|         |--> Literal | Category: Numérico | Type: mango | Value: 2147483647
 |--> Main
      |--> Instrucción | Kind: ;
           |--> Instrucción | Kind: ;
           |    |--> Instrucción | Kind: ;
           |    |    |--> Asignación | Kind: =
           |    |    |    |--> decl1 | Category: Declaración | Type: mango | Kind: CONSTANTE
-          |    |    |    |--> Literal | Category: Number | Type: mango | Value: -2147483647
+          |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: -2147483647
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl2 | Category: Declaración | Type: mango | Kind: VARIABLE
           |    |         |--> decl0 | Category: Identificador | Type: mango | Value: 2147483647

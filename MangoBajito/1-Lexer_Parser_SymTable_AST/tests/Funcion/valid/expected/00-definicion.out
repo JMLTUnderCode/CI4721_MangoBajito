@@ -76,10 +76,10 @@ Programa
                |--> Instrucción | Kind: ;
                     |--> Asignación | Kind: =
                     |    |--> p1 | Category: Identificador | Type: mango
-                    |    |--> Literal | Category: Number | Type: mango | Value: 2
+                    |    |--> Literal | Category: Numérico | Type: mango | Value: 2
                     |--> Asignación | Kind: =
                          |--> p2 | Category: Identificador | Type: manguita
-                         |--> Literal | Category: Number | Type: manguita | Value: 3.000000
+                         |--> Literal | Category: Numérico | Type: manguita | Value: 3.000000
 [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        

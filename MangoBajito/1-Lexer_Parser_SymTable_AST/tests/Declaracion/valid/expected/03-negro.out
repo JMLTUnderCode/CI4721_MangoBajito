@@ -64,14 +64,14 @@ Programa
 |--> Global
 |    |--> Asignación | Kind: =
 |         |--> decl0 | Category: Declaración | Type: negro | Kind: VARIABLE
-|         |--> Literal | Category: Char | Type: negro | Value: c
+|         |--> Literal | Category: Caracter | Type: negro | Value: c
 |--> Main
      |--> Instrucción | Kind: ;
           |--> Instrucción | Kind: ;
           |    |--> Instrucción | Kind: ;
           |    |    |--> Asignación | Kind: =
           |    |    |    |--> decl1 | Category: Declaración | Type: negro | Kind: CONSTANTE
-          |    |    |    |--> Literal | Category: Char | Type: negro | Value: $
+          |    |    |    |--> Literal | Category: Caracter | Type: negro | Value: $
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl2 | Category: Declaración | Type: negro | Kind: VARIABLE
           |    |         |--> decl0 | Category: Identificador | Type: negro | Value: c

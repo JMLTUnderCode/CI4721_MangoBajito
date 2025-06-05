@@ -64,14 +64,14 @@ Programa
 |--> Global
 |    |--> Asignación | Kind: =
 |         |--> decl0 | Category: Declaración | Type: manguita | Kind: VARIABLE
-|         |--> Literal | Category: Number | Type: manguita | Value: 2.000022
+|         |--> Literal | Category: Numérico | Type: manguita | Value: 2.000022
 |--> Main
      |--> Instrucción | Kind: ;
           |--> Instrucción | Kind: ;
           |    |--> Instrucción | Kind: ;
           |    |    |--> Asignación | Kind: =
           |    |    |    |--> decl1 | Category: Declaración | Type: manguita | Kind: CONSTANTE
-          |    |    |    |--> Literal | Category: Number | Type: manguita | Value: -2.032165
+          |    |    |    |--> Literal | Category: Numérico | Type: manguita | Value: -2.032165
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl2 | Category: Declaración | Type: manguita | Kind: VARIABLE
           |    |         |--> decl0 | Category: Identificador | Type: manguita | Value: 2.000022
