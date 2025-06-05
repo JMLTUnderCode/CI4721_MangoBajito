@@ -86,29 +86,29 @@ Programa
           |    |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |    |--> decl0 | Category: Declaración | Type: mango | Kind: VARIABLE
           |    |    |    |    |    |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: -8
-          |    |    |    |    |    |    |    |--> Operación | Category: Incremento | Kind: ++
+          |    |    |    |    |    |    |    |--> Operación | Category: Incremento | Kind: ++ | Value: -7
           |    |    |    |    |    |    |         |--> decl0 | Category: Identificador | Type: mango | Value: -8
           |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |         |--> decl1 | Category: Declaración | Type: manguita | Kind: VARIABLE
           |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguita | Value: 2.100000
-          |    |    |    |    |    |--> Operación | Category: Incremento | Kind: ++
+          |    |    |    |    |    |--> Operación | Category: Incremento | Kind: ++ | Value: 3.0999999046e+00
           |    |    |    |    |         |--> decl1 | Category: Identificador | Type: manguita | Value: 2.100000
           |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |         |--> decl2 | Category: Declaración | Type: manguangua | Kind: VARIABLE
           |    |    |    |         |--> Literal | Category: Numérico | Type: manguangua | Value: 1.2100000000e+10
-          |    |    |    |--> Operación | Category: Incremento | Kind: ++
+          |    |    |    |--> Operación | Category: Incremento | Kind: ++ | Value: 1.2100000001e+10
           |    |    |         |--> decl2 | Category: Identificador | Type: manguangua | Value: 1.2100000000e+10
           |    |    |--> bar0 | Category: Declaración | Type: un_coño | Kind: Función
           |    |         |--> x | Category: Parámetro | Type: mango
-          |    |         |--> Operación | Category: Incremento | Kind: ++
+          |    |         |--> Operación | Category: Incremento | Kind: ++ | Value: null
           |    |              |--> x | Category: Identificador
           |    |--> bar1 | Category: Declaración | Type: un_coño | Kind: Función
           |         |--> x | Category: Parámetro | Type: manguita
-          |         |--> Operación | Category: Incremento | Kind: ++
+          |         |--> Operación | Category: Incremento | Kind: ++ | Value: null
           |              |--> x | Category: Identificador
           |--> bar2 | Category: Declaración | Type: un_coño | Kind: Función
                |--> x | Category: Parámetro | Type: manguangua
-               |--> Operación | Category: Incremento | Kind: ++
+               |--> Operación | Category: Incremento | Kind: ++ | Value: null
                     |--> x | Category: Identificador
 [1;32m[5m
                =======================================================
