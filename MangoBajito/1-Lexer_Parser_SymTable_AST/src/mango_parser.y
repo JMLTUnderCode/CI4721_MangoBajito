@@ -33,13 +33,6 @@
 #include "mango_bajito.hpp"
 #include "tac.hpp"
 
-#include <iostream>
-#include <cstdlib>
-#include <vector>
-#include <cstring>
-#include <vector>
-#include <string>
-
 using namespace std;
 
 // Estructura para el manejo de ubicación de tokens (línea y columna)
@@ -116,12 +109,6 @@ string current_func_type = "";
 
 %code requires {
 	#include "mango_bajito.hpp"
-	#include <cstring>
-	#include <vector>
-	#include <string>
-
-	//using std::shared_ptr;
-	//using std::make_shared;
 
 	using namespace std;
 
@@ -383,7 +370,20 @@ instruccion:
 			}
 		}
 		string category = op == "++" ? "Incremento" : "Decremento";
-		$$ = makeASTNode("Operación", category, "", op);
+		string valor = "";
+		if (holds_alternative<int>(var_attr->value)) {
+			valor = to_string(get<int>(var_attr->value));
+		} else if (holds_alternative<float>(var_attr->value)) {
+			valor = to_string(get<float>(var_attr->value));
+		} else if (holds_alternative<double>(var_attr->value)) {
+			ostringstream oss;
+			oss.precision(10); // Ajustar la precisión según lo que quieras mostrar.
+			oss << scientific << get<double>(var_attr->value);
+			valor = oss.str();
+		} else {
+			valor = "null";
+		}
+		$$ = makeASTNode("Operación", category, "", op, valor);
 		$$->children.push_back($1);
 	}
 	| T_BORRADOL T_ID { $$ = nullptr; }
@@ -1181,22 +1181,22 @@ expresion:
 		$$->value = "-" + $$->value;
 		if ($$->dvalue != 0.0) $$->dvalue = -$$->dvalue; // Negar el valor double si es necesario
 	}
-	| expresion T_FLECHA expresion
-	| expresion T_OPSUMA expresion
-	| expresion T_OPRESTA expresion
-	| expresion T_OPMULT expresion
-	| expresion T_OPDIVDECIMAL expresion
-	| expresion T_OPDIVENTERA expresion
-	| expresion T_OPMOD expresion
-	| expresion T_OPEXP expresion
-	| expresion T_OPIGUAL expresion
-	| expresion T_OPDIFERENTE expresion
-	| expresion T_OPMAYOR expresion
-	| expresion T_OPMAYORIGUAL expresion
-	| expresion T_OPMENOR expresion
-	| expresion T_OPMENORIGUAL expresion
-	| expresion T_OSEA expresion
-	| expresion T_YUNTA expresion
+	| expresion T_FLECHA expresion { $$ = solver_operation($1, "->", $3); }
+	| expresion T_OPSUMA expresion { $$ = solver_operation($1, "+", $3); }
+	| expresion T_OPRESTA expresion { $$ = solver_operation($1, "-", $3); }
+	| expresion T_OPMULT expresion { $$ = solver_operation($1, "*", $3); }
+	| expresion T_OPDIVDECIMAL expresion { $$ = solver_operation($1, "/", $3); }
+	| expresion T_OPDIVENTERA expresion { $$ = solver_operation($1, "//", $3); }
+	| expresion T_OPMOD expresion { $$ = solver_operation($1, "%", $3); }
+	| expresion T_OPEXP expresion { $$ = solver_operation($1, "**", $3); }
+	| expresion T_OPIGUAL expresion { $$ = solver_operation($1, "igualito", $3); }
+	| expresion T_OPDIFERENTE expresion { $$ = solver_operation($1, "nie", $3); }
+	| expresion T_OPMAYOR expresion { $$ = solver_operation($1, "mayol", $3); }
+	| expresion T_OPMAYORIGUAL expresion { $$ = solver_operation($1, "lidel", $3); }
+	| expresion T_OPMENOR expresion { $$ = solver_operation($1, "menol", $3); }
+	| expresion T_OPMENORIGUAL expresion { $$ = solver_operation($1, "peluche", $3); }
+	| expresion T_YUNTA expresion { $$ = solver_operation($1, "yunta", $3); }
+	| expresion T_OSEA expresion { $$ = solver_operation($1, "o_sea", $3); }
 	| entrada_salida
 	| llamada_funcion
 	| casting

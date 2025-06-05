@@ -2,13 +2,17 @@
 #define MANGO_BAJITO_HPP
 
 #include <iostream>
+#include <cstdlib>
 #include <string>
+#include <cstring>
+#include <sstream>
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
 #include <stack>
 #include <variant>
 #include <set>
+#include <math.h>
 
 using namespace std;
 
@@ -205,6 +209,124 @@ inline void collect_nodes_by_categories(ASTNode* node, const set<string>& catego
     if (!node) return;
     if (categories.count(node->category)) out.push_back(node);
     for (auto child : node->children) collect_nodes_by_categories(child, categories, out);
+}
+
+inline ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
+    string category = "Operación";
+	string type = "Desconocido";
+    string kind = "Binaria";
+	string valor = "0";
+	double value = 0.0;
+    
+    // Ejemplo simple: suma, resta, multiplicación, división son numéricas
+    set<string> ops_numericas = {"+", "-", "*", "/", "//", "%", "**"};
+    set<string> ops_booleana = {"igualito", "nie", "mayol", "lidel", "menol", "peluche", "yunta", "o_sea"};
+
+	string left_type = left ? left->type : "Desconocido";
+	string right_type = right ? right->type : "Desconocido";
+
+	if (left && right && left_type == right_type){
+		if (ops_numericas.count(op)) category = "Numérico";
+		if (ops_booleana.count(op)) category = "Booleana";
+		type = left_type;
+		if (type == "mango"){
+			if (op == "+") valor = to_string(stoi(left->value) + stoi(right->value));
+			else if (op == "-") valor = to_string(stoi(left->value) - stoi(right->value));
+			else if (op == "*") valor = to_string(stoi(left->value) * stoi(right->value));
+			else if (op == "/") {
+				if (stoi(right->value) != 0) {
+					valor = to_string(stoi(left->value) / stoi(right->value));
+				} else {
+					addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+					return nullptr; // Error handling
+				}
+			} else if (op == "//") {
+				if (stoi(right->value) != 0) {
+					valor = to_string(stof(left->value) / stoi(right->value));
+				} else {
+					addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+					return nullptr; // Error handling
+				}
+			} else if (op == "%") {
+				if (stoi(right->value) != 0) {
+					valor = to_string(stoi(left->value) % stoi(right->value));
+				} else {
+					addError(SEGMENTATION_FAULT, "Modulo by zero in operation.");
+					return nullptr; // Error handling
+				}
+			} else if (op == "**") {
+				valor = to_string(pow(stoi(left->value), stoi(right->value)));
+			}
+		} else if (type == "manguita"){
+			if (op == "+") valor = to_string(stof(left->value) + stof(right->value));
+			else if (op == "-") valor = to_string(stof(left->value) - stof(right->value));
+			else if (op == "*") valor = to_string(stof(left->value) * stof(right->value));
+			else if (op == "/") {
+				if (stoi(right->value) != 0) {
+					valor = to_string(stof(left->value) / stof(right->value));
+				} else {
+					addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+					return nullptr; // Error handling
+				}
+			} else if (op == "//") {
+				if (stof(right->value) != 0.0f) {
+			        float result = stof(left->value) / stof(right->value);
+			        int int_part = static_cast<int>(result);
+			        valor = to_string(int_part);
+			    } else {
+			        addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+			        return nullptr; // Error handling
+			    }
+			} else if (op == "%") {
+					addError(TYPE_ERROR, "Modulo operation not supported for float types.");
+					return nullptr; // Error handling
+			} else if (op == "**") {
+				valor = to_string(pow(stof(left->value), stof(right->value)));
+			}
+		} else if (type == "manguangua"){
+			ostringstream oss;
+			oss.precision(10); // Ajustar la precisión según lo que quieras mostrar.
+			if (op == "+") value = left->dvalue + right->dvalue;
+			else if (op == "-") value = left->dvalue - right->dvalue;
+			else if (op == "*") value = left->dvalue * right->dvalue;
+			else if (op == "/") {
+				if (stod(right->value) != 0.0) value = left->dvalue / stod(right->value);
+				else {
+					addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+					return nullptr; // Error handling
+				}
+			}
+			else if (op == "//") {
+				if (stod(right->value) != 0.0) {
+					double result = left->dvalue / right->dvalue;
+					int int_part = static_cast<int>(result);
+					value = static_cast<double>(int_part);
+				} else {
+					addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+					return nullptr; // Error handling
+				}
+			}
+			else if (op == "%") {
+					addError(TYPE_ERROR, "Modulo operation not supported for double types.");
+					return nullptr; // Error handling
+			}
+			else if (op == "**") value = pow(left->dvalue, right->dvalue);
+			
+			oss << scientific << value;
+			valor = oss.str();
+		} 
+		
+		/* IMPLEMENTAR LOGICA BOOLEANA */
+
+		ASTNode* node = makeASTNode(op, category, type, kind, valor);
+		if (type == "manguangua") node->dvalue = value; // Asignar el valor double al nodo
+	    if (left) node->children.push_back(left);
+	    if (right) node->children.push_back(right);
+	    return node;
+	} else {
+		addError(TYPE_ERROR, "Type mismatch in operation: " + left_type + " " + op + " " + right_type);
+		return nullptr;
+	}
 }
 
 // Imprimir el AST (recursivo, para debug)
