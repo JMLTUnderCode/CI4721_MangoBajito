@@ -232,7 +232,7 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 }
 
 void SymbolTable::print_attribute(Attributes &attr){
-	cout << "       Símbolo: " << attr.symbol_name;
+	cout << "    |---> Símbolo: " << attr.symbol_name;
 	cout << ", Categoría: (" << attr.category  << ")" << categoryToString(attr.category);
 	cout << ", Scope: " << attr.scope;
 	if (attr.type) cout << ", Type: "<< attr.type->symbol_name;
@@ -258,7 +258,7 @@ void SymbolTable::print_table() {
 	cout << "               =======================================================\n\033[0m\n";
 	int count = 1;
 	for (auto& symbol : this->table) {
-		cout << "    Clave: " << count++ << ": " << symbol.first << endl;
+		cout << "\033[1;35m\033[5m    Clave: " << count++ << ": " << symbol.first << "\033[0m" << endl;
 		for (Attributes &attr : symbol.second) {
 			print_attribute(attr);
 		}
