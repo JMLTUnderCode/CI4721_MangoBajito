@@ -4,62 +4,62 @@
                              Symbol Table Representation              
                =======================================================
 [0m
-    Clave: 1: var_union
-       Símbolo: var_union, Categoría: (1)VARIABLE, Scope: 2, Type: MyUnion, Informacion: var_union.attr_u_1 var_union.attr_u_2 
+[1;35m[5m    Clave: 1: var_union[0m
+    |---> Símbolo: var_union, Categoría: (1)VARIABLE, Scope: 2, Type: MyUnion, Informacion: var_union.attr_u_1 var_union.attr_u_2 
 
-    Clave: 2: var_union.attr_u_1
-       Símbolo: var_union.attr_u_1, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: mango
+[1;35m[5m    Clave: 2: var_union.attr_u_1[0m
+    |---> Símbolo: var_union.attr_u_1, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: mango
 
-    Clave: 3: MyUnion.attr_u_1
-       Símbolo: MyUnion.attr_u_1, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: mango
+[1;35m[5m    Clave: 3: MyUnion.attr_u_1[0m
+    |---> Símbolo: MyUnion.attr_u_1, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: mango
 
-    Clave: 4: MyUnion
-       Símbolo: MyUnion, Categoría: (5)UNION, Scope: 2, Informacion: MyUnion.attr_u_1 MyUnion.attr_u_2 
+[1;35m[5m    Clave: 4: MyUnion[0m
+    |---> Símbolo: MyUnion, Categoría: (5)UNION, Scope: 2, Informacion: MyUnion.attr_u_1 MyUnion.attr_u_2 
 
-    Clave: 5: mango
-       Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 5: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 6: var_union.attr_u_2
-       Símbolo: var_union.attr_u_2, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: manguita, Value: 323.1
+[1;35m[5m    Clave: 6: var_union.attr_u_2[0m
+    |---> Símbolo: var_union.attr_u_2, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: manguita, Value: 323.1
 
-    Clave: 7: manguita
-       Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 7: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 8: manguangua
-       Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 8: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 9: MyUnion.attr_u_2
-       Símbolo: MyUnion.attr_u_2, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: manguita
+[1;35m[5m    Clave: 9: MyUnion.attr_u_2[0m
+    |---> Símbolo: MyUnion.attr_u_2, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: manguita
 
-    Clave: 10: negro
-       Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 10: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 11: tas_claro
-       Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 11: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 12: hablame
-       Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 12: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
-    Clave: 13: un_coño
-       Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 13: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 14: array$
-       Símbolo: array$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 14: array$[0m
+    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 15: funcion$
-       Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 15: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 16: error$
-       Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 16: error$[0m
+    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 17: higuerote
-       Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 17: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 18: rescata
-       Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 18: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
-    Clave: 19: se_prende
-       Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 19: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================

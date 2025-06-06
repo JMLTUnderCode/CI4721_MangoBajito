@@ -1,0 +1,17 @@
+# Test 06: Operacion de potencia.
+se_prende(){
+	culito n0: mango = -2;
+	n0 = n0 ** 3;
+	n0 = n0 ** 2 ** 2;
+	n0 = (3 ** 3) ** (2 ** 2);
+
+	culito n1: manguita = -2.9;
+	n1 = n1 ** 2.2;
+	n1 = n1 ** 2.7 ** 2.12;
+	n1 = (3.2 ** 1.23) ** (2.3 ** 2.22);
+
+	culito n2: manguangua = 1.2e+2;
+	n2 = n2 ** 0.022e+2;
+	n2 = n2 ** 0.021e+2 ** 0.031e+2;
+	n2 = (0.022e+2 ** 0.025e+2) ** (0.0201e+2 ** 0.02e+2);
+};

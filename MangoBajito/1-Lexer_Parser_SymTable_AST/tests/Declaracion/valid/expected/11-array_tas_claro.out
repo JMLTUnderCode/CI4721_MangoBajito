@@ -4,89 +4,89 @@
                              Symbol Table Representation              
                =======================================================
 [0m
-    Clave: 1: decl2[1]
-       Símbolo: decl2[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: 0
+[1;35m[5m    Clave: 1: decl2[1][0m
+    |---> Símbolo: decl2[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: 0
 
-    Clave: 2: decl1[4]
-       Símbolo: decl1[4], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: 0
+[1;35m[5m    Clave: 2: decl1[4][0m
+    |---> Símbolo: decl1[4], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: 0
 
-    Clave: 3: decl1[3]
-       Símbolo: decl1[3], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
+[1;35m[5m    Clave: 3: decl1[3][0m
+    |---> Símbolo: decl1[3], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
 
-    Clave: 4: decl2[0]
-       Símbolo: decl2[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
+[1;35m[5m    Clave: 4: decl2[0][0m
+    |---> Símbolo: decl2[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
 
-    Clave: 5: decl1[2]
-       Símbolo: decl1[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
+[1;35m[5m    Clave: 5: decl1[2][0m
+    |---> Símbolo: decl1[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
 
-    Clave: 6: decl1[1]
-       Símbolo: decl1[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
+[1;35m[5m    Clave: 6: decl1[1][0m
+    |---> Símbolo: decl1[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
 
-    Clave: 7: decl1[0]
-       Símbolo: decl1[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
+[1;35m[5m    Clave: 7: decl1[0][0m
+    |---> Símbolo: decl1[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
 
-    Clave: 8: decl0[1]
-       Símbolo: decl0[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
+[1;35m[5m    Clave: 8: decl0[1][0m
+    |---> Símbolo: decl0[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
 
-    Clave: 9: decl0[0]
-       Símbolo: decl0[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: 0
+[1;35m[5m    Clave: 9: decl0[0][0m
+    |---> Símbolo: decl0[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: 0
 
-    Clave: 10: decl0[2]
-       Símbolo: decl0[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro
+[1;35m[5m    Clave: 10: decl0[2][0m
+    |---> Símbolo: decl0[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro
 
-    Clave: 11: n1
-       Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: 0
+[1;35m[5m    Clave: 11: n1[0m
+    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: 0
 
-    Clave: 12: n0
-       Símbolo: n0, Categoría: (0)CONSTANT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
+[1;35m[5m    Clave: 12: n0[0m
+    |---> Símbolo: n0, Categoría: (0)CONSTANT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: 1
 
-    Clave: 13: decl2
-       Símbolo: decl2, Categoría: (11)ARRAY, Scope: 2, Type: tas_claro, Informacion: decl2[0] decl2[1] , Value: 2
+[1;35m[5m    Clave: 13: decl2[0m
+    |---> Símbolo: decl2, Categoría: (11)ARRAY, Scope: 2, Type: tas_claro, Informacion: decl2[0] decl2[1] , Value: 2
 
-    Clave: 14: mango
-       Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 14: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 15: manguita
-       Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 15: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 16: decl0
-       Símbolo: decl0, Categoría: (11)ARRAY, Scope: 2, Type: tas_claro, Informacion: decl0[0] decl0[1] decl0[2] , Value: 3
+[1;35m[5m    Clave: 16: decl0[0m
+    |---> Símbolo: decl0, Categoría: (11)ARRAY, Scope: 2, Type: tas_claro, Informacion: decl0[0] decl0[1] decl0[2] , Value: 3
 
-    Clave: 17: manguangua
-       Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 17: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 18: negro
-       Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 18: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 19: tas_claro
-       Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 19: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 20: decl1
-       Símbolo: decl1, Categoría: (11)ARRAY, Scope: 2, Type: tas_claro, Informacion: decl1[0] decl1[1] decl1[2] decl1[3] decl1[4] , Value: 5
+[1;35m[5m    Clave: 20: decl1[0m
+    |---> Símbolo: decl1, Categoría: (11)ARRAY, Scope: 2, Type: tas_claro, Informacion: decl1[0] decl1[1] decl1[2] decl1[3] decl1[4] , Value: 5
 
-    Clave: 21: hablame
-       Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 21: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
-    Clave: 22: un_coño
-       Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 22: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 23: array$
-       Símbolo: array$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 23: array$[0m
+    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 24: funcion$
-       Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 24: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 25: error$
-       Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 25: error$[0m
+    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 26: higuerote
-       Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 26: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 27: rescata
-       Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 27: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
-    Clave: 28: se_prende
-       Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 28: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================

@@ -1,4 +1,4 @@
-# Test 06: Operacion de incremento.
+# Test 08: Operacion de incremento.
 se_prende(){
 	# Debe tener un valor para poder aplicar incremento.
 	culito decl0: mango = -8;

@@ -4,68 +4,68 @@
                              Symbol Table Representation              
                =======================================================
 [0m
-    Clave: 1: var_struct.attr_s_2
-       Símbolo: var_struct.attr_s_2, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: manguita, Value: 123.123
+[1;35m[5m    Clave: 1: var_struct.attr_s_2[0m
+    |---> Símbolo: var_struct.attr_s_2, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: manguita, Value: 123.123
 
-    Clave: 2: MyStruct.attr_s_3
-       Símbolo: MyStruct.attr_s_3, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: higuerote
+[1;35m[5m    Clave: 2: MyStruct.attr_s_3[0m
+    |---> Símbolo: MyStruct.attr_s_3, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: higuerote
 
-    Clave: 3: MyStruct.attr_s_2
-       Símbolo: MyStruct.attr_s_2, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: manguita
+[1;35m[5m    Clave: 3: MyStruct.attr_s_2[0m
+    |---> Símbolo: MyStruct.attr_s_2, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: manguita
 
-    Clave: 4: mango
-       Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 4: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 5: manguita
-       Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 5: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 6: manguangua
-       Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 6: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 7: negro
-       Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 7: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 8: tas_claro
-       Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 8: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 9: MyStruct.attr_s_1
-       Símbolo: MyStruct.attr_s_1, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: mango
+[1;35m[5m    Clave: 9: MyStruct.attr_s_1[0m
+    |---> Símbolo: MyStruct.attr_s_1, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: mango
 
-    Clave: 10: hablame
-       Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 10: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
-    Clave: 11: un_coño
-       Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 11: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 12: array$
-       Símbolo: array$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 12: array$[0m
+    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 13: var_struct
-       Símbolo: var_struct, Categoría: (1)VARIABLE, Scope: 2, Type: MyStruct, Informacion: var_struct.attr_s_1 var_struct.attr_s_2 var_struct.attr_s_3 
+[1;35m[5m    Clave: 13: var_struct[0m
+    |---> Símbolo: var_struct, Categoría: (1)VARIABLE, Scope: 2, Type: MyStruct, Informacion: var_struct.attr_s_1 var_struct.attr_s_2 var_struct.attr_s_3 
 
-    Clave: 14: var_struct.attr_s_1
-       Símbolo: var_struct.attr_s_1, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: mango, Value: 123
+[1;35m[5m    Clave: 14: var_struct.attr_s_1[0m
+    |---> Símbolo: var_struct.attr_s_1, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: mango, Value: 123
 
-    Clave: 15: funcion$
-       Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 15: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 16: error$
-       Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 16: error$[0m
+    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 17: higuerote
-       Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 17: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 18: rescata
-       Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 18: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
-    Clave: 19: var_struct.attr_s_3
-       Símbolo: var_struct.attr_s_3, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: higuerote, Value: hola
+[1;35m[5m    Clave: 19: var_struct.attr_s_3[0m
+    |---> Símbolo: var_struct.attr_s_3, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: higuerote, Value: hola
 
-    Clave: 20: MyStruct
-       Símbolo: MyStruct, Categoría: (4)STRUCT, Scope: 2, Informacion: MyStruct.attr_s_1 MyStruct.attr_s_2 MyStruct.attr_s_3 
+[1;35m[5m    Clave: 20: MyStruct[0m
+    |---> Símbolo: MyStruct, Categoría: (4)STRUCT, Scope: 2, Informacion: MyStruct.attr_s_1 MyStruct.attr_s_2 MyStruct.attr_s_3 
 
-    Clave: 21: se_prende
-       Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 21: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================

@@ -1,4 +1,4 @@
-# Test 11: Operador OR lógico (o_sea)
+# Test 13: Operador OR lógico (o_sea)
 
 se_prende(){
     culito var_true: tas_claro = Sisa;

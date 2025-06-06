@@ -1,4 +1,4 @@
-# Test 05: Operacion de decremento.
+# Test 07: Operacion de decremento.
 se_prende(){
 	# Debe tener un valor para poder aplicar decremento.
 	culito decl0: mango = -8;

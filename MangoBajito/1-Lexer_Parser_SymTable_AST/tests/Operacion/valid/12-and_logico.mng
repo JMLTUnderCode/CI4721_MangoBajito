@@ -1,4 +1,4 @@
-# Test 10: Operador AND lógico (yunta)
+# Test 12: Operador AND lógico (yunta)
 
 se_prende(){
     culito var_true: tas_claro = Sisa;

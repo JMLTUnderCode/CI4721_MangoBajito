@@ -4,62 +4,62 @@
                              Symbol Table Representation              
                =======================================================
 [0m
-    Clave: 1: n2
-       Símbolo: n2, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Informacion: - , Value: 2.64116e+107
+[1;35m[5m    Clave: 1: n2[0m
+    |---> Símbolo: n2, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 2.64116e+107
 
-    Clave: 2: n1
-       Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: manguita, Informacion: - , Value: 3.48584e+07
+[1;35m[5m    Clave: 2: n1[0m
+    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: manguita, Value: 3.48584e+07
 
-    Clave: 3: n0
-       Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Informacion: - , Value: 15859712
+[1;35m[5m    Clave: 3: n0[0m
+    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 15859712
 
-    Clave: 4: mult_manguangua
-       Símbolo: mult_manguangua, Categoría: (1)VARIABLE, Scope: 1, Type: manguangua, Value: 3.16939e+117
+[1;35m[5m    Clave: 4: mult_manguangua[0m
+    |---> Símbolo: mult_manguangua, Categoría: (1)VARIABLE, Scope: 1, Type: manguangua, Value: 3.16939e+117
 
-    Clave: 5: mult_manguita
-       Símbolo: mult_manguita, Categoría: (1)VARIABLE, Scope: 1, Type: manguita, Value: 4.21786e+07
+[1;35m[5m    Clave: 5: mult_manguita[0m
+    |---> Símbolo: mult_manguita, Categoría: (1)VARIABLE, Scope: 1, Type: manguita, Value: 4.21786e+07
 
-    Clave: 6: mango
-       Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 6: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 7: manguita
-       Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 7: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 8: manguangua
-       Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 8: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 9: negro
-       Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 9: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 10: tas_claro
-       Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 10: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 11: hablame
-       Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 11: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
-    Clave: 12: mult_mango
-       Símbolo: mult_mango, Categoría: (1)VARIABLE, Scope: 1, Type: mango, Value: 15859712
+[1;35m[5m    Clave: 12: mult_mango[0m
+    |---> Símbolo: mult_mango, Categoría: (1)VARIABLE, Scope: 1, Type: mango, Value: 15859712
 
-    Clave: 13: un_coño
-       Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 13: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 14: array$
-       Símbolo: array$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 14: array$[0m
+    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 15: funcion$
-       Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 15: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 16: error$
-       Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 16: error$[0m
+    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 17: higuerote
-       Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 17: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 18: rescata
-       Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 18: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
-    Clave: 19: se_prende
-       Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 19: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
@@ -93,28 +93,28 @@ Programa
           |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: -8
           |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |    |    |    |    |    |         |--> n0 | Category: Identificador | Type: mango
-          |    |    |    |    |    |    |    |    |    |    |    |    |         |--> * | Category: Numérico | Type: mango | Kind: Binaria | Value: -88
+          |    |    |    |    |    |    |    |    |    |    |    |    |         |--> * | Category: Numérica | Type: mango | Kind: Binaria | Value: -88
           |    |    |    |    |    |    |    |    |    |    |    |    |              |--> n0 | Category: Identificador | Type: mango | Value: -8
           |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 11
           |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |    |    |    |    |         |--> n0 | Category: Identificador | Type: mango
-          |    |    |    |    |    |    |    |    |    |    |    |         |--> * | Category: Numérico | Type: mango | Kind: Binaria | Value: -2816
-          |    |    |    |    |    |    |    |    |    |    |    |              |--> * | Category: Numérico | Type: mango | Kind: Binaria | Value: -704
+          |    |    |    |    |    |    |    |    |    |    |    |         |--> * | Category: Numérica | Type: mango | Kind: Binaria | Value: -2816
+          |    |    |    |    |    |    |    |    |    |    |    |              |--> * | Category: Numérica | Type: mango | Kind: Binaria | Value: -704
           |    |    |    |    |    |    |    |    |    |    |    |              |    |--> n0 | Category: Identificador | Type: mango | Value: -88
           |    |    |    |    |    |    |    |    |    |    |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 8
           |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 4
           |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |    |    |    |         |--> n0 | Category: Identificador | Type: mango
-          |    |    |    |    |    |    |    |    |    |    |         |--> * | Category: Numérico | Type: mango | Kind: Binaria | Value: 15859712
-          |    |    |    |    |    |    |    |    |    |    |              |--> * | Category: Numérico | Type: mango | Kind: Binaria | Value: -2816
+          |    |    |    |    |    |    |    |    |    |    |         |--> * | Category: Numérica | Type: mango | Kind: Binaria | Value: 15859712
+          |    |    |    |    |    |    |    |    |    |    |              |--> * | Category: Numérica | Type: mango | Kind: Binaria | Value: -2816
           |    |    |    |    |    |    |    |    |    |    |              |    |--> n0 | Category: Identificador | Type: mango | Value: -2816
           |    |    |    |    |    |    |    |    |    |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 1
-          |    |    |    |    |    |    |    |    |    |    |              |--> * | Category: Numérico | Type: mango | Kind: Binaria | Value: -5632
+          |    |    |    |    |    |    |    |    |    |    |              |--> * | Category: Numérica | Type: mango | Kind: Binaria | Value: -5632
           |    |    |    |    |    |    |    |    |    |    |                   |--> n0 | Category: Identificador | Type: mango | Value: -2816
           |    |    |    |    |    |    |    |    |    |    |                   |--> Literal | Category: Numérico | Type: mango | Value: 2
           |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |    |    |         |--> mult_mango | Category: Identificador | Type: mango
-          |    |    |    |    |    |    |    |    |    |         |--> * | Category: Numérico | Type: mango | Kind: Binaria | Value: 15859712
+          |    |    |    |    |    |    |    |    |    |         |--> * | Category: Numérica | Type: mango | Kind: Binaria | Value: 15859712
           |    |    |    |    |    |    |    |    |    |              |--> n0 | Category: Identificador | Type: mango | Value: 15859712
           |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 1
           |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
@@ -122,28 +122,28 @@ Programa
           |    |    |    |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguita | Value: -8.900000
           |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita
-          |    |    |    |    |    |    |    |         |--> * | Category: Numérico | Type: manguita | Kind: Binaria | Value: -99.679993
+          |    |    |    |    |    |    |    |         |--> * | Category: Numérica | Type: manguita | Kind: Binaria | Value: -99.679993
           |    |    |    |    |    |    |    |              |--> n1 | Category: Identificador | Type: manguita | Value: -8.900000
           |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 11.200000
           |    |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita
-          |    |    |    |    |    |    |         |--> * | Category: Numérico | Type: manguita | Kind: Binaria | Value: -3572.929688
-          |    |    |    |    |    |    |              |--> * | Category: Numérico | Type: manguita | Kind: Binaria | Value: -867.215942
+          |    |    |    |    |    |    |         |--> * | Category: Numérica | Type: manguita | Kind: Binaria | Value: -3572.929688
+          |    |    |    |    |    |    |              |--> * | Category: Numérica | Type: manguita | Kind: Binaria | Value: -867.215942
           |    |    |    |    |    |    |              |    |--> n1 | Category: Identificador | Type: manguita | Value: -99.679993
           |    |    |    |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 8.700000
           |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 4.120000
           |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita
-          |    |    |    |    |    |         |--> * | Category: Numérico | Type: manguita | Kind: Binaria | Value: 34858368.000000
-          |    |    |    |    |    |              |--> * | Category: Numérico | Type: manguita | Kind: Binaria | Value: -4394.703613
+          |    |    |    |    |    |         |--> * | Category: Numérica | Type: manguita | Kind: Binaria | Value: 34858368.000000
+          |    |    |    |    |    |              |--> * | Category: Numérica | Type: manguita | Kind: Binaria | Value: -4394.703613
           |    |    |    |    |    |              |    |--> n1 | Category: Identificador | Type: manguita | Value: -3572.929688
           |    |    |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 1.230000
-          |    |    |    |    |    |              |--> * | Category: Numérico | Type: manguita | Kind: Binaria | Value: -7931.903809
+          |    |    |    |    |    |              |--> * | Category: Numérica | Type: manguita | Kind: Binaria | Value: -7931.903809
           |    |    |    |    |    |                   |--> n1 | Category: Identificador | Type: manguita | Value: -3572.929688
           |    |    |    |    |    |                   |--> Literal | Category: Numérico | Type: manguita | Value: 2.220000
           |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |         |--> mult_manguita | Category: Identificador | Type: manguita
-          |    |    |    |    |         |--> * | Category: Numérico | Type: manguita | Kind: Binaria | Value: 42178628.000000
+          |    |    |    |    |         |--> * | Category: Numérica | Type: manguita | Kind: Binaria | Value: 42178628.000000
           |    |    |    |    |              |--> n1 | Category: Identificador | Type: manguita | Value: 34858368.000000
           |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 1.210000
           |    |    |    |    |--> Asignación | Kind: =
@@ -151,28 +151,28 @@ Programa
           |    |    |    |         |--> Literal | Category: Numérico | Type: manguangua | Value: 8.2000000000e+10
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> n2 | Category: Identificador | Type: manguangua
-          |    |    |         |--> * | Category: Numérico | Type: manguangua | Kind: Binaria | Value: 9.1840000000e+21
+          |    |    |         |--> * | Category: Numérica | Type: manguangua | Kind: Binaria | Value: 9.1840000000e+21
           |    |    |              |--> n2 | Category: Identificador | Type: manguangua | Value: 8.2000000000e+10
           |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 1.1200000000e+11
           |    |    |--> Asignación | Kind: =
           |    |         |--> n2 | Category: Identificador | Type: manguangua
-          |    |         |--> * | Category: Numérico | Type: manguangua | Kind: Binaria | Value: 3.1629696000e+43
-          |    |              |--> * | Category: Numérico | Type: manguangua | Kind: Binaria | Value: 7.5308800000e+32
+          |    |         |--> * | Category: Numérica | Type: manguangua | Kind: Binaria | Value: 3.1629696000e+43
+          |    |              |--> * | Category: Numérica | Type: manguangua | Kind: Binaria | Value: 7.5308800000e+32
           |    |              |    |--> n2 | Category: Identificador | Type: manguangua | Value: 9.1840000000e+21
           |    |              |    |--> Literal | Category: Numérico | Type: manguangua | Value: 8.2000000000e+10
           |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 4.2000000000e+10
           |    |--> Asignación | Kind: =
           |         |--> n2 | Category: Identificador | Type: manguangua
-          |         |--> * | Category: Numérico | Type: manguangua | Kind: Binaria | Value: 2.6411554463e+107
-          |              |--> * | Category: Numérico | Type: manguangua | Kind: Binaria | Value: 3.7955635200e+53
+          |         |--> * | Category: Numérica | Type: manguangua | Kind: Binaria | Value: 2.6411554463e+107
+          |              |--> * | Category: Numérica | Type: manguangua | Kind: Binaria | Value: 3.7955635200e+53
           |              |    |--> n2 | Category: Identificador | Type: manguangua | Value: 3.1629696000e+43
           |              |    |--> Literal | Category: Numérico | Type: manguangua | Value: 1.2000000000e+10
-          |              |--> * | Category: Numérico | Type: manguangua | Kind: Binaria | Value: 6.9585331200e+53
+          |              |--> * | Category: Numérica | Type: manguangua | Kind: Binaria | Value: 6.9585331200e+53
           |                   |--> n2 | Category: Identificador | Type: manguangua | Value: 3.1629696000e+43
           |                   |--> Literal | Category: Numérico | Type: manguangua | Value: 2.2000000000e+10
           |--> Asignación | Kind: =
                |--> mult_manguangua | Category: Identificador | Type: manguangua
-               |--> * | Category: Numérico | Type: manguangua | Kind: Binaria | Value: 3.1693865356e+117
+               |--> * | Category: Numérica | Type: manguangua | Kind: Binaria | Value: 3.1693865356e+117
                     |--> n2 | Category: Identificador | Type: manguangua | Value: 2.6411554463e+107
                     |--> Literal | Category: Numérico | Type: manguangua | Value: 1.2000000000e+10
 [1;32m[5m

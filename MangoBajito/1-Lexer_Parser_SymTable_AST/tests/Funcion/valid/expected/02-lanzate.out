@@ -4,62 +4,62 @@
                              Symbol Table Representation              
                =======================================================
 [0m
-    Clave: 1: p3
-       Símbolo: p3, Categoría: (3)PARAMETERS, Scope: 3, Type: mango
+[1;35m[5m    Clave: 1: p3[0m
+    |---> Símbolo: p3, Categoría: (3)PARAMETERS, Scope: 3, Type: mango
 
-    Clave: 2: fun1
-       Símbolo: fun1, Categoría: (2)FUNCTION, Scope: 2, Type: mango, Informacion: PARAM(p1) PARAM(p2) PARAM(p3) 
+[1;35m[5m    Clave: 2: fun1[0m
+    |---> Símbolo: fun1, Categoría: (2)FUNCTION, Scope: 2, Type: mango, Informacion: PARAM(p1) PARAM(p2) PARAM(p3) 
 
-    Clave: 3: p
-       Símbolo: p, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Informacion: - , Value: 23
+[1;35m[5m    Clave: 3: p[0m
+    |---> Símbolo: p, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 23
 
-    Clave: 4: p1
-       Símbolo: p1, Categoría: (3)PARAMETERS, Scope: 3, Type: mango, Value: 2
+[1;35m[5m    Clave: 4: p1[0m
+    |---> Símbolo: p1, Categoría: (3)PARAMETERS, Scope: 3, Type: mango, Value: 2
 
-    Clave: 5: mango
-       Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 5: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 6: manguita
-       Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 6: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 7: manguangua
-       Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 7: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 8: negro
-       Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 8: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 9: tas_claro
-       Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 9: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 10: hablame
-       Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 10: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
-    Clave: 11: un_coño
-       Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 11: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 12: array$
-       Símbolo: array$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 12: array$[0m
+    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 13: p2
-       Símbolo: p2, Categoría: (3)PARAMETERS, Scope: 3, Type: manguita, Value: 3
+[1;35m[5m    Clave: 13: p2[0m
+    |---> Símbolo: p2, Categoría: (3)PARAMETERS, Scope: 3, Type: manguita, Value: 3
 
-    Clave: 14: funcion$
-       Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 14: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 15: value
-       Símbolo: value, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Informacion: - , Value: 0
+[1;35m[5m    Clave: 15: value[0m
+    |---> Símbolo: value, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 0
 
-    Clave: 16: error$
-       Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 16: error$[0m
+    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 17: higuerote
-       Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 17: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
-    Clave: 18: rescata
-       Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 18: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
-    Clave: 19: se_prende
-       Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 19: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
