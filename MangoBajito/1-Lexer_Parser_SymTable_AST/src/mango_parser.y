@@ -255,10 +255,10 @@ string current_func_type = "";
 %nonassoc T_OPIGUAL T_OPDIFERENTE T_OPMAYOR T_OPMENOR T_OPMAYORIGUAL T_OPMENORIGUAL
 
 // Aritmeticos
-%left T_OPSUMA T_OPRESTA 
-%left T_OPMULT T_OPDIVENTERA T_OPDIVDECIMAL T_OPMOD
-%right T_OPEXP
+%left T_OPSUMA T_OPRESTA T_OPMULT T_OPDIVENTERA T_OPDIVDECIMAL T_OPMOD
 %nonassoc T_IZQPAREN T_DERPAREN
+%right T_OPEXP
+
 
 // Operaciones unarias
 %left T_OPINCREMENTO T_OPDECREMENTO
@@ -475,25 +475,25 @@ declaracion:
 
 				if ($4->category == "Identificador") { // Estructuras
 					for (const auto& field : type_attr->info) {
-				        // field.first es "MyStruct.attr_var_1"
-				        string full_field = get<string>(field.first);
-				        size_t dot_pos = full_field.find('.');
-				        if (dot_pos == string::npos) continue; // No es un campo válido
+						// field.first es "MyStruct.attr_var_1"
+						string full_field = get<string>(field.first);
+						size_t dot_pos = full_field.find('.');
+						if (dot_pos == string::npos) continue; // No es un campo válido
 
-				        string attr_name = full_field.substr(dot_pos + 1); // "attr_var_1"
-				        string new_field_name = string($2) + "." + attr_name; // "var.attr_var_1"
+						string attr_name = full_field.substr(dot_pos + 1); // "attr_var_1"
+						string new_field_name = string($2) + "." + attr_name; // "var.attr_var_1"
 
-				        Attributes* new_attr = new Attributes();
-				        new_attr->symbol_name = new_field_name;
-				        new_attr->scope = symbolTable.current_scope;
-				        new_attr->type = field.second->type;
-				        new_attr->category = STRUCT_ATTRIBUTE;
-				        new_attr->value = nullptr;
+						Attributes* new_attr = new Attributes();
+						new_attr->symbol_name = new_field_name;
+						new_attr->scope = symbolTable.current_scope;
+						new_attr->type = field.second->type;
+						new_attr->category = STRUCT_ATTRIBUTE;
+						new_attr->value = nullptr;
 
-				        // Agregar a la info de la variable y a la tabla de símbolos
-				        attribute->info.push_back({new_field_name, new_attr});
-				        symbolTable.insert_symbol(new_field_name, *new_attr);
-			    	}
+						// Agregar a la info de la variable y a la tabla de símbolos
+						attribute->info.push_back({new_field_name, new_attr});
+						symbolTable.insert_symbol(new_field_name, *new_attr);
+					}
 				}
 
 				// Insertar en tabla de símbolos
@@ -629,7 +629,6 @@ declaracion:
 				Attributes *attribute = new Attributes();
 				attribute->symbol_name = $2;
 				attribute->scope = symbolTable.current_scope;
-				attribute->info.push_back({"-", nullptr});
 				attribute->type = symbolTable.search_symbol($4->type);
 
 				// Verificacion de tipos.
@@ -1174,7 +1173,7 @@ expresion:
 		$$ = makeASTNode($1, "Elemento_Array", type_elem, "", valor);
 
 	} 
-	| T_IZQPAREN expresion T_DERPAREN { $$ = $2; } // Expresion parantizada.
+	| T_IZQPAREN expresion T_DERPAREN { $$ = $2; } // Expresion parentizada.
 	| T_NELSON expresion { $$ = nullptr; }
 	| T_OPRESTA expresion %prec T_OPRESTA {
 		$$ = $2;
@@ -1390,11 +1389,11 @@ firma_funcion:
 			yyerror($2);
 		} else {
 			Attributes* func_attr = new Attributes();
-	        func_attr->symbol_name = $2;
-	        func_attr->scope = symbolTable.current_scope; // Scope de la función
-	        func_attr->type = symbolTable.search_symbol("funcion$");
-	        func_attr->category = FUNCTION;
-	        func_attr->value = nullptr;
+			func_attr->symbol_name = $2;
+			func_attr->scope = symbolTable.current_scope; // Scope de la función
+			func_attr->type = symbolTable.search_symbol("funcion$");
+			func_attr->category = FUNCTION;
+			func_attr->value = nullptr;
 			symbolTable.insert_symbol($2, *func_attr);
 		}
 
@@ -1455,7 +1454,7 @@ funcion:
 				collect_nodes_by_categories($4, categories, param_nodes);
 				for (auto param : param_nodes) {
 					Attributes* param_attr = symbolTable.search_symbol(param->name);
-				    if (param_attr) func_attr->info.push_back({"PARAM("+ param->name +")", param_attr});
+					if (param_attr) func_attr->info.push_back({"PARAM("+ param->name +")", param_attr});
 				}
 			}
 			$$ = makeASTNode(func_name, "Declaración", func_type, "Función");
