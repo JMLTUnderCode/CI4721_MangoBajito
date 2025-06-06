@@ -75,37 +75,37 @@ Programa
           |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |--> n0 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |    |    |    |    |--> // | Category: Numérica | Type: mango | Kind: Binaria | Value: 3
+          |    |    |    |    |    |--> // | Category: Operación | Type: mango | Kind: Numérica | Value: 3
           |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 7
           |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 2
           |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |         |--> n1 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |    |    |         |--> // | Category: Numérica | Type: mango | Kind: Binaria | Value: 13
-          |    |    |    |              |--> // | Category: Numérica | Type: mango | Kind: Binaria | Value: 40
+          |    |    |    |         |--> // | Category: Operación | Type: mango | Kind: Numérica | Value: 13
+          |    |    |    |              |--> // | Category: Operación | Type: mango | Kind: Numérica | Value: 40
           |    |    |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 121
           |    |    |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 3
           |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 3
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> n2 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |    |         |--> // | Category: Numérica | Type: mango | Kind: Binaria | Value: 62
+          |    |    |         |--> // | Category: Operación | Type: mango | Kind: Numérica | Value: 62
           |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 143.199997
           |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 2.300000
           |    |    |--> Asignación | Kind: =
           |    |         |--> n3 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |         |--> // | Category: Numérica | Type: mango | Kind: Binaria | Value: 20
-          |    |              |--> // | Category: Numérica | Type: mango | Kind: Binaria | Value: 62
+          |    |         |--> // | Category: Operación | Type: mango | Kind: Numérica | Value: 20
+          |    |              |--> // | Category: Operación | Type: mango | Kind: Numérica | Value: 62
           |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 143.199997
           |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 2.300000
           |    |              |--> Literal | Category: Numérico | Type: mango | Value: 3
           |    |--> Asignación | Kind: =
           |         |--> n4 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |         |--> // | Category: Numérica | Type: mango | Kind: Binaria | Value: 1.1900000000e+02
+          |         |--> // | Category: Operación | Type: mango | Kind: Numérica | Value: 1.1900000000e+02
           |              |--> Literal | Category: Numérico | Type: manguangua | Value: 1.2200000000e+13
           |              |--> Literal | Category: Numérico | Type: manguangua | Value: 1.0200000000e+11
           |--> Asignación | Kind: =
                |--> n5 | Category: Declaración | Type: mango | Kind: VARIABLE
-               |--> // | Category: Numérica | Type: mango | Kind: Binaria | Value: 0
-                    |--> // | Category: Numérica | Type: mango | Kind: Binaria | Value: 1.1900000000e+02
+               |--> // | Category: Operación | Type: mango | Kind: Numérica | Value: 0
+                    |--> // | Category: Operación | Type: mango | Kind: Numérica | Value: 1.1900000000e+02
                     |    |--> Literal | Category: Numérico | Type: manguangua | Value: 1.2200000000e+13
                     |    |--> Literal | Category: Numérico | Type: manguangua | Value: 1.0200000000e+11
                     |--> Literal | Category: Numérico | Type: mango | Value: 12000

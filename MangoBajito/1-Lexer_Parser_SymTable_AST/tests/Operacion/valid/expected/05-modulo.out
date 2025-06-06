@@ -74,24 +74,24 @@ Programa
           |    |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: 50
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> n1 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |    |         |--> % | Category: Numérica | Type: mango | Kind: Binaria | Value: 5
+          |    |    |         |--> % | Category: Operación | Type: mango | Kind: Numérica | Value: 5
           |    |    |              |--> n0 | Category: Identificador | Type: mango | Value: 50
           |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 9
           |    |    |--> Asignación | Kind: =
           |    |         |--> n2 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |         |--> % | Category: Numérica | Type: mango | Kind: Binaria | Value: 1
-          |    |              |--> % | Category: Numérica | Type: mango | Kind: Binaria | Value: 5
+          |    |         |--> % | Category: Operación | Type: mango | Kind: Numérica | Value: 1
+          |    |              |--> % | Category: Operación | Type: mango | Kind: Numérica | Value: 5
           |    |              |    |--> n0 | Category: Identificador | Type: mango | Value: 50
           |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 9
           |    |              |--> Literal | Category: Numérico | Type: mango | Value: 4
           |    |--> Asignación | Kind: =
           |         |--> n3 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |         |--> % | Category: Numérica | Type: mango | Kind: Binaria | Value: 0
+          |         |--> % | Category: Operación | Type: mango | Kind: Numérica | Value: 0
           |              |--> n0 | Category: Identificador | Type: mango | Value: 50
           |              |--> Literal | Category: Numérico | Type: mango | Value: -10
           |--> Asignación | Kind: =
                |--> n4 | Category: Declaración | Type: mango | Kind: VARIABLE
-               |--> % | Category: Numérica | Type: mango | Kind: Binaria | Value: -5
+               |--> % | Category: Operación | Type: mango | Kind: Numérica | Value: -5
                     |--> n0 | Category: Identificador | Type: mango | Value: -50
                     |--> Literal | Category: Numérico | Type: mango | Value: -9
 [1;32m[5m
