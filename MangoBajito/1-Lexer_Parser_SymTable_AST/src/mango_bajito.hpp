@@ -214,7 +214,7 @@ inline void collect_nodes_by_categories(ASTNode* node, const set<string>& catego
 inline ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
     string category = "Operación";
 	string type = "Desconocido";
-    string kind = "Binaria";
+    string kind = "Desconocido";
 	string valor = "0";
 	double value = 0.0;
     
@@ -226,103 +226,122 @@ inline ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right
 	string right_type = right ? right->type : "Desconocido";
 
 	if (left && right && left_type == right_type){
-		if (ops_numericas.count(op)) category = "Numérica";
-		if (ops_booleana.count(op)) category = "Booleana";
-		type = left_type;
-		if (type == "mango"){
-			if (op == "+") valor = to_string(stoi(left->value) + stoi(right->value));
-			else if (op == "-") valor = to_string(stoi(left->value) - stoi(right->value));
-			else if (op == "*") valor = to_string(stoi(left->value) * stoi(right->value));
-			else if (op == "/") {
-				if (stoi(right->value) != 0) {
-					valor = to_string(stof(left->value) / stoi(right->value));
-				} else {
-					addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-					return nullptr; // Error handling
-				}
-				type = "manguita";
-			} else if (op == "//") {
-				if (stoi(right->value) != 0) {
-					valor = to_string(stoi(left->value) / stoi(right->value));
-				} else {
-					addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-					return nullptr; // Error handling
-				}
-			} else if (op == "%") {
-				if (stoi(right->value) != 0) {
-					valor = to_string(stoi(left->value) % stoi(right->value));
-				} else {
-					addError(SEGMENTATION_FAULT, "Modulo by zero in operation.");
-					return nullptr; // Error handling
-				}
-			} else if (op == "**") valor = to_string(pow(stoi(left->value), stoi(right->value)));
-		
-		} else if (type == "manguita"){
-			if (op == "+") valor = to_string(stof(left->value) + stof(right->value));
-			else if (op == "-") valor = to_string(stof(left->value) - stof(right->value));
-			else if (op == "*") valor = to_string(stof(left->value) * stof(right->value));
-			else if (op == "/") {
-				if (stof(right->value) != 0) {
-					valor = to_string(stof(left->value) / stof(right->value));
-				} else {
-					addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-					return nullptr; // Error handling
-				}
-			} else if (op == "//") {
-				if (stof(right->value) != 0.0f) {
-			        float result = stof(left->value) / stof(right->value);
-			        int int_part = static_cast<int>(result);
-			        valor = to_string(int_part);
-					type = "mango";
-			    } else {
-			        addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-			        return nullptr; // Error handling
-			    }
-			} else if (op == "%") {
-					addError(TYPE_ERROR, "Modulo operation not supported for float types.");
-					return nullptr; // Error handling
-			} else if (op == "**") {
-				float base = stof(left->value);
-			    float exp = stof(right->value);
-			    if (base < 0 && fmod(exp, 2.0f) != 0.0f) {
-			        // Raíz impar de negativo: resultado negativo
-			        valor = to_string(-pow(-base, exp));
-			    } else {
-			        valor = to_string(pow(base, exp));
-			    }
-			}
-		} else if (type == "manguangua"){
-			ostringstream oss;
-			oss.precision(10); // Ajustar la precisión según lo que quieras mostrar.
-			if (op == "+") value = left->dvalue + right->dvalue;
-			else if (op == "-") value = left->dvalue - right->dvalue;
-			else if (op == "*") value = left->dvalue * right->dvalue;
-			else if (op == "/") {
-				if (right->dvalue != 0.0) value = left->dvalue / right->dvalue;
-				else {
-					addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-					return nullptr; // Error handling
-				}
-			} else if (op == "//") {
-				if (right->dvalue != 0.0) {
-					double result = left->dvalue / right->dvalue;
-					int int_part = static_cast<int>(result);
-					value = static_cast<double>(int_part);
-					type = "mango";
-				} else {
-					addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-					return nullptr; // Error handling
-				}
-			} else if (op == "%") {
-					addError(TYPE_ERROR, "Modulo operation not supported for double types.");
-					return nullptr; // Error handling
-			} else if (op == "**") value = pow(left->dvalue, right->dvalue);
+		if (ops_numericas.count(op)) kind = "Numérica";
+		if (ops_booleana.count(op)) kind = "Booleana";
+		if (kind == "Numérica") {
+			type = left_type;
+			if (type == "mango"){
+				if (op == "+") valor = to_string(stoi(left->value) + stoi(right->value));
+				else if (op == "-") valor = to_string(stoi(left->value) - stoi(right->value));
+				else if (op == "*") valor = to_string(stoi(left->value) * stoi(right->value));
+				else if (op == "/") {
+					if (stoi(right->value) != 0) {
+						valor = to_string(stof(left->value) / stoi(right->value));
+					} else {
+						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+						return nullptr; // Error handling
+					}
+					type = "manguita";
+				} else if (op == "//") {
+					if (stoi(right->value) != 0) {
+						valor = to_string(stoi(left->value) / stoi(right->value));
+					} else {
+						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+						return nullptr; // Error handling
+					}
+				} else if (op == "%") {
+					if (stoi(right->value) != 0) {
+						valor = to_string(stoi(left->value) % stoi(right->value));
+					} else {
+						addError(SEGMENTATION_FAULT, "Modulo by zero in operation.");
+						return nullptr; // Error handling
+					}
+				} else if (op == "**") valor = to_string(pow(stoi(left->value), stoi(right->value)));
 			
-			oss << scientific << value;
-			valor = oss.str();
-		} 
-		
-		/* IMPLEMENTAR LOGICA BOOLEANA */
+			} else if (type == "manguita"){
+				if (op == "+") valor = to_string(stof(left->value) + stof(right->value));
+				else if (op == "-") valor = to_string(stof(left->value) - stof(right->value));
+				else if (op == "*") valor = to_string(stof(left->value) * stof(right->value));
+				else if (op == "/") {
+					if (stof(right->value) != 0) {
+						valor = to_string(stof(left->value) / stof(right->value));
+					} else {
+						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+						return nullptr; // Error handling
+					}
+				} else if (op == "//") {
+					if (stof(right->value) != 0.0f) {
+				        float result = stof(left->value) / stof(right->value);
+				        int int_part = static_cast<int>(result);
+				        valor = to_string(int_part);
+						type = "mango";
+				    } else {
+				        addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+				        return nullptr; // Error handling
+				    }
+				} else if (op == "%") {
+						addError(TYPE_ERROR, "Modulo operation not supported for float types.");
+						return nullptr; // Error handling
+				} else if (op == "**") {
+					float base = stof(left->value);
+				    float exp = stof(right->value);
+				    if (base < 0 && fmod(exp, 2.0f) != 0.0f) {
+				        // Raíz impar de negativo: resultado negativo
+				        valor = to_string(-pow(-base, exp));
+				    } else {
+				        valor = to_string(pow(base, exp));
+				    }
+				}
+			} else if (type == "manguangua"){
+				ostringstream oss;
+				oss.precision(10); // Ajustar la precisión según lo que quieras mostrar.
+				if (op == "+") value = left->dvalue + right->dvalue;
+				else if (op == "-") value = left->dvalue - right->dvalue;
+				else if (op == "*") value = left->dvalue * right->dvalue;
+				else if (op == "/") {
+					if (right->dvalue != 0.0) value = left->dvalue / right->dvalue;
+					else {
+						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+						return nullptr; // Error handling
+					}
+				} else if (op == "//") {
+					if (right->dvalue != 0.0) {
+						double result = left->dvalue / right->dvalue;
+						int int_part = static_cast<int>(result);
+						value = static_cast<double>(int_part);
+						type = "mango";
+					} else {
+						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+						return nullptr; // Error handling
+					}
+				} else if (op == "%") {
+						addError(TYPE_ERROR, "Modulo operation not supported for double types.");
+						return nullptr; // Error handling
+				} else if (op == "**") value = pow(left->dvalue, right->dvalue);
+				
+				oss << scientific << value;
+				valor = oss.str();
+			}
+
+		} else if (kind == "Booleana") {
+			if (op == "igualito") { // ==
+
+			} else if (op == "nie"){ // !=
+
+			} else if (op == "mayol") { // >
+
+			} else if (op == "lidel") { // >=
+
+			} else if (op == "menol") { // <
+
+			} else if (op == "peluche") { // <=
+
+			} else if (op == "yunta") { // and
+
+			} else if (op == "o_sea") { // or
+			
+			}
+		}
 
 		ASTNode* node = makeASTNode(op, category, type, kind, valor);
 		if (type == "manguangua") node->dvalue = value; // Asignar el valor double al nodo
