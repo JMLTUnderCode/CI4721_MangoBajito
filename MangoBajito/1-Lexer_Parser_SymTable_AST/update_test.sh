@@ -5,6 +5,7 @@ declare -A valid_tests
 valid_tests["Declaracion"]="00 01 02 03 04 05 06 07 08 09 10 11 12 13"
 valid_tests["Funcion"]="00 01 02"
 valid_tests["Operacion"]="00 01 02 03 04 05 06 07 08 09 10 11 12 13"
+valid_tests["Condicional"]="00 01"
 
 # Define las secciones y los números de test a actualizar para errors
 declare -A error_tests
