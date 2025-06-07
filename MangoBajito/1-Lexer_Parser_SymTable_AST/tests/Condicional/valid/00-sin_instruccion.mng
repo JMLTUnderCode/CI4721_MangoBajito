@@ -4,6 +4,8 @@ se_prende(){
 		# instrucciones
 	} o_asi (Sisa) {
 		# instrucciones
+	} o_asi (Nolsa) {
+		# instrucciones
 	} nojoda {
 		# instrucciones
 	};
