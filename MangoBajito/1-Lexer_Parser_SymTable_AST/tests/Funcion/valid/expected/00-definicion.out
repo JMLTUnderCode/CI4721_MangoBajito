@@ -41,7 +41,7 @@
     |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
 
 [1;35m[5m    Clave: 13: p2[0m
-    |---> Símbolo: p2, Categoría: (3)PARAMETERS, Scope: 4, Type: manguita, Value: 3
+    |---> Símbolo: p2, Categoría: (3)PARAMETERS, Scope: 4, Type: manguita, Value: 3.1
 
 [1;35m[5m    Clave: 14: funcion$[0m
     |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
@@ -74,12 +74,12 @@ Programa
                |    |    |--> p2 | Category: Parámetro | Type: manguita
                |    |--> p3 | Category: Parámetro | Type: mango
                |--> Instrucción | Kind: ;
-                    |--> Asignación | Kind: =
+                    |--> Asignación | Type: mango | Kind: = | Value: 2
                     |    |--> p1 | Category: Identificador | Type: mango
                     |    |--> Literal | Category: Numérico | Type: mango | Value: 2
-                    |--> Asignación | Kind: =
+                    |--> Asignación | Type: manguita | Kind: = | Value: 3.1
                          |--> p2 | Category: Identificador | Type: manguita
-                         |--> Literal | Category: Numérico | Type: manguita | Value: 3.000000
+                         |--> Literal | Category: Numérico | Type: manguita | Value: 3.1
 [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        

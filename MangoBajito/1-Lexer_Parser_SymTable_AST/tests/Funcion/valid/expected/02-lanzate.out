@@ -82,28 +82,28 @@ Programa
           |    |         |    |--> p3 | Category: Parámetro | Type: mango
           |    |         |--> Instrucción | Kind: ;
           |    |              |--> Instrucción | Kind: ;
-          |    |              |    |--> Asignación | Kind: =
+          |    |              |    |--> Asignación | Type: mango | Kind: = | Value: 2
           |    |              |    |    |--> p1 | Category: Identificador | Type: mango
           |    |              |    |    |--> Literal | Category: Numérico | Type: mango | Value: 2
-          |    |              |    |--> Asignación | Kind: =
+          |    |              |    |--> Asignación | Type: manguita | Kind: = | Value: 3
           |    |              |         |--> p2 | Category: Identificador | Type: manguita
-          |    |              |         |--> Literal | Category: Numérico | Type: manguita | Value: 3.000000
-          |    |              |--> p2 | Category: Identificador | Type: manguita | Value: 3.000000
+          |    |              |         |--> Literal | Category: Numérico | Type: manguita | Value: 3
+          |    |              |--> p2 | Category: Identificador | Type: manguita | Value: 3
           |    |--> Asignación | Kind: =
           |         |--> value | Category: Declaración | Type: mango | Kind: VARIABLE
           |         |--> fun1 | Category: Llamada_Funcion | Type: mango | Value: 0
           |              |--> Secuencia | Category: Expresión | Kind: ,
           |                   |--> Secuencia | Category: Expresión | Kind: ,
           |                   |    |--> p | Category: Identificador | Type: mango | Value: 23
-          |                   |    |--> Literal | Category: Numérico | Type: manguita | Value: 2.000000
+          |                   |    |--> Literal | Category: Numérico | Type: manguita | Value: 2
           |                   |--> Literal | Category: Numérico | Type: mango | Value: 3
-          |--> Asignación | Kind: =
-               |--> value | Category: Identificador | Type: mango
+          |--> Asignación | Type: mango | Kind: = | Value: 0
+               |--> value | Category: Identificador | Type: mango | Value: 0
                |--> fun1 | Category: Llamada_Funcion | Type: mango | Value: 0
                     |--> Secuencia | Category: Expresión | Kind: ,
                          |--> Secuencia | Category: Expresión | Kind: ,
                          |    |--> p | Category: Identificador | Type: mango | Value: 23
-                         |    |--> Literal | Category: Numérico | Type: manguita | Value: 2.000000
+                         |    |--> Literal | Category: Numérico | Type: manguita | Value: 2
                          |--> Literal | Category: Numérico | Type: mango | Value: 123
 [1;32m[5m
                =======================================================

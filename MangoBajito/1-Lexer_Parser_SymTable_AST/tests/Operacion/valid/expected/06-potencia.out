@@ -4,53 +4,107 @@
                              Symbol Table Representation              
                =======================================================
 [0m
-[1;35m[5m    Clave: 1: n2[0m
-    |---> Símbolo: n2, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 2874.45
+[1;35m[5m    Clave: 1: n20[0m
+    |---> Símbolo: n20, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: inf
 
-[1;35m[5m    Clave: 2: n1[0m
-    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: manguita, Value: 8868.61
+[1;35m[5m    Clave: 2: n18[0m
+    |---> Símbolo: n18, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1
 
-[1;35m[5m    Clave: 3: n0[0m
-    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 531441
+[1;35m[5m    Clave: 3: n16[0m
+    |---> Símbolo: n16, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -1.04858e+06
 
-[1;35m[5m    Clave: 4: mango[0m
-    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 4: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 5: manguita[0m
-    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 6: manguangua[0m
-    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 7: negro[0m
-    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 8: tas_claro[0m
-    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 9: hablame[0m
-    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
-
-[1;35m[5m    Clave: 10: un_coño[0m
-    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 11: array$[0m
-    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 12: funcion$[0m
-    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 13: error$[0m
-    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 14: higuerote[0m
-    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 15: rescata[0m
+[1;35m[5m    Clave: 5: rescata[0m
     |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 16: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 6: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 7: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 8: array$[0m
+    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 9: n3[0m
+    |---> Símbolo: n3, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -1.85934e-06
+
+[1;35m[5m    Clave: 10: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 11: n4[0m
+    |---> Símbolo: n4, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1
+
+[1;35m[5m    Clave: 12: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 13: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 14: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 15: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 16: n5[0m
+    |---> Símbolo: n5, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 0
+
+[1;35m[5m    Clave: 17: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 18: n0[0m
+    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 537824
+
+[1;35m[5m    Clave: 19: n1[0m
+    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1.85934e-06
+
+[1;35m[5m    Clave: 20: n2[0m
+    |---> Símbolo: n2, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -537824
+
+[1;35m[5m    Clave: 21: n19[0m
+    |---> Símbolo: n19, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 0
+
+[1;35m[5m    Clave: 22: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 23: n6[0m
+    |---> Símbolo: n6, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: inf
+
+[1;35m[5m    Clave: 24: n7[0m
+    |---> Símbolo: n7, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 2.17563e+06
+
+[1;35m[5m    Clave: 25: n11[0m
+    |---> Símbolo: n11, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1
+
+[1;35m[5m    Clave: 26: error$[0m
+    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 27: n8[0m
+    |---> Símbolo: n8, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 4.59636e-07
+
+[1;35m[5m    Clave: 28: n9[0m
+    |---> Símbolo: n9, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -2.17563e+06
+
+[1;35m[5m    Clave: 29: n17[0m
+    |---> Símbolo: n17, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -9.53674e-07
+
+[1;35m[5m    Clave: 30: n10[0m
+    |---> Símbolo: n10, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -4.59636e-07
+
+[1;35m[5m    Clave: 31: n13[0m
+    |---> Símbolo: n13, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: inf
+
+[1;35m[5m    Clave: 32: n15[0m
+    |---> Símbolo: n15, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 9.53674e-07
+
+[1;35m[5m    Clave: 33: n12[0m
+    |---> Símbolo: n12, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 0
+
+[1;35m[5m    Clave: 34: n14[0m
+    |---> Símbolo: n14, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1.04858e+06
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
@@ -70,78 +124,120 @@ Programa
           |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> n0 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 537824
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 14
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 5
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> n1 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 1.85934e-06
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 14
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: -5
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> n2 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: -537824
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 14
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 5
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> n3 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: -1.85934e-06
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 14
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: -5
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> n4 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 1
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 14
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> n5 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 0
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 1
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> n6 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: inf
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: -1
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |    |    |    |         |--> n7 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 2.17563e+06
+          |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 14.2
+          |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 5.5
+          |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |    |    |         |--> n8 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 4.59636e-07
+          |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 14.2
+          |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: -5.5
+          |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |    |         |--> n9 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: -2.17563e+06
+          |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 14.2
+          |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 5.5
           |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |    |    |    |    |    |--> n0 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |    |    |    |    |    |    |    |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: -2
-          |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |    |    |    |         |--> n0 | Category: Identificador | Type: mango
-          |    |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: mango | Kind: Numérica | Value: -8.000000
-          |    |    |    |    |    |    |    |    |    |              |--> n0 | Category: Identificador | Type: mango | Value: -2
-          |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 3
+          |    |    |    |    |    |    |    |    |    |         |--> n10 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: -4.59636e-07
+          |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 14.2
+          |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: -5.5
           |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |    |    |         |--> n0 | Category: Identificador | Type: mango
-          |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: mango | Kind: Numérica | Value: 4096.000000
-          |    |    |    |    |    |    |    |    |              |--> n0 | Category: Identificador | Type: mango | Value: -8
-          |    |    |    |    |    |    |    |    |              |--> ** | Category: Operación | Type: mango | Kind: Numérica | Value: 4.000000
-          |    |    |    |    |    |    |    |    |                   |--> Literal | Category: Numérico | Type: mango | Value: 2
-          |    |    |    |    |    |    |    |    |                   |--> Literal | Category: Numérico | Type: mango | Value: 2
+          |    |    |    |    |    |    |    |    |         |--> n11 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 1
+          |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 14.2
+          |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 0
           |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |    |         |--> n0 | Category: Identificador | Type: mango
-          |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: mango | Kind: Numérica | Value: 531441.000000
-          |    |    |    |    |    |    |    |              |--> ** | Category: Operación | Type: mango | Kind: Numérica | Value: 27.000000
-          |    |    |    |    |    |    |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 3
-          |    |    |    |    |    |    |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 3
-          |    |    |    |    |    |    |    |              |--> ** | Category: Operación | Type: mango | Kind: Numérica | Value: 4.000000
-          |    |    |    |    |    |    |    |                   |--> Literal | Category: Numérico | Type: mango | Value: 2
-          |    |    |    |    |    |    |    |                   |--> Literal | Category: Numérico | Type: mango | Value: 2
+          |    |    |    |    |    |    |    |         |--> n12 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 0
+          |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 0
+          |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 1.5
           |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |         |--> n1 | Category: Declaración | Type: manguita | Kind: VARIABLE
-          |    |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguita | Value: -2.900000
+          |    |    |    |    |    |    |         |--> n13 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: inf
+          |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 0
+          |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: -1.5
           |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita
-          |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguita | Kind: Numérica | Value: -10.405805
-          |    |    |    |    |    |              |--> n1 | Category: Identificador | Type: manguita | Value: -2.900000
-          |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 2.200000
+          |    |    |    |    |    |         |--> n14 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 1.04858e+06
+          |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 2
+          |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 20
           |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita
-          |    |    |    |    |         |--> ** | Category: Operación | Type: manguita | Kind: Numérica | Value: -226297472.000000
-          |    |    |    |    |              |--> n1 | Category: Identificador | Type: manguita | Value: -10.405805
-          |    |    |    |    |              |--> ** | Category: Operación | Type: manguita | Kind: Numérica | Value: 8.212798
-          |    |    |    |    |                   |--> Literal | Category: Numérico | Type: manguita | Value: 2.700000
-          |    |    |    |    |                   |--> Literal | Category: Numérico | Type: manguita | Value: 2.120000
+          |    |    |    |    |         |--> n15 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 9.53674e-07
+          |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 2
+          |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: -20
           |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |         |--> n1 | Category: Identificador | Type: manguita
-          |    |    |    |         |--> ** | Category: Operación | Type: manguita | Kind: Numérica | Value: 8868.611328
-          |    |    |    |              |--> ** | Category: Operación | Type: manguita | Kind: Numérica | Value: 4.181523
-          |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 3.200000
-          |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 1.230000
-          |    |    |    |              |--> ** | Category: Operación | Type: manguita | Kind: Numérica | Value: 6.353833
-          |    |    |    |                   |--> Literal | Category: Numérico | Type: manguita | Value: 2.300000
-          |    |    |    |                   |--> Literal | Category: Numérico | Type: manguita | Value: 2.220000
+          |    |    |    |         |--> n16 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: -1.04858e+06
+          |    |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 2
+          |    |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 20
           |    |    |    |--> Asignación | Kind: =
-          |    |    |         |--> n2 | Category: Declaración | Type: manguangua | Kind: VARIABLE
-          |    |    |         |--> Literal | Category: Numérico | Type: manguangua | Value: 1.2000000000e+02
+          |    |    |         |--> n17 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: -9.53674e-07
+          |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 2
+          |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: -20
           |    |    |--> Asignación | Kind: =
-          |    |         |--> n2 | Category: Identificador | Type: manguangua
-          |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 3.7514463620e+04
-          |    |              |--> n2 | Category: Identificador | Type: manguangua | Value: 1.2000000000e+02
-          |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 2.2000000000e+00
+          |    |         |--> n18 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 1
+          |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 2
+          |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 0
           |    |--> Asignación | Kind: =
-          |         |--> n2 | Category: Identificador | Type: manguangua
-          |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 4.2087780119e+45
-          |              |--> n2 | Category: Identificador | Type: manguangua | Value: 3.7514463620e+04
-          |              |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 9.9742399927e+00
-          |                   |--> Literal | Category: Numérico | Type: manguangua | Value: 2.1000000000e+00
-          |                   |--> Literal | Category: Numérico | Type: manguangua | Value: 3.1000000000e+00
+          |         |--> n19 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |         |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 0
+          |              |--> Literal | Category: Numérico | Type: manguangua | Value: 0
+          |              |--> Literal | Category: Numérico | Type: manguangua | Value: 20
           |--> Asignación | Kind: =
-               |--> n2 | Category: Identificador | Type: manguangua
-               |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 2.8744494925e+03
-                    |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 7.1788801355e+00
-                    |    |--> Literal | Category: Numérico | Type: manguangua | Value: 2.2000000000e+00
-                    |    |--> Literal | Category: Numérico | Type: manguangua | Value: 2.5000000000e+00
-                    |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: 4.0401000000e+00
-                         |--> Literal | Category: Numérico | Type: manguangua | Value: 2.0100000000e+00
-                         |--> Literal | Category: Numérico | Type: manguangua | Value: 2.0000000000e+00
+               |--> n20 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+               |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: inf
+                    |--> Literal | Category: Numérico | Type: manguangua | Value: 0
+                    |--> Literal | Category: Numérico | Type: manguangua | Value: -20
 [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        

@@ -41,7 +41,7 @@
     |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
 
 [1;35m[5m    Clave: 13: p2[0m
-    |---> Símbolo: p2, Categoría: (3)PARAMETERS, Scope: 3, Type: manguita, Value: 3
+    |---> Símbolo: p2, Categoría: (3)PARAMETERS, Scope: 3, Type: manguita, Value: 3.1
 
 [1;35m[5m    Clave: 14: funcion$[0m
     |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
@@ -78,23 +78,23 @@ Programa
           |    |         |    |    |--> p2 | Category: Parámetro | Type: manguita
           |    |         |    |--> p3 | Category: Parámetro | Type: mango
           |    |         |--> Instrucción | Kind: ;
-          |    |              |--> Asignación | Kind: =
+          |    |              |--> Asignación | Type: mango | Kind: = | Value: 2
           |    |              |    |--> p1 | Category: Identificador | Type: mango
           |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 2
-          |    |              |--> Asignación | Kind: =
+          |    |              |--> Asignación | Type: manguita | Kind: = | Value: 3.1
           |    |                   |--> p2 | Category: Identificador | Type: manguita
-          |    |                   |--> Literal | Category: Numérico | Type: manguita | Value: 3.000000
-          |    |--> fun1 | Category: Llamada_Funcion | Type: un_coño | Value: 0
+          |    |                   |--> Literal | Category: Numérico | Type: manguita | Value: 3.1
+          |    |--> fun1 | Category: Llamada_Funcion | Type: un_coño
           |         |--> Secuencia | Category: Expresión | Kind: ,
           |              |--> Secuencia | Category: Expresión | Kind: ,
           |              |    |--> p | Category: Identificador | Type: mango | Value: 23
-          |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 2.000000
+          |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 2.2
           |              |--> Literal | Category: Numérico | Type: mango | Value: 3
-          |--> fun1 | Category: Llamada_Funcion | Type: un_coño | Value: 0
+          |--> fun1 | Category: Llamada_Funcion | Type: un_coño
                |--> Secuencia | Category: Expresión | Kind: ,
                     |--> Secuencia | Category: Expresión | Kind: ,
                     |    |--> p | Category: Identificador | Type: mango | Value: 23
-                    |    |--> Literal | Category: Numérico | Type: manguita | Value: 2.000000
+                    |    |--> Literal | Category: Numérico | Type: manguita | Value: 2.3
                     |--> p | Category: Identificador | Type: mango | Value: 23
 [1;32m[5m
                =======================================================

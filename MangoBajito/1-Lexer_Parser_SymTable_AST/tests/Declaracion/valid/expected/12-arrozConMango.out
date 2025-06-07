@@ -81,22 +81,19 @@ Programa
           |    |    |    |--> MyStruct | Category: Declaración | Type: arroz_con_mango | Kind: Estructura
           |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |         |--> Instrucción | Kind: ;
-          |    |    |    |         |    |--> attr_s_1 | Category: Atributo | Type: mango
-          |    |    |    |         |    |--> attr_s_2 | Category: Atributo | Type: manguita
-          |    |    |    |         |--> attr_s_3 | Category: Atributo | Type: higuerote
+          |    |    |    |         |    |--> attr_s_1 | Category: Atributo_Estructura | Type: mango | Value: 0
+          |    |    |    |         |    |--> attr_s_2 | Category: Atributo_Estructura | Type: manguita | Value: 0
+          |    |    |    |         |--> attr_s_3 | Category: Atributo_Estructura | Type: higuerote | Value: ""
           |    |    |    |--> var_struct | Category: Declaración | Type: MyStruct | Kind: VARIABLE
           |    |    |--> Asignación | Kind: =
-          |    |         |--> var_struct | Category: Identificador | Type: MyStruct
-          |    |         |--> attr_s_1 | Category: Atributo | Type: mango
+          |    |         |--> var_struct.attr_s_1 | Category: Atributo_Estructura
           |    |         |--> Literal | Category: Numérico | Type: mango | Value: 123
           |    |--> Asignación | Kind: =
-          |         |--> var_struct | Category: Identificador | Type: MyStruct
-          |         |--> attr_s_2 | Category: Atributo | Type: manguita
-          |         |--> Literal | Category: Numérico | Type: manguita | Value: 123.123001
+          |         |--> var_struct.attr_s_2 | Category: Atributo_Estructura
+          |         |--> Literal | Category: Numérico | Type: manguita | Value: 123.123
           |--> Asignación | Kind: =
-               |--> var_struct | Category: Identificador | Type: MyStruct
-               |--> attr_s_3 | Category: Atributo | Type: higuerote
-               |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: hola
+               |--> var_struct.attr_s_3 | Category: Atributo_Estructura
+               |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "hola"
 [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        

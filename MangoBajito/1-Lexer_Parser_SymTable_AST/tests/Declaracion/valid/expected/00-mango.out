@@ -76,7 +76,7 @@ Programa
           |    |         |--> decl2 | Category: Declaración | Type: mango | Kind: VARIABLE
           |    |         |--> decl0 | Category: Identificador | Type: mango | Value: 2147483647
           |    |--> decl3 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |--> Asignación | Kind: =
+          |--> Asignación | Type: mango | Kind: = | Value: -2147483647
                |--> decl3 | Category: Identificador | Type: mango
                |--> decl1 | Category: Identificador | Type: mango | Value: -2147483647
 [1;32m[5m

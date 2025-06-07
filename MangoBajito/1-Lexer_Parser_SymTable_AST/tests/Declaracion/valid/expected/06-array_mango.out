@@ -119,14 +119,14 @@ Programa
           |    |    |              |--> n0 | Category: Identificador | Type: mango | Value: 3
           |    |    |              |--> n1 | Category: Identificador | Type: mango | Value: 2
           |    |    |--> Asignación | Kind: =
-          |    |         |--> decl0 | Category: Identificador | Type: mango
+          |    |         |--> decl0[0] | Category: Elemento_Array | Type: mango
           |    |         |--> Literal | Category: Numérico | Type: mango | Value: 11
           |    |--> Asignación | Kind: =
-          |         |--> decl0 | Category: Identificador | Type: mango
+          |         |--> decl0[1] | Category: Elemento_Array | Type: mango
           |         |--> n0 | Category: Identificador | Type: mango | Value: 3
           |--> Asignación | Kind: =
-               |--> decl0 | Category: Identificador | Type: mango
-               |--> decl1 | Category: Elemento_Array | Type: mango | Value: 30
+               |--> decl0[2] | Category: Elemento_Array | Type: mango
+               |--> decl1[0] | Category: Elemento_Array | Type: mango | Value: 30
 [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        

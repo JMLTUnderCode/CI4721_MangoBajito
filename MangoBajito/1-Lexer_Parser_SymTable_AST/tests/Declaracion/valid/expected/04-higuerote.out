@@ -64,21 +64,21 @@ Programa
 |--> Global
 |    |--> Asignación | Kind: =
 |         |--> decl0 | Category: Declaración | Type: higuerote | Kind: VARIABLE
-|         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: hola
+|         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "hola"
 |--> Main
      |--> Instrucción | Kind: ;
           |--> Instrucción | Kind: ;
           |    |--> Instrucción | Kind: ;
           |    |    |--> Asignación | Kind: =
           |    |    |    |--> decl1 | Category: Declaración | Type: higuerote | Kind: CONSTANTE
-          |    |    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value:  mundo
+          |    |    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: " mundo"
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl2 | Category: Declaración | Type: higuerote | Kind: VARIABLE
-          |    |         |--> decl0 | Category: Identificador | Type: higuerote | Value: hola
+          |    |         |--> decl0 | Category: Identificador | Type: higuerote | Value: "hola"
           |    |--> decl3 | Category: Declaración | Type: higuerote | Kind: VARIABLE
-          |--> Asignación | Kind: =
+          |--> Asignación | Type: higuerote | Kind: = | Value: " mundo"
                |--> decl3 | Category: Identificador | Type: higuerote
-               |--> decl1 | Category: Identificador | Type: higuerote | Value:  mundo
+               |--> decl1 | Category: Identificador | Type: higuerote | Value: " mundo"
 [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        

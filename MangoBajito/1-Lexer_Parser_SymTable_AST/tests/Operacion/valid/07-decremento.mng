@@ -7,7 +7,7 @@ se_prende(){
 	culito decl1: manguita = 2.1;
 	decl1--;
 
-	culito decl2: manguangua = 1.21e+10;
+	culito decl2: manguangua = 1.21e+2;
 	decl2--;
 
 	# A excepcion de las funciones.

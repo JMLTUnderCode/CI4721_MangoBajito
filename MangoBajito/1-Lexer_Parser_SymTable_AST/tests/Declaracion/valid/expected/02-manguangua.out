@@ -64,21 +64,21 @@ Programa
 |--> Global
 |    |--> Asignación | Kind: =
 |         |--> decl0 | Category: Declaración | Type: manguangua | Kind: VARIABLE
-|         |--> Literal | Category: Numérico | Type: manguangua | Value: 1.7976900000e+308
+|         |--> Literal | Category: Numérico | Type: manguangua | Value: 1.79769e+308
 |--> Main
      |--> Instrucción | Kind: ;
           |--> Instrucción | Kind: ;
           |    |--> Instrucción | Kind: ;
           |    |    |--> Asignación | Kind: =
           |    |    |    |--> decl1 | Category: Declaración | Type: manguangua | Kind: CONSTANTE
-          |    |    |    |--> Literal | Category: Numérico | Type: manguangua | Value: -1.7976900000e-307
+          |    |    |    |--> Literal | Category: Numérico | Type: manguangua | Value: -1.79769e-307
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl2 | Category: Declaración | Type: manguangua | Kind: VARIABLE
-          |    |         |--> decl0 | Category: Identificador | Type: manguangua | Value: 1.7976900000e+308
+          |    |         |--> decl0 | Category: Identificador | Type: manguangua | Value: 1.79769e+308
           |    |--> decl3 | Category: Declaración | Type: manguangua | Kind: VARIABLE
-          |--> Asignación | Kind: =
+          |--> Asignación | Type: manguangua | Kind: = | Value: -1.79769e-307
                |--> decl3 | Category: Identificador | Type: manguangua
-               |--> decl1 | Category: Identificador | Type: manguangua | Value: -1.7976900000e-307
+               |--> decl1 | Category: Identificador | Type: manguangua | Value: -1.79769e-307
 [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        

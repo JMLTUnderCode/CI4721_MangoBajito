@@ -6,6 +6,6 @@ se_prende(){
 
 	echar_cuento fun2(p1 : mango, p2 : manguita, p3 : mango) lanza un_coño {
 		p1 = 2;
-		p2 = 3.0;
+		p2 = 3.1;
 	};
 };

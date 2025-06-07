@@ -26,7 +26,7 @@
     |---> Símbolo: decl0[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguangua, Value: 123.12
 
 [1;35m[5m    Clave: 8: decl0[2][0m
-    |---> Símbolo: decl0[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguangua, Value: 0
+    |---> Símbolo: decl0[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguangua, Value: 2.22e+12
 
 [1;35m[5m    Clave: 9: n1[0m
     |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 3.22e-12
@@ -98,10 +98,10 @@ Programa
           |    |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |--> n0 | Category: Declaración | Type: manguangua | Kind: CONSTANTE
-          |    |    |    |    |    |    |    |--> Literal | Category: Numérico | Type: manguangua | Value: 3.2200000000e+12
+          |    |    |    |    |    |    |    |--> Literal | Category: Numérico | Type: manguangua | Value: 3.22e+12
           |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |         |--> n1 | Category: Declaración | Type: manguangua | Kind: VARIABLE
-          |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguangua | Value: 3.2200000000e-12
+          |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguangua | Value: 3.22e-12
           |    |    |    |    |    |--> decl0 | Category: Declaración | Type: manguangua | Kind: VARIABLE
           |    |    |    |    |         |--> Literal | Category: Array_Size | Type: mango | Value: 3
           |    |    |    |    |--> Asignación | Kind: =
@@ -109,24 +109,24 @@ Programa
           |    |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 3
           |    |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
           |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguangua | Value: 2.2200000000e+12
-          |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 1.220000
-          |    |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 3.3000000000e-15
+          |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguangua | Value: 2.22e+12
+          |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 1.22
+          |    |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 3.3e-15
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> decl2 | Category: Declaración | Type: manguangua | Kind: CONSTANTE
           |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 2
           |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |              |--> n0 | Category: Identificador | Type: manguangua | Value: 3.2200000000e+12
-          |    |    |              |--> n1 | Category: Identificador | Type: manguangua | Value: 3.2200000000e-12
+          |    |    |              |--> n0 | Category: Identificador | Type: manguangua | Value: 3.22e+12
+          |    |    |              |--> n1 | Category: Identificador | Type: manguangua | Value: 3.22e-12
           |    |    |--> Asignación | Kind: =
-          |    |         |--> decl0 | Category: Identificador | Type: manguangua
-          |    |         |--> Literal | Category: Numérico | Type: manguita | Value: 123.120003
+          |    |         |--> decl0[0] | Category: Elemento_Array | Type: manguangua
+          |    |         |--> Literal | Category: Numérico | Type: manguita | Value: 123.12
           |    |--> Asignación | Kind: =
-          |         |--> decl0 | Category: Identificador | Type: manguangua
-          |         |--> n0 | Category: Identificador | Type: manguangua | Value: 3.2200000000e+12
+          |         |--> decl0[1] | Category: Elemento_Array | Type: manguangua
+          |         |--> n0 | Category: Identificador | Type: manguangua | Value: 3.22e+12
           |--> Asignación | Kind: =
-               |--> decl0 | Category: Identificador | Type: manguangua
-               |--> decl1 | Category: Elemento_Array | Type: manguangua | Value: 2.2200000000e+12
+               |--> decl0[2] | Category: Elemento_Array | Type: manguangua
+               |--> decl1[0] | Category: Elemento_Array | Type: manguangua | Value: 2.22e+12
 [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        

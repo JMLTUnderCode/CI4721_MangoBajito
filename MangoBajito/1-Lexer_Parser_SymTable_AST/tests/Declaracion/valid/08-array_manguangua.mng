@@ -3,7 +3,7 @@ se_prende(){
 	jeva n0: manguangua = 3.22e+12;
 	culito n1: manguangua = 3.22e-12;
 	culito decl0 : manguangua[3];
-	jeva decl1 : manguangua[3] = [2.22e+12, 1.22, 3.3E-15];
+	jeva decl1 : manguangua[3] = [2.22e+12, 1.22, 3.3e-15];
 	jeva decl2 : manguangua[2] = [n0, n1];
 	decl0[0] = 123.12;
 	decl0[1] = n0;

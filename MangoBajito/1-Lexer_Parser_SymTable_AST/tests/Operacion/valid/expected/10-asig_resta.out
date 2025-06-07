@@ -67,21 +67,21 @@ Programa
           |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |--> n0 | Category: Declaración | Type: mango | Kind: VARIABLE
           |    |    |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: -8
-          |    |    |    |    |--> Resta Compuesta | Kind: -=
-          |    |    |    |         |--> n0 | Category: Identificador | Type: mango
+          |    |    |    |    |--> Resta Compuesta | Category: Operación | Type: mango | Kind: -= | Value: -24
+          |    |    |    |         |--> n0 | Category: Identificador | Type: mango | Value: -8
           |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 16
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> n1 | Category: Declaración | Type: manguita | Kind: VARIABLE
-          |    |    |         |--> Literal | Category: Numérico | Type: manguita | Value: -8.500000
-          |    |    |--> Resta Compuesta | Kind: -=
-          |    |         |--> n1 | Category: Identificador | Type: manguita
-          |    |         |--> Literal | Category: Numérico | Type: manguita | Value: 16.200001
+          |    |    |         |--> Literal | Category: Numérico | Type: manguita | Value: -8.5
+          |    |    |--> Resta Compuesta | Category: Operación | Type: manguita | Kind: -= | Value: -24.7
+          |    |         |--> n1 | Category: Identificador | Type: manguita | Value: -8.5
+          |    |         |--> Literal | Category: Numérico | Type: manguita | Value: 16.2
           |    |--> Asignación | Kind: =
           |         |--> n2 | Category: Declaración | Type: manguangua | Kind: VARIABLE
-          |         |--> Literal | Category: Numérico | Type: manguangua | Value: -8.5412310000e+03
-          |--> Resta Compuesta | Kind: -=
-               |--> n2 | Category: Identificador | Type: manguangua
-               |--> Literal | Category: Numérico | Type: manguangua | Value: 1.6212340000e+04
+          |         |--> Literal | Category: Numérico | Type: manguangua | Value: -8541.23
+          |--> Resta Compuesta | Category: Operación | Type: manguangua | Kind: -= | Value: -24753.6
+               |--> n2 | Category: Identificador | Type: manguangua | Value: -8541.23
+               |--> Literal | Category: Numérico | Type: manguangua | Value: 16212.3
 [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
