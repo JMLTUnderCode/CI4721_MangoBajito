@@ -128,7 +128,6 @@ enum systemError {
 	ALREADY_DEF_PARAM,
 	EMPTY_ARRAY_CONSTANT,
 	POINTER_ARRAY,
-	INT_SIZE_ARRAY,
 	INT_INDEX_ARRAY,
 	SIZE_ARRAY_INVALID,
 	INTERNAL,
@@ -187,21 +186,26 @@ struct ASTNode {
 	string category; // "declaration", "assignment", "function", "while", "for", "error_handling", "array", "pointer", "operation", etc.
 	string type;    // Tipo de dato (para variables, constantes, retorno de función, etc)
 	string kind;	// Tipo de declaracion, por ejemplo: "variable", "constante", "pointer constante", "pointer variable".
-	string value;   // Valor (si aplica)
 	
-	// Conservar valores con precision
-	double dvalue = 0.0;
+	int ivalue; // Valor entero
+	float fvalue; // Valor flotante
+	double dvalue; // Valor doble
+	string svalue; // Valor string
+	char cvalue; // Valor char
+	bool bvalue; // Valor booleano
+
+	bool show_value = true; // Indica si se debe mostrar el valor del nodo
 
 	// Hijos del nodo (estructura de árbol)
 	vector<ASTNode*> children;
 
-	ASTNode(const string& n, const string& c = "", const string& t = "", const string& k = "", const string& v = "")
-		: name(n), category(c), type(t), kind(k), value(v) {}
+	ASTNode(const string& n, const string& c = "", const string& t = "", const string& k = "")
+		: name(n), category(c), type(t), kind(k) {}
 };
 
 // Crear un nodo AST y devolver un puntero inteligente
-inline ASTNode* makeASTNode(const string& name, const string& category = "", const string& type = "", const string& kind = "", const string& value = "") {
-	return new ASTNode(name, category, type, kind, value);
+inline ASTNode* makeASTNode(const string& name, const string& category = "", const string& type = "", const string& kind = "") {
+	return new ASTNode(name, category, type, kind);
 }
 
 // Recolecta nodos por una lista de categorías
@@ -212,103 +216,101 @@ inline void collect_nodes_by_categories(ASTNode* node, const set<string>& catego
 }
 
 inline ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
-    string category = "Operación";
+    ASTNode* new_node = makeASTNode(op, "Operación");
 	string type = "Desconocido";
     string kind = "Desconocido";
-	string valor = "0";
-	double value = 0.0;
     
     // Ejemplo simple: suma, resta, multiplicación, división son numéricas
     set<string> ops_numericas = {"+", "-", "*", "/", "//", "%", "**"};
+	if (ops_numericas.count(op)) kind = "Numérica";
+
     set<string> ops_booleana = {"igualito", "nie", "mayol", "lidel", "menol", "peluche", "yunta", "o_sea"};
+	if (ops_booleana.count(op)) kind = "Booleana";
 
 	string left_type = left ? left->type : "Desconocido";
 	string right_type = right ? right->type : "Desconocido";
 
-	if (left && right && left_type == right_type){
-		if (ops_numericas.count(op)) kind = "Numérica";
-		if (ops_booleana.count(op)) kind = "Booleana";
-		if (kind == "Numérica") {
-			type = left_type;
+	if (left && right) {
+		type = left_type;
+
+		if (kind == "Numérica" && left_type == right_type) {
 			if (type == "mango"){
-				if (op == "+") valor = to_string(stoi(left->value) + stoi(right->value));
-				else if (op == "-") valor = to_string(stoi(left->value) - stoi(right->value));
-				else if (op == "*") valor = to_string(stoi(left->value) * stoi(right->value));
+				if (op == "+") new_node->ivalue = left->ivalue + right->ivalue;
+				else if (op == "-") new_node->ivalue = left->ivalue - right->ivalue;
+				else if (op == "*") new_node->ivalue = left->ivalue * right->ivalue;
 				else if (op == "/") {
-					if (stoi(right->value) != 0) {
-						valor = to_string(stof(left->value) / stoi(right->value));
+					if (right->ivalue != 0) {
+						new_node->fvalue = static_cast<float>(left->ivalue) / right->ivalue;
 					} else {
 						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
 						return nullptr; // Error handling
 					}
 					type = "manguita";
 				} else if (op == "//") {
-					if (stoi(right->value) != 0) {
-						valor = to_string(stoi(left->value) / stoi(right->value));
+					if (right->ivalue != 0) {
+						new_node->ivalue = left->ivalue / right->ivalue;
 					} else {
 						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
 						return nullptr; // Error handling
 					}
 				} else if (op == "%") {
-					if (stoi(right->value) != 0) {
-						valor = to_string(stoi(left->value) % stoi(right->value));
+					if (right->ivalue != 0) {
+						new_node->ivalue = left->ivalue % right->ivalue;
 					} else {
 						addError(SEGMENTATION_FAULT, "Modulo by zero in operation.");
 						return nullptr; // Error handling
 					}
-				} else if (op == "**") valor = to_string(pow(stoi(left->value), stoi(right->value)));
+				} else if (op == "**") {
+					new_node->dvalue = pow(left->ivalue, right->ivalue);
+					type = "manguangua";
+				}
 			
 			} else if (type == "manguita"){
-				if (op == "+") valor = to_string(stof(left->value) + stof(right->value));
-				else if (op == "-") valor = to_string(stof(left->value) - stof(right->value));
-				else if (op == "*") valor = to_string(stof(left->value) * stof(right->value));
+				if (op == "+") new_node->fvalue = left->fvalue + right->fvalue;
+				else if (op == "-") new_node->fvalue = left->fvalue - right->fvalue;
+				else if (op == "*") new_node->fvalue = left->fvalue * right->fvalue;
 				else if (op == "/") {
-					if (stof(right->value) != 0) {
-						valor = to_string(stof(left->value) / stof(right->value));
+					if (right->fvalue != 0.0) {
+						new_node->fvalue = left->fvalue / right->fvalue;
 					} else {
 						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
 						return nullptr; // Error handling
 					}
 				} else if (op == "//") {
-					if (stof(right->value) != 0.0f) {
-				        float result = stof(left->value) / stof(right->value);
-				        int int_part = static_cast<int>(result);
-				        valor = to_string(int_part);
-						type = "mango";
-				    } else {
-				        addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-				        return nullptr; // Error handling
-				    }
+					if (right->fvalue != 0.0) {
+						new_node->ivalue = static_cast<int>(left->fvalue / right->fvalue);
+					} else {
+						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
+						return nullptr; // Error handling
+					}
+					type = "mango";
 				} else if (op == "%") {
 						addError(TYPE_ERROR, "Modulo operation not supported for float types.");
 						return nullptr; // Error handling
 				} else if (op == "**") {
-					float base = stof(left->value);
-				    float exp = stof(right->value);
-				    if (base < 0 && fmod(exp, 2.0f) != 0.0f) {
-				        // Raíz impar de negativo: resultado negativo
-				        valor = to_string(-pow(-base, exp));
+					float base = left->fvalue;
+				    float exp = right->fvalue;
+				    // Raíz impar de negativo: resultado negativo
+					if (base < 0 && fmod(exp, 2.0f) != 0.0f) {
+				        new_node->dvalue = -pow(-base, exp);
 				    } else {
-				        valor = to_string(pow(base, exp));
+				        new_node->dvalue = pow(base, exp);
 				    }
+					type = "manguangua";
 				}
 			} else if (type == "manguangua"){
-				ostringstream oss;
-				oss.precision(10); // Ajustar la precisión según lo que quieras mostrar.
-				if (op == "+") value = left->dvalue + right->dvalue;
-				else if (op == "-") value = left->dvalue - right->dvalue;
-				else if (op == "*") value = left->dvalue * right->dvalue;
+				if (op == "+") new_node->dvalue = left->dvalue + right->dvalue;
+				else if (op == "-") new_node->dvalue = left->dvalue - right->dvalue;
+				else if (op == "*") new_node->dvalue = left->dvalue * right->dvalue;
 				else if (op == "/") {
-					if (right->dvalue != 0.0) value = left->dvalue / right->dvalue;
+					if (right->dvalue != 0.0) new_node->dvalue = left->dvalue / right->dvalue;
 					else {
 						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
 						return nullptr; // Error handling
 					}
 				} else if (op == "//") {
 					if (right->dvalue != 0.0) {
-						double result = left->dvalue / right->dvalue;
-						int int_part = static_cast<int>(result);
-						value = static_cast<double>(int_part);
+						new_node->ivalue = static_cast<int>(left->dvalue / right->dvalue);
 						type = "mango";
 					} else {
 						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
@@ -317,39 +319,58 @@ inline ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right
 				} else if (op == "%") {
 						addError(TYPE_ERROR, "Modulo operation not supported for double types.");
 						return nullptr; // Error handling
-				} else if (op == "**") value = pow(left->dvalue, right->dvalue);
-				
-				oss << scientific << value;
-				valor = oss.str();
+				} else if (op == "**"){
+					double base = left->dvalue;
+				    double exp = right->dvalue;
+				    // Raíz impar de negativo: resultado negativo
+					if (base < 0 && fmod(exp, 2.0) != 0.0f) {
+				        new_node->dvalue = -pow(-base, exp);
+				    } else {
+				        new_node->dvalue = pow(base, exp);
+				    }
+				}
+			} else {
+				addError(TYPE_ERROR, "Unsupported type for operation: " + type);
+				return nullptr; // Error handling
 			}
+
+		} else if (kind == "Numérica" && left_type != right_type) {
+			addError(TYPE_ERROR, "Type mismatch in operation: " + left_type + " " + op + " " + right_type);
+			return nullptr;
 
 		} else if (kind == "Booleana") {
-			if (op == "igualito") { // ==
+			if (type == "tas_claro") {
+		        if (op == "yunta") { // and
+					new_node->bvalue = left->bvalue && right->bvalue;
+		        } else if (op == "o_sea") { // or
+		            new_node->bvalue = left->bvalue || right->bvalue;
+		        }
 
-			} else if (op == "nie"){ // !=
+			} else {
+				type = "tas_claro"; // Asignar tipo por defecto para operaciones booleanas
+				if (op == "igualito") { // ==
 
-			} else if (op == "mayol") { // >
+				} else if (op == "nie"){ // !=
 
-			} else if (op == "lidel") { // >=
+				} else if (op == "mayol") { // >
 
-			} else if (op == "menol") { // <
+				} else if (op == "lidel") { // >=
 
-			} else if (op == "peluche") { // <=
+				} else if (op == "menol") { // <
 
-			} else if (op == "yunta") { // and
-
-			} else if (op == "o_sea") { // or
-			
+				} else if (op == "peluche") { // <=
+				
+				}
 			}
 		}
+		new_node->type = type;
+		new_node->kind = kind;
+	    if (left) new_node->children.push_back(left);
+	    if (right) new_node->children.push_back(right);
+	    return new_node;
 
-		ASTNode* node = makeASTNode(op, category, type, kind, valor);
-		if (type == "manguangua") node->dvalue = value; // Asignar el valor double al nodo
-	    if (left) node->children.push_back(left);
-	    if (right) node->children.push_back(right);
-	    return node;
 	} else {
-		addError(TYPE_ERROR, "Type mismatch in operation: " + left_type + " " + op + " " + right_type);
+		addError(INTERNAL, "Non operands finds.");
 		return nullptr;
 	}
 }

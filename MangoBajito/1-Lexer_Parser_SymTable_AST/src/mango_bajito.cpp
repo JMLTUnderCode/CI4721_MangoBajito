@@ -28,7 +28,6 @@ vector<string> sysErrorToString = {
 	"ALREADY_DEF_PARAM",
 	"EMPTY_ARRAY_CONSTANT",
 	"POINTER_ARRAY",
-	"INT_SIZE_ARRAY",
 	"INT_INDEX_ARRAY",
 	"SIZE_ARRAY_INVALID",
 	"INTERNAL",
@@ -283,8 +282,17 @@ void showAST(const ASTNode* node, int depth, const string& prefix, bool isLast) 
 	if (!node->category.empty()) cout << " | Category: " << node->category;
 	if (!node->type.empty())     cout << " | Type: " << node->type;
 	if (!node->kind.empty())     cout << " | Kind: " << node->kind;
-	if (!node->value.empty())    cout << " | Value: " << node->value;
 
+	if (node->show_value) {
+		string type = node->type.empty() ? "Desconocido" : node->type;
+		if (type == "mango") cout << " | Value: " << node->ivalue;
+		if (type == "manguita") cout << " | Value: " << node->fvalue;
+		if (type == "manguangua") cout << " | Value: " << node->dvalue;
+		if (type == "negro") cout << " | Value: '" << node->cvalue << "'";
+		if (type == "higuerote") cout << " | Value: \"" << node->svalue << "\"";
+		if (type == "tas_claro") cout << " | Value: " << node->bvalue ? "Sisa" : "Nolsa";
+	}
+	
     cout << endl;
 
     // Construir el prefijo para los hijos
