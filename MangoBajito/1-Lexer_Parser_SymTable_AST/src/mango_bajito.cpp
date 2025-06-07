@@ -200,8 +200,8 @@ bool SymbolTable::remove_symbol(string symbol_name) {
 }
 
 Attributes* SymbolTable::search_symbol(string symbol_name) {
-	Attributes *predef_symbol, *best_option = nullptr;
-	//vector<pair<int, bool> > scopes_aux = this->scopes;
+	Attributes* predef_symbol = nullptr;
+	Attributes* best_option = nullptr;
 	int scope_value;
 	auto symbols = this->table.find(symbol_name);
 	if (symbols != this->table.end()) {
@@ -210,6 +210,7 @@ Attributes* SymbolTable::search_symbol(string symbol_name) {
 			if (symbol.scope == 0) { predef_symbol = &symbol; break; }
 			for(int i = this->scopes.size() - 1; i >= 0; i--){
 				if (this->scopes[i].second) continue; // Scope cerrado.
+				
 				if (symbol.scope == this->scopes[i].first) {
 					best_option = &symbol; // El scope mas cercano
 					break;

@@ -395,102 +395,104 @@ instruccion:
 declaracion:
 	tipo_declaracion T_ID T_DOSPUNTOS tipos {
 		string declared_type = $4->type;
-		if ($4->category == "Array") {
-			int size_array = 0;
-			for (auto child : $4->children){
-				if (child->category == "Array_Size"){
-					size_array = child->ivalue;
-					if (size_array < 0){
-						FLAG_ERROR = SIZE_ARRAY_INVALID;
-						yyerror(to_string(size_array).c_str());
-						size_array = 0;
-					}
-					break;
-				}
-			}
-
+		if(symbolTable.search_symbol($2)){
+			FLAG_ERROR = ALREADY_DEF_VAR;
+			yyerror($2);
+		} else {
 			Attributes* type_attr = symbolTable.search_symbol(declared_type);
 			if (type_attr == nullptr){
 				FLAG_ERROR = INTERNAL;
 				yyerror("ERROR: Tipo no encontrado");
 			} else {
-				Attributes* array_attr = new Attributes();
-				array_attr->symbol_name = $2;
-				array_attr->category = ARRAY;
-				array_attr->scope = symbolTable.current_scope;
-				array_attr->type = type_attr;
-				array_attr->value = size_array;
-				
-				// Crear atributos del array
-				for (int i = 0; i < size_array; i++) {
-					Attributes *elem = new Attributes();
-					elem->symbol_name = string($2) + "[" + to_string(i) + "]";
-					elem->scope = symbolTable.current_scope;
-					elem->category = ARRAY_ELEMENT;
-					elem->type = type_attr;
-					elem->value = nullptr;
-
-					// Usar el índice como clave en formato string
-					array_attr->info.push_back({string($2) + "[" + to_string(i) + "]", elem});
-		
-					// \Insertar elemento en tabla de símbolos
-					if (!symbolTable.insert_symbol(elem->symbol_name, *elem)) {
-						FLAG_ERROR = ALREADY_DEF_VAR;
-						yyerror(elem->symbol_name.c_str());
+				// Declaracion de Arreglos
+				if ($4->category == "Array") {
+					int size_array = 0;
+					for (auto child : $4->children){
+						if (child->category == "Array_Size"){
+							size_array = child->ivalue;
+							if (size_array < 0){
+								FLAG_ERROR = SIZE_ARRAY_INVALID;
+								yyerror(to_string(size_array).c_str());
+								size_array = 0;
+							}
+							break;
+						}
 					}
-				}
+					if (size_array > 0) {
+						Attributes* array_attr = new Attributes();
+						array_attr->symbol_name = $2;
+						array_attr->category = ARRAY;
+						array_attr->scope = symbolTable.current_scope;
+						array_attr->type = type_attr;
+						array_attr->value = size_array;
+						
+						// Crear atributos del array
+						string elem_name = "";
+						for (int i = 0; i < size_array; i++) {
+							elem_name = string($2) + "[" + to_string(i) + "]";
 
-				// Insertar en tabla de símbolos
-				if(!symbolTable.insert_symbol($2, *array_attr)){
-					FLAG_ERROR = ALREADY_DEF_VAR;
-					yyerror($2);
-				}
-			}
-		// Declaracion de tipos basicos.
-		} else {
-			Attributes* type_attr = symbolTable.search_symbol(declared_type);
-			if (type_attr == nullptr) {
-				FLAG_ERROR = NON_DEF_TYPE;
-				yyerror(declared_type.c_str());
-			} else {
-				Attributes* attribute = new Attributes();
-				attribute->symbol_name = $2;
-				attribute->scope = symbolTable.current_scope;
-				attribute->type = type_attr;
-				attribute->value = nullptr; // Inicializar valor como nulo
+							if (symbolTable.search_symbol(elem_name)) {
+								FLAG_ERROR = ALREADY_DEF_VAR;
+								yyerror(elem_name.c_str());
+							} else {
+								Attributes *elem = new Attributes();
+								elem->symbol_name = elem_name;
+								elem->scope = symbolTable.current_scope;
+								elem->category = ARRAY_ELEMENT;
+								elem->type = type_attr;
+								elem->value = nullptr;
 
-				if ($1->kind == "POINTER_V") attribute->category = POINTER_V;
-				else if ($1->kind == "POINTER_C") attribute->category = POINTER_C;
-				else if ($1->kind == "VARIABLE") attribute->category = VARIABLE;
-				else if ($1->kind == "CONSTANTE") attribute->category = CONSTANT;
-
-				if ($4->category == "Identificador") { // Estructuras
-					for (const auto& field : type_attr->info) {
-						// field.first es "MyStruct.attr_var_1"
-						string full_field = get<string>(field.first);
-						size_t dot_pos = full_field.find('.');
-						if (dot_pos == string::npos) continue; // No es un campo válido
-
-						string attr_name = full_field.substr(dot_pos + 1); // "attr_var_1"
-						string new_field_name = string($2) + "." + attr_name; // "var.attr_var_1"
-
-						Attributes* new_attr = new Attributes();
-						new_attr->symbol_name = new_field_name;
-						new_attr->scope = symbolTable.current_scope;
-						new_attr->type = field.second->type;
-						new_attr->category = STRUCT_ATTRIBUTE;
-						new_attr->value = nullptr;
-
-						// Agregar a la info de la variable y a la tabla de símbolos
-						attribute->info.push_back({new_field_name, new_attr});
-						symbolTable.insert_symbol(new_field_name, *new_attr);
+								// Usar el índice como clave en formato string
+								array_attr->info.push_back({elem_name, elem});
+					
+								// \Insertar elemento en tabla de símbolos
+								symbolTable.insert_symbol(elem_name, *elem);
+							}
+						}
+						// Insertar en tabla de símbolos
+						symbolTable.insert_symbol($2, *array_attr);
 					}
-				}
+				// Declaracion de tipos basicos
+				} else {
+					Attributes* attribute = new Attributes();
+					attribute->symbol_name = $2;
+					attribute->scope = symbolTable.current_scope;
+					attribute->type = type_attr;
+					attribute->value = nullptr; // Inicializar valor como nulo
 
-				// Insertar en tabla de símbolos
-				if(!symbolTable.insert_symbol($2, *attribute)){
-					FLAG_ERROR = ALREADY_DEF_VAR;
-					yyerror($2);
+					if ($1->kind == "POINTER_V") attribute->category = POINTER_V;
+					else if ($1->kind == "POINTER_C") attribute->category = POINTER_C;
+					else if ($1->kind == "VARIABLE") attribute->category = VARIABLE;
+					else if ($1->kind == "CONSTANTE") attribute->category = CONSTANT;
+
+					if ($4->category == "Identificador") { // Estructuras
+						for (const auto& field : type_attr->info) {
+							string full_field = get<string>(field.first);
+							size_t dot_pos = full_field.find('.');
+							if (dot_pos == string::npos) continue; // No es un campo válido
+
+							string attr_name = full_field.substr(dot_pos + 1);
+							string new_field_name = string($2) + "." + attr_name;
+							if (symbolTable.search_symbol(new_field_name)) {
+								FLAG_ERROR = ALREADY_DEF_VAR;
+								yyerror(new_field_name.c_str());
+							} else {
+								Attributes* new_attr = new Attributes();
+								new_attr->symbol_name = new_field_name;
+								new_attr->scope = symbolTable.current_scope;
+								new_attr->type = field.second->type;
+								new_attr->category = STRUCT_ATTRIBUTE;
+								new_attr->value = nullptr;
+
+								// Agregar a la info de la variable y a la tabla de símbolos
+								attribute->info.push_back({new_field_name, new_attr});
+								symbolTable.insert_symbol(new_field_name, *new_attr);
+							}
+						}
+					}
+
+					// Insertar en tabla de símbolos
+					symbolTable.insert_symbol($2, *attribute);
 				}
 			}
 		}
@@ -505,164 +507,156 @@ declaracion:
 		string left_type = $4->type;
 		string right_type = $6->type;
 		
-		if ($4->category == "Array") {
-			int size_array = 0;
-			for (auto child : $4->children){
-				if (child->category == "Array_Size"){
-					size_array = child->ivalue;
-					if (size_array < 0){
-						FLAG_ERROR = SIZE_ARRAY_INVALID;
-						yyerror(to_string(size_array).c_str());
-						size_array = 0;
-					}
-					break;
-				}
-			}
-
+		if(symbolTable.search_symbol($2)){
+				FLAG_ERROR = ALREADY_DEF_VAR;
+				yyerror($2);
+		} else {
 			Attributes* type_attr = symbolTable.search_symbol(left_type);
 			if (type_attr == nullptr){
 				FLAG_ERROR = INTERNAL;
 				yyerror("ERROR: Tipo no encontrado");
-			} else {	 
-				// Crear atributos del array
-				Attributes* attribute = new Attributes();
-				attribute->symbol_name = $2;
-				attribute->category = ARRAY;
-				attribute->scope = symbolTable.current_scope;
-				attribute->type = type_attr;
-				attribute->value = size_array;
+			} else {
+				// Declaracion de Arreglo con asignacion
+				if ($4->category == "Array") {
+					int size_array = 0;
+					for (auto child : $4->children){
+						if (child->category == "Array_Size"){
+							size_array = child->ivalue;
+							if (size_array < 0){
+								FLAG_ERROR = SIZE_ARRAY_INVALID;
+								yyerror(to_string(size_array).c_str());
+								size_array = 0;
+							}
+							break;
+						}
+					}
+					if (size_array > 0) {
+						// Crear atributos del array
+						Attributes* attribute = new Attributes();
+						attribute->symbol_name = $2;
+						attribute->category = ARRAY;
+						attribute->scope = symbolTable.current_scope;
+						attribute->type = type_attr;
+						attribute->value = size_array;
 
-				int count_elems = 0;
-				set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Atributo_Estructura"};
-				vector<ASTNode*> array_elements;
-				collect_nodes_by_categories($6, categories, array_elements);
-				for (auto elem : array_elements) {
-					count_elems++;
-					if (size_array == 0) break;
-					else if (count_elems > size_array) {
-						FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
-						string error_msg = "Ay vale! Te gusta meterte más cosas verdad?. Sólo te caben '" + to_string(size_array) + "' cositas.";
-						yyerror(error_msg.c_str());
-						break;
+						int count_elems = 0;
+						set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Atributo_Estructura"};
+						vector<ASTNode*> array_elements;
+						collect_nodes_by_categories($6, categories, array_elements);
+						for (auto elem : array_elements) {
+							count_elems++;
+							if (count_elems > size_array) {
+								FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
+								string error_msg = "Ay vale! Te gusta meterte más cosas verdad?. Sólo te caben '" + to_string(size_array) + "' cositas.";
+								yyerror(error_msg.c_str());
+								break;
+							}
+
+							Attributes *attr_elem = new Attributes();
+							attr_elem->symbol_name = string($2) + "[" + to_string(count_elems-1) + "]";
+							attr_elem->scope = symbolTable.current_scope;
+							attr_elem->category = ARRAY_ELEMENT;
+							attr_elem->type = type_attr;
+
+							if (left_type != elem->type && (left_type != "manguangua" || elem->type != "manguita")) {
+								FLAG_ERROR = TYPE_ERROR;
+								string error_msg = "\"" + string($2) + "\" de tipo '" + left_type + 
+									"' y le quieres meter un tipo '" + elem->type + "', marbaa' bruja.";
+								yyerror(error_msg.c_str());
+								attr_elem->value = nullptr;
+							} else {
+								if (elem->type == "mango") {
+									attr_elem->value = elem->ivalue;
+								} else if (elem->type == "manguita") {
+									attr_elem->value = elem->fvalue;
+								} else if (elem->type == "manguangua") {
+									attr_elem->value = elem->dvalue;
+								} else if (elem->type == "negro") {
+									attr_elem->value = elem->cvalue;
+								} else if (elem->type == "higuerote") {
+									attr_elem->value = elem->svalue;
+								} else if (elem->type == "tas_claro") {
+									attr_elem->value = elem->bvalue;
+									if (!attr_elem->info.empty()) attr_elem->info[0].first = (elem->bvalue ? "Sisa" : "Nolsa");
+									else attr_elem->info.push_back({(elem->bvalue ? "Sisa" : "Nolsa"), nullptr});
+								} else if (elem->type == "pointer"){
+									/* POR IMPLEMENTAR */
+									//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
+									attr_elem->value = nullptr;
+								} else {
+									FLAG_ERROR = INTERNAL;
+									string error_msg = "TIPO DESCONOCIDO: Asignando 'nullptr' a: '" + string($2) + "'.";
+									yyerror(error_msg.c_str());
+									attr_elem->value = nullptr;
+								}
+							}
+							
+							// Usar el índice como clave en formato string
+							attribute->info.push_back({string($2) + "[" + to_string(count_elems-1) + "]", attr_elem});
+				
+							// Insertar elemento en tabla de símbolos
+							if(!symbolTable.insert_symbol(attr_elem->symbol_name, *attr_elem)){
+								FLAG_ERROR = ALREADY_DEF_VAR;
+								yyerror(attr_elem->symbol_name.c_str());
+							}
+						}
+
+						// Verificar cantidad de elementos
+						if (count_elems < size_array) {
+							FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
+							string error_msg = "Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '" + to_string(count_elems) + "' de '" + to_string(size_array) + "'.";
+							yyerror(error_msg.c_str());
+						} else if (count_elems == size_array) symbolTable.insert_symbol($2, *attribute);
 					}
 
-					Attributes *attr_elem = new Attributes();
-					attr_elem->symbol_name = string($2) + "[" + to_string(count_elems-1) + "]";
-					attr_elem->scope = symbolTable.current_scope;
-					attr_elem->category = ARRAY_ELEMENT;
-					attr_elem->type = type_attr;
+				// Declaracion de tipos basicos con asignacion
+				} else {
+					Attributes *attribute = new Attributes();
+					attribute->symbol_name = $2;
+					attribute->scope = symbolTable.current_scope;
+					attribute->type = type_attr;
 
-					if (left_type != elem->type && (left_type != "manguangua" || elem->type != "manguita")) {
+					right_type = $6->type;
+
+					// Verificacion de tipos.
+					if (left_type != right_type && (left_type != "manguangua" || right_type != "manguita")) {
 						FLAG_ERROR = TYPE_ERROR;
-						string error_msg = "\"" + string($2) + "\" de tipo '" + left_type + 
-							"' y le quieres meter un tipo '" + elem->type + "', marbaa' bruja.";
+						string error_msg = "\"" + string($2) + "\" de tipo '" + left_type + "' y le quieres meter un tipo '" + right_type + "', marbaa' bruja.";
 						yyerror(error_msg.c_str());
-						attr_elem->value = nullptr;
+						attribute->value = nullptr; // Asignar valor nulo en caso de error
 					} else {
-						if (elem->type == "mango") {
-							attr_elem->value = elem->ivalue;
-						} else if (elem->type == "manguita") {
-							attr_elem->value = elem->fvalue;
-						} else if (elem->type == "manguangua") {
-							attr_elem->value = elem->dvalue;
-						} else if (elem->type == "negro") {
-							attr_elem->value = elem->cvalue;
-						} else if (elem->type == "higuerote") {
-							attr_elem->value = elem->svalue;
-						} else if (elem->type == "tas_claro") {
-							attr_elem->value = elem->bvalue;
-							if (!attr_elem->info.empty()) attr_elem->info[0].first = (elem->bvalue ? "Sisa" : "Nolsa");
-							else attr_elem->info.push_back({(elem->bvalue ? "Sisa" : "Nolsa"), nullptr});
-						} else if (elem->type == "pointer"){
+						
+						if ($1->kind == "POINTER_V") attribute->category = POINTER_V;
+						else if ($1->kind == "POINTER_C") attribute->category = POINTER_C;
+						else if ($1->kind == "VARIABLE") attribute->category = VARIABLE;
+						else if ($1->kind == "CONSTANTE") attribute->category = CONSTANT;
+
+						if (right_type == "mango") {
+							attribute->value = $6->ivalue;
+						} else if (right_type == "manguita") {
+							attribute->value = $6->fvalue;
+						} else if (right_type == "manguangua") {
+							attribute->value = $6->dvalue;
+						} else if (right_type == "negro"){
+							attribute->value = $6->cvalue;
+						} else if (right_type == "higuerote") {
+							attribute->value = $6->svalue;
+						} else if (right_type == "tas_claro"){
+							attribute->value = $6->bvalue;
+							if (!attribute->info.empty()) attribute->info[0].first = ($6->bvalue ? "Sisa" : "Nolsa");
+							else attribute->info.push_back({($6->bvalue ? "Sisa" : "Nolsa"), nullptr});
+						} else if (right_type == "pointer"){
 							/* POR IMPLEMENTAR */
 							//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
-							attr_elem->value = nullptr;
+							attribute->value = nullptr;
 						} else {
 							FLAG_ERROR = INTERNAL;
 							string error_msg = "TIPO DESCONOCIDO: Asignando 'nullptr' a: '" + string($2) + "'.";
 							yyerror(error_msg.c_str());
-							attr_elem->value = nullptr;
+							attribute->value = nullptr;
 						}
-					}
-					
-					// Usar el índice como clave en formato string
-					attribute->info.push_back({string($2) + "[" + to_string(count_elems-1) + "]", attr_elem});
-		
-					// Insertar elemento en tabla de símbolos
-					if(!symbolTable.insert_symbol(attr_elem->symbol_name, *attr_elem)){
-						FLAG_ERROR = ALREADY_DEF_VAR;
-						yyerror(attr_elem->symbol_name.c_str());
-					}
-				}
 
-				// Verificar cantidad de elementos
-				if (count_elems < size_array) {
-					FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
-					string error_msg = "Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '" + to_string(count_elems) + "' de '" + to_string(size_array) + "'.";
-					yyerror(error_msg.c_str());
-				}
-
-				// Insertar en tabla de símbolos
-				if(!symbolTable.insert_symbol($2, *attribute)){
-					FLAG_ERROR = ALREADY_DEF_VAR;
-					yyerror($2);
-				}
-			}	
-		// Declaracion de tipos basicos, asignacion funcion.
-		} else {
-			Attributes* type_attr = symbolTable.search_symbol(left_type);
-			if (type_attr == nullptr){
-				FLAG_ERROR = NON_DEF_TYPE;
-				yyerror(left_type.c_str());
-			} else {
-				Attributes *attribute = new Attributes();
-				attribute->symbol_name = $2;
-				attribute->scope = symbolTable.current_scope;
-				attribute->type = type_attr;
-
-				right_type = $6->type;
-
-				// Verificacion de tipos.
-				if (left_type != right_type && (left_type != "manguangua" || right_type != "manguita")) {
-					FLAG_ERROR = TYPE_ERROR;
-					string error_msg = "\"" + string($2) + "\" de tipo '" + left_type + "' y le quieres meter un tipo '" + right_type + "', marbaa' bruja.";
-					yyerror(error_msg.c_str());
-					attribute->value = nullptr; // Asignar valor nulo en caso de error
-				} else {
-					
-					if ($1->kind == "POINTER_V") attribute->category = POINTER_V;
-					else if ($1->kind == "POINTER_C") attribute->category = POINTER_C;
-					else if ($1->kind == "VARIABLE") attribute->category = VARIABLE;
-					else if ($1->kind == "CONSTANTE") attribute->category = CONSTANT;
-
-					if (right_type == "mango") {
-						attribute->value = $6->ivalue;
-					} else if (right_type == "manguita") {
-						attribute->value = $6->fvalue;
-					} else if (right_type == "manguangua") {
-						attribute->value = $6->dvalue;
-					} else if (right_type == "negro"){
-						attribute->value = $6->cvalue;
-					} else if (right_type == "higuerote") {
-						attribute->value = $6->svalue;
-					} else if (right_type == "tas_claro"){
-						attribute->value = $6->bvalue;
-						if (!attribute->info.empty()) attribute->info[0].first = ($6->bvalue ? "Sisa" : "Nolsa");
-						else attribute->info.push_back({($6->bvalue ? "Sisa" : "Nolsa"), nullptr});
-					} else if (right_type == "pointer"){
-						/* POR IMPLEMENTAR */
-						//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
-						attribute->value = nullptr;
-					} else {
-						FLAG_ERROR = INTERNAL;
-						string error_msg = "TIPO DESCONOCIDO: Asignando 'nullptr' a: '" + string($2) + "'.";
-						yyerror(error_msg.c_str());
-						attribute->value = nullptr;
-					}
-
-					if (!symbolTable.insert_symbol($2, *attribute)) {
-						FLAG_ERROR = ALREADY_DEF_VAR;
-						yyerror($2);
+						symbolTable.insert_symbol($2, *attribute);
 					}
 				}
 			}
