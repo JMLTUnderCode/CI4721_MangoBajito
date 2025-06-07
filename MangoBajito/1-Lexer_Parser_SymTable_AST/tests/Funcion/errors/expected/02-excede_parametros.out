@@ -1,6 +1,6 @@
 | Acomódate que te lo estan analizando d:-)
-Error: TYPE_ERROR
-  - Sendo peo en la linea 11, columna 25: Tas en droga?. Tienes "value" de tipo 'manguita' y le quieres meter un tipo 'mango', marbaa' bruja.
+Error: FUNC_PARAM_EXCEEDED
+  - Sendo peo en la linea 9, columna 42: No le metas al cuento "fun1" más vainas, no caben loco.
 [1;31m[5m
                =======================================================
                        ---->        Error Program        <----        
