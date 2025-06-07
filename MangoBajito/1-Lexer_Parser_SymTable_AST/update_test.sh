@@ -10,7 +10,7 @@ valid_tests["Condicional"]="00 01"
 # Define las secciones y los números de test a actualizar para errors
 declare -A error_tests
 error_tests["Declaracion"]=""
-error_tests["Funcion"]=""
+error_tests["Funcion"]="00 01 02"
 error_tests["Operacion"]=""
 
 # Ruta base de los tests
