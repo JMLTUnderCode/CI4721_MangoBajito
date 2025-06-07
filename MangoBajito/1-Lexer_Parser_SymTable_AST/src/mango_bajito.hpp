@@ -215,6 +215,19 @@ inline void collect_nodes_by_categories(ASTNode* node, const set<string>& catego
     for (auto child : node->children) collect_nodes_by_categories(child, categories, out);
 }
 
+inline void collect_guardias(ASTNode* node, vector<ASTNode*>& out) {
+    if (!node) return;
+    // Si el nodo es una guardia, lo agregamos como hijo directo
+    if (node->name == "si_es_asi" || node->name == "o_asi" || node->name == "nojoda") {
+        out.push_back(node);
+    } else {
+        // Si no, recorremos sus hijos
+        for (ASTNode* child : node->children) {
+            collect_guardias(child, out);
+        }
+    }
+}
+
 inline ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
     ASTNode* new_node = makeASTNode(op, "Operación");
 	string type = "Desconocido";

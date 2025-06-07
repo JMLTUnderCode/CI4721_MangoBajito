@@ -232,13 +232,13 @@ string current_func_type = "";
 // Declaracion de tipos de retorno para las producciones 
 %type <ast> programa main 
 %type <ast> asignacion operadores_asignacion operaciones_unitarias
-%type <ast> instruccion secuencia_instrucciones instrucciones   
+%type <ast> instruccion secuencia_instrucciones instrucciones bloque_instrucciones
 %type <ast> declaracion tipo_declaracion declaracion_aputador 
 %type <ast> estructura firma_estructura clase_estructura atributo secuencia_atributos
 %type <ast> tipos tipo_valor
 %type <ast> expresion expresion_apuntador expresion_nuevo 
 %type <ast> secuencia
-%type <ast> condicion alternativa
+%type <ast> condicion alternativa guardia guardia_oasi guardia_nojoda
 %type <ast> bucle indeterminado determinado var_ciclo_determinado
 %type <ast> firma_funcion parametro secuencia_parametros funcion llamada_funcion entrada_salida
 %type <ast> manejo_error manejador var_manejo_error
@@ -309,8 +309,11 @@ programa:
 	;
 
 main:
-	T_SE_PRENDE abrir_scope T_IZQPAREN T_DERPAREN T_IZQLLAVE instrucciones T_DERLLAVE T_PUNTOCOMA cerrar_scope { $$ = $6; }
+	T_SE_PRENDE abrir_scope T_IZQPAREN T_DERPAREN bloque_instrucciones T_PUNTOCOMA cerrar_scope { $$ = $5; }
 	;
+
+bloque_instrucciones:
+	T_IZQLLAVE instrucciones T_DERLLAVE { $$ = $2; }
 
 instrucciones:
 	{ $$ = nullptr; }
@@ -410,11 +413,6 @@ declaracion:
 			if (type_attr == nullptr){
 				FLAG_ERROR = INTERNAL;
 				yyerror("ERROR: Tipo no encontrado");
-			}
-
-			if (symbolTable.search_symbol($2) != nullptr){
-				FLAG_ERROR = ALREADY_DEF_VAR;
-				yyerror($2);
 			} else {
 				Attributes* array_attr = new Attributes();
 				array_attr->symbol_name = $2;
@@ -441,8 +439,12 @@ declaracion:
 						yyerror(elem->symbol_name.c_str());
 					}
 				}
+
 				// Insertar en tabla de símbolos
-				symbolTable.insert_symbol($2, *array_attr);
+				if(!symbolTable.insert_symbol($2, *array_attr)){
+					FLAG_ERROR = ALREADY_DEF_VAR;
+					yyerror($2);
+				}
 			}
 		// Declaracion de tipos basicos.
 		} else {
@@ -450,11 +452,6 @@ declaracion:
 			if (type_attr == nullptr) {
 				FLAG_ERROR = NON_DEF_TYPE;
 				yyerror(declared_type.c_str());
-			}
-			
-			if (symbolTable.search_symbol($2) != nullptr) {
-				FLAG_ERROR = ALREADY_DEF_VAR;
-				yyerror($2);
 			} else {
 				Attributes* attribute = new Attributes();
 				attribute->symbol_name = $2;
@@ -491,7 +488,10 @@ declaracion:
 				}
 
 				// Insertar en tabla de símbolos
-				symbolTable.insert_symbol($2, *attribute);
+				if(!symbolTable.insert_symbol($2, *attribute)){
+					FLAG_ERROR = ALREADY_DEF_VAR;
+					yyerror($2);
+				}
 			}
 		}
 		// Actualizamos AST
@@ -519,15 +519,11 @@ declaracion:
 				}
 			}
 
-			if (symbolTable.search_symbol($2) != nullptr){
-				FLAG_ERROR = ALREADY_DEF_VAR;
-				yyerror($2);
-			} else {
-				Attributes* type_attr = symbolTable.search_symbol(left_type);
-				if (type_attr == nullptr){
-					FLAG_ERROR = INTERNAL;
-					yyerror("ERROR: Tipo no encontrado");
-				} 
+			Attributes* type_attr = symbolTable.search_symbol(left_type);
+			if (type_attr == nullptr){
+				FLAG_ERROR = INTERNAL;
+				yyerror("ERROR: Tipo no encontrado");
+			} else {	 
 				// Crear atributos del array
 				Attributes* attribute = new Attributes();
 				attribute->symbol_name = $2;
@@ -592,8 +588,11 @@ declaracion:
 					// Usar el índice como clave en formato string
 					attribute->info.push_back({string($2) + "[" + to_string(count_elems-1) + "]", attr_elem});
 		
-					// \Insertar elemento en tabla de símbolos
-					symbolTable.insert_symbol(attr_elem->symbol_name, *attr_elem);
+					// Insertar elemento en tabla de símbolos
+					if(!symbolTable.insert_symbol(attr_elem->symbol_name, *attr_elem)){
+						FLAG_ERROR = ALREADY_DEF_VAR;
+						yyerror(attr_elem->symbol_name.c_str());
+					}
 				}
 
 				// Verificar cantidad de elementos
@@ -604,7 +603,10 @@ declaracion:
 				}
 
 				// Insertar en tabla de símbolos
-				symbolTable.insert_symbol($2, *attribute);
+				if(!symbolTable.insert_symbol($2, *attribute)){
+					FLAG_ERROR = ALREADY_DEF_VAR;
+					yyerror($2);
+				}
 			}	
 		// Declaracion de tipos basicos, asignacion funcion.
 		} else {
@@ -612,11 +614,6 @@ declaracion:
 			if (type_attr == nullptr){
 				FLAG_ERROR = NON_DEF_TYPE;
 				yyerror(left_type.c_str());
-			}
-
-			if (symbolTable.search_symbol($2) != nullptr) {
-				FLAG_ERROR = ALREADY_DEF_VAR;
-				yyerror($2);
 			} else {
 				Attributes *attribute = new Attributes();
 				attribute->symbol_name = $2;
@@ -662,7 +659,11 @@ declaracion:
 						yyerror(error_msg.c_str());
 						attribute->value = nullptr;
 					}
-					symbolTable.insert_symbol($2, *attribute);
+
+					if (!symbolTable.insert_symbol($2, *attribute)) {
+						FLAG_ERROR = ALREADY_DEF_VAR;
+						yyerror($2);
+					}
 				}
 			}
 		}
@@ -1306,32 +1307,94 @@ secuencia:
 	}
 
 condicion:
+	guardia abrir_scope bloque_instrucciones cerrar_scope alternativa { 
+		$$ = makeASTNode("Condición");
+		// Si la guardia es válida.
+		if ($1) {
+			// Si hay un bloque de instrucciones, se agrega al nodo de la guardia.
+			if ($3) {
+				$1->children.push_back($3); // Agregar el bloque de instrucciones a la guardia.);
+			}
+
+			$$->children.push_back($1); // Agregar la guardia al nodo de la condición.
+
+			// Si hay una alternativa, se agrega al nodo de la guardia.
+			if ($5) {
+				for (ASTNode* node : $5->children)  {
+					$$->children.push_back(node); // Agregar cada alternativa como un nodo hijo.
+				}
+			}
+				
+		// Si la guardia es vacía.
+		} else {
+			FLAG_ERROR = INTERNAL;
+			yyerror("ERROR INTERNO: La guardia no es válida.");
+			$$ = nullptr; // Si hay un error, se asigna nullptr.
+		}
+	}
+	;
+
+guardia:
 	T_SIESASI T_IZQPAREN expresion T_DERPAREN {
-		/* POR IMPLEMENTAR */
-		
-	} abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope {
-		/* POR IMPLEMENTAR */
-		
-	} alternativa {
-		/* POR IMPLEMENTAR */
-		$$ = nullptr;
+		if ($3->type != "tas_claro") {
+			FLAG_ERROR = TYPE_ERROR;
+			string error_msg = "Condición de tipo '" + $3->type + "', se esperaba 'tas_claro'.";
+			yyerror(error_msg.c_str());
+			$$ = nullptr;
+		} else {
+			$$ = makeASTNode("si_es_asi");
+			ASTNode* guardia_node = makeASTNode("Guardia");
+			guardia_node->children.push_back($3); // Agregar la expresión de la guardia.
+			$$->children.push_back(guardia_node); 
+		}
+	}
+	| T_OASI T_IZQPAREN expresion T_DERPAREN {
+		if ($3->type != "tas_claro") {
+			FLAG_ERROR = TYPE_ERROR;
+			string error_msg = "Condición de tipo '" + $3->type + "', se esperaba 'tas_claro'.";
+			yyerror(error_msg.c_str());
+			$$ = nullptr;
+		} else {
+			$$ = makeASTNode("o_asi");
+			ASTNode* guardia_node = makeASTNode("Guardia");
+			guardia_node->children.push_back($3); // Agregar la expresión de la guardia.
+			$$->children.push_back(guardia_node); 
+		}
+	}
+	| T_NOJODA {
+		$$ = makeASTNode("nojoda");
 	}
 	;
 
 alternativa:
-	{ $$ = nullptr; } 
-	| T_OASI T_IZQPAREN expresion T_DERPAREN {
-		/* POR IMPLEMENTAR */
+    { $$ = nullptr; }
+    | guardia_oasi alternativa {
+        // Creamos un nodo "Alternativa" que contendrá todas las guardias al mismo nivel
+        $$ = makeASTNode("Alternativa", "Alternativa");
+        vector<ASTNode*> guardias;
+        if ($1) collect_guardias($1, guardias);
+        if ($2) collect_guardias($2, guardias);
+        for (ASTNode* g : guardias) {
+            $$->children.push_back(g);
+        }
+    }
+    | guardia_nojoda {
+        // También lo metemos en un nodo "Alternativa" para mantener la estructura uniforme
+        $$ = makeASTNode("Alternativa", "Alternativa");
+        if ($1) $$->children.push_back($1);
+    }
+
+guardia_oasi:
+	guardia abrir_scope bloque_instrucciones cerrar_scope { 
+		$$ = $1; 
+		if ($3) $$->children.push_back($3); // Agregar el bloque de instrucciones si existe.
 	}
-	abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope {
-	   /* POR IMPLEMENTAR */
-	} alternativa { 
-		/* POR IMPLEMENTAR */
-		$$ = nullptr;
-	}
-	| T_NOJODA abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope {
-		/* POR IMPLEMENTAR */
-		$$ = nullptr;
+	;
+
+guardia_nojoda:
+	guardia abrir_scope bloque_instrucciones cerrar_scope { 
+		$$ = $1;
+		if ($3) $$->children.push_back($3); // Agregar el bloque de instrucciones si existe.
 	}
 	;
 
@@ -1341,29 +1404,16 @@ bucle:
 	;
 
 indeterminado:
-	T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN {
-		/* POR IMPLEMENTAR */
-	} abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE {
-		/* POR IMPLEMENTAR */
-	} cerrar_scope { $$ = nullptr; }
+	T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN abrir_scope bloque_instrucciones cerrar_scope { $$ = nullptr; }
 	;
 
 var_ciclo_determinado:
-	T_ID T_ENTRE expresion T_HASTA expresion {
-		/* POR IMPLEMENTAR */
-		$$ = nullptr;
-	}
+	T_ID T_ENTRE expresion T_HASTA expresion { $$ = nullptr; }
 	;
 
 determinado:
-	T_REPITEBURDA abrir_scope var_ciclo_determinado T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope{
-		/* POR IMPLEMENTAR */
-		$$ = nullptr;
-	}
-	| T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW T_VALUE T_IZQLLAVE instrucciones T_DERLLAVE cerrar_scope{
-		/* POR IMPLEMENTAR */
-		$$ = nullptr;
-	}
+	T_REPITEBURDA abrir_scope var_ciclo_determinado bloque_instrucciones cerrar_scope { $$ = nullptr; }
+	| T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW T_VALUE bloque_instrucciones cerrar_scope { $$ = nullptr; }
 	;
 
 entrada_salida:
@@ -1374,17 +1424,15 @@ entrada_salida:
 firma_estructura:
 	clase_estructura T_ID {
 		string class_struct = $1->name;
-		if (symbolTable.search_symbol($2) != nullptr) {
+		Attributes* struct_attr = new Attributes();
+		struct_attr->symbol_name = $2;
+		struct_attr->scope = symbolTable.current_scope;
+		struct_attr->category = class_struct== "arroz_con_mango" ? STRUCT : UNION;
+		struct_attr->value = nullptr;
+
+		if (!symbolTable.insert_symbol($2, *struct_attr)) {
 			FLAG_ERROR = class_struct == "arroz_con_mango" ? ALREADY_DEF_STRUCT : ALREADY_DEF_UNION;
 			yyerror($2);
-		} else {
-			Attributes* struct_attr = new Attributes();
-			struct_attr->symbol_name = $2;
-			struct_attr->scope = symbolTable.current_scope;
-			struct_attr->category = class_struct == "arroz_con_mango" ? STRUCT : UNION;
-			struct_attr->value = nullptr;
-
-			symbolTable.insert_symbol($2, *struct_attr);
 		}
 
 		$$ = makeASTNode($2, "Declaración", class_struct, "Estructura");
@@ -1465,19 +1513,18 @@ estructura:
 
 firma_funcion: 
 	T_ECHARCUENTO T_ID {
-		if (symbolTable.search_symbol($2) != nullptr) {
+		Attributes* func_attr = new Attributes();
+		func_attr->symbol_name = $2;
+		func_attr->scope = symbolTable.current_scope; // Scope de la función
+		func_attr->type = symbolTable.search_symbol("funcion$");
+		func_attr->category = FUNCTION;
+		func_attr->value = nullptr;
+
+		if(!symbolTable.insert_symbol($2, *func_attr)){
 			FLAG_ERROR = ALREADY_DEF_FUNC;
 			yyerror($2);
-		} else {
-			Attributes* func_attr = new Attributes();
-			func_attr->symbol_name = $2;
-			func_attr->scope = symbolTable.current_scope; // Scope de la función
-			func_attr->type = symbolTable.search_symbol("funcion$");
-			func_attr->category = FUNCTION;
-			func_attr->value = nullptr;
-			symbolTable.insert_symbol($2, *func_attr);
 		}
-
+		
 		$$ = makeASTNode($2, "Firma_Funcion");
 	}
 	;
@@ -1485,26 +1532,19 @@ firma_funcion:
 parametro:
 	T_AKITOY T_ID T_DOSPUNTOS tipos { $$ = nullptr; }
 	| T_ID T_DOSPUNTOS tipos {
-		Attributes* param_attr = symbolTable.search_symbol($1);
-		bool error = false;
-		if (param_attr != nullptr) {
-			if (param_attr->category == PARAMETERS && param_attr->scope == symbolTable.current_scope) {
-				FLAG_ERROR = ALREADY_DEF_PARAM;
-				string error_msg = "'" + param_attr->symbol_name + "' dos veces en el mismo cuento?, te gusta la versatilidad locota.";
-				yyerror(error_msg.c_str());
-				error = true;
-			}
-		}
-		if (!error) {
-			Attributes* param_attr = new Attributes();
-			param_attr->symbol_name = $1;
-			param_attr->scope = symbolTable.current_scope;
-			param_attr->type = symbolTable.search_symbol($3->type);
-			param_attr->category = PARAMETERS;
-			param_attr->value = nullptr;
-			symbolTable.insert_symbol($1, *param_attr);
-		}
+		Attributes* param_attr = new Attributes();
+		param_attr->symbol_name = $1;
+		param_attr->scope = symbolTable.current_scope;
+		param_attr->type = symbolTable.search_symbol($3->type);
+		param_attr->category = PARAMETERS;
+		param_attr->value = nullptr;
 
+		if (!symbolTable.insert_symbol($1, *param_attr)){
+			FLAG_ERROR = ALREADY_DEF_PARAM;
+			string error_msg = "'" + param_attr->symbol_name + "' dos veces en el mismo cuento?, te gusta la versatilidad locota.";
+			yyerror(error_msg.c_str());
+		}
+		
 		$$ = makeASTNode($1, "Parámetro", $3->type);
 		$$->show_value = false;
 	}
@@ -1521,7 +1561,7 @@ secuencia_parametros:
 	;
 
 funcion:
-	firma_funcion abrir_scope T_IZQPAREN secuencia_parametros T_DERPAREN T_LANZA tipos T_IZQLLAVE instrucciones T_DERLLAVE { 
+	firma_funcion abrir_scope T_IZQPAREN secuencia_parametros T_DERPAREN T_LANZA tipos bloque_instrucciones { 
 		string func_name = $1->name;
 		string func_type = $7->name;
 
@@ -1543,7 +1583,7 @@ funcion:
 			$$ = makeASTNode(func_name, "Declaración", func_type, "Función");
 			$$->show_value = false;
 			if ($4) $$->children.push_back($4); // Agregar la secuencia de parámetros
-			if ($9) $$->children.push_back($9); // Agregar instrucciones
+			if ($8) $$->children.push_back($8); // Agregar instrucciones
 		}
 	}
 	;
@@ -1603,35 +1643,20 @@ llamada_funcion:
 	}
 
 var_manejo_error:
-	T_COMO abrir_scope T_ID {
-		/* POR IMPLEMENTAR */
-		$$ = nullptr;
-	}
+	T_COMO abrir_scope T_ID { $$ = nullptr; }
 
 manejador:
 	{ $$ = nullptr; }
-	| T_FUERADELPEROL abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE {
-		/* POR IMPLEMENTAR */
-	} cerrar_scope { $$ = nullptr; }
-	| T_FUERADELPEROL var_manejo_error T_IZQLLAVE instrucciones T_DERLLAVE {
-		/* POR IMPLEMENTAR */
-	} cerrar_scope { $$ = nullptr; }
+	| T_FUERADELPEROL abrir_scope bloque_instrucciones cerrar_scope { $$ = nullptr; }
+	| T_FUERADELPEROL var_manejo_error bloque_instrucciones cerrar_scope { $$ = nullptr; }
 	;
 
 manejo_error:
-	T_T_MEANDO abrir_scope T_IZQLLAVE instrucciones T_DERLLAVE {
-		/* POR IMPLEMENTAR */
-	} cerrar_scope manejador {
-		/* POR IMPLEMENTAR */
-		$$ = nullptr;
-	}
+	T_T_MEANDO abrir_scope bloque_instrucciones cerrar_scope manejador { $$ = nullptr; }
 	;
 
 casting:
-	T_CASTEO expresion {
-		/* POR IMPLEMENTAR */
-		$$ = nullptr;
-	}
+	T_CASTEO expresion { $$ = nullptr; }
 	;
 
 %%
