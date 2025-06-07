@@ -86,42 +86,52 @@ Módulo desarrollados del proyecto Mango Bajito.
 	make clean
 	```
 ## Realizado y Por Realizar
-- [x] Declaración
-    - [x] Tipos basicos
-        - [ ] Mango
-        - [x] Manguita
-        - [x] Manguangua
-        - [x] Negro
-        - [x] Higuerote
-        - [x] Tas_claro 
-    - [x] Arrays
-    - [ ] Structs (`arroz_con_mango`)
-    - [ ] Union (`coliao`)
-    - [ ] Funciones (`echar_cuento`)
-- [x] Asignación
-    - [x] Literales
-    - [x] Variables
-    - [x] Constantes
-    - [ ] Funciones (`echar_cuento`)
-    - [ ] Atributo de Structs (`arroz_con_mango`)
-    - [ ] Atributo de Union (`coliao`)
 - [x] Scopes
     - [x] Abrir alcances 
     - [x] Cerrar alcances
     - [x] Actualizacion de alcances
+- [x] Declaración
+    - [x] Tipos basicos
+        - [x] Mango
+        - [x] Manguita
+        - [x] Manguangua
+        - [x] Negro
+        - [x] Higuerote
+        - [x] Tas_claro
+    - [x] Arrays
+    - [x] Structs (`arroz_con_mango`)
+    - [x] Union (`coliao`)
+    - [x] Funciones (`echar_cuento`)
+- [x] Asignación
+    - [x] Literales
+    - [x] Variables
+    - [x] Constantes
+    - [x] Funciones (`echar_cuento`)
+    - [x] Atributo de Structs (`arroz_con_mango`)
+    - [x] Atributo de Union (`coliao`)
+- [ ] Funciones
+    - [x] Llamada con cantidad de parametros correctos
+    - [x] Llamada con tipos de parametros correctos
+    - [ ] Funciones del lenguajes
+        - [ ] `hablame`
+        - [ ] `rescata`
+        - [ ] `lanzate`
+- [x] Condicional
+    - [x] Bloque: si_es_asi
+        - [x] Guardia
+        - [x] Instrucciones
+    - [x] Bloque: o_asi
+        - [x] Guardia
+        - [x] Instrucciones
+    - [x] Bloque: nojoda
+        - [x] Instrucciones
 - [ ] Ciclo Determinado
     - [ ] Variable de ciclo (repite_burda)
     - [ ] Rango de ciclo (desde y hasta)
     - [ ] Paso de ciclo (con_flow)
 - [ ] Ciclo Indeterminado
-    - [ ] Condicion lógica
-- [ ] Funciones
-    - [ ] Llamada con cantidad de parametros correctos
-    - [ ] Llamada con tipos de parametros correctos
-    - [ ] Funciones del lenguajes
-        - [ ] `hablame`.
-        - [ ] `rescata`.
-        - [ ] 
+    - [ ] Guardia
+    - [ ] Bloque de Instrucciones
 - [ ] Manejo de Errores
     - [ ] Variable de manejo (`fuera_del_perol` y `con`)
     - [ ] 
@@ -129,8 +139,16 @@ Módulo desarrollados del proyecto Mango Bajito.
     - [ ] Verificacion de casteos
 - [ ] Operaciones
 	- [x] Compuestas (+=, -=, *=)
-	- [ ] Decremento y aumento ++ y --
+	- [x] Decremento y aumento ++ y --
 	- [ ] Expresiones logicas.
+    	- [ ] yunta
+    	- [ ] o_sea
+    	- [ ] igualito
+    	- [ ] nie
+    	- [ ] mayol
+    	- [ ] menol
+    	- [ ] lidel
+    	- [ ] peluche
     	- [ ] Anidamiento
 - [ ] Apuntadores
     - [ ] Guardar apuntadores en la tabla de símbolos.
