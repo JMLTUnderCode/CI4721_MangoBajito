@@ -41,7 +41,6 @@ typedef variant<
 	vector<RecursiveArray>   // Recursión para matrices anidadas
 > Values;
 
-void print_values(Values x);
 // Estructura para representar arreglos anidados recursivos
 struct RecursiveArray {
 	vector<Values> data; // Puede contener cualquier tipo de Values
@@ -97,7 +96,9 @@ struct Attributes {
 	Attributes() : symbol_name(""), category(UNKNOWN), scope(0), type(nullptr), value(nullptr), info({}) {}
 };
 
-void print_info(vector<pair<Information, Attributes*> > informations);
+// ======================================================
+// =                   Error Handler                    =
+// ======================================================
 
 // ERROR_TYPE enum
 enum systemError {
@@ -140,6 +141,10 @@ extern vector<string> sysErrorToString;
 // Define el diccionario para almacenar los errores
 extern unordered_map<systemError, vector<string>> errorDictionary;
 
+// Variables globales de contexto para el análisis sintáctico y semántico
+extern systemError FLAG_ERROR;
+extern bool FIRST_ERROR;
+
 void addError(systemError err, const string& msg);
 void printErrors();
 
@@ -166,15 +171,19 @@ class SymbolTable {
 		stack<int> prev_scope;                                      //Stack de scopes antiguos
 		SymbolTable();
 		~SymbolTable() = default;
-		void print_table();                                         //Imprimir tabla de simbolos
+		
 		void open_scope();                                          //Abrir nuevo scope
 		void close_scope();											//Cerrar scope 
+		bool contains_key(string key);                              //Verifica si la tabla contiene el simbolo
 		bool insert_symbol(string symbol_name, Attributes &attr);   //Insertar simbolo en la tabla
 		bool remove_symbol(string symbol_name);                     //Eliminar simbolo de la tabla
 		Attributes* search_symbol(string symbol_name);              //Buscar simbolo en la tabla
-		bool contains_key(string key);                              //Verifica si la tabla contiene el simbolo
 		void finding_variables_in_scope(int scope);
+
+		void print_table();                                         //Imprimir tabla de simbolos
 		void print_attribute(Attributes &attr);
+		void print_info(vector<pair<Information, Attributes*> > informations);
+		void print_values(Values x);
 };
 
 // ======================================================
@@ -182,17 +191,17 @@ class SymbolTable {
 // ======================================================
 
 struct ASTNode {
-	string name;    // Nombre del elemento (variable, función, struct, etc)
+	string name;     // Nombre del elemento (variable, función, struct, etc)
 	string category; // "declaration", "assignment", "function", "while", "for", "error_handling", "array", "pointer", "operation", etc.
-	string type;    // Tipo de dato (para variables, constantes, retorno de función, etc)
-	string kind;	// Tipo de declaracion, por ejemplo: "variable", "constante", "pointer constante", "pointer variable".
+	string type;     // Tipo de dato (para variables, constantes, retorno de función, etc)
+	string kind;     // Tipo de declaracion, por ejemplo: "variable", "constante", "pointer constante", "pointer variable".
 	
-	int ivalue; // Valor entero
-	float fvalue; // Valor flotante
+	int ivalue;    // Valor entero
+	float fvalue;  // Valor flotante
 	double dvalue; // Valor doble
 	string svalue; // Valor string
-	char cvalue; // Valor char
-	bool bvalue; // Valor booleano
+	char cvalue;   // Valor char
+	bool bvalue;   // Valor booleano
 
 	bool show_value = true; // Indica si se debe mostrar el valor del nodo
 
@@ -203,193 +212,19 @@ struct ASTNode {
 		: name(n), category(c), type(t), kind(k) {}
 };
 
-// Crear un nodo AST y devolver un puntero inteligente
-inline ASTNode* makeASTNode(const string& name, const string& category = "", const string& type = "", const string& kind = "") {
-	return new ASTNode(name, category, type, kind);
-}
 
-// Recolecta nodos por una lista de categorías
-inline void collect_nodes_by_categories(ASTNode* node, const set<string>& categories, vector<ASTNode*>& out) {
-    if (!node) return;
-    if (categories.count(node->category)) out.push_back(node);
-    for (auto child : node->children) collect_nodes_by_categories(child, categories, out);
-}
+ASTNode* makeASTNode(const string& name, const string& category = "", const string& type = "", const string& kind = "");
 
-inline void collect_guardias(ASTNode* node, vector<ASTNode*>& out) {
-    if (!node) return;
-    // Si el nodo es una guardia, lo agregamos como hijo directo
-    if (node->name == "si_es_asi" || node->name == "o_asi" || node->name == "nojoda") {
-        out.push_back(node);
-    } else {
-        // Si no, recorremos sus hijos
-        for (ASTNode* child : node->children) {
-            collect_guardias(child, out);
-        }
-    }
-}
+void collect_nodes_by_categories(ASTNode* node, const set<string>& categories, vector<ASTNode*>& out);
 
-inline ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
-    ASTNode* new_node = makeASTNode(op, "Operación");
-	string type = "Desconocido";
-    string kind = "Desconocido";
-    
-    // Ejemplo simple: suma, resta, multiplicación, división son numéricas
-    set<string> ops_numericas = {"+", "-", "*", "/", "//", "%", "**"};
-	if (ops_numericas.count(op)) kind = "Numérica";
+void collect_guardias(ASTNode* node, vector<ASTNode*>& out);
 
-    set<string> ops_booleana = {"igualito", "nie", "mayol", "lidel", "menol", "peluche", "yunta", "o_sea"};
-	if (ops_booleana.count(op)) kind = "Booleana";
+bool isNumeric(const string& typeStr);
 
-	string left_type = left ? left->type : "Desconocido";
-	string right_type = right ? right->type : "Desconocido";
+ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right);
 
-	if (left && right) {
-		type = left_type;
-
-		if (kind == "Numérica" && left_type == right_type) {
-			if (type == "mango"){
-				if (op == "+") new_node->ivalue = left->ivalue + right->ivalue;
-				else if (op == "-") new_node->ivalue = left->ivalue - right->ivalue;
-				else if (op == "*") new_node->ivalue = left->ivalue * right->ivalue;
-				else if (op == "/") {
-					if (right->ivalue != 0) {
-						new_node->fvalue = static_cast<float>(left->ivalue) / right->ivalue;
-					} else {
-						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-						return nullptr; // Error handling
-					}
-					type = "manguita";
-				} else if (op == "//") {
-					if (right->ivalue != 0) {
-						new_node->ivalue = left->ivalue / right->ivalue;
-					} else {
-						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-						return nullptr; // Error handling
-					}
-				} else if (op == "%") {
-					if (right->ivalue != 0) {
-						new_node->ivalue = left->ivalue % right->ivalue;
-					} else {
-						addError(SEGMENTATION_FAULT, "Modulo by zero in operation.");
-						return nullptr; // Error handling
-					}
-				} else if (op == "**") {
-					new_node->dvalue = pow(left->ivalue, right->ivalue);
-					type = "manguangua";
-				}
-			
-			} else if (type == "manguita"){
-				if (op == "+") new_node->fvalue = left->fvalue + right->fvalue;
-				else if (op == "-") new_node->fvalue = left->fvalue - right->fvalue;
-				else if (op == "*") new_node->fvalue = left->fvalue * right->fvalue;
-				else if (op == "/") {
-					if (right->fvalue != 0.0) {
-						new_node->fvalue = left->fvalue / right->fvalue;
-					} else {
-						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-						return nullptr; // Error handling
-					}
-				} else if (op == "//") {
-					if (right->fvalue != 0.0) {
-						new_node->ivalue = static_cast<int>(left->fvalue / right->fvalue);
-					} else {
-						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-						return nullptr; // Error handling
-					}
-					type = "mango";
-				} else if (op == "%") {
-						addError(TYPE_ERROR, "Modulo operation not supported for float types.");
-						return nullptr; // Error handling
-				} else if (op == "**") {
-					float base = left->fvalue;
-				    float exp = right->fvalue;
-				    // Raíz impar de negativo: resultado negativo
-					if (base < 0 && fmod(exp, 2.0f) != 0.0f) {
-				        new_node->dvalue = -pow(-base, exp);
-				    } else {
-				        new_node->dvalue = pow(base, exp);
-				    }
-					type = "manguangua";
-				}
-			} else if (type == "manguangua"){
-				if (op == "+") new_node->dvalue = left->dvalue + right->dvalue;
-				else if (op == "-") new_node->dvalue = left->dvalue - right->dvalue;
-				else if (op == "*") new_node->dvalue = left->dvalue * right->dvalue;
-				else if (op == "/") {
-					if (right->dvalue != 0.0) new_node->dvalue = left->dvalue / right->dvalue;
-					else {
-						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-						return nullptr; // Error handling
-					}
-				} else if (op == "//") {
-					if (right->dvalue != 0.0) {
-						new_node->ivalue = static_cast<int>(left->dvalue / right->dvalue);
-						type = "mango";
-					} else {
-						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-						return nullptr; // Error handling
-					}
-				} else if (op == "%") {
-						addError(TYPE_ERROR, "Modulo operation not supported for double types.");
-						return nullptr; // Error handling
-				} else if (op == "**"){
-					double base = left->dvalue;
-				    double exp = right->dvalue;
-				    // Raíz impar de negativo: resultado negativo
-					if (base < 0 && fmod(exp, 2.0) != 0.0f) {
-				        new_node->dvalue = -pow(-base, exp);
-				    } else {
-				        new_node->dvalue = pow(base, exp);
-				    }
-				}
-			} else {
-				addError(TYPE_ERROR, "Unsupported type for operation: " + type);
-				return nullptr; // Error handling
-			}
-
-		} else if (kind == "Numérica" && left_type != right_type) {
-			addError(TYPE_ERROR, "Type mismatch in operation: " + left_type + " " + op + " " + right_type);
-			return nullptr;
-
-		} else if (kind == "Booleana") {
-			if (type == "tas_claro") {
-		        if (op == "yunta") { // and
-					new_node->bvalue = left->bvalue && right->bvalue;
-		        } else if (op == "o_sea") { // or
-		            new_node->bvalue = left->bvalue || right->bvalue;
-		        }
-
-			} else {
-				type = "tas_claro"; // Asignar tipo por defecto para operaciones booleanas
-				if (op == "igualito") { // ==
-
-				} else if (op == "nie"){ // !=
-
-				} else if (op == "mayol") { // >
-
-				} else if (op == "lidel") { // >=
-
-				} else if (op == "menol") { // <
-
-				} else if (op == "peluche") { // <=
-				
-				}
-			}
-		}
-		new_node->type = type;
-		new_node->kind = kind;
-	    if (left) new_node->children.push_back(left);
-	    if (right) new_node->children.push_back(right);
-	    return new_node;
-
-	} else {
-		addError(INTERNAL, "Non operands finds.");
-		return nullptr;
-	}
-}
-
-// Imprimir el AST (recursivo, para debug)
 void showAST(const ASTNode* node, int depth = 0, const string& prefix = "", bool isLast = true);
+
 void print_AST(const ASTNode* node);
 
 #endif

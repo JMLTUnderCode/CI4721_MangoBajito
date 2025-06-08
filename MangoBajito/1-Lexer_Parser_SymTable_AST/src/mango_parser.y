@@ -91,28 +91,12 @@ unordered_map<systemError, vector<string>> errorDictionary = {
 // Variables globales de contexto para el análisis sintáctico y semántico
 systemError FLAG_ERROR = SEMANTIC;
 bool FIRST_ERROR = false;
-
-string current_array_name = "";
-int current_array_size = 0;
-string current_array_base_type = "";
-
-string current_struct_name = "";
-int current_struct_number_attr = 0;
-
-string current_func_name = "";
-int current_func_count_param = 0;
-int current_func_max_param = 0;
-string current_func_return_type = "";
-string current_func_type = "";
 %}
 
 %code requires {
 	#include "mango_bajito.hpp"
 
 	using namespace std;
-
-	// Estructura para literales de arreglos
-	struct ArrayValue;
 
 	// Atributos de expresiones para el parser
 	struct Type_and_Value {
@@ -123,25 +107,7 @@ string current_func_type = "";
 			double dval;
 			char* sval;
 			char cval;
-			ArrayValue* arr_val;
 		};
-		char* temp;
-	};
-
-	// Estructura para manejar arreglos literales
-	struct ArrayValue {
-		vector<Type_and_Value> elements;
-		string type;
-		
-		ArrayValue(const string& t) : type(t) {}
-		
-		~ArrayValue() {
-			for(auto& elem : elements) {
-				if(elem.type == Type_and_Value::STRING && elem.sval) {
-					delete[] elem.sval;
-				}
-			}
-		}
 	};
 
 	// Función auxiliar: Enum a string
@@ -184,16 +150,10 @@ string current_func_type = "";
 			throw invalid_argument("Tipo desconocido: " + typeStr);
 		}
 	}
-
-	// Verifica si un tipo es numérico
-	inline bool isNumeric(const string& typeStr) {
-		return typeStr == "mango" || typeStr == "manguita" || typeStr == "manguangua";
-	}
 }
 
 %union {
 	Type_and_Value att_val; // Usa el struct definido
-	ArrayValue* array; 
 	int ival;
 	float fval;
 	double dval;
@@ -238,7 +198,7 @@ string current_func_type = "";
 %type <ast> tipos tipo_valor
 %type <ast> expresion expresion_apuntador expresion_nuevo 
 %type <ast> secuencia
-%type <ast> condicion alternativa guardia guardia_oasi guardia_nojoda
+%type <ast> condicion alternativa guardia guardia_con_bloque
 %type <ast> bucle indeterminado determinado var_ciclo_determinado
 %type <ast> firma_funcion parametro secuencia_parametros funcion llamada_funcion entrada_salida
 %type <ast> manejo_error manejador var_manejo_error
@@ -389,7 +349,6 @@ instruccion:
 	}
 	| T_BORRADOL T_ID { $$ = nullptr; }
 	| T_BORRADOL T_ID T_PUNTO T_ID { $$ = nullptr; }
-	;
 	;
 
 declaracion:
@@ -1355,14 +1314,19 @@ guardia:
 			$$->children.push_back(guardia_node); 
 		}
 	}
-	| T_NOJODA {
-		$$ = makeASTNode("nojoda");
-	}
+	| T_NOJODA { $$ = makeASTNode("nojoda"); }
 	;
+
+guardia_con_bloque:
+    guardia abrir_scope bloque_instrucciones cerrar_scope {
+        $$ = $1;
+        if ($3) $$->children.push_back($3);
+    }
+    ;
 
 alternativa:
     { $$ = nullptr; }
-    | guardia_oasi alternativa {
+    | guardia_con_bloque alternativa {
         // Creamos un nodo "Alternativa" que contendrá todas las guardias al mismo nivel
         $$ = makeASTNode("Alternativa", "Alternativa");
         vector<ASTNode*> guardias;
@@ -1372,25 +1336,7 @@ alternativa:
             $$->children.push_back(g);
         }
     }
-    | guardia_nojoda {
-        // También lo metemos en un nodo "Alternativa" para mantener la estructura uniforme
-        $$ = makeASTNode("Alternativa", "Alternativa");
-        if ($1) $$->children.push_back($1);
-    }
-
-guardia_oasi:
-	guardia abrir_scope bloque_instrucciones cerrar_scope { 
-		$$ = $1; 
-		if ($3) $$->children.push_back($3); // Agregar el bloque de instrucciones si existe.
-	}
-	;
-
-guardia_nojoda:
-	guardia abrir_scope bloque_instrucciones cerrar_scope { 
-		$$ = $1;
-		if ($3) $$->children.push_back($3); // Agregar el bloque de instrucciones si existe.
-	}
-	;
+    ;
 
 bucle:
 	indeterminado { $$ = $1; }
@@ -1398,7 +1344,20 @@ bucle:
 	;
 
 indeterminado:
-	T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN abrir_scope bloque_instrucciones cerrar_scope { $$ = nullptr; }
+	T_ECHALEBOLAS T_IZQPAREN expresion T_DERPAREN abrir_scope bloque_instrucciones cerrar_scope {
+		if ($3->type != "tas_claro") {
+			FLAG_ERROR = TYPE_ERROR;
+			string error_msg = "Condición de tipo '" + $3->type + "', se esperaba 'tas_claro'.";
+			yyerror(error_msg.c_str());
+			$$ = nullptr;
+		} else {
+			$$ = makeASTNode("echale_bolas_si");
+			ASTNode* guardia_node = makeASTNode("Guardia");
+			guardia_node->children.push_back($3); // Agregar la expresión de la guardia.
+			$$->children.push_back(guardia_node);
+			if ($6) $$->children.push_back($6); // Agregar el bloque de instrucciones.
+		}
+	}
 	;
 
 var_ciclo_determinado:
@@ -1407,7 +1366,7 @@ var_ciclo_determinado:
 
 determinado:
 	T_REPITEBURDA abrir_scope var_ciclo_determinado bloque_instrucciones cerrar_scope { $$ = nullptr; }
-	| T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW T_VALUE bloque_instrucciones cerrar_scope { $$ = nullptr; }
+	| T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW expresion bloque_instrucciones cerrar_scope { $$ = nullptr; }
 	;
 
 entrada_salida:
@@ -1656,8 +1615,6 @@ casting:
 %%
 
 void yyerror(const char *var) {
-	FIRST_ERROR = true;
-
 	string error_msg; // Variable para construir el mensaje de error
 
 	if (FLAG_ERROR == SEMANTIC) {
