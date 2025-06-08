@@ -1,0 +1,36 @@
+# Test 15: Operador de desigualdad (nie)
+se_prende(){
+	culito n0 : tas_claro = 3 nie 3;
+	culito n1 : tas_claro = 3 nie 2;
+	culito n2 : tas_claro = 3 nie 3.0;
+	culito n3 : tas_claro = 3 nie 2.0;
+	culito n4 : tas_claro = 3 nie 0.03e+2;
+	culito n5 : tas_claro = 3 nie 0.02e+2;
+	culito n6 : tas_claro = 3 nie 'h';
+	culito n7 : tas_claro = 3 nie "hola";
+	culito n8 : tas_claro = 3 nie Sisa;
+	
+	culito n9 : tas_claro = 3.2 nie 3.2;
+	culito n10 : tas_claro = 3.2 nie 3.21;
+	culito n11 : tas_claro = 3.2 nie 0.032e+2;
+	culito n12 : tas_claro = 3.2 nie 0.0321e+2;
+	culito n13 : tas_claro = 3.2 nie 'h';
+	culito n14 : tas_claro = 3.2 nie "hola";
+	culito n15 : tas_claro = 3.2 nie Sisa;
+	
+	culito n16 : tas_claro = 0.032e+2 nie 0.032e+2;
+	culito n17 : tas_claro = 0.032e+2 nie 0.0321e+2;
+	culito n18 : tas_claro = 0.032e+2 nie 'h';
+	culito n19 : tas_claro = 0.032e+2 nie "hola";
+	culito n20 : tas_claro = 0.032e+2 nie Sisa;
+	
+	culito n21 : tas_claro = 'h' nie 'h';
+	culito n22 : tas_claro = 'h' nie "hola";
+	culito n23 : tas_claro = 'h' nie Sisa;
+
+	culito n24 : tas_claro = "hola" nie "hola";
+	culito n25 : tas_claro = "hola" nie Sisa;
+
+	culito n26 : tas_claro = Sisa nie Sisa;
+	culito n27 : tas_claro = Sisa nie Nolsa;
+};

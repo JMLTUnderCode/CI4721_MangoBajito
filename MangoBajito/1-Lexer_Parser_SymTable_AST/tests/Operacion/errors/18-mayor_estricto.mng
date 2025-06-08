@@ -1,0 +1,22 @@
+# Test 18: Errores de operador mayor estricto (mayol)
+se_prende(){
+	culito n6 : tas_claro = 3 mayol 'h';
+	culito n7 : tas_claro = 3 mayol "hola";
+	culito n8 : tas_claro = 3 mayol Sisa;
+	
+	culito n13 : tas_claro = 3.2 mayol 'h';
+	culito n14 : tas_claro = 3.2 mayol "hola";
+	culito n15 : tas_claro = 3.2 mayol Sisa;
+	
+	culito n18 : tas_claro = 0.032e+2 mayol 'h';
+	culito n19 : tas_claro = 0.032e+2 mayol "hola";
+	culito n20 : tas_claro = 0.032e+2 mayol Sisa;
+	
+	culito n22 : tas_claro = 'h' mayol "hola";
+	culito n23 : tas_claro = 'h' mayol Sisa;
+
+	culito n25 : tas_claro = "hola" mayol Sisa;
+
+	culito n26 : tas_claro = Sisa mayol Sisa;
+	culito n27 : tas_claro = Sisa mayol Nolsa;
+};
