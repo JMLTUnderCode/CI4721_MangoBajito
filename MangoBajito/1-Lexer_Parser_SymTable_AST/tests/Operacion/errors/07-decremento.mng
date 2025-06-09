@@ -1,4 +1,5 @@
 # Test 05: Operacion de errores en decremento.
 se_prende(){
-	
+	culito decl0 = mango;
+	decl0--;
 };
