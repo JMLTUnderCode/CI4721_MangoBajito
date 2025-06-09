@@ -61,6 +61,8 @@ enum Category{
 	STRUCT_ATTRIBUTE,
 	ARRAY,
 	ARRAY_ELEMENT,
+	VAR_FOR,
+	ERROR_HANDLER,
 	UNKNOWN
 };
 
@@ -79,6 +81,8 @@ inline string categoryToString(Category cat) {
         case STRUCT_ATTRIBUTE:  return "STRUCT_ATTRIBUTE";
         case ARRAY:             return "ARRAY";
         case ARRAY_ELEMENT:     return "ARRAY_ELEMENT";
+		case VAR_FOR:           return "VAR_FOR";
+		case ERROR_HANDLER:     return "ERROR_HANDLER";
         case UNKNOWN:           return "UNKNOWN";
         default:                return "UNKNOWN";
     }
@@ -118,8 +122,8 @@ enum systemError {
 	ALREADY_DEF_TYPE,
 	NON_DEF_ATTR,
 	ALREADY_DEF_ATTR,
-	VAR_FOR,
-	VAR_TRY,
+	MODIFY_VAR_FOR,
+	TRY_ERROR,
 	NON_VALUE,
 	TYPE_ERROR,
 	MODIFY_CONST,
@@ -221,7 +225,7 @@ void collect_guardias(ASTNode* node, vector<ASTNode*>& out);
 
 bool isNumeric(const string& typeStr);
 
-ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right);
+ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int line_number, int column_number);
 
 void showAST(const ASTNode* node, int depth = 0, const string& prefix = "", bool isLast = true);
 

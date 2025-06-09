@@ -21,8 +21,8 @@ vector<string> sysErrorToString = {
 	"ALREADY_DEF_TYPE",
 	"NON_DEF_ATTR",
 	"ALREADY_DEF_ATTR",
-	"VAR_FOR",
-	"VAR_TRY",
+	"MODIFY_VAR_FOR",
+	"TRY_ERROR",
 	"NON_VALUE",
 	"TYPE_ERROR",
 	"MODIFY_CONST",
@@ -290,7 +290,7 @@ void collect_nodes_by_categories(ASTNode* node, const set<string>& categories, v
 void collect_guardias(ASTNode* node, vector<ASTNode*>& out) {
     if (!node) return;
     // Si el nodo es una guardia, lo agregamos como hijo directo
-    if (node->name == "si_es_asi" || node->name == "o_asi" || node->name == "nojoda") {
+    if (node->name == "o_asi" || node->name == "nojoda") {
         out.push_back(node);
     } else {
         // Si no, recorremos sus hijos
@@ -305,11 +305,14 @@ bool isNumeric(const string& typeStr) {
 	return typeStr == "mango" || typeStr == "manguita" || typeStr == "manguangua";
 }
 
-ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
+ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int line_number, int column_number) {
     ASTNode* new_node = makeASTNode(op, "Operación");
 	string type = "Desconocido";
     string kind = "Desconocido";
     
+	string error_msg = "Sendo peo en la linea " + to_string(line_number) +
+		", columna " + to_string(column_number) + ": ";
+
     // Ejemplo simple: suma, resta, multiplicación, división son numéricas
     set<string> ops_numericas = {"+", "-", "*", "/", "//", "%", "**"};
 	if (ops_numericas.count(op)) kind = "Numérica";
@@ -332,23 +335,23 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
 					if (right->ivalue != 0) {
 						new_node->fvalue = static_cast<float>(left->ivalue) / right->ivalue;
 					} else {
-						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-						return nullptr; // Error handling
+						error_msg += "Division by zero in operation.";
+						addError(SEGMENTATION_FAULT, error_msg);
 					}
 					type = "manguita";
 				} else if (op == "//") {
 					if (right->ivalue != 0) {
 						new_node->ivalue = left->ivalue / right->ivalue;
 					} else {
-						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-						return nullptr; // Error handling
+						error_msg += "Division by zero in operation.";
+						addError(SEGMENTATION_FAULT, error_msg);
 					}
 				} else if (op == "%") {
 					if (right->ivalue != 0) {
 						new_node->ivalue = left->ivalue % right->ivalue;
 					} else {
-						addError(SEGMENTATION_FAULT, "Modulo by zero in operation.");
-						return nullptr; // Error handling
+						error_msg += "Modulo by zero in operation.";
+						addError(TYPE_ERROR, error_msg);
 					}
 				} else if (op == "**") {
 					new_node->dvalue = pow(left->ivalue, right->ivalue);
@@ -363,20 +366,20 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
 					if (right->fvalue != 0.0) {
 						new_node->fvalue = left->fvalue / right->fvalue;
 					} else {
-						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-						return nullptr; // Error handling
+						error_msg += "Division by zero in operation.";
+						addError(SEGMENTATION_FAULT, error_msg);
 					}
 				} else if (op == "//") {
 					if (right->fvalue != 0.0) {
 						new_node->ivalue = static_cast<int>(left->fvalue / right->fvalue);
 					} else {
-						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-						return nullptr; // Error handling
+						error_msg += "Division by zero in operation.";
+						addError(SEGMENTATION_FAULT, error_msg);
 					}
 					type = "mango";
 				} else if (op == "%") {
-						addError(TYPE_ERROR, "Modulo operation not supported for float types.");
-						return nullptr; // Error handling
+					error_msg += "Modulo operation not supported for float types.";
+					addError(TYPE_ERROR, error_msg);
 				} else if (op == "**") {
 					float base = left->fvalue;
 				    float exp = right->fvalue;
@@ -395,20 +398,20 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
 				else if (op == "/") {
 					if (right->dvalue != 0.0) new_node->dvalue = left->dvalue / right->dvalue;
 					else {
-						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-						return nullptr; // Error handling
+						error_msg += "Division by zero in operation.";
+						addError(SEGMENTATION_FAULT, error_msg);
 					}
 				} else if (op == "//") {
 					if (right->dvalue != 0.0) {
 						new_node->ivalue = static_cast<int>(left->dvalue / right->dvalue);
 						type = "mango";
 					} else {
-						addError(SEGMENTATION_FAULT, "Division by zero in operation.");
-						return nullptr; // Error handling
+						error_msg += "Division by zero in operation.";
+						addError(SEGMENTATION_FAULT, error_msg);
 					}
 				} else if (op == "%") {
-						addError(TYPE_ERROR, "Modulo operation not supported for double types.");
-						return nullptr; // Error handling
+					error_msg += "Modulo operation not supported for double types.";
+					addError(TYPE_ERROR, error_msg);
 				} else if (op == "**"){
 					double base = left->dvalue;
 				    double exp = right->dvalue;
@@ -420,11 +423,13 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
 				    }
 				}
 			} else {
-				addError(TYPE_ERROR, "Unsupported type for operation: " + type);
+				error_msg += "Unsupported type for operation: " + type;
+				addError(TYPE_ERROR, error_msg);
 			}
 
 		} else if (kind == "Numérica" && left_type != right_type) {
-			addError(TYPE_ERROR, "Type mismatch in operation: " + left_type + " " + op + " " + right_type);
+			error_msg += "Type mismatch in operation: " + left_type + " " + op + " " + right_type;
+			addError(TYPE_ERROR, error_msg);
 
 		} else if (kind == "Booleana") {
 			if (type == "tas_claro" && left_type == right_type) {
@@ -437,7 +442,8 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
 				} else if (op == "nie") {
 					new_node->bvalue = (left->bvalue != right->bvalue);
 				} else {
-					addError(TYPE_ERROR, "Operación booleana no soportada entre tipos: '" + left->type + "' y '" + right->type + "'.");
+					error_msg += "Operación '" + op + "' no soportada entre tipos: '" + left->type + "' y '" + right->type + "'.";
+					addError(TYPE_ERROR, error_msg);
 				}
 
 			} else {
@@ -497,7 +503,8 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
 					} else if (op == "nie") {
 						new_node->bvalue = true;
 					} else {
-						addError(TYPE_ERROR, "Operación booleana no soportada entre tipos: '" + left->type + "' y '" + right->type + "'.");
+						error_msg += "Operación '" + op + "' no soportada entre tipos: '" + left->type + "' y '" + right->type + "'.";
+						addError(TYPE_ERROR, error_msg);
 					}
 				}
 			}
@@ -509,7 +516,8 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right) {
 	    return new_node;
 
 	} else {
-		addError(INTERNAL, "Non operands finds.");
+		error_msg += "Non operands finds.";
+		addError(INTERNAL, error_msg);
 		return nullptr;
 	}
 }
