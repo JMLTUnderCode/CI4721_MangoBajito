@@ -275,18 +275,23 @@ void SymbolTable::print_values(Values x){
 // =                Abstract Sintax Tree                =
 // ======================================================
 
-// Crear un nodo AST y devolver un puntero inteligente
+// Crear un nodo AST y devolver un puntero inteligente.
+// name: nombre del nodo, category: categoría del nodo, type: tipo de dato, kind: tipo de declaración.
+// Retorna un puntero al nuevo nodo AST creado.
 ASTNode* makeASTNode(const string& name, const string& category, const string& type, const string& kind) {
 	return new ASTNode(name, category, type, kind);
 }
 
-// Recolecta nodos por una lista de categorías
+// Recolecta nodos por una lista de categorías.
+// node: nodo raíz a partir del cual buscar, categories: conjunto de categorías a buscar, out: vector donde se almacenan los nodos encontrados.
 void collect_nodes_by_categories(ASTNode* node, const set<string>& categories, vector<ASTNode*>& out) {
     if (!node) return;
     if (categories.count(node->category)) out.push_back(node);
     for (auto child : node->children) collect_nodes_by_categories(child, categories, out);
 }
 
+// Recolecta todos los nodos de tipo guardia ("o_asi" o "nojoda") en el AST.
+// node: nodo raíz a partir del cual buscar, out: vector donde se almacenan los nodos guardia encontrados.
 void collect_guardias(ASTNode* node, vector<ASTNode*>& out) {
     if (!node) return;
     // Si el nodo es una guardia, lo agregamos como hijo directo
@@ -300,11 +305,16 @@ void collect_guardias(ASTNode* node, vector<ASTNode*>& out) {
     }
 }
 
-// Verifica si un tipo es numérico
+// Verifica si el tipo de dato dado corresponde a un tipo numérico ("mango", "manguita" o "manguangua").
+// typeStr: nombre del tipo a verificar.
+// Retorna true si es numérico, false en caso contrario.
 bool isNumeric(const string& typeStr) {
 	return typeStr == "mango" || typeStr == "manguita" || typeStr == "manguangua";
 }
 
+// Realiza una operación binaria entre dos nodos AST y retorna el nodo resultado.
+// left: nodo izquierdo, op: operador, right: nodo derecho, line_number y column_number: ubicación para reporte de errores.
+// Retorna un puntero al nodo AST resultante de la operación.
 ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int line_number, int column_number) {
     ASTNode* new_node = makeASTNode(op, "Operación");
 	string type = "Desconocido";
@@ -313,7 +323,6 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 	string error_msg = "Sendo peo en la linea " + to_string(line_number) +
 		", columna " + to_string(column_number) + ": ";
 
-    // Ejemplo simple: suma, resta, multiplicación, división son numéricas
     set<string> ops_numericas = {"+", "-", "*", "/", "//", "%", "**"};
 	if (ops_numericas.count(op)) kind = "Numérica";
 
@@ -522,6 +531,8 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 	}
 }
 
+// Muestra el AST en consola de forma jerárquica.
+// node: nodo raíz a mostrar, depth: nivel de profundidad, prefix: prefijo para formato, isLast: indica si es el último hijo.
 void showAST(const ASTNode* node, int depth, const string& prefix, bool isLast) {
 	if (!node) return;
 	
@@ -562,6 +573,8 @@ void showAST(const ASTNode* node, int depth, const string& prefix, bool isLast) 
     }
 }
 
+// Imprime el AST completo en consola.
+// node: nodo raíz del AST a imprimir.
 void print_AST(const ASTNode* node) {
 	if (!node) {
 		cout << "AST is empty." << endl;

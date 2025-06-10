@@ -196,8 +196,8 @@ class SymbolTable {
 
 struct ASTNode {
 	string name;     // Nombre del elemento (variable, función, struct, etc)
-	string category; // "declaration", "assignment", "function", "while", "for", "error_handling", "array", "pointer", "operation", etc.
-	string type;     // Tipo de dato (para variables, constantes, retorno de función, etc)
+	string category; // "Declaración", "Asignación", "Función", "Bucle", "Operación", etc
+	string type;     // Tipo de dato (para literales, variables, constantes, retorno de función, etc)
 	string kind;     // Tipo de declaracion, por ejemplo: "variable", "constante", "pointer constante", "pointer variable".
 	
 	int ivalue;    // Valor entero
@@ -217,18 +217,34 @@ struct ASTNode {
 };
 
 
+// Crea un nuevo nodo AST y devuelve un puntero al mismo.
+// name: nombre del nodo, category: categoría del nodo, type: tipo de dato, kind: tipo de declaración.
 ASTNode* makeASTNode(const string& name, const string& category = "", const string& type = "", const string& kind = "");
 
+// Recolecta todos los nodos del AST que pertenezcan a las categorías especificadas.
+// node: nodo raíz a partir del cual buscar, categories: conjunto de categorías a buscar, out: vector donde se almacenan los nodos encontrados.
 void collect_nodes_by_categories(ASTNode* node, const set<string>& categories, vector<ASTNode*>& out);
 
+// Recolecta todos los nodos de tipo guardia ("o_asi" o "nojoda") en el AST.
+// node: nodo raíz a partir del cual buscar, out: vector donde se almacenan los nodos guardia encontrados.
 void collect_guardias(ASTNode* node, vector<ASTNode*>& out);
 
+// Verifica si el tipo de dato dado corresponde a un tipo numérico ("mango", "manguita" o "manguangua").
+// typeStr: nombre del tipo a verificar.
+// Retorna true si es numérico, false en caso contrario.
 bool isNumeric(const string& typeStr);
 
+// Realiza una operación binaria entre dos nodos AST y retorna el nodo resultado.
+// left: nodo izquierdo, op: operador, right: nodo derecho, line_number y column_number: ubicación para reporte de errores.
+// Retorna un puntero al nodo AST resultante de la operación.
 ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int line_number, int column_number);
 
+// Muestra el AST en consola de forma jerárquica.
+// node: nodo raíz a mostrar, depth: nivel de profundidad, prefix: prefijo para formato, isLast: indica si es el último hijo.
 void showAST(const ASTNode* node, int depth = 0, const string& prefix = "", bool isLast = true);
 
+// Imprime el AST completo en consola.
+// node: nodo raíz del AST a imprimir.
 void print_AST(const ASTNode* node);
 
 #endif
