@@ -305,7 +305,15 @@ instruccion:
 	| manejo_error { $$ = $1; }
 	| T_KIETO { $$ = nullptr; }
 	| T_ROTALO { $$ = nullptr; }
-	| T_LANZATE expresion { $$ = $2; }
+	| T_LANZATE expresion { 
+		$$ = $2;
+		concat_TAC($$, $2);
+		if ($2) {
+			$$->tac.push_back("return " + $2->temp);
+		}else{
+			$$->tac.push_back("return");
+		};
+	}
 	| expresion operaciones_unitarias {
 		ASTNode* new_node = makeASTNode("Operación", $2->category);
 		new_node->children.push_back($1);
@@ -1835,6 +1843,11 @@ funcion:
 			$$->show_value = false;
 			if ($4) $$->children.push_back($4); // Agregar la secuencia de parámetros
 			if ($8) $$->children.push_back($8); // Agregar instrucciones
+
+			string label_func = labelGen.newLabel(func_name);
+			$$->tac.push_back(label_func + ": \n" + "begin_func:");
+			concat_TAC($$, $8);
+			$$->tac.push_back("end_func:");
 		}
 	}
 	;
@@ -1891,6 +1904,24 @@ llamada_funcion:
 			}
 		}
 		$$ = new_node;
+
+		// Generación de TAC para llamada a función
+		set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array, Atributo_Estructura"};
+		vector<ASTNode*> arg_nodes;
+		collect_nodes_by_categories($3, categories, arg_nodes);
+		for (ASTNode* arg_node : arg_nodes) {
+			concat_TAC($$, arg_node);
+			$$->tac.push_back("param " + arg_node->temp);
+		}
+		if (func_attr && func_attr->type && func_attr->type->symbol_name != "un_coño") {
+			// La función retorna un valor, genera un temporal
+			string temp = labelGen.newTemp();
+			$$->tac.push_back(temp + " := call " + string($1) + ", " + to_string(arg_nodes.size()));
+			$$->temp = temp;
+		} else {
+			// La función no retorna valor, solo genera la llamada
+			$$->tac.push_back("call " + string($1) + ", " + to_string(arg_nodes.size()));
+		}
 	}
 
 var_manejo_error:

@@ -1,8 +1,10 @@
 # Archivo especifico para pruebas de Astrid
 
 se_prende(){
-	culito a: mango = 0;
-	repite_burda i entre 0+5+5 hasta 5 con_flow 4+8+1{
-		a = a + 1;
+	echar_cuento func(n : mango, m : mango) lanza mango{
+		culito a: mango = 10;
+		lanzate 5;
 	};
+
+	culito a: mango = func(3, 5);
 };

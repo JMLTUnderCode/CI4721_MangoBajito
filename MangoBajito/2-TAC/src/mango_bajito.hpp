@@ -276,10 +276,12 @@ public:
     LabelGenerator() : counter_label(0), counter_temp(0) {}
 
     string newLabel(const string& base = "L") {
+		if (base != "L") return base;
         return base + to_string(counter_label++);
     }
 
 	string newTemp(const string& base = "t") {
+		if (base != "t") return base;
 		return base + to_string(counter_temp++);
 	}
 
