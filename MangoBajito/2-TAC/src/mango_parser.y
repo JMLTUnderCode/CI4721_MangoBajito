@@ -31,7 +31,6 @@
 
 %{
 #include "mango_bajito.hpp"
-#include "tac.hpp"
 
 using namespace std;
 
@@ -91,6 +90,9 @@ unordered_map<systemError, vector<string>> errorDictionary = {
 // Variables globales de contexto para el análisis sintáctico y semántico
 systemError FLAG_ERROR = SEMANTIC;
 bool FIRST_ERROR = false;
+
+// Label Generator
+LabelGenerator labelGen;
 %}
 
 %code requires {
@@ -250,11 +252,15 @@ programa:
 			main_node->children.push_back($3);
 			ast_root->children.push_back(main_node);
 		}
+		concat_TAC(ast_root, $2, $3);
 		$$ = ast_root;
 		if (FIRST_ERROR) printErrors();
 		else {
 			symbolTable.print_table();
 			if (ast_root) print_AST(ast_root);
+			if (ast_root){
+				print_TAC(ast_root);
+			};
 		}
 		if (FIRST_ERROR) {
 			cout << "\033[1;31m\033[5m\n               =======================================================\n";
@@ -285,6 +291,7 @@ secuencia_instrucciones:
 		$$ = makeASTNode("Instrucción", "", "", ";");
 		$$->children.push_back($1);
 		$$->children.push_back($2);
+		concat_TAC($$, $1, $2);
 	}
 	;
 
@@ -346,6 +353,11 @@ instruccion:
 			}
 		}
 		$$ = new_node;
+		if ($2->name == "--"){
+			$$->tac.push_back($1->temp + " := " + $1->temp + " - 1");
+		} else {
+			$$->tac.push_back($1->temp + " := " + $1->temp + " + 1");
+		}
 	}
 	| T_BORRADOL T_ID { $$ = nullptr; }
 	| T_BORRADOL T_ID T_PUNTO T_ID { $$ = nullptr; }
@@ -634,6 +646,11 @@ declaracion:
 		if ($4->category == "Array") declarationNode->children = $4->children;
 		$$->children.push_back(declarationNode);
 		$$->children.push_back($6);
+
+		// Agregar instrucciones de la asignacion
+		concat_TAC($$, $6);
+		// Agregar TAC asociado a asignacion
+		$$->tac.push_back(string($2) + " := " + $6->temp);
 	}
 	| funcion cerrar_scope { $$ = $1; }
 	| estructura cerrar_scope { $$ = $1; }
@@ -803,6 +820,21 @@ asignacion:
 		}
 
 		$$ = $2;
+		// Determinar el tipo de operacion
+		string op_tac = "";
+		if ($2->kind == "+=") op_tac = " + ";
+		else if ($2->kind == "-=") op_tac = " - ";
+		else if ($2->kind == "*=") op_tac = " * ";
+		else if ($2->kind == "=") op_tac = " := ";
+		// Agregar instrucciones de la expresion
+		concat_TAC($$, $3);
+		// Generar el TAC para asignacion
+		if (op_tac != " := ") {
+			$$->tac.push_back(string($1) + " := " + string($1) + op_tac + $3->temp);
+		} else {
+			$$->tac.push_back(string($1) + " := " + $3->temp);
+		}
+
 		$$->children.push_back(new_node);
 		$$->children.push_back($3);
 	}    
@@ -1095,6 +1127,8 @@ expresion:
 			}
 		}
 		$$ = new_node;
+		$$->tac = {};
+		$$->temp = string($1); // Agregar TAC para el identificador
 	}
 	| T_VALUE {
 		string type = typeToString($1.type);
@@ -1102,16 +1136,21 @@ expresion:
 		
 		if (type == "mango") {
 			new_node->ivalue = $1.ival;
+			new_node->temp = to_string($1.ival);
 		} else if (type == "manguita") {
 			new_node->fvalue = $1.fval;
+			new_node->temp = to_string($1.fval);
 		} else if (type == "manguangua") {
 			new_node->dvalue = $1.dval;
+			new_node->temp = to_string($1.dval);
 		} else if (type == "negro") {
 			new_node->cvalue = $1.cval;
 			new_node->category = "Caracter";
+			new_node->temp = string(1, $1.cval);
 		} else if (type == "higuerote") {
 			new_node->svalue = $1.sval;
 			new_node->category = "Cadena de Caracteres";
+			new_node->temp = $1.sval;
 		} else {
 			FLAG_ERROR = INTERNAL;
 			string error_msg = "ERROR INTERNO: Lexer proporciona un tipo invalido: '" + type + "'.";
@@ -1119,6 +1158,7 @@ expresion:
 		}
 
 		$$ = new_node;
+		$$->tac = {};
 	}
 	| T_SISA { $$ = makeASTNode("Literal", "Bool", "tas_claro", "Sisa"); $$->bvalue = true; }
 	| T_NOLSA { $$ = makeASTNode("Literal", "Bool", "tas_claro", "Nolsa"); $$->bvalue = false; }
@@ -1203,7 +1243,6 @@ expresion:
 		}
 		new_node->type = left_type;
 		$$ = new_node;
-
 	} 
 	| T_IZQPAREN expresion T_DERPAREN { $$ = $2; } // Expresion parentizada.
 	| T_NELSON expresion { $$ = nullptr; }
@@ -1218,21 +1257,101 @@ expresion:
 			yyerror(error_msg.c_str());
 		}
 		$$ = $2;
+		$$->temp = valuesToString($2);
+		$$->tac = {};
 	}
 	| expresion T_FLECHA expresion { $$ = solver_operation($1, "->", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPSUMA expresion { $$ = solver_operation($1, "+", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPRESTA expresion { $$ = solver_operation($1, "-", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPMULT expresion { $$ = solver_operation($1, "*", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPDIVDECIMAL expresion { $$ = solver_operation($1, "/", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPDIVENTERA expresion { $$ = solver_operation($1, "//", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPMOD expresion { $$ = solver_operation($1, "%", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPEXP expresion { $$ = solver_operation($1, "**", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPIGUAL expresion { $$ = solver_operation($1, "igualito", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPDIFERENTE expresion { $$ = solver_operation($1, "nie", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPMAYOR expresion { $$ = solver_operation($1, "mayol", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPMAYORIGUAL expresion { $$ = solver_operation($1, "lidel", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPMENOR expresion { $$ = solver_operation($1, "menol", $3, yylineno, yylloc.first_column); }
-	| expresion T_OPMENORIGUAL expresion { $$ = solver_operation($1, "peluche", $3, yylineno, yylloc.first_column); }
+	| expresion T_OPSUMA expresion {
+		$$ = solver_operation($1, "+", $3, yylineno, yylloc.first_column); 
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " + " + $3->temp);
+		$$->temp = temp;
+	}
+	| expresion T_OPRESTA expresion {
+		$$ = solver_operation($1, "-", $3, yylineno, yylloc.first_column); 
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " - " + $3->temp);
+		$$->temp = temp;
+	}
+	| expresion T_OPMULT expresion {
+		$$ = solver_operation($1, "*", $3, yylineno, yylloc.first_column); 
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " * " + $3->temp);
+		$$->temp = temp;
+	}
+	| expresion T_OPDIVDECIMAL expresion {
+		$$ = solver_operation($1, "/", $3, yylineno, yylloc.first_column);
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " / " + $3->temp);
+		$$->temp = temp;
+	}
+	| expresion T_OPDIVENTERA expresion {
+		$$ = solver_operation($1, "//", $3, yylineno, yylloc.first_column);
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " // " + $3->temp);
+		$$->temp = temp;
+	}
+	| expresion T_OPMOD expresion {
+		$$ = solver_operation($1, "%", $3, yylineno, yylloc.first_column); 
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " % " + $3->temp);
+		$$->temp = temp;
+	}
+	| expresion T_OPEXP expresion {
+		$$ = solver_operation($1, "**", $3, yylineno, yylloc.first_column);
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " ** " + $3->temp);
+		$$->temp = temp;
+	}
+	| expresion T_OPIGUAL expresion {
+		$$ = solver_operation($1, "igualito", $3, yylineno, yylloc.first_column);
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " == " + $3->temp);
+		$$->temp = temp;
+	}
+	| expresion T_OPDIFERENTE expresion {
+		$$ = solver_operation($1, "nie", $3, yylineno, yylloc.first_column);
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " != " + $3->temp);
+		$$->temp = temp;
+	}
+	| expresion T_OPMAYOR expresion { 
+		$$ = solver_operation($1, "mayol", $3, yylineno, yylloc.first_column);
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " > " + $3->temp);
+		$$->temp = temp;
+	}
+	| expresion T_OPMAYORIGUAL expresion {
+		$$ = solver_operation($1, "lidel", $3, yylineno, yylloc.first_column);
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " >= " + $3->temp);
+		$$->temp = temp;
+	}
+	| expresion T_OPMENOR expresion {
+		$$ = solver_operation($1, "menol", $3, yylineno, yylloc.first_column);
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " < " + $3->temp);
+		$$->temp = temp;
+	}
+	| expresion T_OPMENORIGUAL expresion {
+		$$ = solver_operation($1, "peluche", $3, yylineno, yylloc.first_column);
+		string temp = labelGen.newTemp();
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back(temp + " := " + $1->temp + " <= " + $3->temp);
+		$$->temp = temp;
+	}
 	| expresion T_YUNTA expresion { $$ = solver_operation($1, "yunta", $3, yylineno, yylloc.first_column); }
 	| expresion T_OSEA expresion { $$ = solver_operation($1, "o_sea", $3, yylineno, yylloc.first_column); }
 	| entrada_salida
@@ -1268,13 +1387,57 @@ condicion:
 	guardia_siesasi alternativa { 
 		$$ = makeASTNode("Condición");
 		$$->children.push_back($1);
-		
+
+		// Vector para guardar los bloques de instrucciones de las condiciones (si_es_asi, o_asi)
+		vector<pair<ASTNode*, string> >backup_instrs;
+		// Extraer guardia e instruccion de si_es_asi
+		ASTNode* siesasi_guard = $1->children[0]->children[0];
+		ASTNode* siesasi_instr = $1->children.size() > 1 ? $1->children[1] : nullptr;
+		// Agregar instrucciones de la guardia si_es_asi
+		concat_TAC($$, siesasi_guard);
+		// label del si_es_asi
+		string label1 = labelGen.newLabel();
+		string siesasi = "if " + siesasi_guard->temp + " goto " + label1;
+		// Agregar condicional
+		$$->tac.push_back(siesasi);
+		// Guardado de las instrucciones si_es_asi
+		backup_instrs.emplace_back(siesasi_instr, label1);
 		// Si hay una alternativa, se agrega al nodo de la guardia.
 		if ($2) {
 			for (ASTNode* node : $2->children)  {
+				if (node->name == "o_asi"){
+					// Extraer guardia e instruccion de o_asi
+					ASTNode* oasi_guard = node->children[0]->children[0];
+					ASTNode* oasi_instr = node->children.size() > 1 ? node->children[1] : nullptr;
+					// Agregar instrucciones de la guardia o_asi
+					concat_TAC($$, oasi_guard);
+					// label del o_asi
+					string label2 = labelGen.newLabel();
+					string oasi = "if " + oasi_guard->temp + " goto " + label2;
+					// Agregar condicional
+					$$->tac.push_back(oasi);
+					// Guardado de las instrucciones o_asi
+					backup_instrs.emplace_back(oasi_instr, label2);
+				}else{
+					// Agregar instrucciones nojoda
+					if (node->children.size() != 0) concat_TAC($$, node->children[0]);
+				}
 				$$->children.push_back(node); // Agregar cada alternativa como un nodo hijo.
 			}
 		}
+		// Agregar instrucciones de los condicionales (si_es_asi, o_asi)
+		string label3 = labelGen.newLabel();
+		$$->tac.push_back("goto " + label3);
+		for (size_t i = 0; i < backup_instrs.size(); ++i) {
+			auto pares = backup_instrs[i];
+			$$->tac.push_back(pares.second + ": ");
+			concat_TAC($$, pares.first);
+			if (i != backup_instrs.size() - 1) {
+				$$->tac.push_back("goto " + label3);
+			}
+		}
+		// Salida del bloque if
+		$$->tac.push_back(label3 + ": ");
 	}
 	;
 
@@ -1309,7 +1472,7 @@ guardia:
 			$$ = makeASTNode("o_asi");
 			ASTNode* guardia_node = makeASTNode("Guardia");
 			guardia_node->children.push_back($3); // Agregar la expresión de la guardia.
-			$$->children.push_back(guardia_node); 
+			$$->children.push_back(guardia_node);
 		}
 	}
 	| T_NOJODA { $$ = makeASTNode("nojoda"); }
@@ -1367,6 +1530,26 @@ indeterminado:
 			new_node->children.push_back(guardia_node);
 			if ($6) new_node->children.push_back($6); // Agregar el bloque de instrucciones.
 			$$->children.push_back(new_node);
+
+			// Generacion de TAC para bucle while
+			// label de repeticion
+			string label0 = labelGen.newLabel();
+			$$->tac.push_back(label0 + ": ");
+			// Agregar instrucciones de la guardia while
+			concat_TAC($$, $3);
+			// Agregar condicional de la guardia
+			string label1 = labelGen.newLabel();
+			string echalebola = "if " + $3->temp + " goto " + label1;
+			$$->tac.push_back(echalebola);
+			// Agregar el label de salida del bucle
+			string label2 = labelGen.newLabel();
+			$$->tac.push_back("goto " + label2);
+			// Instrucciones del while
+			$$->tac.push_back(label1 + ": ");
+			concat_TAC($$, $6);
+			$$->tac.push_back("goto " + label0);
+			// Salida del bucle
+			$$->tac.push_back(label2 + ": ");
 		}
 	}
 	;
@@ -1422,6 +1605,28 @@ determinado:
 		new_node->children.push_back($4);
 
 		$$ = new_node;
+
+		// TAC para for
+		string var = $3->name, 
+			   init = $3->children[0]->children[0]->temp,
+			   finish = $3->children[1]->children[0]->temp;
+
+		concat_TAC($$, $3->children[0]->children[0]);
+		$$->tac.push_back(var + " := " + init);
+		concat_TAC($$, $3->children[1]->children[0]);
+		
+		string label0 = labelGen.newLabel(),
+			   label1 = labelGen.newLabel(),
+			   label2 = labelGen.newLabel();
+		
+		$$->tac.push_back(label0 + ": ");
+		$$->tac.push_back("if " + var + " < " + finish + " goto " + label1);
+		$$->tac.push_back("goto " + label2);
+		$$->tac.push_back(label1 + ": ");
+		concat_TAC($$, $4);
+		$$->tac.push_back(var + " := " + var + " + " + "1");
+		$$->tac.push_back("goto " + label0);
+		$$->tac.push_back(label2 + ": ");
 	}
 	| T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW expresion bloque_instrucciones cerrar_scope {
 		ASTNode* new_node = makeASTNode("Bucle", "Determinado");
@@ -1437,6 +1642,28 @@ determinado:
 		new_node->children.push_back($6);
 
 		$$ = new_node;
+
+		// TAC para for
+		string var = $3->name, 
+			   init = $3->children[0]->children[0]->temp,
+			   finish = $3->children[1]->children[0]->temp;
+
+		concat_TAC($$, $3->children[0]->children[0]);
+		$$->tac.push_back(var + " := " + init);
+		concat_TAC($$, $3->children[1]->children[0], $5);
+		
+		string label0 = labelGen.newLabel(),
+			   label1 = labelGen.newLabel(),
+			   label2 = labelGen.newLabel();
+		
+		$$->tac.push_back(label0 + ": ");
+		$$->tac.push_back("if " + var + " < " + finish + " goto " + label1);
+		$$->tac.push_back("goto " + label2);
+		$$->tac.push_back(label1 + ": ");
+		concat_TAC($$, $6);
+		$$->tac.push_back(var + " := " + var + " + " + $5->temp);
+		$$->tac.push_back("goto " + label0);
+		$$->tac.push_back(label2 + ": ");
 	}
 	;
 

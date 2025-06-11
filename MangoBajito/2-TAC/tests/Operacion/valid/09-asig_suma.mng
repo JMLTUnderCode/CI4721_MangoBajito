@@ -1,0 +1,11 @@
+# Test 09: Operacion de asignacion suma.
+se_prende(){
+	culito n0: mango = -8;
+	n0 += 16;
+
+	culito n1: manguita = -8.5;
+	n1 += 16.2;
+
+	culito n2: manguangua = -8.541231e+3;
+	n2 += 16.21234e+3;
+};

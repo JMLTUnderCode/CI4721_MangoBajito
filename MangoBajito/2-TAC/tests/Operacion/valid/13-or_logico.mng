@@ -1,0 +1,28 @@
+# Test 13: Operador OR lógico (o_sea)
+
+se_prende(){
+    culito var_true: tas_claro = Sisa;
+    culito var_false: tas_claro = Nolsa;
+    culito resultado: tas_claro;
+
+    # Caso 1: Sisa o_sea Sisa -> Sisa
+    resultado = Sisa o_sea Sisa;
+
+    # Caso 2: Sisa o_sea Nolsa -> Sisa
+    resultado = Sisa o_sea Nolsa;
+
+    # Caso 3: Nolsa o_sea Sisa -> Sisa
+    resultado = Nolsa o_sea Sisa;
+
+    # Caso 4: Nolsa o_sea Nolsa -> Nolsa
+    resultado = Nolsa o_sea Nolsa;
+
+    # Caso 5: var_true o_sea Nolsa -> Sisa
+    resultado = var_true o_sea Nolsa;
+
+    # Caso 6: var_false o_sea var_true -> Sisa
+    resultado = var_false o_sea var_true;
+
+    # Caso 7: (Sisa o_sea Nolsa) o_sea (Nolsa o_sea Nolsa) -> Sisa o_sea Nolsa -> Sisa
+    resultado = (Sisa o_sea Nolsa) o_sea (Nolsa o_sea Nolsa);
+};

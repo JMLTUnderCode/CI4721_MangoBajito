@@ -1,0 +1,21 @@
+# Test 16: Operador de menor estricto (menol)
+se_prende(){
+	culito n0 : tas_claro = 3 menol 3;
+	culito n1 : tas_claro = 3 menol 2;
+	culito n2 : tas_claro = 3 menol 3.0;
+	culito n3 : tas_claro = 3 menol 2.0;
+	culito n4 : tas_claro = 3 menol 0.03e+2;
+	culito n5 : tas_claro = 3 menol 0.02e+2;
+	
+	culito n9 : tas_claro = 3.2 menol 3.2;
+	culito n10 : tas_claro = 3.2 menol 3.21;
+	culito n11 : tas_claro = 3.2 menol 0.032e+2;
+	culito n12 : tas_claro = 3.2 menol 0.0321e+2;
+	
+	culito n16 : tas_claro = 0.032e+2 menol 0.032e+2;
+	culito n17 : tas_claro = 0.032e+2 menol 0.0321e+2;
+	
+	culito n21 : tas_claro = 'h' menol 'h';
+
+	culito n24 : tas_claro = "hola" menol "hola";
+};

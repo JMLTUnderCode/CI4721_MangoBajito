@@ -1,0 +1,22 @@
+# Test 19: Errores de operador mayor igual (lidel)
+se_prende(){
+	culito n6 : tas_claro = 3 lidel 'h';
+	culito n7 : tas_claro = 3 lidel "hola";
+	culito n8 : tas_claro = 3 lidel Sisa;
+	
+	culito n13 : tas_claro = 3.2 lidel 'h';
+	culito n14 : tas_claro = 3.2 lidel "hola";
+	culito n15 : tas_claro = 3.2 lidel Sisa;
+	
+	culito n18 : tas_claro = 0.032e+2 lidel 'h';
+	culito n19 : tas_claro = 0.032e+2 lidel "hola";
+	culito n20 : tas_claro = 0.032e+2 lidel Sisa;
+	
+	culito n22 : tas_claro = 'h' lidel "hola";
+	culito n23 : tas_claro = 'h' lidel Sisa;
+
+	culito n25 : tas_claro = "hola" lidel Sisa;
+
+	culito n26 : tas_claro = Sisa lidel Sisa;
+	culito n27 : tas_claro = Sisa lidel Nolsa;
+};

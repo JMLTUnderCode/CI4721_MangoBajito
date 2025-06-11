@@ -1,0 +1,10 @@
+# Test 07: Error de Tipo array manguita.
+se_prende(){
+	culito decl0: manguita[1] = [2];
+	culito decl1: manguita[1] = [1.79769e+308];
+	culito decl2: manguita[1] = ['c'];
+	culito decl3: manguita[1] = ["hola"];
+	culito decl4: manguita[1] = [Nolsa];
+	culito decl5: manguita[2] = [2.1, 2];
+	culito decl6: manguita[1] = 2.1;
+};

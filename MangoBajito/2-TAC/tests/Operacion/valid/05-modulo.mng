@@ -1,0 +1,8 @@
+# Test 05: Operacion de modulo.
+se_prende(){
+	culito n0: mango = 50;
+	culito n1: mango = n0 % 9;
+	culito n2: mango = n0 % 9 % 4;
+	culito n3: mango = n0 % -10;
+	culito n4: mango = -n0 % -9;
+};

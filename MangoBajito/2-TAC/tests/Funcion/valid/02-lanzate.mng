@@ -1,0 +1,12 @@
+# Test 01: Funcion de retorno lanzate
+se_prende(){
+	culito p : mango = 23;
+	echar_cuento fun1(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
+		p1 = 2;
+		p2 = 3.0;
+		lanzate p2;
+	};
+	
+	culito value : mango = fun1(p, 2.0, 3);
+	value = fun1(p, 2.0, 123);
+};

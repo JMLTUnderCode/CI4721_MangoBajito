@@ -1,0 +1,8 @@
+# Test 03: Tipo negro.
+culito decl0: negro = 'c';
+se_prende(){
+	jeva decl1: negro = '$';
+	culito decl2: negro = decl0;
+	culito decl3: negro;
+	decl3 = decl1;
+};

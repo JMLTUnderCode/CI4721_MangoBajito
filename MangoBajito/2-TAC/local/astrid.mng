@@ -1,0 +1,8 @@
+# Archivo especifico para pruebas de Astrid
+
+se_prende(){
+	culito a: mango = 0;
+	repite_burda i entre 0+5+5 hasta 5 con_flow 4+8+1{
+		a = a + 1;
+	};
+};

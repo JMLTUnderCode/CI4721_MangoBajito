@@ -1,0 +1,19 @@
+# Test 02: Condicionales anidados
+se_prende(){
+	si_es_asi (Sisa) {
+		# instrucciones
+	} o_asi (Sisa) {
+		# instrucciones
+		si_es_asi (Sisa yunta Nolsa){
+			#instruccion
+		} o_asi (Sisa o_sea Nolsa yunta Sisa) {
+			#instruccion
+		} nojoda {
+			#instruccion
+		};
+	} o_asi (Nolsa) {
+		# instrucciones
+	} nojoda {
+		# instrucciones
+	};
+};

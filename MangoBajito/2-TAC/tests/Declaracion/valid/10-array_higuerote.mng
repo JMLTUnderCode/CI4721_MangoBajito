@@ -1,0 +1,11 @@
+# Test 10: Tipo array higuerote.
+se_prende(){
+	jeva n0: higuerote = "string 1";
+	culito n1: higuerote = "string 2";
+	culito decl0 : higuerote[3];
+	jeva decl1 : higuerote[5] = ["Etapa 1", "Etapa 2", "Etapa 3", "Etapa 4", "Etapa 5"];
+	jeva decl2 : higuerote[2] = [n0, n1];
+	decl0[0] = "sirve?";
+	decl0[1] = n0;
+	decl0[2] = decl1[0];
+};
