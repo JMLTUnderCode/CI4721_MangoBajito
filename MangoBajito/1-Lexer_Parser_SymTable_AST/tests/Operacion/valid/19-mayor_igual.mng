@@ -1,4 +1,4 @@
-# Test 17: Operador de mayol igual (lidel)
+# Test 19: Operador de mayol igual (lidel)
 se_prende(){
 	culito n0 : tas_claro = 3 lidel 3;
 	culito n1 : tas_claro = 3 lidel 2;
