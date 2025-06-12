@@ -112,10 +112,16 @@ Módulo desarrollados del proyecto Mango Bajito.
 - [ ] Funciones
     - [x] Llamada con cantidad de parametros correctos
     - [x] Llamada con tipos de parametros correctos
-    - [ ] Funciones del lenguajes
-        - [ ] `hablame`
-        - [ ] `rescata`
+    - [ ] Funciones y Procedimientos del lenguajes
         - [ ] `lanzate`
+		- [ ] `rescata`
+		- [ ] `hablame`
+        - [ ] `que_monda_ejesa`
+        - [ ] `ah_vaina`
+        - [ ] `pegao`
+        - [ ] `maelo`
+        - [ ] `me_mide`
+        - [ ] `rellenamelo`
 - [x] Condicional
     - [x] Bloque: si_es_asi
         - [x] Guardia
@@ -126,30 +132,34 @@ Módulo desarrollados del proyecto Mango Bajito.
     - [x] Bloque: nojoda
         - [x] Instrucciones
 - [ ] Ciclo Determinado
-    - [ ] Variable de ciclo (repite_burda)
+    - [x] Variable de ciclo (repite_burda)
     - [ ] Rango de ciclo (desde y hasta)
     - [ ] Paso de ciclo (con_flow)
-- [ ] Ciclo Indeterminado
-    - [ ] Guardia
-    - [ ] Bloque de Instrucciones
+- [x] Ciclo Indeterminado
+    - [x] Guardia
+    - [x] Bloque de Instrucciones
+- [ ] Control de Flujo en Bucles
+    - [ ] `uy_kieto`
+    - [ ] `rotalo`
 - [ ] Manejo de Errores
     - [ ] Variable de manejo (`fuera_del_perol` y `con`)
-    - [ ] 
+    - [ ] `caramba_ñero`
 - [ ] Casteo
     - [ ] Verificacion de casteos
 - [ ] Operaciones
 	- [x] Compuestas (+=, -=, *=)
 	- [x] Decremento y aumento ++ y --
 	- [ ] Expresiones logicas.
-    	- [ ] yunta
-    	- [ ] o_sea
-    	- [ ] igualito
-    	- [ ] nie
-    	- [ ] mayol
-    	- [ ] menol
-    	- [ ] lidel
-    	- [ ] peluche
-    	- [ ] Anidamiento
+    	- [x] yunta
+    	- [x] o_sea
+    	- [ ] Nelson
+    	- [x] igualito
+    	- [x] nie
+    	- [x] mayol
+    	- [x] menol
+    	- [x] lidel
+    	- [x] peluche
+    	- [x] Anidamiento
 - [ ] Apuntadores
     - [ ] Guardar apuntadores en la tabla de símbolos.
 	- [ ] Chequear la informacion de los elementos apuntadores(funcion print_info).
