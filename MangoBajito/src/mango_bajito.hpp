@@ -340,5 +340,5 @@ void print_TAC(const ASTNode* node);
 void concat_TAC(ASTNode* node, ASTNode* n1, ASTNode* n2 = nullptr);
 SizeType strToSizeType(string type);
 int sumOfSizeTypes(vector<ASTNode* > nodes);
-SizeType maxOfSizeType(vector<ASTNode*>& nodes);
+SizeType maxOfSizeType(vector<ASTNode* > nodes);
 #endif
