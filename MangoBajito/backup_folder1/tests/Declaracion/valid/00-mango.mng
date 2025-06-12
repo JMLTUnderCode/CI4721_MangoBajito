@@ -1,8 +1,0 @@
-# Test 00: Tipo mango.
-culito decl0: mango = 2147483647;
-se_prende(){
-	jeva decl1: mango = -2147483647;
-	culito decl2: mango = decl0;
-	culito decl3: mango;
-	decl3 = decl1;
-};

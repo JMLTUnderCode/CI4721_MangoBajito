@@ -1,8 +1,0 @@
-# Test 2: Tipo manguangua.
-culito decl0: manguangua = 1.79769e+308;
-se_prende(){
-	jeva decl1: manguangua = -1.79769e-307;
-	culito decl2: manguangua = decl0;
-	culito decl3: manguangua;
-	decl3 = decl1;
-};
