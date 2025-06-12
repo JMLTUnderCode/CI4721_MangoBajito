@@ -663,3 +663,12 @@ void concat_TAC(ASTNode* node, ASTNode* n1, ASTNode* n2){
 		node->tac_declaraciones.insert(node->tac_declaraciones.end(), n2->tac_declaraciones.begin(), n2->tac_declaraciones.end());
 	}
 }
+
+SizeType strToSizeType(string type){
+	if (type == "negro") return NEGRO;
+	if (type == "tas_claro") return TAS_CLARO;
+	if (type == "mango") return MANGO;
+	if (type == "manguita") return MANGUITA;
+	if (type == "manguangua") return MANGUANGUA;
+	if (type == "higuerote") return HIGUEROTE;
+}

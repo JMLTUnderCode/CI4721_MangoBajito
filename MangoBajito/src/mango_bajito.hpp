@@ -337,4 +337,5 @@ void show_TAC(const ASTNode* node);
 void print_TAC(const ASTNode* node);
 // Agrega una instrucción TAC de n1 y n2 al vector de TAC de node.
 void concat_TAC(ASTNode* node, ASTNode* n1, ASTNode* n2 = nullptr);
+SizeType strToSizeType(string type);
 #endif
