@@ -1158,7 +1158,10 @@ expresion:
 		} else if (type == "higuerote") {
 			new_node->svalue = $1.sval;
 			new_node->category = "Cadena de Caracteres";
-			new_node->temp = $1.sval;
+			// Crear variable temporal para la cadena que se guardara en .data
+			string temp_name = labelGen.newTempStr();
+			new_node->tac_data.emplace_back(temp_name, $1.sval);
+			new_node->temp = "&" + temp_name;
 		} else {
 			FLAG_ERROR = INTERNAL;
 			string error_msg = "ERROR INTERNO: Lexer proporciona un tipo invalido: '" + type + "'.";

@@ -610,7 +610,23 @@ string valuesToString(const ASTNode* node) {
 // ======================================================
 void show_TAC(const ASTNode* node){
 	if (!node) return;
+	
+	// Imprimir la sección de datos si hay información adicional
+	if (!node->tac_data.empty()) cout << ".data:" << endl; 
 
+	for (const auto& tac_data : node->tac_data) {
+		cout << tac_data.first << " := \"" << tac_data.second << "\"" << endl;
+	}
+
+	// Imprimir las declaraciones TAC si hay
+	if (!node->tac_declaraciones.empty()) cout << "\n.declaration:" << endl; 
+
+	for (const auto& tac_decl : node->tac_declaraciones) {
+		cout << tac_decl.first << ": alloc " << tac_decl.second << endl;
+	}
+	
+	// Imprimir el codigo principal
+	cout << "\n.code:\n";
 	for (auto tac : node->tac){
 		cout << tac << endl;
 	}
@@ -636,6 +652,14 @@ void print_TAC(const ASTNode* node) {
 }
 
 void concat_TAC(ASTNode* node, ASTNode* n1, ASTNode* n2){
-	if (n1) node->tac.insert(node->tac.end(), n1->tac.begin(), n1->tac.end());
-	if (n2) node->tac.insert(node->tac.end(), n2->tac.begin(), n2->tac.end());
+	if (n1){
+		node->tac.insert(node->tac.end(), n1->tac.begin(), n1->tac.end());
+		node->tac_data.insert(node->tac_data.end(), n1->tac_data.begin(), n1->tac_data.end());
+		node->tac_declaraciones.insert(node->tac_declaraciones.end(), n1->tac_declaraciones.begin(), n1->tac_declaraciones.end());
+	}
+	if (n2){
+		node->tac.insert(node->tac.end(), n2->tac.begin(), n2->tac.end());
+		node->tac_data.insert(node->tac_data.end(), n2->tac_data.begin(), n2->tac_data.end());
+		node->tac_declaraciones.insert(node->tac_declaraciones.end(), n2->tac_declaraciones.begin(), n2->tac_declaraciones.end());
+	}
 }

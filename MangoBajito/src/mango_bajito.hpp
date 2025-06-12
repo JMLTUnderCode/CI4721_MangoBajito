@@ -194,6 +194,16 @@ class SymbolTable {
 // =                Abstract Syntax Tree                =
 // ======================================================
 
+// Definición de tipos de tamaño para los tipos de datos
+enum SizeType {
+	NEGRO = 1, 		// Tamaño de negro (char)
+	TAS_CLARO = 1,	// Tamaño de tas_claro (bool)
+	MANGO = 4,		// Tamaño de mango (int)
+	MANGUITA = 8,	// Tamaño de manguita (float)
+	MANGUANGUA = 16,// Tamaño de manguangua (double)
+	HIGUEROTE = 32, // Tamaño de higuerote (string)
+};
+
 struct ASTNode {
 	string name;     // Nombre del elemento (variable, función, struct, etc)
 	string category; // "Declaración", "Asignación", "Función", "Bucle", "Operación", etc
@@ -215,6 +225,8 @@ struct ASTNode {
 
 	// TAC (Three Address Code) 
 	vector<string> tac; // Instrucciones de código intermedio asociadas al nodo
+	vector<pair<string, string> > tac_data; // Información adicional para las instrucciones TAC
+	vector<pair<string, SizeType> > tac_declaraciones; // Información adicional para las instrucciones TAC
 
 	ASTNode(const string& n, const string& c = "", const string& t = "", const string& k = "", const string& tmp = "")
 		: name(n), category(c), type(t), kind(k), temp(tmp) {}
@@ -273,8 +285,10 @@ string valuesToString(const ASTNode* node);
  * @note - El método reset() restablece ambos contadores a cero.
 */
 class LabelGenerator {
-    int counter_label; // Contador de etiquetas
-	int counter_temp;       // Contador de etiquetas temporales
+    int counter_label; 		 // Contador de etiquetas
+	int counter_temp;  		 // Contador de etiquetas temporales
+	int counter_temp_string; // Contador de etiquetas temporales para strings
+	int counter_temp_const;  // Contador de etiquetas temporales para constantes
 public:
     LabelGenerator() : counter_label(0), counter_temp(0) {}
 
@@ -286,6 +300,14 @@ public:
 	string newTemp(const string& base = "t") {
 		if (base != "t") return base;
 		return base + to_string(counter_temp++);
+	}
+
+	string newTempStr(const string& base = "str") {
+		return base + to_string(counter_temp_string++);
+	}
+
+	string newTempConst(const string& base = "const_") {
+		return base + to_string(counter_temp_const++);
 	}
 
 	void reset() {
@@ -313,5 +335,6 @@ public:
 // Imprime el TAC (Three Address Code) completo del AST.
 void show_TAC(const ASTNode* node);
 void print_TAC(const ASTNode* node);
+// Agrega una instrucción TAC de n1 y n2 al vector de TAC de node.
 void concat_TAC(ASTNode* node, ASTNode* n1, ASTNode* n2 = nullptr);
 #endif
