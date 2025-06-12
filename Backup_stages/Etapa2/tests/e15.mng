@@ -1,0 +1,32 @@
+# Test 5: Caso de Prueba Nro.5
+# Multiplicación de dos matrices, no necesariamente cuadradas
+
+se_prende(){
+    culito A: mango[3][2] = [[1,2],[3,4],[5,6]];
+    culito B: mango[2][3] = [[1,2,3],[4,5,6]];
+    
+    jeva filas_A: mango = me_mide(A);
+    jeva columnas_A: mango = me_mide(A[0]);
+    jeva filas_B: mango = me_mide(B);
+    jeva columnas_B: mango = me_mide(B[0]);
+    
+    si_es_asi (columnas_A nie filas_B) {
+    	ah_vaina("El número de columnas de A debe ser igual al número de filas de B");
+    }; 
+    
+    culito C: mango[filas_A][columnas_B];
+    
+    repite_burda i entre 0 hasta filas_A {
+    	repite_burda j entre 0 hasta columnas_B {
+    		C[i][j] = 0;
+    	};
+    };
+    
+    repite_burda i entre 0 hasta filas_A {
+    	repite_burda j entre 0 hasta columnas_B {
+    		repite_burda k entre 0 hasta columnas_A {
+    			C[i][j] += A[i][k] * B[k][j];
+    		};
+    	};
+    };
+};

@@ -1,0 +1,46 @@
+# Test 4: Combinaciones de multiples estructuras.
+se_prende(){
+	culito numero : mango = aki_toy a;
+	si_es_asi (Sisa){
+		arroz_con_mango Persona {
+			nombre : higuerote;
+			edad : mango;
+			estudiante : tas_claro;
+		};
+		culito a: mango = 100 + 100;
+
+	}o_asi (Sisa){
+		coliao Persona {
+			nombre : higuerote;
+			edad : mango;
+			estudiante : tas_claro;
+		};
+		culito b: mango;
+		jeva mi_array: mango[5];
+	}nojoda{
+		culito a: mango;
+		a = 500;
+		culito c: mango;
+		c = 1000;
+
+		repite_burda i entre 0 hasta 3 {
+			a = 100;
+		};
+	};
+	culito miau: mango;
+	miau = 32;
+	culito se_potea: mango;
+	se_potea = 999;
+	se_potea = 8;
+	echar_cuento funcion(d : mango) lanza mango{
+		se_potea = 4;
+		# Revisar el error en esta siguiente linea. Lanzate no es capaz de retornar operaciones.
+		lanzate se_potea; 
+	};
+
+	meando{
+		culito ayuda: higuerote;
+	} fuera_del_perol como e{
+		culito ayuda: higuerote;
+	};
+};

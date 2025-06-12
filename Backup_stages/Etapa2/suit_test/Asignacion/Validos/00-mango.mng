@@ -1,0 +1,7 @@
+# Test 00: Tipo mango.
+se_prende(){
+	culito decl0: mango;
+	culito decl1: mango = 2147483647;
+	jeva decl2: mango = -2147483647;
+	decl0 = 123332;
+};

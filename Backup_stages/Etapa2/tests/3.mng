@@ -1,0 +1,16 @@
+# Test 3: Definicion de funciones
+jeva CONST : higuerote[10] = "Manguelson";
+se_prende(){
+	echar_cuento fun1() lanza un_coño {
+		# Hacer un print de global
+	};
+	culito p : mango = 23;
+	echar_cuento fun2(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
+		p1 = 2;
+		p2 = 3.0;
+		lanzate p2;
+	};
+	
+	culito value : mango = fun2(p, 2.0, 3);
+	value = fun2(p, 2.0, 3);
+};

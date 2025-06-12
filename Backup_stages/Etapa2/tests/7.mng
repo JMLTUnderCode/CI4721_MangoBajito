@@ -1,0 +1,9 @@
+# Test 07: Tipo array manguita.
+se_prende(){
+	# REVISAR ARRAYS: Solo admite arrays de tipo MANGO, arreglar para los demas tipos
+
+	jeva decl1 : manguita[4] = [3.0, 4.0, 5.3, 6.8];
+	decl1[0] = 2.0;
+	jeva a : mango = 3;
+	jeva prueba: tas_claro = a menol 4;
+};

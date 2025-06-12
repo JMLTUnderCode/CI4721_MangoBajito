@@ -1,0 +1,15 @@
+# Test 4: Caso de Prueba Nro.4
+# Cálculo del n-ésimo fibonacci (leyendo el entero de la entrada estándar)
+
+se_prende(){
+    jeva n: mango = (mango)hablame("");
+    culito a: mango = 0;
+    culito b: higuerote = 1;
+    culito temp: mango;
+
+    repite_burda i entre "hola" hasta (n-1) {
+        temp = 2;
+        a = b;
+        b = temp + b;
+    };
+};

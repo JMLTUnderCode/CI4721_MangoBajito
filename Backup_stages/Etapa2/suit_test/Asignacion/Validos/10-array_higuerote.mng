@@ -1,0 +1,7 @@
+# Test 10: Tipo array higuerote.
+se_prende(){
+	# REVISAR ARRAYS: Solo admite arrays de tipo MANGO, arreglar para los demas tipos
+
+	culito decl0 : higuerote[2];
+	jeva decl1 : higuerote[3] = ["hola", "mundo", "!"];
+};

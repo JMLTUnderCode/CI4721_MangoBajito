@@ -1,0 +1,18 @@
+# Test 2: Caso de Prueba Nro.2
+# Mostrar un "Hola usuario"
+
+se_prende(){
+    culito nombre: higuerote = hablame("nombre de usuario: ");
+    culito num: mango = 5;
+    culito num2: mango = 5;
+    culito num3: mango = 5;
+    num3 *= 9;
+    num++;
+    num++;
+    num2--;
+    num2--;
+
+    culito tas_claro0: tas_claro = (Sisa o_sea Nolsa) yunta (Nolsa o_sea (Nolsa o_sea (nelson (3 mayol 4))));
+
+    rescata("Hola ", nombre);
+};

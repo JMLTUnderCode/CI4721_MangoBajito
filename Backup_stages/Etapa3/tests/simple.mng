@@ -1,0 +1,5 @@
+se_prende(){
+	culito a: mango;
+	a = 100 + 98 - a * b / 99;
+	a = (mango)10;
+};

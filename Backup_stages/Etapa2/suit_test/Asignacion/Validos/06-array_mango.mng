@@ -1,0 +1,5 @@
+# Test 06: Tipo array mango
+se_prende(){
+	culito decl0 : mango[5];
+	jeva decl1 : mango[3] = [3, 4, 5];
+};
