@@ -186,10 +186,9 @@ LabelGenerator labelGen;
 %token T_OPMULT T_OPDIVDECIMAL T_OPDIVENTERA T_OPMOD T_OPEXP
 %token T_OPIGUAL T_OPDIFERENTE T_OPMAYORIGUAL T_OPMAYOR T_OPMENORIGUAL T_OPMENOR
 %token T_YUNTA T_OSEA T_NELSON
-%token <sval> T_ID 
+%token <sval> T_ID T_CASTEO
 %token <att_val> T_VALUE
 %token T_IZQPAREN T_DERPAREN T_IZQLLAVE T_DERLLAVE T_IZQCORCHE T_DERCORCHE
-%token T_CASTEO
 
 // Declaracion de tipos de retorno para las producciones 
 %type <ast> programa main 
@@ -226,7 +225,7 @@ LabelGenerator labelGen;
 %right T_NELSON
 %left T_FLECHA
 
-%right T_CASTEO  // Precedencia más alta para el casting
+%right T_CASTEO  // VERIFICAR PRECEDENCIA
 
 %start programa
 %%
@@ -1969,7 +1968,22 @@ manejo_error:
 	;
 
 casting:
-	T_CASTEO expresion { $$ = nullptr; }
+	T_CASTEO expresion { 
+		$$ = makeASTNode("Casting", "Casting");
+		if ($2->type == "tas_claro") {
+			FLAG_ERROR = TYPE_ERROR;
+			string error_msg = "No puedes hacer casting a 'tas_claro'.";
+			yyerror(error_msg.c_str());
+			$$ = nullptr;
+		} else {
+			$$->children.push_back($2);
+			$$->type = $2->type; // Mantener el tipo de la expresión
+			string temp = labelGen.newTemp();
+			concat_TAC($$, $2);
+			$$->tac.push_back(temp + " := cast(" + $2->temp + ", " + $1 + ")");
+			$$->temp = temp;
+		}
+	}
 	;
 
 %%

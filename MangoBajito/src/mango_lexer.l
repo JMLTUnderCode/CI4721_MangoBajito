@@ -184,7 +184,7 @@ CASTING			\(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(tas_cl
 {CASTING} { 
 	UPDATE_LOC
 	yytext[yyleng - 1] = '\0';
-	yylval.att_val.sval = strdup(yytext + 1);
+	yylval.sval = strdup(yytext + 1);
 	return T_CASTEO;
 }
 
