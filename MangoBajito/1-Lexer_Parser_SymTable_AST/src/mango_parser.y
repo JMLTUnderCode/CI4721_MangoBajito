@@ -1206,8 +1206,20 @@ expresion:
 
 	} 
 	| T_IZQPAREN expresion T_DERPAREN { $$ = $2; } // Expresion parentizada.
-	| T_NELSON expresion { $$ = nullptr; }
-	| T_OPRESTA expresion %prec T_OPRESTA {
+	| T_NELSON expresion { 
+		string type = $2->type;
+		$$ = makeASTNode("nelson", "Operación", "Desconocido", "Booleana");
+		if (type != "tas_claro") {
+			FLAG_ERROR = TYPE_ERROR;
+			string error_msg = "'" + $2->name + "' de tipo '" + type + "' y le quiere meter un `nelson`, peaso e loca.";
+			yyerror(error_msg.c_str());
+		} else {
+			$$->type = "tas_claro"; // Asegurar que el tipo es booleano
+			$$->bvalue = !$2->bvalue; // Negar el valor booleano
+			$$->children.push_back($2);
+		}
+	}
+	| T_OPRESTA expresion %prec T_OPRESTA {	
 		string type = $2->type;
 		if (type == "mango") $2->ivalue *= -1;
 		else if (type == "manguita") $2->fvalue *= -1;
