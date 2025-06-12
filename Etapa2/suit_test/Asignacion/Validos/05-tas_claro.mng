@@ -1,5 +1,0 @@
-# Test 05: Tipo tas_claro
-se_prende(){
-	culito decl0: tas_claro = Sisa;
-	jeva decl1: tas_claro = Nolsa;
-};

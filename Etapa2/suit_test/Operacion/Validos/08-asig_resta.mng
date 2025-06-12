@@ -1,5 +1,0 @@
-# Test 08: Operacion de asignacion resta.
-se_prende(){
-	culito n: mango = -8;
-	n -= -16;
-};

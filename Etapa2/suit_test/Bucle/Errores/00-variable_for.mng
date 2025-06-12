@@ -1,6 +1,0 @@
-# Test 00: Error de cambiar variable de Bucle FOR.
-se_prende(){
-	repite_burda i entre 1 hasta 4 {
-		1 = 1 + 1;
-	};
-};

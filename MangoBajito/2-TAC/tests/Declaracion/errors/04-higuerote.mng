@@ -1,9 +1,0 @@
-# Test 04: Error de Tipo higuerote.
-se_prende(){
-	culito decl0: higuerote = 2;
-	culito decl1: higuerote = 1.79;
-	culito decl2: higuerote = 1.79769e+308;
-	culito decl3: higuerote = 'c'; # Si fuese "c" si es valido.
-	culito decl4: higuerote = Nolsa;
-	culito decl5: higuerote = [1, 2, 3];
-};

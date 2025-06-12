@@ -1,6 +1,0 @@
-# Test 07: Tipo array manguita.
-se_prende(){
-	# REVISAR ARRAYS: Solo admite arrays de tipo MANGO, arreglar para los demas tipos
-
-	jeva decl1 : mango[4] = [3, 4, 5, 6];
-};

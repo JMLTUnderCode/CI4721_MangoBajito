@@ -1,0 +1,21 @@
+# Test 19: Operador de mayol igual (lidel)
+se_prende(){
+	culito n0 : tas_claro = 3 lidel 3;
+	culito n1 : tas_claro = 3 lidel 2;
+	culito n2 : tas_claro = 3 lidel 3.0;
+	culito n3 : tas_claro = 3 lidel 2.0;
+	culito n4 : tas_claro = 3 lidel 0.03e+2;
+	culito n5 : tas_claro = 3 lidel 0.02e+2;
+	
+	culito n9 : tas_claro = 3.2 lidel 3.2;
+	culito n10 : tas_claro = 3.2 lidel 3.21;
+	culito n11 : tas_claro = 3.2 lidel 0.032e+2;
+	culito n12 : tas_claro = 3.2 lidel 0.0321e+2;
+	
+	culito n16 : tas_claro = 0.032e+2 lidel 0.032e+2;
+	culito n17 : tas_claro = 0.032e+2 lidel 0.0321e+2;
+	
+	culito n21 : tas_claro = 'h' lidel 'h';
+
+	culito n24 : tas_claro = "hola" lidel "hola";
+};

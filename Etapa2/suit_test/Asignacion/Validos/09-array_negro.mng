@@ -1,7 +1,0 @@
-# Test 09: Tipo array negro.
-se_prende(){
-	# REVISAR ARRAYS: Solo admite arrays de tipo MANGO, arreglar para los demas tipos
-
-	culito decl0 : negro[5];
-	#jeva decl1 : negro[5] = ["a", "e", "i", "o", "u"];
-};
