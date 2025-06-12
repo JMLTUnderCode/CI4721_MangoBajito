@@ -71,7 +71,7 @@ Programa
                     |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 6
                          |--> n | Category: Identificador | Type: mango | Value: 5
                          |--> i | Category: Identificador | Type: mango | Value: 1
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

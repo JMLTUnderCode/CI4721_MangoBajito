@@ -127,7 +127,7 @@ Programa
           |--> Asignación | Kind: =
                |--> decl0[2] | Category: Elemento_Array | Type: mango
                |--> decl1[0] | Category: Elemento_Array | Type: mango | Value: 30
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

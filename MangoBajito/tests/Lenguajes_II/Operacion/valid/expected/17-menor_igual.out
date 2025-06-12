@@ -175,7 +175,7 @@ Programa
                |--> peluche | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
                     |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "hola"
                     |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "hola"
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

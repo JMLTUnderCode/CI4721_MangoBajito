@@ -82,7 +82,7 @@ Programa
           |--> Resta Compuesta | Category: Operación | Type: manguangua | Kind: -= | Value: -24753.6
                |--> n2 | Category: Identificador | Type: manguangua | Value: -8541.23
                |--> Literal | Category: Numérico | Type: manguangua | Value: 16212.3
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

@@ -109,7 +109,7 @@ Programa
                     |    |--> Literal | Category: Numérico | Type: manguangua | Value: 1.22e+13
                     |    |--> Literal | Category: Numérico | Type: manguangua | Value: 1.02e+11
                     |--> Literal | Category: Numérico | Type: mango | Value: 12000
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

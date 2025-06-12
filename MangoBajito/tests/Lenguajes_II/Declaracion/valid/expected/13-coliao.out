@@ -82,7 +82,7 @@ Programa
           |--> Asignación | Kind: =
                |--> var_union.attr_u_2 | Category: Atributo_Estructura
                |--> Literal | Category: Numérico | Type: manguita | Value: 323.1
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

@@ -79,7 +79,7 @@ Programa
           |--> Asignación | Type: tas_claro | Kind: = | Value: 0
                |--> decl3 | Category: Identificador | Type: tas_claro
                |--> decl1 | Category: Identificador | Type: tas_claro | Kind: Nolsa | Value: 0
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

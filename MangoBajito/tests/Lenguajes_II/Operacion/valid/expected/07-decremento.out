@@ -110,7 +110,7 @@ Programa
                |--> x | Category: Parámetro | Type: manguangua
                |--> Operación | Category: Decremento | Type: manguangua | Value: 0
                     |--> x | Category: Identificador
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

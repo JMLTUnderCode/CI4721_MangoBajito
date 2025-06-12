@@ -79,7 +79,7 @@ Programa
           |--> Asignación | Type: higuerote | Kind: = | Value: " mundo"
                |--> decl3 | Category: Identificador | Type: higuerote
                |--> decl1 | Category: Identificador | Type: higuerote | Value: " mundo"
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

@@ -127,7 +127,7 @@ Programa
           |--> Asignación | Kind: =
                |--> decl0[2] | Category: Elemento_Array | Type: manguangua
                |--> decl1[0] | Category: Elemento_Array | Type: manguangua | Value: 2.22e+12
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

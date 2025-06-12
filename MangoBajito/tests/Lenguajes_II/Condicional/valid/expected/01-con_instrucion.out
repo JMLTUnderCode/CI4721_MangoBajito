@@ -105,7 +105,7 @@ Programa
                     |--> Asignación | Kind: =
                          |--> c | Category: Declaración | Type: mango | Kind: VARIABLE
                          |--> Literal | Category: Numérico | Type: mango | Value: 11
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

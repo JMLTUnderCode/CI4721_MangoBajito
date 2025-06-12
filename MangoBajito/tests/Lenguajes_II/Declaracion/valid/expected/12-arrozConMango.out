@@ -94,7 +94,7 @@ Programa
           |--> Asignación | Kind: =
                |--> var_struct.attr_s_3 | Category: Atributo_Estructura
                |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "hola"
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

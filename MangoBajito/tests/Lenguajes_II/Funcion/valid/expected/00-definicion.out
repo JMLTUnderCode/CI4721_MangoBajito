@@ -80,7 +80,7 @@ Programa
                     |--> Asignación | Type: manguita | Kind: = | Value: 3.1
                          |--> p2 | Category: Identificador | Type: manguita
                          |--> Literal | Category: Numérico | Type: manguita | Value: 3.1
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

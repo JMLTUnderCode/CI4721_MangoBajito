@@ -137,7 +137,7 @@ Programa
           |--> Asignación | Kind: =
                |--> decl0[2] | Category: Elemento_Array | Type: higuerote
                |--> decl1[0] | Category: Elemento_Array | Type: higuerote | Value: "Etapa 1"
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================
