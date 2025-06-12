@@ -1,10 +1,13 @@
 # Archivo especifico para pruebas de Astrid
-
+jeva pi: manguita = 3.14;
 se_prende(){
+	culito z: mango = 10;
+	culito x: mango;
 	echar_cuento func(n : mango, m : mango) lanza mango{
 		culito a: mango = 10;
 		lanzate 5;
 	};
 
 	culito a: mango = func(3, 5);
+	culito b: higuerote = "Hola Mundo";
 };

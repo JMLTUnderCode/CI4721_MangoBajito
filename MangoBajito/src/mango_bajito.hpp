@@ -227,7 +227,7 @@ struct ASTNode {
 	// TAC (Three Address Code) 
 	vector<string> tac; // Instrucciones de código intermedio asociadas al nodo
 	vector<pair<string, string> > tac_data; // Información adicional para las instrucciones TAC
-	vector<pair<string, SizeType> > tac_declaraciones; // Información adicional para las instrucciones TAC
+	vector<pair<int, pair<string, SizeType> > > tac_declaraciones; // Información adicional para las instrucciones TAC
 
 	ASTNode(const string& n, const string& c = "", const string& t = "", const string& k = "", const string& tmp = "")
 		: name(n), category(c), type(t), kind(k), temp(tmp) {}
@@ -339,4 +339,6 @@ void print_TAC(const ASTNode* node);
 // Agrega una instrucción TAC de n1 y n2 al vector de TAC de node.
 void concat_TAC(ASTNode* node, ASTNode* n1, ASTNode* n2 = nullptr);
 SizeType strToSizeType(string type);
+int sumOfSizeTypes(vector<ASTNode* > nodes);
+SizeType maxOfSizeType(vector<ASTNode*>& nodes);
 #endif

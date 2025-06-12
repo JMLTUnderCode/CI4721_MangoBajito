@@ -484,6 +484,12 @@ declaracion:
 		if ($4->category == "Array"){
 			$$->children = $4->children;
 		}
+
+		if ($1->kind == "VARIABLE"){
+			// Agregar variable a .declaration
+			int scope_level = symbolTable.search_symbol($2)->scope;
+			$$->tac_declaraciones.push_back({scope_level, {string($2), strToSizeType(declared_type)}});
+		}
 	}
 	| tipo_declaracion T_ID T_DOSPUNTOS tipos T_ASIGNACION expresion {
 		string left_type = $4->type;
@@ -658,7 +664,17 @@ declaracion:
 		// Agregar instrucciones de la asignacion
 		concat_TAC($$, $6);
 		// Agregar TAC asociado a asignacion
-		$$->tac.push_back(string($2) + " := " + $6->temp);
+		if($1->kind != "CONSTANTE") $$->tac.push_back(string($2) + " := " + $6->temp);
+		
+		// Agregar TAC de declaraciones
+		if ($1->kind == "VARIABLE"){
+			// Agregar variable a .declaration
+			int scope_level = symbolTable.search_symbol($2)->scope;
+			$$->tac_declaraciones.push_back({scope_level, {string($2), strToSizeType(left_type)}});
+		} else if ($1->kind == "CONSTANTE"){
+			// Agregar constante a .data
+			$$->tac_data.emplace_back(string($2), valuesToString($6));
+		}
 	}
 	| funcion cerrar_scope { $$ = $1; }
 	| estructura cerrar_scope { $$ = $1; }
@@ -1160,7 +1176,7 @@ expresion:
 			new_node->category = "Cadena de Caracteres";
 			// Crear variable temporal para la cadena que se guardara en .data
 			string temp_name = labelGen.newTempStr();
-			new_node->tac_data.emplace_back(temp_name, $1.sval);
+			new_node->tac_data.emplace_back(temp_name, "\"" + string($1.sval) + "\"");
 			new_node->temp = "&" + temp_name;
 		} else {
 			FLAG_ERROR = INTERNAL;

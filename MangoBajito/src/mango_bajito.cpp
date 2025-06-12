@@ -615,15 +615,27 @@ void show_TAC(const ASTNode* node){
 	if (!node->tac_data.empty()) cout << ".data:" << endl; 
 
 	for (const auto& tac_data : node->tac_data) {
-		cout << tac_data.first << " := \"" << tac_data.second << "\"" << endl;
+		cout << tac_data.first << " := " << tac_data.second << endl;
 	}
 
 	// Imprimir las declaraciones TAC si hay
-	if (!node->tac_declaraciones.empty()) cout << "\n.declaration:" << endl; 
+	if (!node->tac_declaraciones.empty()){ 
+		cout << "\n.declaration:" << endl;
+		auto tac_declaraciones = node->tac_declaraciones;
+		sort(tac_declaraciones.begin(), tac_declaraciones.end(), [](const pair<int, pair<string, SizeType>>& a, const pair<int, pair<string, SizeType>>& b) {
+			return a.first < b.first; // Ordenar por el primer elemento (scope)
+		});
 
-	for (const auto& tac_decl : node->tac_declaraciones) {
-		cout << tac_decl.first << ": alloc " << tac_decl.second << endl;
-	}
+		for (const auto& tac_decl : tac_declaraciones) {
+			static int last_scope = -1;
+			if (tac_decl.first != last_scope) {
+				if (last_scope != -1) cout << endl; // Agrega salto de línea antes de cada scope excepto el primero
+				cout << "Scope " << tac_decl.first << ": " << endl;
+				last_scope = tac_decl.first;
+			}
+			cout << tac_decl.second.first << ": alloc " << tac_decl.second.second << endl;
+		}
+	} 
 	
 	// Imprimir el codigo principal
 	cout << "\n.code:\n";
@@ -673,4 +685,20 @@ SizeType strToSizeType(string type){
 	if (type == "higuerote") return HIGUEROTE;
 
 	return ERROR;
+}
+
+int sumOfSizeTypes(vector<ASTNode* > nodes){
+	int result = 0;
+	for (auto node : nodes){
+		result += strToSizeType(node->type);
+	}
+	return result;
+}
+
+SizeType maxOfSizeType(vector<ASTNode* > nodes){
+	SizeType max_result = strToSizeType(nodes[0]->type);
+	for (auto node : nodes){
+		max_result = max(max_result, strToSizeType(node->type));
+	}
+	return max_result;
 }
