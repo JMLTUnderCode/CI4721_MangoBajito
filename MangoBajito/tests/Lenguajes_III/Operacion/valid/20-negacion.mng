@@ -1,0 +1,7 @@
+# Test 20: Operador de negacion (nelson)
+se_prende(){
+	culito n0 : tas_claro = nelson Sisa;
+	culito n1 : tas_claro = nelson Nolsa;
+	culito n2 : tas_claro = nelson (Sisa yunta Nolsa);
+	culito n3 : tas_claro = nelson Sisa yunta Sisa;
+};

@@ -1,0 +1,12 @@
+# Test 00: Definicion de estructura condicional vacia.
+se_prende(){
+	si_es_asi (Sisa) {
+		# instrucciones
+	} o_asi (Sisa) {
+		# instrucciones
+	} o_asi (Nolsa) {
+		# instrucciones
+	} nojoda {
+		# instrucciones
+	};
+};

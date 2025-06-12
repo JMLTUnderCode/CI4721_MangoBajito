@@ -1,0 +1,8 @@
+# Test 20: Errores de operador negacion (nelson)
+se_prende(){
+	culito n0 : tas_claro = nelson 3;
+	culito n1 : tas_claro = nelson 3.2;
+	culito n2 : tas_claro = nelson 3.2e+200;
+	culito n3 : tas_claro = nelson 'h';
+	culito n4 : tas_claro = nelson "hola";
+};

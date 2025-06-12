@@ -1,0 +1,10 @@
+# Test 10: Error de Tipo array higuerote.
+se_prende(){
+	culito decl0: higuerote[1] = [2];
+	culito decl1: higuerote[1] = [1.79];
+	culito decl2: higuerote[1] = [1.79769e+308];
+	culito decl3: higuerote[1] = ['c']; # Si fuese "c" si es valido.
+	culito decl4: higuerote[1] = [Nolsa];
+	culito decl5: higuerote[2] = ["hola", 2];
+	culito decl6: higuerote[1] = "hola";
+};

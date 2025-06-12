@@ -1,0 +1,27 @@
+# Test 06: Operacion de potencia.
+se_prende(){
+	# Sin importar el tipo de entrada, potencia retorna manguangua.
+	culito n0: manguangua = 14 ** 5;
+	culito n1: manguangua = 14 ** -5;
+	culito n2: manguangua = -14 ** 5;
+	culito n3: manguangua = -14 ** -5;
+	culito n4: manguangua = 14 ** 0;
+	culito n5: manguangua = 0 ** 1;
+	culito n6: manguangua = 0 ** -1;
+
+	culito n7: manguangua = 14.2 ** 5.5;
+	culito n8: manguangua = 14.2 ** -5.5;
+	culito n9: manguangua = -14.2 ** 5.5;
+	culito n10: manguangua = -14.2 ** -5.5;
+	culito n11: manguangua = 14.2 ** 0.0;
+	culito n12: manguangua = 0.0 ** 1.5;
+	culito n13: manguangua = 0.0 ** -1.5;
+
+	culito n14: manguangua = 0.02e+2 ** 0.2e+2;
+	culito n15: manguangua = 0.02e+2 ** -0.2e+2;
+	culito n16: manguangua = -0.02e+2 ** 0.2e+2;
+	culito n17: manguangua = -0.02e+2 ** -0.2e+2;
+	culito n18: manguangua = 0.02e+2 ** 0.0e+2;
+	culito n19: manguangua = 0.0e+2 ** 0.2e+2;
+	culito n20: manguangua = 0.0e+2 ** -0.2e+2;
+};

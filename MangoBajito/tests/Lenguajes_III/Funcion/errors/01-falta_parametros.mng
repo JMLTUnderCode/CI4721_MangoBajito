@@ -1,0 +1,10 @@
+# Test 01: Llamadas a funciones con menor cantidad de parametros.
+se_prende(){
+	echar_cuento fun1(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
+		p1 = 2;
+		p2 = 3.0;
+		lanzate p2;
+	};
+	
+	culito value : mango = fun1(3, 2.0);
+};

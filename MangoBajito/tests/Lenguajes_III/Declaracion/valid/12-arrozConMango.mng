@@ -1,0 +1,14 @@
+# Test 12: Definicion y tipo arroz_con_mango.
+se_prende(){
+	arroz_con_mango MyStruct {
+		attr_s_1 : mango;
+		attr_s_2 : manguita;
+		attr_s_3 : higuerote;
+	};
+
+	culito var_struct : MyStruct;
+	
+	var_struct.attr_s_1 = 123;
+	var_struct.attr_s_2 = 123.123;
+	var_struct.attr_s_3 = "hola";
+};
