@@ -19,7 +19,7 @@ error_tests["Operacion"]="16 17 18 19 20"
 error_tests["ManejoError"]=""
 
 # Ruta base de los tests
-BASE_DIR="tests"
+BASE_DIR="tests/Lenguajes_II"
 
 # Ejecutable
 BIN="./mango_bajito"

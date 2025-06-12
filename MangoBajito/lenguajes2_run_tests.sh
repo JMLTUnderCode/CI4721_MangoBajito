@@ -1,6 +1,6 @@
 #!/bin/bash
 BIN=./mango_bajito
-ROOT=./tests
+ROOT=./tests/Lenguajes_II
 
 TOTAL_VALID=0
 PASSED_VALID=0

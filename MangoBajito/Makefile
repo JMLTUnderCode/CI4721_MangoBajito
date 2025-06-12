@@ -17,10 +17,13 @@ local: build/mango_bajito
 		./mango_bajito local/$(e).mng; \
 	fi
 
-unitest: build/mango_bajito
-	@bash run_tests.sh
+unitest2: build/mango_bajito
+	@bash lenguajes2_run_tests.sh
+
+unitest3: build/mango_bajito
+	@bash lenguajes3_run_tests.sh
 
 clean:
 	@rm -rf build mango_bajito
 
-.PHONY: all run local unitest clean
+.PHONY: all run local unitest2 unitest3 clean

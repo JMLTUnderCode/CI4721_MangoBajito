@@ -63,12 +63,22 @@ Módulo desarrollados del proyecto Mango Bajito.
 	```
 
   - Para ejecutar la suit de pruebas automzatizada:
+	Actualmente hay dos suit de pruebas.
+	- Lenguajes_II  : Pruebas asociadas a Lexer, Parser, Tabla de Símbolos y AST.
+	- Lenguajes_III : TAC
+	
+	Para ejecutar la suit de pruebas de Lenguajes II:
 	```
-	make unitest
+	make unitest2
 	```
+	Para ejecutar la suit de pruebas de Lenguajes III:
+	```
+	make unitest3
+	```
+
 	>[!NOTE]
-	> * Esto ejecutará todas las pruebas unitarias definidas en el proyecto, contenidas en la carpeta tests.
-	> * El tipo de prueba es mediante `archivos de oro` contenidos en las subcarpetas 'expected' de cada sección de prueba en la carpeta `tests`, estos .out representan la salida esperada de los archivos en la sección de prueba correspondiente.
+	> * Esto ejecutará todas las pruebas unitarias definidas en el proyecto, contenidas en la carpeta `tests/Lenguajes_II` y `tests/Lenguajes_III`.
+	> * El tipo de prueba es mediante `archivos de oro` contenidos en las subcarpetas 'expected' de cada sección de prueba en las subcarpetas  de `tests/`, estos `.out` representan la salida esperada de los archivos en la sección de prueba correspondiente.
 
   - Para realizar pruebas locales:
 	```
