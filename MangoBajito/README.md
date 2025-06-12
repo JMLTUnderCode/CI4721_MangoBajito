@@ -23,8 +23,8 @@ Módulo desarrollados del proyecto Mango Bajito.
     - [x] Desarrollando
     - [ ] Terminado
 - [ ] Código de tres direcciones. (TAC)
-    - [ ] Inicializado
-    - [ ] Desarrollando
+    - [x] Inicializado
+    - [x] Desarrollando
     - [ ] Terminado
 
 ## Guía
@@ -85,7 +85,7 @@ Módulo desarrollados del proyecto Mango Bajito.
 	```
 	make clean
 	```
-## Realizado y Por Realizar
+## Lexer-Parser-SymbolTable-AST: Implementaciones
 - [x] Scopes
     - [x] Abrir alcances 
     - [x] Cerrar alcances
@@ -112,10 +112,16 @@ Módulo desarrollados del proyecto Mango Bajito.
 - [ ] Funciones
     - [x] Llamada con cantidad de parametros correctos
     - [x] Llamada con tipos de parametros correctos
-    - [ ] Funciones del lenguajes
-        - [ ] `hablame`
-        - [ ] `rescata`
+    - [ ] Funciones y Procedimientos del lenguajes
         - [ ] `lanzate`
+		- [ ] `rescata`
+		- [ ] `hablame`
+        - [ ] `que_monda_ejesa`
+        - [ ] `ah_vaina`
+        - [ ] `pegao`
+        - [ ] `maelo`
+        - [ ] `me_mide`
+        - [ ] `rellenamelo`
 - [x] Condicional
     - [x] Bloque: si_es_asi
         - [x] Guardia
@@ -126,30 +132,35 @@ Módulo desarrollados del proyecto Mango Bajito.
     - [x] Bloque: nojoda
         - [x] Instrucciones
 - [ ] Ciclo Determinado
-    - [ ] Variable de ciclo (repite_burda)
-    - [ ] Rango de ciclo (desde y hasta)
-    - [ ] Paso de ciclo (con_flow)
-- [ ] Ciclo Indeterminado
-    - [ ] Guardia
-    - [ ] Bloque de Instrucciones
+    - [x] Variable de ciclo (repite_burda)
+    - [x] Rango de ciclo (desde y hasta)
+    - [x] Paso de ciclo (con_flow)
+    - [ ] Verificar condiciones de rangos y pasos validos
+- [x] Ciclo Indeterminado
+    - [x] Guardia
+    - [x] Bloque de Instrucciones
+- [ ] Control de Flujo en Bucles
+    - [ ] `uy_kieto`
+    - [ ] `rotalo`
 - [ ] Manejo de Errores
     - [ ] Variable de manejo (`fuera_del_perol` y `con`)
-    - [ ] 
+    - [ ] `caramba_ñero`
 - [ ] Casteo
     - [ ] Verificacion de casteos
 - [ ] Operaciones
 	- [x] Compuestas (+=, -=, *=)
 	- [x] Decremento y aumento ++ y --
 	- [ ] Expresiones logicas.
-    	- [ ] yunta
-    	- [ ] o_sea
-    	- [ ] igualito
-    	- [ ] nie
-    	- [ ] mayol
-    	- [ ] menol
-    	- [ ] lidel
-    	- [ ] peluche
-    	- [ ] Anidamiento
+    	- [x] yunta
+    	- [x] o_sea
+    	- [x] Nelson
+    	- [x] igualito
+    	- [x] nie
+    	- [x] mayol
+    	- [x] menol
+    	- [x] lidel
+    	- [x] peluche
+    	- [x] Anidamiento
 - [ ] Apuntadores
     - [ ] Guardar apuntadores en la tabla de símbolos.
 	- [ ] Chequear la informacion de los elementos apuntadores(funcion print_info).
@@ -165,6 +176,22 @@ Módulo desarrollados del proyecto Mango Bajito.
 	- [ ] Errores de Mango Bajito (lo usados en meando/fueral_del_perol: piaso e copion por ejemplo)
 	- [ ] Cuando haya un syntax error retorna "Escribe bien esa vaina", entre otros.
 	- [ ] Mostrar errores de context más informativos.
+
+
+## TAC: Implementaciones
+
+- [x] Expresiones (sin and, or, not, true, false)
+- [x] Declaracion y asignacion
+- [x] Asignacion (sin array ni apuntadores)
+- [x] Sentencia if
+- [x] Sentencia while
+- [x] Sentencia for
+- [x] Funciones
+- [ ] Structs y Variantes
+- [ ] Arrays
+- [ ] jumping code
+
+## Pruebas del Proyecto
 - [ ] Suit de pruebas
     - [x] Construir un script para una suit de pruebas automatizada.
     - [x] Incluir casos de prueba por categorias y secciones.
@@ -191,3 +218,4 @@ Módulo desarrollados del proyecto Mango Bajito.
         - [ ] Apuntadores
             - [ ] Validos
             - [ ] Errores
+ 
