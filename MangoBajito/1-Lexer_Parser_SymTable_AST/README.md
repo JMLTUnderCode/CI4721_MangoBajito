@@ -146,13 +146,13 @@ Módulo desarrollados del proyecto Mango Bajito.
     - [ ] `caramba_ñero`
 - [ ] Casteo
     - [ ] Verificacion de casteos
-- [ ] Operaciones
+- [x] Operaciones
 	- [x] Compuestas (+=, -=, *=)
 	- [x] Decremento y aumento ++ y --
-	- [ ] Expresiones logicas.
+	- [x] Expresiones logicas.
     	- [x] yunta
     	- [x] o_sea
-    	- [ ] Nelson
+    	- [x] Nelson
     	- [x] igualito
     	- [x] nie
     	- [x] mayol
