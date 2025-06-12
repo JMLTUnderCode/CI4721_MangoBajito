@@ -6,7 +6,7 @@ valid_tests["Bucle"]=""
 valid_tests["Condicional"]=""
 valid_tests["Declaracion"]=""
 valid_tests["Funcion"]=""
-valid_tests["Operacion"]=""
+valid_tests["Operacion"]="00 01"
 valid_tests["ManejoError"]=""
 
 # Ruta base de los tests
