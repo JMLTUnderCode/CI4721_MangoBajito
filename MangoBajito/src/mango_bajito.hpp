@@ -202,6 +202,7 @@ enum SizeType {
 	MANGUITA = 8,	// Tamaño de manguita (float)
 	MANGUANGUA = 16,// Tamaño de manguangua (double)
 	HIGUEROTE = 32, // Tamaño de higuerote (string)
+	ERROR = -1
 };
 
 struct ASTNode {

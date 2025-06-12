@@ -671,4 +671,6 @@ SizeType strToSizeType(string type){
 	if (type == "manguita") return MANGUITA;
 	if (type == "manguangua") return MANGUANGUA;
 	if (type == "higuerote") return HIGUEROTE;
+
+	return ERROR;
 }
