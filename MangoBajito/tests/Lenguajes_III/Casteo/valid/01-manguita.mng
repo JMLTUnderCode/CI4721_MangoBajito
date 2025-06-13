@@ -1,0 +1,9 @@
+# Test 01: Casteo validos para manguita.
+se_prende(){
+	culito n0: manguita = (manguita)5;
+	culito n1: manguita = (manguita)-5;
+	culito n2: manguita = (manguita)121233.123e+2;
+	culito n3: manguita = (manguita)-121233.123e+2;
+	culito n4: manguita = (manguita)"4321.321";
+	culito n5: manguita = (manguita)"-4321.321";
+};

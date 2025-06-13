@@ -1,9 +1,0 @@
-# Test 01: Error de Tipo manguita.
-se_prende(){
-	culito decl0: manguita = 2; # Casteo correcto: 2.0
-	culito decl1: manguita = 1.79769e+308;
-	culito decl2: manguita = 'c';
-	culito decl3: manguita = "hola";
-	culito decl4: manguita = Nolsa;
-	culito decl5: manguita = [1, 2, 3];
-};

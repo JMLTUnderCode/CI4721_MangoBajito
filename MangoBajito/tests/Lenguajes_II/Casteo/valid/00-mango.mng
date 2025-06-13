@@ -1,0 +1,11 @@
+# Test 00: Casteo validos para mangos.
+se_prende(){
+	culito n0: mango = (mango)3.2;
+	culito n1: mango = (mango)-3.2;
+	culito n2: mango = (mango)1233.123e+5;
+	culito n3: mango = (mango)-1233.123e+5;
+	culito n4: mango = (mango)'a';
+	culito n5: mango = (mango)'\0';
+	culito n6: mango = (mango)"1234";
+	culito n7: mango = (mango)"-1234";
+};

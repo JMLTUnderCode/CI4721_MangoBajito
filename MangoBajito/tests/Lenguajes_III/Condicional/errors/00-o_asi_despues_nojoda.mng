@@ -1,7 +1,0 @@
-# Test 00: Error de mal uso en orden de o_asi y nojoda.
-se_prende(){
-	si_es_asi (Sisa) {}
-	o_asi (Sisa) {}
-	nojoda {}
-	o_asi (Nolsa) {};
-};

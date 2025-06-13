@@ -1,0 +1,13 @@
+| Acomódate que te lo estan analizando d:-)
+Error: OVERFULL
+  - Sendo peo en la linea 3, columna 28: Te pasaste de la raya, marbao'. Quieres meter '1233122999999999990150165117178532579377920748023438813374056973519903273506804525742447625299629125598677054540713176692042418575864013360115221429926839284382233612291476591790805447697271567757374283417911296.000000' en un 'mango', no cabe piaso e' loca.
+  - Sendo peo en la linea 4, columna 42: Te pasaste de la raya, marbao'. Quieres meter '-1233122999999999990150165117178532579377920748023438813374056973519903273506804525742447625299629125598677054540713176692042418575864013360115221429926839284382233612291476591790805447697271567757374283417911296.000000' en un 'mango', no cabe piaso e' loca.
+Error: CASTING_ERROR
+  - Sendo peo en la linea 5, columna 28: A parte de manco, ciego. Revisa bien 'hola' antes de castear a 'mango'.
+  - Sendo peo en la linea 7, columna 28: A parte de manco, ciego. Revisa bien 'a' antes de castear a 'mango'.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

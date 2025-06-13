@@ -1,0 +1,5 @@
+# Test 02: Error de Casteo para manguangua.
+se_prende(){
+	culito n0: manguangua = (manguangua)'a';
+	culito n1: manguangua = (manguangua)"a1233.123e+3";
+};

@@ -1,0 +1,6 @@
+# Test 03: Error de Casteo para negro.
+se_prende(){
+	culito n0: negro = (negro)105.2;
+	culito n1: negro = (negro)105e+50;
+	culito n2: negro = (negro)"hola Mundo como estas?";
+};

@@ -1,0 +1,9 @@
+# Test 02: Casteo validos para manguangua.
+se_prende(){
+	culito n0: manguangua = (manguangua)5;
+	culito n1: manguangua = (manguangua)-5;
+	culito n2: manguangua = (manguangua)3.2;
+	culito n3: manguangua = (manguangua)-3.2;
+	culito n4: manguangua = (manguangua)"1233.123e+3";
+	culito n5: manguangua = (manguangua)"-1233.123e+3";
+};

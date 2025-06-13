@@ -1,0 +1,6 @@
+# Test 01: Error de Casteo para manguita.
+se_prende(){
+	culito n0: manguita = (manguita)121233.123e+200;
+	culito n1: manguita = (manguita)'a';
+	culito n2: manguita = (manguita)"a4321.321";
+};
