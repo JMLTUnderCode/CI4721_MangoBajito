@@ -1038,21 +1038,23 @@ Mango Bajito permite conversiones explícitas entre tipos para garantizar que la
 
 Conversiones soportadas:
 * **De `negro` hacia:** 
-  * `mango`: Se tomara la representación ASCII del `negro`.
+  * `mango`: Se tomara la representación ASCII del `negro`. (Ej. 'a' equivale a 97)
+  * `higuerote`
 * **De `mango` hacia:**
   * `manguita`
   * `manguangua`
   * `higuerote`
-  * `negro`: Se retornara el `negro` relacionado con el valor ASCII del `mango`.
+  * `negro`: Se retornara el `negro` relacionado con el valor ASCII del `mango`.(Ej. 98 equivale a 'b')
 * **De `manguita` hacia:**
   * `mango`
   * `manguangua`
   * `higuerote`
 * **De `manguangua` hacia:**
-  * `mango`
-  * `manguita`
+  * `mango`: Siempre y cuando el espacio de memoria ocupado por `manguangua` sea válido para `mango`.
+  * `manguita`: Siempre y cuando el espacio de memoria ocupado por `manguangua` sea válido para `manguita`.
   * `higuerote`
 * **De `higuerote` hacia:**
   * `mango`: Siempre y cuando la cadena sea el formato del número esperado. (Ej. "123")
   * `manguita`: Siempre y cuando la cadena sea el formato del número esperado. (Ej. "1.23")
-  * `manguangua`: Simpre y cuando la cadena sea el formato del numero esperado. (Ej. "1.23e-10")
+  * `manguangua`: Simpre y cuando la cadena sea el formato del numero esperado. (Ej. "1.23e-100")
+  * `negro`: Siempre y cuando la representacion del `higuerote` sea de tamaño 0 o 1. (Se admite caracter vacio, es decir "" representa '\0')
