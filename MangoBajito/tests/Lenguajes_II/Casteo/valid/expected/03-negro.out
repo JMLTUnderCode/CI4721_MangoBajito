@@ -5,13 +5,13 @@
                =======================================================
 [0m
 [1;35m[5m    Clave: 1: n2[0m
-    |---> Símbolo: n2, Categoría: (1)VARIABLE, Scope: 2, Type: negro, Value: z
+    |---> Símbolo: n2, Categoría: (1)VARIABLE, Scope: 2, Type: negro, Value: 'z'
 
 [1;35m[5m    Clave: 2: n1[0m
-    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: negro, Value: �
+    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: negro, Value: '�'
 
 [1;35m[5m    Clave: 3: n0[0m
-    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: negro, Value: i
+    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: negro, Value: 'i'
 
 [1;35m[5m    Clave: 4: mango[0m
     |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0

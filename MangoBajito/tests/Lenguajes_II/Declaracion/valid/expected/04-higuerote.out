@@ -5,7 +5,7 @@
                =======================================================
 [0m
 [1;35m[5m    Clave: 1: decl2[0m
-    |---> Símbolo: decl2, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Value: hola
+    |---> Símbolo: decl2, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Value: "hola"
 
 [1;35m[5m    Clave: 2: mango[0m
     |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
@@ -14,13 +14,13 @@
     |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
 [1;35m[5m    Clave: 4: decl0[0m
-    |---> Símbolo: decl0, Categoría: (1)VARIABLE, Scope: 1, Type: higuerote, Value: hola
+    |---> Símbolo: decl0, Categoría: (1)VARIABLE, Scope: 1, Type: higuerote, Value: "hola"
 
 [1;35m[5m    Clave: 5: manguangua[0m
     |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
 [1;35m[5m    Clave: 6: decl3[0m
-    |---> Símbolo: decl3, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Value:  mundo
+    |---> Símbolo: decl3, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Value: " mundo"
 
 [1;35m[5m    Clave: 7: negro[0m
     |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
@@ -29,7 +29,7 @@
     |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
 [1;35m[5m    Clave: 9: decl1[0m
-    |---> Símbolo: decl1, Categoría: (0)CONSTANT, Scope: 2, Type: higuerote, Value:  mundo
+    |---> Símbolo: decl1, Categoría: (0)CONSTANT, Scope: 2, Type: higuerote, Value: " mundo"
 
 [1;35m[5m    Clave: 10: hablame[0m
     |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0

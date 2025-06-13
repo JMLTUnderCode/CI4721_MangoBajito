@@ -1,4 +1,4 @@
-# Test 02: Bucle WHILE.
+# Test 03: Bucle WHILE.
 se_prende(){
 	culito a: mango = 0;
 	echale_bolas_si (a menol 10){

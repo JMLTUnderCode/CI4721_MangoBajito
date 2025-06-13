@@ -1,0 +1,13 @@
+| Acomódate que te lo estan analizando d:-)
+Error: TYPE_ERROR
+  - Sendo peo en la linea 4, columna 35: Tas en droga?. Tienes a los tipos entre:'mango' y hasta:'manguita' los dos deben ser 'mangos', loca perdia'.
+  - Sendo peo en la linea 7, columna 42: Tas en droga?. Tienes a los tipos entre:'mango' y hasta:'manguangua' los dos deben ser 'mangos', loca perdia'.
+  - Sendo peo en la linea 10, columna 37: Tas en droga?. Tienes a los tipos entre:'mango' y hasta:'negro' los dos deben ser 'mangos', loca perdia'.
+  - Sendo peo en la linea 13, columna 38: Tas en droga?. Tienes a los tipos entre:'mango' y hasta:'higuerote' los dos deben ser 'mangos', loca perdia'.
+  - Sendo peo en la linea 16, columna 38: Tas en droga?. Tienes a los tipos entre:'mango' y hasta:'tas_claro' los dos deben ser 'mangos', loca perdia'.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

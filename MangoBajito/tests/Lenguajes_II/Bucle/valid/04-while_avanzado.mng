@@ -1,4 +1,4 @@
-# Test 02: Bucle WHILE avanzado.
+# Test 04: Bucle WHILE avanzado.
 se_prende(){
     culito suma: mango = 0;
     culito n: mango;

@@ -59,7 +59,7 @@
     |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
 [1;35m[5m    Clave: 19: var_struct.attr_s_3[0m
-    |---> Símbolo: var_struct.attr_s_3, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: higuerote, Value: hola
+    |---> Símbolo: var_struct.attr_s_3, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: higuerote, Value: "hola"
 
 [1;35m[5m    Clave: 20: MyStruct[0m
     |---> Símbolo: MyStruct, Categoría: (4)STRUCT, Scope: 2, Informacion: MyStruct.attr_s_1 MyStruct.attr_s_2 MyStruct.attr_s_3 
