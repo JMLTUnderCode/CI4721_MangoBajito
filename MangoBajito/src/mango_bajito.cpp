@@ -22,6 +22,7 @@ vector<string> sysErrorToString = {
 	"NON_DEF_ATTR",
 	"ALREADY_DEF_ATTR",
 	"MODIFY_VAR_FOR",
+	"WRONG_RANGE",
 	"TRY_ERROR",
 	"NON_VALUE",
 	"TYPE_ERROR",
@@ -232,12 +233,12 @@ void SymbolTable::print_values(Values x){
 	visit([this](auto&& arg) {
 		using T = decay_t<decltype(arg)>;
 		if constexpr (is_same_v<T, nullptr_t>) cout << "null";
-		else if constexpr (is_same_v<T, char>) cout << arg;
+		else if constexpr (is_same_v<T, char>) cout << (arg == '\0' ? "''" : "'" + string(1, arg) + "'");
 		else if constexpr (is_same_v<T, int>) cout << arg;
 		else if constexpr (is_same_v<T, bool>) cout << (arg ? "true" : "false");
 		else if constexpr (is_same_v<T, float>) cout << arg;
 		else if constexpr (is_same_v<T, double>) cout << arg;
-		else if constexpr (is_same_v<T, string>) cout << arg;
+		else if constexpr (is_same_v<T, string>) cout << (arg == "" ? "\"\"" : "\"" + arg + "\"");
 		else if constexpr (is_same_v<T, int*>) cout << *arg;
 		else if constexpr (is_same_v<T, double*>) cout << *arg;
 		else if constexpr (is_same_v<T, string*>) cout << *arg;
@@ -555,7 +556,8 @@ void showAST(const ASTNode* node, int depth, const string& prefix, bool isLast) 
 		if (type == "mango") cout << " | Value: " << node->ivalue;
 		if (type == "manguita") cout << " | Value: " << node->fvalue;
 		if (type == "manguangua") cout << " | Value: " << node->dvalue;
-		if (type == "negro") cout << " | Value: '" << node->cvalue << "'";
+		if (type == "negro" && node->cvalue != '\0') cout << " | Value: '" << node->cvalue << "'";
+		if (type == "negro" && node->cvalue == '\0') cout << " | Value: ''";
 		if (type == "higuerote") cout << " | Value: \"" << node->svalue << "\"";
 		if (type == "tas_claro") cout << " | Value: " << node->bvalue ? "Sisa" : "Nolsa";
 	}

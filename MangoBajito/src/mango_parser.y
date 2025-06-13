@@ -1644,7 +1644,7 @@ var_ciclo_determinado:
 
 		if (type_entre != "mango" || type_hasta != "mango") {
 			FLAG_ERROR = TYPE_ERROR;
-			string error_msg = "Se esperaban tipo 'mango' en las expresiones de 'entre' y 'hasta'.";
+			string error_msg = "a los tipos entre:'" + type_entre + "' y hasta:'"+type_hasta+"' los dos deben ser 'mangos', loca perdia'.";
 			yyerror(error_msg.c_str());
 		} else {
 			Attributes* attribute = new Attributes();
@@ -1681,6 +1681,10 @@ determinado:
 		ASTNode* new_node = makeASTNode("Bucle", "Determinado");
 		
 		/* IMPLEMENTAR CONDICIONAL PARA RANGOS */
+		string kind_range = "Creciente";
+		int entre_val = $3->children[0]->children[0]->ivalue;
+		int hasta_val = $3->children[1]->children[0]->ivalue;
+		if (entre_val > hasta_val) kind_range = "Decreciente";
 
 		new_node->children.push_back($3);
 		new_node->children.push_back($4);
@@ -1701,11 +1705,15 @@ determinado:
 			   label2 = labelGen.newLabel();
 		
 		$$->tac.push_back(label0 + ": ");
-		$$->tac.push_back("if " + var + " < " + finish + " goto " + label1);
+		if (kind_range == "Creciente")
+			$$->tac.push_back("if " + var + " < " + finish + " goto " + label1);
+		else $$->tac.push_back("if " + var + " > " + finish + " goto " + label1);
 		$$->tac.push_back("goto " + label2);
 		$$->tac.push_back(label1 + ": ");
 		concat_TAC($$, $4);
-		$$->tac.push_back(var + " := " + var + " + " + "1");
+		if (kind_range == "Creciente")
+			$$->tac.push_back(var + " := " + var + " + " + "1");
+		else $$->tac.push_back(var + " := " + var + " - " + "1");
 		$$->tac.push_back("goto " + label0);
 		$$->tac.push_back(label2 + ": ");
 	}
@@ -1716,7 +1724,37 @@ determinado:
 
 		// Incluimos el flow
 		ASTNode* node_flow = makeASTNode("con_flow", "Pasos");
+		string kind_range = "Creciente";
+		if ($5->type != "mango"){
+			FLAG_ERROR = TYPE_ERROR;
+			string error_msg = "el tipo con_flow:'" + $5->type + "' y debe ser 'mango', loca perdia'.";
+			yyerror(error_msg.c_str());
+		} else if ($5->ivalue < 0) {
+			int entre_val = $3->children[0]->children[0]->ivalue;
+			int hasta_val = $3->children[1]->children[0]->ivalue;
+
+			if (entre_val < hasta_val) {
+				FLAG_ERROR = TYPE_ERROR;
+				string error_msg = "un rango es creciente y vas a decrementar? Marbaa' bruja.";
+				yyerror(error_msg.c_str());
+			} else kind_range = "Decreciente";
+			
+		} else if ($5->ivalue > 0){
+			int entre_val = $3->children[0]->children[0]->ivalue;
+			int hasta_val = $3->children[1]->children[0]->ivalue;
+
+			if (entre_val > hasta_val) {
+				FLAG_ERROR = TYPE_ERROR;
+				string error_msg = "un rango es decreciente y vas a incrementar? Marbaa' bruja.";
+				yyerror(error_msg.c_str());
+			} else kind_range = "Creciente";
+		} else if ($5->ivalue == 0){
+			FLAG_ERROR = TYPE_ERROR;
+			string error_msg = "Definitivamente tu no tienes flow, como que 'con_flow' 0? Jajajaja!";
+			yyerror(error_msg.c_str());
+		}
 		node_flow->children.push_back($5);
+		
 		$3->children.push_back(node_flow);
 
 		new_node->children.push_back($3);
@@ -1738,7 +1776,9 @@ determinado:
 			   label2 = labelGen.newLabel();
 		
 		$$->tac.push_back(label0 + ": ");
-		$$->tac.push_back("if " + var + " < " + finish + " goto " + label1);
+		if (kind_range == "Creciente")
+			$$->tac.push_back("if " + var + " < " + finish + " goto " + label1);
+		else $$->tac.push_back("if " + var + " > " + finish + " goto " + label1);
 		$$->tac.push_back("goto " + label2);
 		$$->tac.push_back(label1 + ": ");
 		concat_TAC($$, $6);
@@ -2129,7 +2169,8 @@ casting:
 			} else if (expr->type == "manguangua") {
 				cast_node->svalue = to_string(expr->dvalue);
 			} else if (expr->type == "negro") {
-				cast_node->svalue = string(1, expr->cvalue);
+				if (expr->cvalue != '\0') cast_node->svalue = string(1, expr->cvalue);
+				else cast_node->svalue = "";
 			} else if (expr->type == "higuerote") {
 				cast_node->svalue = expr->svalue;
 			} else {
@@ -2224,6 +2265,9 @@ void yyerror(const char *var) {
 
 			case MODIFY_VAR_FOR:
 				error_msg += "Esta variable \"" + string(var) + "\" es de `repite_burda`. Déjala quieta, no se cambia. Men tiende?";
+				break;
+			case WRONG_RANGE:
+				error_msg += "Te patina el coco chamo. " + string(var);
 				break;
 
 			case TRY_ERROR:
