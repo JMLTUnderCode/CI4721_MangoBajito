@@ -486,20 +486,21 @@ declaracion:
 			$$->children = $4->children;
 		}
 
-		if ($1->kind == "VARIABLE"){
-			int scope_level = symbolTable.search_symbol($2)->scope;
-			int size_to_reserve = 0;
+		Attributes* attr_var = symbolTable.search_symbol($2);
+		if ($1->kind == "VARIABLE" && attr_var != nullptr) {
+			int scope_level = attr_var->scope;
+			int size_to_reserve = -1;
 			// Agregar variable a .declaration
-			if ($4->category == "Identificador"){ //Estructuras y variantes
-				Attributes* attr = symbolTable.search_symbol($4->name);
-				if (attr->category == STRUCT) size_to_reserve = sumOfSizeTypes(attr->info);
-				if (attr->category == UNION) size_to_reserve = maxOfSizeType(attr->info);
+			Attributes* attr_type = symbolTable.search_symbol($4->name);
+			if ($4->category == "Identificador" && attr_type != nullptr){ //Estructuras y variantes
+				if (attr_type->category == STRUCT) size_to_reserve = sumOfSizeTypes(attr_type->info);
+				if (attr_type->category == UNION) size_to_reserve = maxOfSizeType(attr_type->info);
 			} else if($4->category == "Array"){ // arrays
 				/* por implementar */
-			}else{ // tipos definidos
+			}else if($4->category == "Type"){ // tipos definidos
 				size_to_reserve = strToSizeType(declared_type);
 			}
-			$$->tac_declaraciones.push_back({scope_level, {string($2), size_to_reserve}});
+			if (size_to_reserve != -1) $$->tac_declaraciones.push_back({scope_level, {string($2), size_to_reserve}});
 		}
 	}
 	| tipo_declaracion T_ID T_DOSPUNTOS tipos T_ASIGNACION expresion {
@@ -677,12 +678,13 @@ declaracion:
 		// Agregar TAC asociado a asignacion
 		if($1->kind != "CONSTANTE") $$->tac.push_back(string($2) + " := " + $6->temp);
 		
+		Attributes* attr_var = symbolTable.search_symbol($2);
 		// Agregar TAC de declaraciones
-		if ($1->kind == "VARIABLE"){
+		if ($1->kind == "VARIABLE" && attr_var != nullptr) {
 			// Agregar variable a .declaration
-			int scope_level = symbolTable.search_symbol($2)->scope;
+			int scope_level = attr_var->scope;
 			$$->tac_declaraciones.push_back({scope_level, {string($2), strToSizeType(left_type)}});
-		} else if ($1->kind == "CONSTANTE"){
+		} else if ($1->kind == "CONSTANTE" && attr_var != nullptr) {
 			// Agregar constante a .data
 			$$->tac_data.emplace_back(string($2), valuesToString($6));
 		}
@@ -1116,32 +1118,32 @@ asignacion:
 		}
 		$$ = $4;
 
-		// Agregar instrucciones TAC para la asignación de atributos
-		string op_tac = "";
-		if ($4->kind == "+=") op_tac = " + ";
-		else if ($4->kind == "-=") op_tac = " - ";
-		else if ($4->kind == "*=") op_tac = " * ";
-		else if ($4->kind == "=") op_tac = " := ";
-		// Agregar instrucciones de la expresion
-		concat_TAC($$, $5);
-		// Generar el TAC para asignacion
-		string temp_base = labelGen.newTemp(),
-			   temp_attr = labelGen.newTemp(string($1) + "_" + string($3)),
-			   attr = string($1) + "." + string($3);
-		$$->tac.push_back(temp_base + " := " + "&" + string($1));
-		
-		$$->tac.push_back(temp_attr + " := " + temp_base + " + " + to_string(accumulateSizeType(struct_attr->info, attr)));
-		
-		if(op_tac == " := "){
-			$$->tac.push_back("*" + temp_attr + op_tac + $5->temp);
-		}else{
-			string temp_addr = labelGen.newTemp(),
-				   temp = labelGen.newTemp();
-			$$->tac.push_back(temp_addr + " := *"+ temp_attr);
-			$$->tac.push_back(temp + " := " + temp_addr + op_tac + $5->temp);
-			$$->tac.push_back("*" + temp_attr + " := " + temp);
+		if(struct_attr != nullptr){// Agregar instrucciones TAC para la asignación de atributos
+			string op_tac = "";
+			if ($4->kind == "+=") op_tac = " + ";
+			else if ($4->kind == "-=") op_tac = " - ";
+			else if ($4->kind == "*=") op_tac = " * ";
+			else if ($4->kind == "=") op_tac = " := ";
+			// Agregar instrucciones de la expresion
+			concat_TAC($$, $5);
+			// Generar el TAC para asignacion
+			string temp_base = labelGen.newTemp(),
+				temp_attr = labelGen.newTemp(string($1) + "_" + string($3)),
+				attr = string($1) + "." + string($3);
+			$$->tac.push_back(temp_base + " := " + "&" + string($1));
+			
+			$$->tac.push_back(temp_attr + " := " + temp_base + " + " + to_string(accumulateSizeType(struct_attr->info, attr)));
+			
+			if(op_tac == " := "){
+				$$->tac.push_back("*" + temp_attr + op_tac + $5->temp);
+			}else{
+				string temp_addr = labelGen.newTemp(),
+					temp = labelGen.newTemp();
+				$$->tac.push_back(temp_addr + " := *"+ temp_attr);
+				$$->tac.push_back(temp + " := " + temp_addr + op_tac + $5->temp);
+				$$->tac.push_back("*" + temp_attr + " := " + temp);
+			}
 		}
-
 		$$->children.push_back(new_node);
 		$$->children.push_back($5);
 	}
@@ -1316,7 +1318,7 @@ expresion:
 	| T_IZQPAREN expresion T_DERPAREN { $$ = $2; } // Expresion parentizada.
 	| T_NELSON expresion { 
 		string type = $2->type;
-		$$ = makeASTNode("nelson", "Operación", "Desconocido", "Booleana");
+		$$ = makeASTNode("nelson", "Operación", "tas_claro", "Booleana");
 		if (type != "tas_claro") {
 			FLAG_ERROR = TYPE_ERROR;
 			string error_msg = "'" + $2->name + "' de tipo '" + type + "' y le quiere meter un `nelson`, peaso e loca.";
