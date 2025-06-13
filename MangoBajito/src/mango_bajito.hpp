@@ -13,6 +13,8 @@
 #include <variant>
 #include <set>
 #include <math.h>
+#include <climits>
+#include <cfloat>
 
 using namespace std;
 
@@ -135,8 +137,10 @@ enum systemError {
 	POINTER_ARRAY,
 	INT_INDEX_ARRAY,
 	SIZE_ARRAY_INVALID,
-	INTERNAL,
-	EMPTY
+	CASTING_TYPE,
+	CASTING_ERROR,
+	OVERFULL,
+	INTERNAL
 };
 
 // Declaración de errorTypeToString como extern
