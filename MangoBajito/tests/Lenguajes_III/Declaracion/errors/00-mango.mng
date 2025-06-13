@@ -1,9 +1,0 @@
-# Test 00: Error de Tipo mango.
-se_prende(){
-	culito decl0: mango = 2.1;
-	culito decl1: mango = 1.79769e+308;
-	culito decl2: mango = 'c';
-	culito decl3: mango = "hola";
-	culito decl4: mango = Sisa;
-	culito decl5: mango = [1, 2, 3];
-};

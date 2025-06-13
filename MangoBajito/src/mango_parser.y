@@ -83,8 +83,10 @@ unordered_map<systemError, vector<string>> errorDictionary = {
 	{POINTER_ARRAY, {}},
 	{INT_INDEX_ARRAY, {}},
 	{SIZE_ARRAY_INVALID, {}},
+	{CASTING_TYPE, {}},
+	{CASTING_ERROR, {}},
+	{OVERFULL, {}},
 	{INTERNAL, {}},
-	{EMPTY, {}},
 };
 
 // Variables globales de contexto para el análisis sintáctico y semántico
@@ -1206,7 +1208,11 @@ expresion:
 		} else if (type == "negro") {
 			new_node->cvalue = $1.cval;
 			new_node->category = "Caracter";
-			new_node->temp = string(1, $1.cval);
+			if ($1.cval == '\0') {
+				new_node->temp = "'\\0'";
+			} else {
+				new_node->temp = "'"s + $1.cval + "'";
+			}
 		} else if (type == "higuerote") {
 			new_node->svalue = $1.sval;
 			new_node->category = "Cadena de Caracteres";
@@ -1308,7 +1314,7 @@ expresion:
 		$$ = new_node;
 	} 
 	| T_IZQPAREN expresion T_DERPAREN { $$ = $2; } // Expresion parentizada.
-		| T_NELSON expresion { 
+	| T_NELSON expresion { 
 		string type = $2->type;
 		$$ = makeASTNode("nelson", "Operación", "Desconocido", "Booleana");
 		if (type != "tas_claro") {
@@ -2006,23 +2012,150 @@ manejo_error:
 
 casting:
 	T_CASTEO expresion { 
-		$$ = makeASTNode("Casting", "Casting");
-		if ($2->type == "tas_claro") {
-			FLAG_ERROR = TYPE_ERROR;
-			string error_msg = "No puedes hacer casting a 'tas_claro'.";
-			yyerror(error_msg.c_str());
-			$$ = nullptr;
-		} else {
-			$$->children.push_back($2);
-			$$->type = $2->type; // Mantener el tipo de la expresión
-			string temp = labelGen.newTemp();
-			concat_TAC($$, $2);
-			$$->tac.push_back(temp + " := cast(" + $2->temp + ", " + $1 + ")");
-			$$->temp = temp;
+		ASTNode* expr = $2;
+		string target_type = string($1);
+		ASTNode* cast_node = makeASTNode("Literal", "", target_type, "CAST(" + expr->type + ")");
+		cast_node->children.push_back(expr);
+
+		if (target_type == "mango") {
+			cast_node->category = "Numérico";
+			if (expr->type == "mango") {
+				cast_node->ivalue = expr->ivalue;
+			} else if (expr->type == "manguita") {
+				cast_node->ivalue = static_cast<int>(expr->fvalue);
+			} else if (expr->type == "manguangua") {
+				if (expr->dvalue > INT_MAX || expr->dvalue < INT_MIN) {
+					FLAG_ERROR = OVERFULL;
+					string err_value = expr->category == "Identificador" ? expr->name : to_string(expr->dvalue);
+					string error_msg = "'" + err_value + "' en un 'mango', no cabe piaso e' loca.";
+					yyerror(error_msg.c_str());
+				} else {
+					cast_node->ivalue = static_cast<int>(expr->dvalue);
+				}
+			} else if (expr->type == "negro") {
+				cast_node->ivalue = static_cast<int>(expr->cvalue);
+			} else if (expr->type == "higuerote") {
+				try {
+					cast_node->ivalue = stoi(expr->svalue);
+				} catch (...) {
+					FLAG_ERROR = CASTING_ERROR;
+					string err_value = expr->category == "Identificador" ? expr->name : expr->svalue;
+					string error_msg = "'" + err_value + "' antes de castear a 'mango'.";
+					yyerror(error_msg.c_str());
+				}
+			} else {
+				FLAG_ERROR = CASTING_TYPE;
+				yyerror(("'" + expr->type + "' a 'mango'").c_str());
+			}
 		}
+		else if (target_type == "manguita") {
+			cast_node->category = "Numérico";
+			if (expr->type == "mango") {
+				cast_node->fvalue = static_cast<float>(expr->ivalue);
+			} else if (expr->type == "manguita") {
+				cast_node->fvalue = expr->fvalue;
+			} else if (expr->type == "manguangua") {
+				if (expr->dvalue > FLT_MAX || expr->dvalue < -FLT_MAX) {
+					FLAG_ERROR = OVERFULL;
+					string err_value = expr->category == "Identificador" ? expr->name : to_string(expr->dvalue);
+					string error_msg = "'" + err_value + "' en una 'manguita', no cabe piaso e' loca.";
+					yyerror(error_msg.c_str());
+				} else {
+					cast_node->fvalue = static_cast<float>(expr->dvalue);				}
+			} else if (expr->type == "higuerote") {
+				try {
+					cast_node->fvalue = stof(expr->svalue);
+				} catch (...) {
+					FLAG_ERROR = CASTING_ERROR;
+					string err_value = expr->category == "Identificador" ? expr->name : expr->svalue;
+					string error_msg = "'" + err_value + "' antes de castear a 'manguita'.";
+					yyerror(error_msg.c_str());
+				}
+			} else {
+				FLAG_ERROR = CASTING_TYPE;
+				yyerror(("'" + expr->type + "' a 'manguita'").c_str());
+			}
+		}
+		else if (target_type == "manguangua") {
+			cast_node->category = "Numérico";
+			if (expr->type == "mango") {
+				cast_node->dvalue = static_cast<double>(expr->ivalue);
+			} else if (expr->type == "manguita") {
+				cast_node->dvalue = static_cast<double>(expr->fvalue);
+			} else if (expr->type == "manguangua") {
+				cast_node->dvalue = expr->dvalue;
+			} else if (expr->type == "higuerote") {
+				try {
+					cast_node->dvalue = stod(expr->svalue);
+				} catch (...) {
+					FLAG_ERROR = CASTING_ERROR;
+					string err_value = expr->category == "Identificador" ? expr->name : expr->svalue;
+					string error_msg = "'" + err_value + "' antes de castear a 'manguangua'.";
+					yyerror(error_msg.c_str());
+				}
+			} else {
+				FLAG_ERROR = CASTING_TYPE;
+				yyerror(("'" + expr->type + "' a 'manguangua'").c_str());
+			}
+		}
+		else if (target_type == "negro") {
+			cast_node->category = "Caracter";
+			if (expr->type == "mango") {
+				cast_node->cvalue = static_cast<char>(expr->ivalue);
+			} else if (expr->type == "higuerote") {
+				if (expr->svalue.empty()) {
+					cast_node->cvalue = '\0';
+				} else if (expr->svalue.size() == 1) {
+					cast_node->cvalue = expr->svalue[0];
+				} else {
+					FLAG_ERROR = OVERFULL;
+					string err_value = expr->category == "Identificador" ? expr->name : expr->svalue;
+					string error_msg = "'" + err_value + "' de tamaño '" + to_string(err_value.size()) + "' cm en un 'negro', esas son vainas raras!";
+					yyerror(error_msg.c_str());
+				}
+			} else if (expr->type == "negro") {
+				cast_node->cvalue = expr->cvalue;
+			} else {
+				FLAG_ERROR = CASTING_TYPE;
+				yyerror(("'" + expr->type + "' a 'negro'").c_str());
+			}
+		}
+		else if (target_type == "higuerote") {
+			cast_node->category = "Cadena de Caracteres";
+			if (expr->type == "mango") {
+				cast_node->svalue = to_string(expr->ivalue);
+			} else if (expr->type == "manguita") {
+				cast_node->svalue = to_string(expr->fvalue);
+			} else if (expr->type == "manguangua") {
+				cast_node->svalue = to_string(expr->dvalue);
+			} else if (expr->type == "negro") {
+				cast_node->svalue = string(1, expr->cvalue);
+			} else if (expr->type == "higuerote") {
+				cast_node->svalue = expr->svalue;
+			} else {
+				FLAG_ERROR = CASTING_TYPE;
+				yyerror(("'" + expr->type + "' a 'higuerote'").c_str());
+			}
+		}
+		else {
+			FLAG_ERROR = INTERNAL;
+			string error_msg = "ERROR: Lexer proporciona un tipo desconocido para el casting: '" + target_type + "'";
+			yyerror(error_msg.c_str());
+		}
+
+		$$ = cast_node;
+
+		// Actualizacion codigo TAC
+		string type = "";
+		if (target_type == "mango") type = "int";
+		else if (target_type == "manguita") type = "float";
+		else if (target_type == "manguangua") type = "double";
+		else if (target_type == "negro") type = "char";
+		else if (target_type == "higuerote") type = "string";
+		$$->temp = "(" + type + ")" + $2->temp;
+		concat_TAC($$, $2);
 	}
 	;
-
 %%
 
 void yyerror(const char *var) {
@@ -2038,7 +2171,6 @@ void yyerror(const char *var) {
 		error_msg = "Sendo peo en la linea " + to_string(yylineno) +
 					", columna " + to_string(yylloc.first_column) + ": ";
 		switch (FLAG_ERROR) {
-
 			case ARRAY_LITERAL_SIZE_MISMATCH:
 				error_msg += string(var);
 				break;
@@ -2139,6 +2271,15 @@ void yyerror(const char *var) {
 				error_msg += "Le quieres meter vainas raras al tamaño de un array, mira esa vaina diske '" + string(var) + "', solo mangos positivos, loca perdia'.";
 				break;
 
+			case CASTING_TYPE:
+				error_msg += "Cristo convirtió el agua en vino pero tú no eres él pa' estar convirtiendo " + string(var) + ", sapo";
+				break;
+			case CASTING_ERROR:
+				error_msg += "A parte de manco, ciego. Revisa bien " + string(var);
+				break;
+			case OVERFULL:
+				error_msg += "Te pasaste de la raya, marbao'. Quieres meter " + string(var);
+				break;
 			case INTERNAL:
 				error_msg += string(var);
 				break;

@@ -1,5 +1,0 @@
-# Test 06: Operacion de errores en incremento.
-se_prende(){
-	culito decl0 = mango;
-	decl0++;
-};

@@ -1,0 +1,8 @@
+# Test 00: Error de Casteo para mangos.
+se_prende(){
+	culito n0: mango = (mango)1233.123e+207;
+	culito n1: mango = (mango)-1233.123e+207;
+	culito n2: mango = (mango)"hola";
+	culito n3: mango = (mango)"1234a";
+	culito n4: mango = (mango)"a";
+};

@@ -34,8 +34,10 @@ vector<string> sysErrorToString = {
 	"POINTER_ARRAY",
 	"INT_INDEX_ARRAY",
 	"SIZE_ARRAY_INVALID",
-	"INTERNAL",
-	"EMPTY"
+	"CASTING_TYPE",
+	"CASTING_ERROR",
+	"OVERFULL",
+	"INTERNAL"
 };
 
 // Función para agregar un error al diccionario

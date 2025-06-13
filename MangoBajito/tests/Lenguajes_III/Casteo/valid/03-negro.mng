@@ -1,0 +1,6 @@
+# Test 03: Casteo validos para negro.
+se_prende(){
+	culito n0: negro = (negro)105;
+	culito n1: negro = (negro)-105;
+	culito n2: negro = (negro)"z";
+};
