@@ -622,7 +622,7 @@ void show_TAC(const ASTNode* node){
 	if (!node->tac_declaraciones.empty()){ 
 		cout << "\n.declaration:" << endl;
 		auto tac_declaraciones = node->tac_declaraciones;
-		sort(tac_declaraciones.begin(), tac_declaraciones.end(), [](const pair<int, pair<string, SizeType>>& a, const pair<int, pair<string, SizeType>>& b) {
+		sort(tac_declaraciones.begin(), tac_declaraciones.end(), [](const pair<int, pair<string, int>>& a, const pair<int, pair<string, int>>& b) {
 			return a.first < b.first; // Ordenar por el primer elemento (scope)
 		});
 
@@ -687,18 +687,30 @@ SizeType strToSizeType(string type){
 	return ERROR;
 }
 
-int sumOfSizeTypes(vector<ASTNode* > nodes){
+int sumOfSizeTypes(vector<pair<Information, Attributes*>> info){
 	int result = 0;
-	for (auto node : nodes){
-		result += strToSizeType(node->type);
+	for (auto node : info){
+		result += strToSizeType(node.second->type->symbol_name);
 	}
 	return result;
 }
 
-SizeType maxOfSizeType(vector<ASTNode* > nodes){
-	SizeType max_result = strToSizeType(nodes[0]->type);
-	for (auto node : nodes){
-		max_result = max(max_result, strToSizeType(node->type));
+SizeType maxOfSizeType(vector<pair<Information, Attributes*>> info){
+	SizeType max_result = strToSizeType(info[0].second->type->symbol_name);
+	for (auto node : info){
+		max_result = max(max_result, strToSizeType(node.second->type->symbol_name));
 	}
 	return max_result;
+}
+
+int accumulateSizeType(vector<pair<Information, Attributes*>> info, string var){
+	int accumulate = 0,
+		i = 0;
+
+	while(info[i].second->symbol_name != var){
+		accumulate += strToSizeType(info[i].second->type->symbol_name);
+		i++;
+	}
+
+	return accumulate;
 }
