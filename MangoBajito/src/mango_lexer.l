@@ -34,7 +34,7 @@ int current_column = 1;		// Lleva el seguimiento de la columna actual
 MANGO			(0|[1-9][0-9]{0,8}|1[0-9]{9}|20[0-9]{8}|21[0-3][0-9]{7}|214[0-6][0-9]{6}|2147[0-3][0-9]{5}|21474[0-7][0-9]{4}|214748[0-2][0-9]{3}|2147483[0-5][0-9]{2}|21474836[0-3][0-9]|214748364[0-7])
 MANGUITA		[0-9]+\.[0-9]{1,7}
 MANGUANGUA		([0-9]*\.?[0-9]{1,15}|[0-9]+\.?[0-9]*)([eE][+-]?[0-9]+)?
-NEGRO			\'.\'
+NEGRO           \'(\\0|\\.|[^\\'])\'
 HIGUEROTE		\"[^\"]*\"
 IDENTIFICADOR	[a-zA-Z_][a-zA-Z0-9_]*
 CASTING			\(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(tas_claro\)
@@ -155,15 +155,21 @@ CASTING			\(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(tas_cl
 
 {NEGRO} {
 	UPDATE_LOC
-	
-	if (yyleng < 3 || yytext[0] != '\'' || yytext[yyleng-1] != '\'') {
-		exit(1);
+
+	yylval.att_val.type = Type_and_Value::CHAR;
+
+	if (yytext[1] == '\\' && yytext[2] == '0') {
+		yylval.att_val.cval = '\0';
+	} else if (yyleng == 3 && yytext[0] == '\'' && yytext[2] == '\'') {
+		yylval.att_val.cval = yytext[1];
+	} else {
+		// No debería llegar aquí, pero por seguridad:
+		cerr << "Error léxico en línea " << yylloc.first_line 
+			<< ", columna " << yylloc.first_column 
+			<< ": Carácter inválido '" << yytext << "'" << endl;
+			continue;
 	}
 
-	// Manejar caracteres normales y escapados
-	yylval.att_val.type = Type_and_Value::CHAR;
-	yylval.att_val.cval = yytext[1];  // Usamos cval en lugar de sval
-	
 	return T_VALUE;
 }
 
@@ -201,6 +207,6 @@ CASTING			\(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(tas_cl
 			cerr << "Error léxico en línea " << yylloc.first_line 
 			<< ", columna " << yylloc.first_column 
 			<< ": Carácter inválido '" << yytext << "'" << endl;
-			continue; 
+			continue;
 		}
 %%
