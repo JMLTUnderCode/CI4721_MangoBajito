@@ -2,7 +2,9 @@
 
 # Define las secciones y los números de test a actualizar para valid
 declare -A valid_tests
+valid_tests["Apuntador"]=""
 valid_tests["Bucle"]=""
+valid_tests["Casteo"]="00 01 02 03 04"
 valid_tests["Condicional"]=""
 valid_tests["Declaracion"]=""
 valid_tests["Funcion"]=""
