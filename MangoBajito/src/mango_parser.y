@@ -485,9 +485,19 @@ declaracion:
 		}
 
 		if ($1->kind == "VARIABLE"){
-			// Agregar variable a .declaration
 			int scope_level = symbolTable.search_symbol($2)->scope;
-			$$->tac_declaraciones.push_back({scope_level, {string($2), strToSizeType(declared_type)}});
+			int size_to_reserve = 0;
+			// Agregar variable a .declaration
+			if ($4->category == "Identificador"){ //Estructuras y variantes
+				Attributes* attr = symbolTable.search_symbol($4->name);
+				if (attr->category == STRUCT) size_to_reserve = sumOfSizeTypes(attr->info);
+				if (attr->category == UNION) size_to_reserve = maxOfSizeType(attr->info);
+			} else if($4->category == "Array"){ // arrays
+				/* por implementar */
+			}else{ // tipos definidos
+				size_to_reserve = strToSizeType(declared_type);
+			}
+			$$->tac_declaraciones.push_back({scope_level, {string($2), size_to_reserve}});
 		}
 	}
 	| tipo_declaracion T_ID T_DOSPUNTOS tipos T_ASIGNACION expresion {
@@ -1103,6 +1113,33 @@ asignacion:
 			}
 		}
 		$$ = $4;
+
+		// Agregar instrucciones TAC para la asignación de atributos
+		string op_tac = "";
+		if ($4->kind == "+=") op_tac = " + ";
+		else if ($4->kind == "-=") op_tac = " - ";
+		else if ($4->kind == "*=") op_tac = " * ";
+		else if ($4->kind == "=") op_tac = " := ";
+		// Agregar instrucciones de la expresion
+		concat_TAC($$, $5);
+		// Generar el TAC para asignacion
+		string temp_base = labelGen.newTemp(),
+			   temp_attr = labelGen.newTemp(string($1) + "_" + string($3)),
+			   attr = string($1) + "." + string($3);
+		$$->tac.push_back(temp_base + " := " + "&" + string($1));
+		
+		$$->tac.push_back(temp_attr + " := " + temp_base + " + " + to_string(accumulateSizeType(struct_attr->info, attr)));
+		
+		if(op_tac == " := "){
+			$$->tac.push_back("*" + temp_attr + op_tac + $5->temp);
+		}else{
+			string temp_addr = labelGen.newTemp(),
+				   temp = labelGen.newTemp();
+			$$->tac.push_back(temp_addr + " := *"+ temp_attr);
+			$$->tac.push_back(temp + " := " + temp_addr + op_tac + $5->temp);
+			$$->tac.push_back("*" + temp_attr + " := " + temp);
+		}
+
 		$$->children.push_back(new_node);
 		$$->children.push_back($5);
 	}
