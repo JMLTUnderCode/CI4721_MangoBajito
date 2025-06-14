@@ -1,0 +1,14 @@
+| Acomódate que te lo estan analizando d:-)
+Error: TYPE_ERROR
+  - Sendo peo en la linea 3, columna 28: Tas en droga?. Tienes "decl0" de tipo 'manguita' y le quieres meter un tipo 'mango', marbaa' bruja.
+  - Sendo peo en la linea 4, columna 39: Tas en droga?. Tienes "decl1" de tipo 'manguita' y le quieres meter un tipo 'manguangua', marbaa' bruja.
+  - Sendo peo en la linea 5, columna 30: Tas en droga?. Tienes "decl2" de tipo 'manguita' y le quieres meter un tipo 'negro', marbaa' bruja.
+  - Sendo peo en la linea 6, columna 33: Tas en droga?. Tienes "decl3" de tipo 'manguita' y le quieres meter un tipo 'higuerote', marbaa' bruja.
+  - Sendo peo en la linea 7, columna 32: Tas en droga?. Tienes "decl4" de tipo 'manguita' y le quieres meter un tipo 'tas_claro', marbaa' bruja.
+  - Sendo peo en la linea 8, columna 36: Tas en droga?. Tienes "decl5" de tipo 'manguita' y le quieres meter un elemento de tipo '', marbaa' bruja.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

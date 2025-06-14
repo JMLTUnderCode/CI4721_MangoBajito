@@ -113,21 +113,23 @@ Programa
           |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |         |--> decl1 | Category: Declaración | Type: negro | Kind: CONSTANTE
           |    |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 5
-          |    |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |         |--> Literal | Category: Array
           |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |    |              |    |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |    |              |    |    |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |    |              |    |    |    |--> Literal | Category: Caracter | Type: negro | Value: 'a'
-          |    |    |    |              |    |    |    |--> Literal | Category: Caracter | Type: negro | Value: 'e'
-          |    |    |    |              |    |    |--> Literal | Category: Caracter | Type: negro | Value: 'i'
-          |    |    |    |              |    |--> Literal | Category: Caracter | Type: negro | Value: 'o'
-          |    |    |    |              |--> Literal | Category: Caracter | Type: negro | Value: 'u'
+          |    |    |    |                   |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |                   |    |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |                   |    |    |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |                   |    |    |    |--> Literal | Category: Caracter | Type: negro | Value: 'a'
+          |    |    |    |                   |    |    |    |--> Literal | Category: Caracter | Type: negro | Value: 'e'
+          |    |    |    |                   |    |    |--> Literal | Category: Caracter | Type: negro | Value: 'i'
+          |    |    |    |                   |    |--> Literal | Category: Caracter | Type: negro | Value: 'o'
+          |    |    |    |                   |--> Literal | Category: Caracter | Type: negro | Value: 'u'
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> decl2 | Category: Declaración | Type: negro | Kind: CONSTANTE
           |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 2
-          |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |              |--> n0 | Category: Identificador | Type: negro | Value: 'c'
-          |    |    |              |--> n1 | Category: Identificador | Type: negro | Value: '$'
+          |    |    |         |--> Literal | Category: Array
+          |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |                   |--> n0 | Category: Identificador | Type: negro | Value: 'c'
+          |    |    |                   |--> n1 | Category: Identificador | Type: negro | Value: '$'
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl0[0] | Category: Elemento_Array | Type: negro
           |    |         |--> Literal | Category: Caracter | Type: negro | Value: '?'
