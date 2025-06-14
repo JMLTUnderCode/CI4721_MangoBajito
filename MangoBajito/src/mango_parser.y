@@ -496,7 +496,9 @@ declaracion:
 				if (attr_type->category == STRUCT) size_to_reserve = sumOfSizeTypes(attr_type->info);
 				if (attr_type->category == UNION) size_to_reserve = maxOfSizeType(attr_type->info);
 			} else if($4->category == "Array"){ // arrays
-				/* por implementar */
+				int size_array = $4->children[0]->ivalue;
+				int size_type = strToSizeType($4->type);
+				size_to_reserve = size_type * size_array;
 			}else if($4->category == "Type"){ // tipos definidos
 				size_to_reserve = strToSizeType(declared_type);
 			}
@@ -676,14 +678,33 @@ declaracion:
 		// Agregar instrucciones de la asignacion
 		concat_TAC($$, $6);
 		// Agregar TAC asociado a asignacion
-		if($1->kind != "CONSTANTE") $$->tac.push_back(string($2) + " := " + $6->temp);
+		if($1->kind != "CONSTANTE" && $4->category != "Array") $$->tac.push_back(string($2) + " := " + $6->temp);
 		
 		Attributes* attr_var = symbolTable.search_symbol($2);
 		// Agregar TAC de declaraciones
 		if ($1->kind == "VARIABLE" && attr_var != nullptr) {
 			// Agregar variable a .declaration
 			int scope_level = attr_var->scope;
-			$$->tac_declaraciones.push_back({scope_level, {string($2), strToSizeType(left_type)}});
+			int size_to_reserve = -1;
+			if($4->category == "Array"){
+				set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Atributo_Estructura"};
+				vector<ASTNode*> array_elements;
+				collect_nodes_by_categories($6, categories, array_elements);
+				int size_array = $4->children[0]->ivalue;
+				int size_type = strToSizeType($4->type);
+				size_to_reserve = size_type * size_array;
+
+				for (int i = 0; i < size_array; i++) {
+					string temp = labelGen.newTemp();
+					$$->tac.push_back(temp + " := " + to_string(i)+ " * " + to_string(size_type));
+					$$->tac.push_back(string($2) + "[" + temp + "] := " + array_elements[i]->temp);
+				}
+			}else if ($4->category == "Identificador" && attr_var != nullptr){ // Estructuras
+				/* por implementar */
+			} else if ($4->category == "Type" && attr_var != nullptr) {
+				size_to_reserve = strToSizeType(left_type);
+			}
+			if (size_to_reserve != -1) $$->tac_declaraciones.push_back({scope_level, {string($2), size_to_reserve}});
 		} else if ($1->kind == "CONSTANTE" && attr_var != nullptr) {
 			// Agregar constante a .data
 			if($6->category == "Cadena de Caracteres"){
@@ -863,6 +884,8 @@ asignacion:
 		$$ = $2;
 		// Determinar el tipo de operacion
 		string op_tac = "";
+		string expr_to_assign = $3->temp;
+		
 		if ($2->kind == "+=") op_tac = " + ";
 		else if ($2->kind == "-=") op_tac = " - ";
 		else if ($2->kind == "*=") op_tac = " * ";
@@ -871,9 +894,9 @@ asignacion:
 		concat_TAC($$, $3);
 		// Generar el TAC para asignacion
 		if (op_tac != " := ") {
-			$$->tac.push_back(string($1) + " := " + string($1) + op_tac + $3->temp);
+			$$->tac.push_back(string($1) + " := " + string($1) + op_tac + expr_to_assign);
 		} else {
-			$$->tac.push_back(string($1) + " := " + $3->temp);
+			$$->tac.push_back(string($1) + " := " + expr_to_assign);
 		}
 
 		$$->children.push_back(new_node);
@@ -1322,6 +1345,12 @@ expresion:
 		}
 		new_node->type = left_type;
 		$$ = new_node;
+
+		//Agregar TAC de indexacion
+		if(array_attr != nullptr){
+			string temp = labelGen.newTemp();
+			
+		}
 	} 
 	| T_IZQPAREN expresion T_DERPAREN { $$ = $2; } // Expresion parentizada.
 	| T_NELSON expresion { 

@@ -2,7 +2,7 @@
 jeva pi: manguita = 3.14;
 se_prende(){
 	culito z: mango = 10;
-	culito x: mango;
+	culito x: mango[5] = [1, 2, 3, 4, 5];
 	echar_cuento func(n : mango, m : mango) lanza mango{
 		culito a: mango = 10;
 		lanzate 5;
