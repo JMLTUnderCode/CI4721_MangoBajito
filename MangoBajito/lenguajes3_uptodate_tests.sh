@@ -6,9 +6,9 @@ valid_tests["Apuntador"]=""
 valid_tests["Bucle"]=""
 valid_tests["Casteo"]="00 01 02 03 04"
 valid_tests["Condicional"]=""
-valid_tests["Declaracion"]=""
-valid_tests["Funcion"]=""
-valid_tests["Operacion"]="00 01"
+valid_tests["Declaracion"]="00 01 03 04 12"
+valid_tests["Funcion"]="00 01 02"
+valid_tests["Operacion"]="00 01 02 03 04 05 07 08 09 10 11"
 valid_tests["ManejoError"]=""
 
 # Ruta base de los tests
