@@ -19,7 +19,7 @@ error_tests["Casteo"]="00 01 02 03"
 error_tests["Condicional"]="00"
 error_tests["Declaracion"]=""
 error_tests["Funcion"]="00 01 02"
-error_tests["Operacion"]="16 17 18 19 20"
+error_tests["Operacion"]="07 08 16 17 18 19 20"
 error_tests["ManejoError"]=""
 
 # Ruta base de los tests

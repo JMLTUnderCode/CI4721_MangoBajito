@@ -1,5 +1,20 @@
-# Test 05: Operacion de errores en decremento.
+# Test 07: Operacion de errores en decremento.
 se_prende(){
-	culito decl0 = mango;
+	culito decl0 : mango;
 	decl0--;
+
+	culito decl1 : manguita;
+	decl1--;
+	
+	culito decl2 : manguangua;
+	decl2--;
+
+	culito decl3 : negro;
+	decl3--;
+
+	culito decl4 : higuerote;
+	decl4--;
+
+	culito decl5 : tas_claro;
+	decl5--;
 };

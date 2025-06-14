@@ -1,0 +1,15 @@
+| Acomódate que te lo estan analizando d:-)
+Error: NON_VALUE
+  - Sendo peo en la linea 4, columna 7: Esta vaina "decl0" tiene el amor que te dió ella, o sea vacío.
+  - Sendo peo en la linea 7, columna 7: Esta vaina "decl1" tiene el amor que te dió ella, o sea vacío.
+  - Sendo peo en la linea 10, columna 7: Esta vaina "decl2" tiene el amor que te dió ella, o sea vacío.
+Error: TYPE_ERROR
+  - Sendo peo en la linea 13, columna 7: Tas en droga?. Tienes "decl3" de tipo 'negro' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.
+  - Sendo peo en la linea 16, columna 7: Tas en droga?. Tienes "decl4" de tipo 'higuerote' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.
+  - Sendo peo en la linea 19, columna 7: Tas en droga?. Tienes "decl5" de tipo 'tas_claro' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]
