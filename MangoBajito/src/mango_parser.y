@@ -686,7 +686,11 @@ declaracion:
 			$$->tac_declaraciones.push_back({scope_level, {string($2), strToSizeType(left_type)}});
 		} else if ($1->kind == "CONSTANTE" && attr_var != nullptr) {
 			// Agregar constante a .data
-			$$->tac_data.emplace_back(string($2), valuesToString($6));
+			if($6->category == "Cadena de Caracteres"){
+				$$->tac_data.emplace_back(string($2), $6->temp);
+			}else {
+				$$->tac_data.emplace_back(string($2), valuesToString($6));
+			}
 		}
 	}
 	| funcion cerrar_scope { $$ = $1; }
@@ -1132,7 +1136,11 @@ asignacion:
 				attr = string($1) + "." + string($3);
 			$$->tac.push_back(temp_base + " := " + "&" + string($1));
 			
-			$$->tac.push_back(temp_attr + " := " + temp_base + " + " + to_string(accumulateSizeType(struct_attr->info, attr)));
+			if(struct_attr->type->category == STRUCT){
+				$$->tac.push_back(temp_attr + " := " + temp_base + " + " + to_string(accumulateSizeType(struct_attr->info, attr)));
+			}else{// UNION
+				$$->tac.push_back(temp_attr + " := " + temp_base); 
+			}
 			
 			if(op_tac == " := "){
 				$$->tac.push_back("*" + temp_attr + op_tac + $5->temp);

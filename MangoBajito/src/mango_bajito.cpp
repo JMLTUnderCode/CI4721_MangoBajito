@@ -603,8 +603,8 @@ string valuesToString(const ASTNode* node) {
 	if (type == "mango") return to_string(node->ivalue);
 	if (type == "manguita") return to_string(node->fvalue);
 	if (type == "manguangua") return to_string(node->dvalue);
-	if (type == "negro") return string(1, node->cvalue);
-	if (type == "higuerote") return node->svalue;
+	if (type == "negro") return "'"s + node->cvalue + "'";
+	if (type == "higuerote") return "\"" + node->svalue + "\"";
 	if (type == "tas_claro") return node->bvalue ? "Sisa" : "Nolsa";
 	return "Desconocido";
 }

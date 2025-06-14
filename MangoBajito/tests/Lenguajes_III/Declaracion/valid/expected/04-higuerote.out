@@ -87,7 +87,7 @@ Programa
 .data:
 str0 := "hola"
 str1 := " mundo"
-decl1 :=  mundo
+decl1 := &str1
 
 .declaration:
 Scope 1: 
