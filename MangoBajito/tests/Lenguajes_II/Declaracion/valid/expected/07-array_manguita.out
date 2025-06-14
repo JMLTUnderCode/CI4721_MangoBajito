@@ -107,17 +107,19 @@ Programa
           |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |         |--> decl1 | Category: Declaración | Type: manguita | Kind: CONSTANTE
           |    |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 3
-          |    |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |         |--> Literal | Category: Array
           |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 30.123
-          |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 40.123
-          |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 50.321
+          |    |    |    |                   |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |                   |    |--> Literal | Category: Numérico | Type: manguita | Value: 30.123
+          |    |    |    |                   |    |--> Literal | Category: Numérico | Type: manguita | Value: 40.123
+          |    |    |    |                   |--> Literal | Category: Numérico | Type: manguita | Value: 50.321
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> decl2 | Category: Declaración | Type: manguita | Kind: CONSTANTE
           |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 2
-          |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |              |--> n0 | Category: Identificador | Type: manguita | Value: 2.1
-          |    |    |              |--> n1 | Category: Identificador | Type: manguita | Value: 3.3
+          |    |    |         |--> Literal | Category: Array
+          |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |                   |--> n0 | Category: Identificador | Type: manguita | Value: 2.1
+          |    |    |                   |--> n1 | Category: Identificador | Type: manguita | Value: 3.3
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl0[0] | Category: Elemento_Array | Type: manguita
           |    |         |--> Literal | Category: Numérico | Type: manguita | Value: 123.12

@@ -107,17 +107,19 @@ Programa
           |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |         |--> decl1 | Category: Declaración | Type: mango | Kind: CONSTANTE
           |    |    |    |         |    |--> n0 | Category: Array_Size | Type: mango | Value: 3
-          |    |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |         |--> Literal | Category: Array
           |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 30
-          |    |    |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 40
-          |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 50
+          |    |    |    |                   |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |                   |    |--> Literal | Category: Numérico | Type: mango | Value: 30
+          |    |    |    |                   |    |--> Literal | Category: Numérico | Type: mango | Value: 40
+          |    |    |    |                   |--> Literal | Category: Numérico | Type: mango | Value: 50
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> decl2 | Category: Declaración | Type: mango | Kind: CONSTANTE
           |    |    |         |    |--> n1 | Category: Array_Size | Type: mango | Value: 2
-          |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
-          |    |    |              |--> n0 | Category: Identificador | Type: mango | Value: 3
-          |    |    |              |--> n1 | Category: Identificador | Type: mango | Value: 2
+          |    |    |         |--> Literal | Category: Array
+          |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |                   |--> n0 | Category: Identificador | Type: mango | Value: 3
+          |    |    |                   |--> n1 | Category: Identificador | Type: mango | Value: 2
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl0[0] | Category: Elemento_Array | Type: mango
           |    |         |--> Literal | Category: Numérico | Type: mango | Value: 11

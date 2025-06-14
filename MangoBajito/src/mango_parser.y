@@ -515,12 +515,12 @@ declaracion:
 			yyerror("ERROR: Tipo no encontrado");
 		} else {
 			// Declaracion de Arreglo con asignacion
-			if ($4->category == "Array") {
+			if ($4->category == "Array" && $6->category == "Array") {
 				int size_array = 0;
 				for (auto child : $4->children){
 					if (child->category == "Array_Size"){
 						size_array = child->ivalue;
-						if (size_array < 0){
+						if (size_array <= 0){
 							FLAG_ERROR = SIZE_ARRAY_INVALID;
 							yyerror(to_string(size_array).c_str());
 							size_array = 0;
@@ -559,7 +559,7 @@ declaracion:
 						if (left_type != elem->type && (left_type != "manguangua" || elem->type != "manguita")) {
 							FLAG_ERROR = TYPE_ERROR;
 							string error_msg = "\"" + string($2) + "\" de tipo '" + left_type + 
-								"' y le quieres meter un tipo '" + elem->type + "', marbaa' bruja.";
+								"[]' y le quieres meter un '" + elem->type + "[]', marbaa' bruja.";
 							yyerror(error_msg.c_str());
 							attr_elem->value = nullptr;
 						} else {
@@ -611,6 +611,17 @@ declaracion:
 						}
 					}
 				}
+			} else if ($4->category != "Array" && $6->category == "Array"){
+				FLAG_ERROR = TYPE_ERROR;
+				string type_right_update = $6->children[0]->name != "Secuencia" ? $6->children[0]->type : $6->children[0]->children[0]->type ;
+				string error_msg = "\"" + string($2) + "\" de tipo '" + left_type + 
+					"' y le quieres meter un elemento de tipo '" + $6->children[0]->type + "', marbaa' bruja.";
+				yyerror(error_msg.c_str());
+			} else if ($4->category == "Array" && $6->category != "Array") {
+				FLAG_ERROR = TYPE_ERROR;
+				string error_msg = "\"" + string($2) + "\" de tipo '" + left_type + 
+					"[]' y le quieres meter un elemento de tipo '" + right_type + "', marbaa' bruja.";
+				yyerror(error_msg.c_str());
 
 			// Declaracion de tipos basicos con asignacion
 			} else {
@@ -1190,7 +1201,7 @@ operadores_asignacion:
 expresion:
 	T_ID {
 		ASTNode* new_node = makeASTNode($1, "Identificador");
-		
+
 		Attributes* attr = symbolTable.search_symbol($1);
 		if (attr == nullptr) {
 			FLAG_ERROR = NON_DEF_VAR;
@@ -1267,7 +1278,10 @@ expresion:
 	| T_PELABOLA { $$ = nullptr; }
 	| expresion_apuntador 
 	| expresion_nuevo
-	| T_IZQCORCHE secuencia T_DERCORCHE { $$ = $2; } // Arreglos
+	| T_IZQCORCHE secuencia T_DERCORCHE { // Arreglos
+		$$ = makeASTNode("Literal", "Array");
+		$$->children.push_back($2);
+	}
 	| T_ID T_IZQCORCHE expresion T_DERCORCHE { // Acceso a elementos de un array
 		ASTNode* new_node = makeASTNode($1, "Elemento_Array");
 		string left_type = "Desconocido_l";

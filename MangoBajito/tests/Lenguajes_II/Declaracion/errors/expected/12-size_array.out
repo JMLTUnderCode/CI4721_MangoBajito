@@ -1,0 +1,18 @@
+| Acomódate que te lo estan analizando d:-)
+Error: ARRAY_LITERAL_SIZE_MISMATCH
+  - Sendo peo en la linea 4, columna 37: Ay vale! Te gusta meterte más cosas verdad?. Sólo te caben '1' cositas.
+  - Sendo peo en la linea 5, columna 37: Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '2' de '3'.
+Error: SIZE_ARRAY_INVALID
+  - Sendo peo en la linea 3, columna 37: Le quieres meter vainas raras al tamaño de un array, mira esa vaina diske '0', solo mangos positivos, loca perdia'.
+  - Sendo peo en la linea 6, columna 38: Le quieres meter vainas raras al tamaño de un array, mira esa vaina diske '-1', solo mangos positivos, loca perdia'.
+  - Sendo peo en la linea 7, columna 25: Le quieres meter vainas raras al tamaño de un array, mira esa vaina diske 'manguita', solo mangos positivos, loca perdia'.
+  - Sendo peo en la linea 8, columna 34: Le quieres meter vainas raras al tamaño de un array, mira esa vaina diske 'manguangua', solo mangos positivos, loca perdia'.
+  - Sendo peo en la linea 9, columna 25: Le quieres meter vainas raras al tamaño de un array, mira esa vaina diske 'negro', solo mangos positivos, loca perdia'.
+  - Sendo peo en la linea 10, columna 28: Le quieres meter vainas raras al tamaño de un array, mira esa vaina diske 'higuerote', solo mangos positivos, loca perdia'.
+  - Sendo peo en la linea 11, columna 26: Le quieres meter vainas raras al tamaño de un array, mira esa vaina diske 'tas_claro', solo mangos positivos, loca perdia'.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]
