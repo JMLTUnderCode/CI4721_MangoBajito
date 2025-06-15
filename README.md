@@ -58,10 +58,10 @@
 			- [*Control del flujo en Bucles*](#control-del-flujo-en-bucles)
 	- [🥭**Tipos de Datos**](#tipos-de-datos)
 		- [**Escalares**](#escalares)
-			- [*Caracteres* (`negro`)](#caracteres-negro)
 			- [*Enteros* (`mango`)](#enteros-mango)
 			- [*Flotantes* (`manguita`)](#flotantes-manguita)
 			- [*Doubles* (`manguangua`)](#doubles-manguangua)
+			- [*Caracteres* (`negro`)](#caracteres-negro)
 			- [*Booleanos* (`tas_claro`)](#booleanos-tas_claro)
 		- [**Compuestos**](#compuestos)
 			- [*Cadena de Caracteres* (`higuerote`)](#cadena-de-caracteres-higuerote)
@@ -340,15 +340,6 @@ Mango Bajito proporciona dos palabras clave para controlar el flujo de ejecució
 
 ### **Escalares**
 
-#### *Caracteres* (`negro`)
-El tipo `negro` se utiliza para almacenar caracteres individuales, como letras, dígitos o símbolos. Es equivalente al tipo `char` en otros lenguajes de programación.
-
-**Ejemplo:**
-```
-jeva letra : negro = 'A';
-culito simbolo : negro = '$';
-```
-
 #### *Enteros* (`mango`)
 El tipo `mango` representa números enteros, positivos o negativos, dentro de un rango de 32 bits (números entre -2.147.483.648 y 2.147.483.647). Es ideal para contadores, índices y cálculos discretos.
 
@@ -374,6 +365,15 @@ El tipo `manguangua` se utiliza para números en coma flotante con doble precisi
 ```
 jeva pi : manguangua = 3.14159265359;
 culito distancia : manguangua = 1.989e30;
+```
+
+#### *Caracteres* (`negro`)
+El tipo `negro` se utiliza para almacenar caracteres individuales, como letras, dígitos o símbolos. Es equivalente al tipo `char` en otros lenguajes de programación.
+
+**Ejemplo:**
+```
+jeva letra : negro = 'A';
+culito simbolo : negro = '$';
 ```
 
 #### *Booleanos* (`tas_claro`)
@@ -726,25 +726,13 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	```
 #### Librería Estándar: `mango_adobao`
 Mango Bajito cuenta con la librería `mango_adobao`, la cual consta de las siguientes funciones para la manejo y manipulación de los `arreglos` e `higuerotes`.
-* `pegao`
-  
-	Concatena dos o mas cadenas de caracteres (`higuerote`), esta función recibe una lista de `higuerotes` separada por coma y forma una nueva.
-	
-	**Definición:**
-	```
-	pegao(aki_toy cadena_1 : higuerote, aki_toy cadena_2 : higuerote, ...) lanza higuerote;
-	```
-	**Sintaxis:**
-	```
-	<culito o jeva> <nombre de variable> : higuerote = pegao(cadena_1, cadena_2, ...);
-	```
 * `maelo`
 	
 	Repite una cadena de caracteres (`higuerote`) un número de veces indicado. (Referencia a 'Otra vez Maelo Ruiz').
 	
 	**Definición:**
 	```
-	maelo(aki_toy cadena : higuerote, repetidor : mango) lanza higuerote;
+	maelo(cadena : higuerote, repetidor : mango) lanza higuerote;
 	```
 	**Sintaxis:**
 	```
@@ -755,7 +743,7 @@ Mango Bajito cuenta con la librería `mango_adobao`, la cual consta de las sigui
 	
 	**Definición**
 	```
-	me_mide(aki_toy cadena: higuerote) lanza mango;
+	me_mide(cadena: higuerote) lanza mango;
 	```
 	**Sintaxis**
 	```
