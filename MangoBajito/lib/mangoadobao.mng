@@ -1,0 +1,70 @@
+# Librería Estándar de MangoBajito: `mango_adobao`
+
+# `caramba_ñero`
+#	El tipo `caramba_ñero` es un registro (`arroz_con_mango`) predefinido.
+arroz_con_mango caramba_ñero {
+	jeva codigo : mango; 		# Código de error único
+	jeva mensaje : higuerote;	# Descripción del error
+	jeva origen : higuerote;	# Módulo o función donde ocurrió el error
+}
+
+# `ah_vaina`
+#	Genera un error con un mensaje personalizado.
+#	**Definición:**
+#	ah_vaina (param : higuerote) lanza caramba_ñero;
+#	**Sintaxis:**
+#	ah_vaina("texto personalizado");
+echar_cuento ah_vaina(param : higuerote) lanza caramba_ñero {
+	# Crea un registro de error con el mensaje proporcionado
+	jeva error : caramba_ñero;
+	error.codigo = 1001;  # Código de error genérico
+	error.mensaje = param;
+	error.origen = "mango_adobao";
+	lanzate error;
+}
+
+
+# `maelo`	
+#	Repite una cadena de caracteres (`higuerote`) un número de veces indicado. (Referencia a 'Otra vez Maelo Ruiz').
+#	**Definición:**
+#	maelo(cadena : higuerote, repetidor : mango) lanza higuerote;
+#	**Sintaxis:**
+#	<culito o jeva> <nombre de variable> : higuerote = maelo(cadena, repetidor);
+echar_cuento maelo(cadena : higuerote, repetidor : mango) lanza higuerote {
+	# Repite la cadena el número de veces indicado
+	culito resultado : higuerote = cadena;
+	repite_burda i entre 0 hasta repetidor {
+		resultado = resultado + cadena;
+	}
+	lanzate resultado;
+}
+
+# `me_mide`
+#	Devuelve la longitud de una cadena de caracteres (`higuerote`).
+#	**Definición**
+#	me_mide(cadena: higuerote) lanza mango;
+#	**Sintaxis**
+#	<culito o jeva> <nombre de la variable> : mango = me_mide(cadena);
+echar_cuento me_mide(cadena : higuerote) lanza mango {
+	# Retorna la longitud de la cadena
+	culito longitud : mango = 0;
+	repite_burda i entre 0 hasta largo(cadena) {
+		longitud = longitud + 1;
+	}
+	lanzate longitud;
+}
+
+# `rellenamelo`
+#	Inicializa un arreglo con elementos de un valor determinado.
+#	**Definición**
+#	rellenamelo(aki_toy arreglo: <tipo>[tamaño], valor: <tipo>) lanza un_coño;
+#	**Sintaxis**
+#	culito <nombre_arreglo> : <tipo>[tamaño]; 
+#	rellenamelo(<nombre_arreglo>, <valor>);
+#	**Consideraciones**
+#	Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
+#	El `<valor>` para inicializar debe ser correspondiente con el `<tipo>` declarado del arreglo.
+
+
+
+
