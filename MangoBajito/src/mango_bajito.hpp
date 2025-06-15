@@ -138,6 +138,7 @@ enum systemError {
 	POINTER_ARRAY,
 	INT_INDEX_ARRAY,
 	SIZE_ARRAY_INVALID,
+	INVALID_ACCESS,
 	CASTING_TYPE,
 	CASTING_ERROR,
 	OVERFULL,
@@ -168,10 +169,7 @@ class SymbolTable {
 		vector<pair<int, bool> > scopes;					//Pila de scopes
 		vector<string> predef_types = {
 			"mango", "manguita", "manguangua", "negro", "higuerote", "tas_claro", 
-			"un_coño", 
-			"array$", 
-			"funcion$", 
-			"error$"
+			"un_coño", "funcion$", "caramba_ñero"
 		};
 		vector<string> predef_func = {"rescata", "hablame", "se_prende"};
 	public:
