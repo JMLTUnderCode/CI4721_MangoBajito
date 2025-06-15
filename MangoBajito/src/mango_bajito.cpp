@@ -35,6 +35,7 @@ vector<string> sysErrorToString = {
 	"POINTER_ARRAY",
 	"INT_INDEX_ARRAY",
 	"SIZE_ARRAY_INVALID",
+	"INVALID_ACCESS",
 	"CASTING_TYPE",
 	"CASTING_ERROR",
 	"OVERFULL",
@@ -335,10 +336,20 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 	string left_type = left ? left->type : "Desconocido";
 	string right_type = right ? right->type : "Desconocido";
 
-	if (left && right) {
+	if (!left || !right) {
+		error_msg += "Non operands finds.";
+		addError(INTERNAL, error_msg);
+		return nullptr;
+	} else {
 		type = left_type;
-
-		if (kind == "Numérica" && left_type == right_type) {
+		if (kind == "Numérica" && left_type == right_type && left_type == "higuerote") {
+			kind = "Concatenación";	
+			if (op == "+") new_node->svalue = left->svalue + right->svalue;
+			else {
+				error_msg += "Unsupported type for operation: " + type;
+				addError(TYPE_ERROR, error_msg);
+			}
+		} else if (kind == "Numérica" && left_type == right_type) {
 			if (type == "mango"){
 				if (op == "+") new_node->ivalue = left->ivalue + right->ivalue;
 				else if (op == "-") new_node->ivalue = left->ivalue - right->ivalue;
@@ -526,12 +537,7 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 	    if (left) new_node->children.push_back(left);
 	    if (right) new_node->children.push_back(right);
 	    return new_node;
-
-	} else {
-		error_msg += "Non operands finds.";
-		addError(INTERNAL, error_msg);
-		return nullptr;
-	}
+	} 
 }
 
 // Muestra el AST en consola de forma jerárquica.

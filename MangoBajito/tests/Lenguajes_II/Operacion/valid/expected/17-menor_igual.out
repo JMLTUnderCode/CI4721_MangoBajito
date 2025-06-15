@@ -19,71 +19,68 @@
 [1;35m[5m    Clave: 5: n11[0m
     |---> Símbolo: n11, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
 
-[1;35m[5m    Clave: 6: n10[0m
-    |---> Símbolo: n10, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
-
-[1;35m[5m    Clave: 7: n9[0m
+[1;35m[5m    Clave: 6: n9[0m
     |---> Símbolo: n9, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
 
-[1;35m[5m    Clave: 8: n2[0m
+[1;35m[5m    Clave: 7: n2[0m
     |---> Símbolo: n2, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
 
-[1;35m[5m    Clave: 9: n1[0m
+[1;35m[5m    Clave: 8: n1[0m
     |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
 
-[1;35m[5m    Clave: 10: n0[0m
-    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
-
-[1;35m[5m    Clave: 11: n5[0m
+[1;35m[5m    Clave: 9: n5[0m
     |---> Símbolo: n5, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
 
-[1;35m[5m    Clave: 12: mango[0m
+[1;35m[5m    Clave: 10: mango[0m
     |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 13: manguita[0m
+[1;35m[5m    Clave: 11: manguita[0m
     |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 14: manguangua[0m
+[1;35m[5m    Clave: 12: manguangua[0m
     |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 15: negro[0m
+[1;35m[5m    Clave: 13: negro[0m
     |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 16: n4[0m
+[1;35m[5m    Clave: 14: n4[0m
     |---> Símbolo: n4, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
 
-[1;35m[5m    Clave: 17: tas_claro[0m
+[1;35m[5m    Clave: 15: tas_claro[0m
     |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 18: n3[0m
+[1;35m[5m    Clave: 16: n3[0m
     |---> Símbolo: n3, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
 
-[1;35m[5m    Clave: 19: hablame[0m
+[1;35m[5m    Clave: 17: hablame[0m
     |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 20: un_coño[0m
+[1;35m[5m    Clave: 18: un_coño[0m
     |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 21: array$[0m
-    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 22: funcion$[0m
+[1;35m[5m    Clave: 19: funcion$[0m
     |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 23: error$[0m
-    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 20: n10[0m
+    |---> Símbolo: n10, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
 
-[1;35m[5m    Clave: 24: n21[0m
+[1;35m[5m    Clave: 21: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 22: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 23: n21[0m
     |---> Símbolo: n21, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
 
-[1;35m[5m    Clave: 25: higuerote[0m
+[1;35m[5m    Clave: 24: higuerote[0m
     |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 26: rescata[0m
+[1;35m[5m    Clave: 25: rescata[0m
     |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 27: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 26: n0[0m
+    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================

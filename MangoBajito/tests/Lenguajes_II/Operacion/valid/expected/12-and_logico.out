@@ -10,11 +10,11 @@
 [1;35m[5m    Clave: 2: var_false[0m
     |---> Símbolo: var_false, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
 
-[1;35m[5m    Clave: 3: var_true[0m
-    |---> Símbolo: var_true, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
-
-[1;35m[5m    Clave: 4: mango[0m
+[1;35m[5m    Clave: 3: mango[0m
     |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 4: var_true[0m
+    |---> Símbolo: var_true, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
 
 [1;35m[5m    Clave: 5: manguita[0m
     |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
@@ -34,23 +34,20 @@
 [1;35m[5m    Clave: 10: un_coño[0m
     |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 11: array$[0m
-    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 12: funcion$[0m
+[1;35m[5m    Clave: 11: funcion$[0m
     |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 13: error$[0m
-    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 12: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 13: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 [1;35m[5m    Clave: 14: higuerote[0m
     |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
 [1;35m[5m    Clave: 15: rescata[0m
     |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
-
-[1;35m[5m    Clave: 16: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================

@@ -11,7 +11,7 @@ se_prende(){
 
 	culito n1: manguita = -8.9;
 	n1 = n1 + 11.2;
-	n1 = n1 + 8.7 - 4.12;
+	n1 = n1 + 8.7 + 4.12;
 	n1 = (n1 + 1.23) + (n1 + 2.22);
 	suma_manguita = n1 + 1.21;
 
