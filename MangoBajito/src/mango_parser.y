@@ -1363,7 +1363,8 @@ expresion:
 		//Agregar TAC de indexacion
 		if(array_attr != nullptr){
 			string temp = labelGen.newTemp();
-			
+			$$->tac.push_back(temp + " := " + $3->temp + " * " + to_string(strToSizeType(left_type)));
+			$$->temp = string($1) + "[" + temp + "]";
 		}
 	} 
 	| T_IZQPAREN expresion T_DERPAREN { $$ = $2; } // Expresion parentizada.

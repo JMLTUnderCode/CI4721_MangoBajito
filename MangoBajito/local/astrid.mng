@@ -1,5 +1,6 @@
 # Archivo especifico para pruebas de Astrid
 jeva pi: manguita = 3.14;
+jeva index: mango = 3;
 se_prende(){
 	culito z: mango = 10;
 	culito x: mango[5] = [1, 2, 3, 4, 5];
@@ -10,4 +11,6 @@ se_prende(){
 
 	culito a: mango = func(3, 5);
 	culito b: higuerote = "Hola Mundo";
+	culito ayuda: mango = x[4];
+	ayuda = x[index];
 };
