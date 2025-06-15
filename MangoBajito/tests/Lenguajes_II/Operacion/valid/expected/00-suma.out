@@ -8,7 +8,7 @@
     |---> Símbolo: n2, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 6.7e+11
 
 [1;35m[5m    Clave: 2: n1[0m
-    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: manguita, Value: 17.21
+    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: manguita, Value: 33.69
 
 [1;35m[5m    Clave: 3: suma_manguangua[0m
     |---> Símbolo: suma_manguangua, Categoría: (1)VARIABLE, Scope: 1, Type: manguangua, Value: 6.82e+11
@@ -17,49 +17,46 @@
     |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 33
 
 [1;35m[5m    Clave: 5: suma_manguita[0m
-    |---> Símbolo: suma_manguita, Categoría: (1)VARIABLE, Scope: 1, Type: manguita, Value: 18.42
+    |---> Símbolo: suma_manguita, Categoría: (1)VARIABLE, Scope: 1, Type: manguita, Value: 34.9
 
-[1;35m[5m    Clave: 6: suma_mango[0m
-    |---> Símbolo: suma_mango, Categoría: (1)VARIABLE, Scope: 1, Type: mango, Value: 34
-
-[1;35m[5m    Clave: 7: mango[0m
+[1;35m[5m    Clave: 6: mango[0m
     |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 8: manguita[0m
+[1;35m[5m    Clave: 7: manguita[0m
     |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 9: manguangua[0m
+[1;35m[5m    Clave: 8: manguangua[0m
     |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 10: negro[0m
+[1;35m[5m    Clave: 9: negro[0m
     |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 11: tas_claro[0m
+[1;35m[5m    Clave: 10: tas_claro[0m
     |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 12: hablame[0m
+[1;35m[5m    Clave: 11: hablame[0m
     |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 13: un_coño[0m
+[1;35m[5m    Clave: 12: un_coño[0m
     |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 14: array$[0m
-    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 15: funcion$[0m
+[1;35m[5m    Clave: 13: funcion$[0m
     |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 16: error$[0m
-    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 14: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 15: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 16: suma_mango[0m
+    |---> Símbolo: suma_mango, Categoría: (1)VARIABLE, Scope: 1, Type: mango, Value: 34
 
 [1;35m[5m    Clave: 17: higuerote[0m
     |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
 [1;35m[5m    Clave: 18: rescata[0m
     |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
-
-[1;35m[5m    Clave: 19: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
@@ -125,26 +122,26 @@ Programa
           |    |    |    |    |    |    |    |         |--> + | Category: Operación | Type: manguita | Kind: Numérica | Value: 2.3
           |    |    |    |    |    |    |    |              |--> n1 | Category: Identificador | Type: manguita | Value: -8.9
           |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 11.2
-          |    |    |    |    |    |    |    |--> Asignación | Type: manguita | Kind: = | Value: 6.88
+          |    |    |    |    |    |    |    |--> Asignación | Type: manguita | Kind: = | Value: 15.12
           |    |    |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita | Value: 0
-          |    |    |    |    |    |    |         |--> - | Category: Operación | Type: manguita | Kind: Numérica | Value: 6.88
+          |    |    |    |    |    |    |         |--> + | Category: Operación | Type: manguita | Kind: Numérica | Value: 15.12
           |    |    |    |    |    |    |              |--> + | Category: Operación | Type: manguita | Kind: Numérica | Value: 11
           |    |    |    |    |    |    |              |    |--> n1 | Category: Identificador | Type: manguita | Value: 2.3
           |    |    |    |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 8.7
           |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 4.12
-          |    |    |    |    |    |    |--> Asignación | Type: manguita | Kind: = | Value: 17.21
+          |    |    |    |    |    |    |--> Asignación | Type: manguita | Kind: = | Value: 33.69
           |    |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita | Value: 0
-          |    |    |    |    |    |         |--> + | Category: Operación | Type: manguita | Kind: Numérica | Value: 17.21
-          |    |    |    |    |    |              |--> + | Category: Operación | Type: manguita | Kind: Numérica | Value: 8.11
-          |    |    |    |    |    |              |    |--> n1 | Category: Identificador | Type: manguita | Value: 6.88
+          |    |    |    |    |    |         |--> + | Category: Operación | Type: manguita | Kind: Numérica | Value: 33.69
+          |    |    |    |    |    |              |--> + | Category: Operación | Type: manguita | Kind: Numérica | Value: 16.35
+          |    |    |    |    |    |              |    |--> n1 | Category: Identificador | Type: manguita | Value: 15.12
           |    |    |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 1.23
-          |    |    |    |    |    |              |--> + | Category: Operación | Type: manguita | Kind: Numérica | Value: 9.1
-          |    |    |    |    |    |                   |--> n1 | Category: Identificador | Type: manguita | Value: 6.88
+          |    |    |    |    |    |              |--> + | Category: Operación | Type: manguita | Kind: Numérica | Value: 17.34
+          |    |    |    |    |    |                   |--> n1 | Category: Identificador | Type: manguita | Value: 15.12
           |    |    |    |    |    |                   |--> Literal | Category: Numérico | Type: manguita | Value: 2.22
-          |    |    |    |    |    |--> Asignación | Type: manguita | Kind: = | Value: 18.42
+          |    |    |    |    |    |--> Asignación | Type: manguita | Kind: = | Value: 34.9
           |    |    |    |    |         |--> suma_manguita | Category: Identificador | Type: manguita
-          |    |    |    |    |         |--> + | Category: Operación | Type: manguita | Kind: Numérica | Value: 18.42
-          |    |    |    |    |              |--> n1 | Category: Identificador | Type: manguita | Value: 17.21
+          |    |    |    |    |         |--> + | Category: Operación | Type: manguita | Kind: Numérica | Value: 34.9
+          |    |    |    |    |              |--> n1 | Category: Identificador | Type: manguita | Value: 33.69
           |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 1.21
           |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |         |--> n2 | Category: Declaración | Type: manguangua | Kind: VARIABLE

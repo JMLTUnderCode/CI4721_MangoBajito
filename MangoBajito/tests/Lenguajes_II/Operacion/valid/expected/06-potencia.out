@@ -10,101 +10,98 @@
 [1;35m[5m    Clave: 2: n18[0m
     |---> Símbolo: n18, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1
 
-[1;35m[5m    Clave: 3: n16[0m
-    |---> Símbolo: n16, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -1.04858e+06
-
-[1;35m[5m    Clave: 4: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
-
-[1;35m[5m    Clave: 5: rescata[0m
+[1;35m[5m    Clave: 3: rescata[0m
     |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 6: higuerote[0m
+[1;35m[5m    Clave: 4: higuerote[0m
     |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 7: funcion$[0m
-    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 5: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 8: array$[0m
-    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 6: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 9: n3[0m
-    |---> Símbolo: n3, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -1.85934e-06
-
-[1;35m[5m    Clave: 10: tas_claro[0m
-    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 11: n4[0m
-    |---> Símbolo: n4, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1
-
-[1;35m[5m    Clave: 12: negro[0m
-    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 13: manguangua[0m
-    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 14: manguita[0m
-    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 15: mango[0m
-    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 16: n5[0m
-    |---> Símbolo: n5, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 0
-
-[1;35m[5m    Clave: 17: un_coño[0m
-    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 18: n0[0m
-    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 537824
-
-[1;35m[5m    Clave: 19: n1[0m
-    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1.85934e-06
-
-[1;35m[5m    Clave: 20: n2[0m
-    |---> Símbolo: n2, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -537824
-
-[1;35m[5m    Clave: 21: n19[0m
-    |---> Símbolo: n19, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 0
-
-[1;35m[5m    Clave: 22: hablame[0m
-    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
-
-[1;35m[5m    Clave: 23: n6[0m
-    |---> Símbolo: n6, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: inf
-
-[1;35m[5m    Clave: 24: n7[0m
-    |---> Símbolo: n7, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 2.17563e+06
-
-[1;35m[5m    Clave: 25: n11[0m
-    |---> Símbolo: n11, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1
-
-[1;35m[5m    Clave: 26: error$[0m
-    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 27: n8[0m
-    |---> Símbolo: n8, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 4.59636e-07
-
-[1;35m[5m    Clave: 28: n9[0m
-    |---> Símbolo: n9, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -2.17563e+06
-
-[1;35m[5m    Clave: 29: n17[0m
+[1;35m[5m    Clave: 7: n17[0m
     |---> Símbolo: n17, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -9.53674e-07
 
-[1;35m[5m    Clave: 30: n10[0m
+[1;35m[5m    Clave: 8: n10[0m
     |---> Símbolo: n10, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -4.59636e-07
 
-[1;35m[5m    Clave: 31: n13[0m
+[1;35m[5m    Clave: 9: n13[0m
     |---> Símbolo: n13, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: inf
 
-[1;35m[5m    Clave: 32: n15[0m
+[1;35m[5m    Clave: 10: n15[0m
     |---> Símbolo: n15, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 9.53674e-07
 
-[1;35m[5m    Clave: 33: n12[0m
+[1;35m[5m    Clave: 11: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 12: n0[0m
+    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 537824
+
+[1;35m[5m    Clave: 13: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 14: n3[0m
+    |---> Símbolo: n3, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -1.85934e-06
+
+[1;35m[5m    Clave: 15: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 16: n4[0m
+    |---> Símbolo: n4, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1
+
+[1;35m[5m    Clave: 17: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 18: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 19: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 20: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 21: n5[0m
+    |---> Símbolo: n5, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 0
+
+[1;35m[5m    Clave: 22: n1[0m
+    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1.85934e-06
+
+[1;35m[5m    Clave: 23: n2[0m
+    |---> Símbolo: n2, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -537824
+
+[1;35m[5m    Clave: 24: n19[0m
+    |---> Símbolo: n19, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 0
+
+[1;35m[5m    Clave: 25: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 26: n6[0m
+    |---> Símbolo: n6, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: inf
+
+[1;35m[5m    Clave: 27: n7[0m
+    |---> Símbolo: n7, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 2.17563e+06
+
+[1;35m[5m    Clave: 28: n11[0m
+    |---> Símbolo: n11, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1
+
+[1;35m[5m    Clave: 29: n8[0m
+    |---> Símbolo: n8, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 4.59636e-07
+
+[1;35m[5m    Clave: 30: n9[0m
+    |---> Símbolo: n9, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -2.17563e+06
+
+[1;35m[5m    Clave: 31: n12[0m
     |---> Símbolo: n12, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 0
 
-[1;35m[5m    Clave: 34: n14[0m
+[1;35m[5m    Clave: 32: n14[0m
     |---> Símbolo: n14, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 1.04858e+06
+
+[1;35m[5m    Clave: 33: n16[0m
+    |---> Símbolo: n16, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: -1.04858e+06
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================

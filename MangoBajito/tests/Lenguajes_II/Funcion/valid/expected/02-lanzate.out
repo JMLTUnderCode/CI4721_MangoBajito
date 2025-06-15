@@ -4,14 +4,14 @@
                              Symbol Table Representation              
                =======================================================
 [0m
-[1;35m[5m    Clave: 1: p3[0m
+[1;35m[5m    Clave: 1: value[0m
+    |---> Símbolo: value, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 0
+
+[1;35m[5m    Clave: 2: p3[0m
     |---> Símbolo: p3, Categoría: (3)PARAMETERS, Scope: 3, Type: mango
 
-[1;35m[5m    Clave: 2: fun1[0m
+[1;35m[5m    Clave: 3: fun1[0m
     |---> Símbolo: fun1, Categoría: (2)FUNCTION, Scope: 2, Type: mango, Informacion: PARAM(p1) PARAM(p2) PARAM(p3) 
-
-[1;35m[5m    Clave: 3: p[0m
-    |---> Símbolo: p, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 23
 
 [1;35m[5m    Clave: 4: p1[0m
     |---> Símbolo: p1, Categoría: (3)PARAMETERS, Scope: 3, Type: mango, Value: 2
@@ -37,29 +37,26 @@
 [1;35m[5m    Clave: 11: un_coño[0m
     |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 12: array$[0m
-    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 13: p2[0m
+[1;35m[5m    Clave: 12: p2[0m
     |---> Símbolo: p2, Categoría: (3)PARAMETERS, Scope: 3, Type: manguita, Value: 3
 
-[1;35m[5m    Clave: 14: funcion$[0m
+[1;35m[5m    Clave: 13: funcion$[0m
     |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 15: value[0m
-    |---> Símbolo: value, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 0
+[1;35m[5m    Clave: 14: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 16: error$[0m
-    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 15: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 17: higuerote[0m
+[1;35m[5m    Clave: 16: higuerote[0m
     |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 18: rescata[0m
+[1;35m[5m    Clave: 17: rescata[0m
     |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 19: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 18: p[0m
+    |---> Símbolo: p, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 23
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================

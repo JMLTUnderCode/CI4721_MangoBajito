@@ -1,0 +1,13 @@
+| Acomódate que te lo estan analizando d:-)
+Error: TYPE_ERROR
+  - Sendo peo en la linea 3, columna 37: Type mismatch in operation: higuerote + mango
+  - Sendo peo en la linea 4, columna 39: Type mismatch in operation: higuerote + manguita
+  - Sendo peo en la linea 5, columna 44: Type mismatch in operation: higuerote + manguangua
+  - Sendo peo en la linea 6, columna 39: Type mismatch in operation: higuerote + negro
+  - Sendo peo en la linea 7, columna 40: Type mismatch in operation: higuerote + tas_claro
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

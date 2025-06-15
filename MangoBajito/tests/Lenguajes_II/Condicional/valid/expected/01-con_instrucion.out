@@ -34,28 +34,25 @@
 [1;35m[5m    Clave: 10: un_coño[0m
     |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 11: array$[0m
-    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 12: funcion$[0m
-    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 13: a[0m
+[1;35m[5m    Clave: 11: a[0m
     |---> Símbolo: a, Categoría: (1)VARIABLE, Scope: 3, Type: mango, Value: 100
 
     |---> Símbolo: a, Categoría: (1)VARIABLE, Scope: 6, Type: mango, Value: 1155
 
-[1;35m[5m    Clave: 14: error$[0m
-    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 12: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 13: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 14: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 [1;35m[5m    Clave: 15: higuerote[0m
     |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
 [1;35m[5m    Clave: 16: rescata[0m
     |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
-
-[1;35m[5m    Clave: 17: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
