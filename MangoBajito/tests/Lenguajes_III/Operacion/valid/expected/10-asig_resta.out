@@ -10,47 +10,44 @@
 [1;35m[5m    Clave: 2: n1[0m
     |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: manguita, Value: -24.7
 
-[1;35m[5m    Clave: 3: n0[0m
-    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: -24
-
-[1;35m[5m    Clave: 4: mango[0m
+[1;35m[5m    Clave: 3: mango[0m
     |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 5: manguita[0m
+[1;35m[5m    Clave: 4: manguita[0m
     |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 6: manguangua[0m
+[1;35m[5m    Clave: 5: manguangua[0m
     |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 7: negro[0m
+[1;35m[5m    Clave: 6: negro[0m
     |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 8: tas_claro[0m
+[1;35m[5m    Clave: 7: tas_claro[0m
     |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 9: hablame[0m
+[1;35m[5m    Clave: 8: hablame[0m
     |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 10: un_coño[0m
+[1;35m[5m    Clave: 9: un_coño[0m
     |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 11: array$[0m
-    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 12: funcion$[0m
+[1;35m[5m    Clave: 10: funcion$[0m
     |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 13: error$[0m
-    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 11: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 14: higuerote[0m
+[1;35m[5m    Clave: 12: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 13: higuerote[0m
     |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 15: rescata[0m
+[1;35m[5m    Clave: 14: rescata[0m
     |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 16: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 15: n0[0m
+    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: -24
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
