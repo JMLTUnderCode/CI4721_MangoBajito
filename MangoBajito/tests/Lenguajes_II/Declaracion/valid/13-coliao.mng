@@ -1,12 +1,27 @@
-# Test 13: Definicion y tipo Coliao.
+# Test 13: Definicion y uso del tipo Coliao.
 se_prende(){
-	coliao MyUnion {
-		attr_u_1 : mango;
-		attr_u_2 : manguita;
+	coliao Persona {
+		nombre : higuerote;
+		sexo : negro;
+		edad : mango;
 	};
 
-	culito var_union : MyUnion;
+	culito yo : Persona;
+	culito ella : Persona;
+	culito el : Persona;
 
-	var_union.attr_u_1 = 123;
-	var_union.attr_u_2 = 323.1;
+	yo.nombre = "Junior";
+	ella.nombre = "Astrid";
+	el.nombre = "Jhonaiker";	
+	culito nombres : higuerote[3] = [ella.nombre, el.nombre, yo.nombre];
+
+	yo.sexo = 'M';
+	ella.sexo = 'F';
+	el.sexo = 'M';
+	culito sexos : negro[3] = [ella.sexo, el.sexo, yo.sexo];
+
+	yo.edad = 26;
+	ella.edad = 23;
+	el.edad = 24;
+	culito edades : mango[3] = [ella.edad, el.edad, yo.edad];
 };
