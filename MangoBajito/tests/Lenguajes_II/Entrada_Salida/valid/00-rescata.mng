@@ -1,0 +1,9 @@
+# Test 00: Uso de rescata
+se_prende(){
+	culito p : mango = 23;
+	echar_cuento fun1(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
+		p1 = 2;
+		p2 = 3.0;
+		rescata(p2, " - ", p1 + (mango)p2, " -> ", "Hola" + " Mundo");
+	};
+};
