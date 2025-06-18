@@ -6,5 +6,9 @@ se_prende(){
 	
 	si_es_asi(a + 1 igualito 5 o_sea a menol 0){
 		culito b: mango = 10;
+	}o_asi (a mayol 10){
+		culito b: mango = 20;
+	}nojoda{
+		culito b: mango = 30;
 	};
 };

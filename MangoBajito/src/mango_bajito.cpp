@@ -764,6 +764,7 @@ void generateJumpingCode(ASTNode* main_node, ASTNode* guardia, string label_true
 
 		}else if(ops_booleanas.count(expr->name)){
 			cout << expr->name << endl;
+			generateJumpingCode(main_node, expr, label_true, label_false, new_label);
 			string operation = expr->children[0]->temp + " " + convertBoolOperation(expr->name) + " " + expr->children[1]->temp;
 			
 			if (label_true != "fall" && label_false != "fall"){
@@ -771,18 +772,17 @@ void generateJumpingCode(ASTNode* main_node, ASTNode* guardia, string label_true
 					"if " + operation + " goto " + label_true +
 					"\ngoto " + label_false
 				);
-				generateJumpingCode(main_node, expr, label_true, label_false, new_label);
 			} else if (label_true != "fall"){
 				tac_instruction.push_back(
 					"if " + operation + " goto " + label_true
 				);
-				generateJumpingCode(main_node, expr, label_true, expr->falseLabel, new_label);
 			} else if (label_false != "fall"){
 				tac_instruction.push_back(
-					"ifnot " + operation + " goto " + label_false
+					"ifnot " + operation + " goto " + label_false +
+					"\ngoto " + new_label
 				);
-				generateJumpingCode(main_node, expr, expr->trueLabel, label_false, new_label);
 			}
+			
 		}else if(ops_numericas.count(expr->name)){
 			generateJumpingCode(main_node, expr, label_true, label_false, new_label);
 		}else{ // literales o variables

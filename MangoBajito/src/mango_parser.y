@@ -1698,7 +1698,45 @@ condicion:
 		string label_false = labelGen.newLabel();
 		string new_label = labelGen.newLabel();
 		generateJumpingCode($$, $1->children[0], "fall", label_false, new_label);
-		concat_TAC($$, siesasi_instr);
+		//$$->tac.push_back(label_false + ": ");
+		//concat_TAC($$, siesasi_instr);
+		// Guardado de las instrucciones si_es_asi
+		backup_instrs.emplace_back(siesasi_instr, new_label);
+		// Si hay una alternativa, se agrega al nodo de la guardia.
+		if ($2) {
+			for (ASTNode* node : $2->children)  {
+				if (node->name == "o_asi"){
+					// Extraer guardia e instruccion de o_asi
+					ASTNode* oasi_guard = node->children[0]->children[0];
+					ASTNode* oasi_instr = node->children.size() > 1 ? node->children[1] : nullptr;
+					// Agregar instrucciones de la guardia o_asi
+					concat_TAC($$, oasi_guard);
+					// label del o_asi
+					string label_false = labelGen.newLabel();
+					string new_label = labelGen.newLabel();
+					generateJumpingCode($$, node->children[0], "fall", label_false, new_label);
+					//$$->tac.push_back(label_false + ": ");
+					backup_instrs.emplace_back(oasi_instr, new_label);
+				}else{
+					// Agregar instrucciones nojoda
+					if (node->children.size() != 0) concat_TAC($$, node->children[0]);
+				}
+				$$->children.push_back(node); // Agregar cada alternativa como un nodo hijo.
+			}
+		}
+		// Agregar instrucciones de los condicionales (si_es_asi, o_asi)
+		string label3 = labelGen.newLabel();
+		$$->tac.push_back("goto " + label3);
+		for (size_t i = 0; i < backup_instrs.size(); ++i) {
+			auto pares = backup_instrs[i];
+			$$->tac.push_back(pares.second + ": ");
+			concat_TAC($$, pares.first);
+			if (i != backup_instrs.size() - 1) {
+				$$->tac.push_back("goto " + label3);
+			}
+		}
+		// Salida del bloque if
+		$$->tac.push_back(label3 + ": ");
 	}
 	;
 
