@@ -1,5 +1,13 @@
 se_prende(){
-	culito z: higuerote = "Hola Mundo";
-	z[0] = 'z';
-	culito x: negro = z[0];
+	arroz_con_mango Persona {
+		nombre : higuerote;
+		sexo : negro;
+		edad : mango;
+	};
+	culito yo : Persona;
+	yo.nombre = "Junior";
+	yo.sexo = 'M';
+	yo.edad = 26;
+
+	culito vec_edades : mango[3] = [25, yo.edad, 27];
 };
