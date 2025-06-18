@@ -23,47 +23,50 @@
 [1;35m[5m    Clave: 5: manguita[0m
     |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 6: negro[0m
+[1;35m[5m    Clave: 6: decl3[0m
+    |---> Símbolo: decl3, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: -5
+
+[1;35m[5m    Clave: 7: negro[0m
     |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 7: tas_claro[0m
+[1;35m[5m    Clave: 8: tas_claro[0m
     |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 8: decl1[0m
+[1;35m[5m    Clave: 9: decl1[0m
     |---> Símbolo: decl1, Categoría: (1)VARIABLE, Scope: 2, Type: manguita, Value: 3.1
 
-[1;35m[5m    Clave: 9: hablame[0m
+[1;35m[5m    Clave: 10: hablame[0m
     |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 10: bar0[0m
+[1;35m[5m    Clave: 11: bar0[0m
     |---> Símbolo: bar0, Categoría: (2)FUNCTION, Scope: 2, Type: un_coño, Informacion: PARAM(x) 
 
-[1;35m[5m    Clave: 11: un_coño[0m
+[1;35m[5m    Clave: 12: un_coño[0m
     |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 12: funcion$[0m
+[1;35m[5m    Clave: 13: funcion$[0m
     |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 13: caramba_ñero[0m
+[1;35m[5m    Clave: 14: caramba_ñero[0m
     |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 14: bar1[0m
+[1;35m[5m    Clave: 15: bar1[0m
     |---> Símbolo: bar1, Categoría: (2)FUNCTION, Scope: 2, Type: un_coño, Informacion: PARAM(x) 
 
-[1;35m[5m    Clave: 15: se_prende[0m
+[1;35m[5m    Clave: 16: se_prende[0m
     |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 16: higuerote[0m
+[1;35m[5m    Clave: 17: higuerote[0m
     |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 17: rescata[0m
+[1;35m[5m    Clave: 18: rescata[0m
     |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 18: manguangua[0m
+[1;35m[5m    Clave: 19: manguangua[0m
     |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 19: decl0[0m
-    |---> Símbolo: decl0, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: -7
+[1;35m[5m    Clave: 20: decl0[0m
+    |---> Símbolo: decl0, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: -5
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
@@ -80,21 +83,31 @@ Programa
           |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |    |--> Instrucción | Kind: ;
-          |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |    |    |--> decl0 | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |    |    |    |    |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: -8
-          |    |    |    |    |    |    |    |--> Operación | Category: Incremento | Type: mango | Value: -7
-          |    |    |    |    |    |    |         |--> decl0 | Category: Identificador | Type: mango | Value: -8
+          |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |    |--> decl0 | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: -8
+          |    |    |    |    |    |    |    |    |    |--> Operación | Category: Incremento | Type: mango | Value: -7
+          |    |    |    |    |    |    |    |    |         |--> decl0 | Category: Identificador | Type: mango | Value: -8
+          |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |         |--> decl1 | Category: Declaración | Type: manguita | Kind: VARIABLE
+          |    |    |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguita | Value: 2.1
+          |    |    |    |    |    |    |    |--> Operación | Category: Incremento | Type: manguita | Value: 3.1
+          |    |    |    |    |    |    |         |--> decl1 | Category: Identificador | Type: manguita | Value: 2.1
           |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |         |--> decl1 | Category: Declaración | Type: manguita | Kind: VARIABLE
-          |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguita | Value: 2.1
-          |    |    |    |    |    |--> Operación | Category: Incremento | Type: manguita | Value: 3.1
-          |    |    |    |    |         |--> decl1 | Category: Identificador | Type: manguita | Value: 2.1
+          |    |    |    |    |    |         |--> decl2 | Category: Declaración | Type: manguangua | Kind: VARIABLE
+          |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguangua | Value: 121
+          |    |    |    |    |    |--> Operación | Category: Incremento | Type: manguangua | Value: 122
+          |    |    |    |    |         |--> decl2 | Category: Identificador | Type: manguangua | Value: 121
           |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |         |--> decl2 | Category: Declaración | Type: manguangua | Kind: VARIABLE
-          |    |    |    |         |--> Literal | Category: Numérico | Type: manguangua | Value: 121
-          |    |    |    |--> Operación | Category: Incremento | Type: manguangua | Value: 122
-          |    |    |         |--> decl2 | Category: Identificador | Type: manguangua | Value: 121
+          |    |    |    |         |--> decl3 | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |         |--> Operación | Category: Incremento | Type: mango | Value: -6
+          |    |    |    |              |--> decl0 | Category: Identificador | Type: mango | Value: -7
+          |    |    |    |--> Asignación | Type: mango | Kind: = | Value: -5
+          |    |    |         |--> decl0 | Category: Identificador | Type: mango | Value: 0
+          |    |    |         |--> Operación | Category: Incremento | Type: mango | Value: -5
+          |    |    |              |--> decl3 | Category: Identificador | Type: mango | Value: -6
           |    |    |--> bar0 | Category: Declaración | Type: un_coño | Kind: Función
           |    |         |--> x | Category: Parámetro | Type: mango
           |    |         |--> Operación | Category: Incremento | Type: mango | Value: 0
