@@ -363,6 +363,7 @@ instruccion:
 			}
 		}
 		$$ = new_node;
+		$$->temp = $1->temp;
 		if ($2->name == "--"){
 			$$->tac.push_back($1->temp + " := " + $1->temp + " - 1");
 		} else {
@@ -1415,6 +1416,60 @@ expresion:
 		$$ = $2;
 		$$->temp = valuesToString($2);
 		$$->tac = {};
+	}
+	| expresion operaciones_unitarias {
+		ASTNode* new_node = makeASTNode("Operación", $2->category);
+		new_node->children.push_back($1);
+		
+		Attributes* var_attr = symbolTable.search_symbol($1->name);
+		if (var_attr == nullptr) {
+			FLAG_ERROR = NON_DEF_VAR;
+			yyerror($1->name.c_str());
+		} else {
+			if (var_attr->type != nullptr && isNumeric(var_attr->type->symbol_name)) { // Verificar si es de tipo numerico.		
+				new_node->type = var_attr->type->symbol_name;
+				if (var_attr->category != PARAMETERS){ // Si es parametro de una funcion no hay problema.
+					if(var_attr->category == CONSTANT || var_attr->category == POINTER_C) {
+						FLAG_ERROR = MODIFY_CONST;
+						yyerror($1->name.c_str());
+					} else {
+						string op = $2->name;
+						if (holds_alternative<int>(var_attr->value)) { // De lo contrario hay que verificar si tiene valor numero asignado.
+							int old_val = get<int>(var_attr->value);
+							if (op == "--" ) var_attr->value = --old_val;
+							if (op == "++" ) var_attr->value = ++old_val;
+							new_node->ivalue = old_val;
+
+						} else if (holds_alternative<float>(var_attr->value)) {
+							float old_val = get<float>(var_attr->value);
+							if (op == "--" ) var_attr->value = --old_val;
+							if (op == "++" ) var_attr->value = ++old_val;
+							new_node->fvalue = old_val;
+
+						} else if (holds_alternative<double>(var_attr->value)) {
+							double old_val = get<double>(var_attr->value);
+							if (op == "--" ) var_attr->value = --old_val;
+							if (op == "++" ) var_attr->value = ++old_val;
+							new_node->dvalue = old_val;
+						} else {
+							FLAG_ERROR = NON_VALUE;
+							yyerror($1->name.c_str());
+						}
+					}
+				}
+			} else {
+				FLAG_ERROR = TYPE_ERROR;
+				string error_msg = "\"" + $1->name + "\" de tipo '" + var_attr->type->symbol_name + "' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.";
+				yyerror(error_msg.c_str());
+			}
+		}
+		$$ = new_node;
+		$$->temp = $1->temp;
+		if ($2->name == "--"){
+			$$->tac.push_back($1->temp + " := " + $1->temp + " - 1");
+		} else {
+			$$->tac.push_back($1->temp + " := " + $1->temp + " + 1");
+		}
 	}
 	| expresion T_FLECHA expresion { $$ = solver_operation($1, "->", $3, yylineno, yylloc.first_column); }
 	| expresion T_OPSUMA expresion {
