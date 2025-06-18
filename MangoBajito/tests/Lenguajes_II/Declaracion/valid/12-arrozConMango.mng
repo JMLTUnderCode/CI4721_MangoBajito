@@ -1,14 +1,22 @@
-# Test 12: Definicion y tipo arroz_con_mango.
+# Test 12: Definicion y uso del tipo arroz_con_mango.
 se_prende(){
-	arroz_con_mango MyStruct {
-		attr_s_1 : mango;
-		attr_s_2 : manguita;
-		attr_s_3 : higuerote;
+	arroz_con_mango Persona {
+		nombre : higuerote;
+		sexo : negro;
+		edad : mango;
 	};
 
-	culito var_struct : MyStruct;
+	culito yo : Persona;
+	yo.nombre = "Junior";
+	yo.sexo = 'M';
+	yo.edad = 26;
+
+	culito ella : Persona;
+	ella = {"Astrid", 'F', 23};
+
+	culito el : Persona = {"Jhonaiker", 'M', 25};
 	
-	var_struct.attr_s_1 = 123;
-	var_struct.attr_s_2 = 123.123;
-	var_struct.attr_s_3 = "hola";
+	culito nombres : higuerote[3] = [ella.nombre, el.nombre, yo.nombre];
+	culito sexos : negro[3] = [ella.sexo, el.sexo, yo.sexo];
+	culito edades : mango[3] = [ella.edad, el.edad, yo.edad];
 };
