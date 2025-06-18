@@ -663,9 +663,14 @@ declaracion:
 				string error_msg = "\"" + string($2) + "\" de tipo '" + left_type + 
 					"[]' y le quieres meter un elemento de tipo '" + right_type + "', marbaa' bruja.";
 				yyerror(error_msg.c_str());
-			
+			} else if (type_attr->category == UNION && $6->category == "Estructura") {
+				FLAG_ERROR = TYPE_ERROR;
+				string error_msg = "\"" + string($2) + "\" de tipo '" + left_type + 
+					"'(coliao) y le quieres meter un 'arroz_con_mango', marbaa' bruja.";
+				yyerror(error_msg.c_str());
+
 			// Declaracion y asignacion de estructuras
-			} else if ($4->category == "Identificador" && $6->category == "Estructura") {
+			} else if (type_attr->category == STRUCT && $6->category == "Estructura") {
 				// Crear atributos del array
 				Attributes* struct_attr = new Attributes();
 				struct_attr->symbol_name = $2;
