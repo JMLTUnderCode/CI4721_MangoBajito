@@ -727,7 +727,17 @@ declaracion:
 			// Agregar constante a .data
 			if($6->category == "Cadena de Caracteres"){
 				$$->tac_data.emplace_back(string($2), $6->temp);
-			}else {
+			} else if ($4->category == "Array") {
+				// Agregar cada elemento del array a .
+				set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Atributo_Estructura"};
+				vector<ASTNode*> array_elements;
+				collect_nodes_by_categories($6, categories, array_elements);
+				int size_array = $4->children[0]->ivalue;
+				for (int i = 0; i < size_array; i++) {
+					string elem_name = string($2) + "[" + to_string(i*strToSizeType($4->type)) + "]";
+					$$->tac_data.emplace_back(elem_name, array_elements[i]->temp);
+				}
+			}else{
 				$$->tac_data.emplace_back(string($2), valuesToString($6));
 			}
 		}
@@ -1074,6 +1084,29 @@ asignacion:
 		}
 
 		$$ = $5;
+		
+		//Agregar TAC de indexacion
+		if(array_attr != nullptr){
+			string op_tac = "";
+			if ($5->kind == "+=") op_tac = " + ";
+			else if ($5->kind == "-=") op_tac = " - ";
+			else if ($5->kind == "*=") op_tac = " * ";
+			else if ($5->kind == "=") op_tac = " := ";
+			// Agregar instrucciones de la expresion
+			concat_TAC($$, $3, $6);
+			string temp_access = labelGen.newTemp();
+			$$->tac.push_back(temp_access + " := " + $3->temp + " * " + to_string(strToSizeType(left_type)));
+
+			if(op_tac == " := "){
+				$$->tac.push_back(string($1) + "[" + temp_access + "]" + op_tac + $6->temp);
+			}else{
+				string temp_addr = labelGen.newTemp(),
+					temp = labelGen.newTemp();
+				$$->tac.push_back(temp_addr + " := " + string($1) + "[" + temp_access + "]");
+				$$->tac.push_back(temp + " := " + temp_addr + op_tac + $5->temp);
+				$$->tac.push_back(string($1) + "[" + temp_access + "]" + " := " + temp);
+			}
+		}
 		$$->children.push_back(new_node);
 		$$->children.push_back($6);
 	}
@@ -1318,6 +1351,7 @@ expresion:
 	| T_IZQCORCHE secuencia T_DERCORCHE { // Arreglos
 		$$ = makeASTNode("Literal", "Array");
 		$$->children.push_back($2);
+		concat_TAC($$, $2);
 	}
 	| T_ID T_IZQCORCHE expresion T_DERCORCHE { // Acceso a elementos de un array
 		ASTNode* new_node = makeASTNode($1, "Elemento_Array");
@@ -1413,9 +1447,11 @@ expresion:
 
 		//Agregar TAC de indexacion
 		if(array_attr != nullptr){
-			string temp = labelGen.newTemp();
-			$$->tac.push_back(temp + " := " + $3->temp + " * " + to_string(strToSizeType(left_type)));
-			$$->temp = string($1) + "[" + temp + "]";
+			string temp_access = labelGen.newTemp(),
+				temp = labelGen.newTemp();
+			$$->tac.push_back(temp_access + " := " + $3->temp + " * " + to_string(strToSizeType(left_type)));
+			$$->tac.push_back(temp + " := " + string($1) + "[" + temp_access + "]");
+			$$->temp = temp;
 		}
 	} 
 	| T_IZQPAREN expresion T_DERPAREN { $$ = $2; } // Expresion parentizada.
@@ -1451,7 +1487,32 @@ expresion:
 		$$ = solver_operation($1, "+", $3, yylineno, yylloc.first_column); 
 		string temp = labelGen.newTemp();
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back(temp + " := " + $1->temp + " + " + $3->temp);
+		if ($1->type == "higuerote" || $3->type == "higuerote") {
+			$$->tac.push_back(temp + " := call alloc " + to_string($1->svalue.size() + $3->svalue.size()));
+			// Concatenar cadenas
+			string label_copy1 = labelGen.newLabel(),
+				label_copy2 = labelGen.newLabel(),
+				label_end = labelGen.newLabel(),
+				temp_char = labelGen.newTemp();
+
+			// Copiar primer string al temporal
+			$$->tac.push_back("i := 0\nj := 0");
+			$$->tac.push_back(label_copy1 + ": ");
+			$$->tac.push_back(temp_char + " := *(" + $1->temp + " + i)");
+			$$->tac.push_back("*(" + temp + " + i) := " + temp_char);
+			$$->tac.push_back("if " + temp + " == '\\0' goto " + label_copy2);
+			$$->tac.push_back("i := i + 1\ngoto " + label_copy1);
+			// Copiar segundo string al temporal
+			$$->tac.push_back(label_copy2 + ": ");
+			$$->tac.push_back(temp_char + " := *(" + $3->temp + " + j)");
+			$$->tac.push_back("*(" + temp + " + i) := " + temp_char);
+			$$->tac.push_back("if " + temp + " == '\\0' goto " + label_end);
+			$$->tac.push_back("i := i + 1\nj := j + 1\ngoto " + label_copy2);
+			// Fin del copiado
+			$$->tac.push_back(label_end + ": ");
+		} else{
+			$$->tac.push_back(temp + " := " + $1->temp + " + " + $3->temp);
+		}
 		$$->temp = temp;
 	}
 	| expresion T_OPRESTA expresion {
@@ -1498,48 +1559,44 @@ expresion:
 	}
 	| expresion T_OPIGUAL expresion {
 		$$ = solver_operation($1, "igualito", $3, yylineno, yylloc.first_column);
-		string temp = labelGen.newTemp();
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back(temp + " := " + $1->temp + " == " + $3->temp);
-		$$->temp = temp;
+		$$->tac.push_back("_");
 	}
 	| expresion T_OPDIFERENTE expresion {
 		$$ = solver_operation($1, "nie", $3, yylineno, yylloc.first_column);
-		string temp = labelGen.newTemp();
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back(temp + " := " + $1->temp + " != " + $3->temp);
-		$$->temp = temp;
+		$$->tac.push_back("_");
 	}
 	| expresion T_OPMAYOR expresion { 
 		$$ = solver_operation($1, "mayol", $3, yylineno, yylloc.first_column);
-		string temp = labelGen.newTemp();
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back(temp + " := " + $1->temp + " > " + $3->temp);
-		$$->temp = temp;
+		$$->tac.push_back("_");
 	}
 	| expresion T_OPMAYORIGUAL expresion {
 		$$ = solver_operation($1, "lidel", $3, yylineno, yylloc.first_column);
-		string temp = labelGen.newTemp();
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back(temp + " := " + $1->temp + " >= " + $3->temp);
-		$$->temp = temp;
+		$$->tac.push_back("_");
 	}
 	| expresion T_OPMENOR expresion {
 		$$ = solver_operation($1, "menol", $3, yylineno, yylloc.first_column);
-		string temp = labelGen.newTemp();
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back(temp + " := " + $1->temp + " < " + $3->temp);
-		$$->temp = temp;
+		$$->tac.push_back("_");
 	}
 	| expresion T_OPMENORIGUAL expresion {
 		$$ = solver_operation($1, "peluche", $3, yylineno, yylloc.first_column);
-		string temp = labelGen.newTemp();
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back(temp + " := " + $1->temp + " <= " + $3->temp);
-		$$->temp = temp;
+		$$->tac.push_back("_");
 	}
-	| expresion T_YUNTA expresion { $$ = solver_operation($1, "yunta", $3, yylineno, yylloc.first_column); }
-	| expresion T_OSEA expresion { $$ = solver_operation($1, "o_sea", $3, yylineno, yylloc.first_column); }
+	| expresion T_YUNTA expresion { 
+		$$ = solver_operation($1, "yunta", $3, yylineno, yylloc.first_column);
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back("_");
+	}
+	| expresion T_OSEA expresion { 
+		$$ = solver_operation($1, "o_sea", $3, yylineno, yylloc.first_column);
+		concat_TAC($$, $1, $3);
+		$$->tac.push_back("_");
+	}
 	| entrada_salida
 	| llamada_funcion
 	| casting
@@ -1567,6 +1624,7 @@ secuencia:
 		$$ = makeASTNode("Secuencia", "Expresión", "", ",");
 		$$->children.push_back($1);
 		$$->children.push_back($3);
+		concat_TAC($$, $1, $3);
 	}
 
 condicion:
@@ -1582,48 +1640,10 @@ condicion:
 		// Agregar instrucciones de la guardia si_es_asi
 		concat_TAC($$, siesasi_guard);
 		// label del si_es_asi
-		string label1 = labelGen.newLabel();
-		string siesasi = "if " + siesasi_guard->temp + " goto " + label1;
-		// Agregar condicional
-		$$->tac.push_back(siesasi);
-		// Guardado de las instrucciones si_es_asi
-		backup_instrs.emplace_back(siesasi_instr, label1);
-		// Si hay una alternativa, se agrega al nodo de la guardia.
-		if ($2) {
-			for (ASTNode* node : $2->children)  {
-				if (node->name == "o_asi"){
-					// Extraer guardia e instruccion de o_asi
-					ASTNode* oasi_guard = node->children[0]->children[0];
-					ASTNode* oasi_instr = node->children.size() > 1 ? node->children[1] : nullptr;
-					// Agregar instrucciones de la guardia o_asi
-					concat_TAC($$, oasi_guard);
-					// label del o_asi
-					string label2 = labelGen.newLabel();
-					string oasi = "if " + oasi_guard->temp + " goto " + label2;
-					// Agregar condicional
-					$$->tac.push_back(oasi);
-					// Guardado de las instrucciones o_asi
-					backup_instrs.emplace_back(oasi_instr, label2);
-				}else{
-					// Agregar instrucciones nojoda
-					if (node->children.size() != 0) concat_TAC($$, node->children[0]);
-				}
-				$$->children.push_back(node); // Agregar cada alternativa como un nodo hijo.
-			}
-		}
-		// Agregar instrucciones de los condicionales (si_es_asi, o_asi)
-		string label3 = labelGen.newLabel();
-		$$->tac.push_back("goto " + label3);
-		for (size_t i = 0; i < backup_instrs.size(); ++i) {
-			auto pares = backup_instrs[i];
-			$$->tac.push_back(pares.second + ": ");
-			concat_TAC($$, pares.first);
-			if (i != backup_instrs.size() - 1) {
-				$$->tac.push_back("goto " + label3);
-			}
-		}
-		// Salida del bloque if
-		$$->tac.push_back(label3 + ": ");
+		string label_false = labelGen.newLabel();
+		string new_label = labelGen.newLabel();
+		generateJumpingCode($$, $1->children[0], "fall", label_false, new_label);
+		concat_TAC($$, siesasi_instr);
 	}
 	;
 

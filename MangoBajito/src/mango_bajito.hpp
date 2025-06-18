@@ -209,11 +209,13 @@ enum SizeType {
 };
 
 struct ASTNode {
-	string name;     // Nombre del elemento (variable, función, struct, etc)
-	string category; // "Declaración", "Asignación", "Función", "Bucle", "Operación", etc
-	string type;     // Tipo de dato (para literales, variables, constantes, retorno de función, etc)
-	string kind;     // Tipo de declaracion, por ejemplo: "variable", "constante", "pointer constante", "pointer variable".
-	string temp;     // Nombre del temporal asociado al TAC del nodo (si aplica)
+	string name;      // Nombre del elemento (variable, función, struct, etc)
+	string category;  // "Declaración", "Asignación", "Función", "Bucle", "Operación", etc
+	string type;      // Tipo de dato (para literales, variables, constantes, retorno de función, etc)
+	string kind;      // Tipo de declaracion, por ejemplo: "variable", "constante", "pointer constante", "pointer variable".
+	string temp;      // Nombre del temporal asociado al TAC del nodo (si aplica)
+	string trueLabel; // Nombre del label True asociado al TAC del nodo (si aplica)
+	string falseLabel;// Nombre del label False asociado al TAC del nodo (si aplica)
 	
 	int ivalue;    // Valor entero
 	float fvalue;  // Valor flotante
@@ -232,8 +234,8 @@ struct ASTNode {
 	vector<pair<string, string> > tac_data; // Información adicional para las instrucciones TAC
 	vector<pair<int, pair<string, int> > > tac_declaraciones; // Información adicional para las instrucciones TAC
 
-	ASTNode(const string& n, const string& c = "", const string& t = "", const string& k = "", const string& tmp = "")
-		: name(n), category(c), type(t), kind(k), temp(tmp) {}
+	ASTNode(const string& n, const string& c = "", const string& t = "", const string& k = "", const string& tmp = "", const string& trLbl = "", const string& flsLbl = "")
+		: name(n), category(c), type(t), kind(k), temp(tmp), trueLabel(trLbl), falseLabel(flsLbl) {}
 };
 
 
@@ -310,10 +312,6 @@ public:
 		return base + to_string(counter_temp_string++);
 	}
 
-	string newTempConst(const string& base = "const_") {
-		return base + to_string(counter_temp_const++);
-	}
-
 	void reset() {
 		counter_label = 0;
 		counter_temp = 0;
@@ -341,9 +339,15 @@ void show_TAC(const ASTNode* node);
 void print_TAC(const ASTNode* node);
 // Agrega una instrucción TAC de n1 y n2 al vector de TAC de node.
 void concat_TAC(ASTNode* node, ASTNode* n1, ASTNode* n2 = nullptr);
+// Convierte un string a un tipo de tamaño (SizeType).
 SizeType strToSizeType(string type);
+// Suma los tamaños de los tipos de datos en la información de los atributos.
 int sumOfSizeTypes(vector<pair<Information, Attributes*>> info);
+// Obtiene el tamaño máximo de los tipos de datos en la información de los atributos.
 SizeType maxOfSizeType(vector<pair<Information, Attributes*>> info);
+// Obtiene el tamaño acumulado de un tipo de dato específico en la información de los atributos.
 int accumulateSizeType(vector<pair<Information, Attributes*>> info, string var); 
+// Genera Jumping Code TAC (expresiones booleanas).
+void generateJumpingCode(ASTNode* main_node, ASTNode* expresion, string label_true, string label_false, string new_label);
 
 #endif

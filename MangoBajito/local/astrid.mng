@@ -2,15 +2,9 @@
 jeva pi: manguita = 3.14;
 jeva index: mango = 3;
 se_prende(){
-	culito z: mango = 10;
-	culito x: mango[5] = [1, 2, 3, 4, 5];
-	echar_cuento func(n : mango, m : mango) lanza mango{
-		culito a: mango = 10;
-		lanzate 5;
+	culito a: mango = 5;
+	
+	si_es_asi(a + 1 igualito 5 o_sea a menol 0){
+		culito b: mango = 10;
 	};
-
-	culito a: mango = func(3, 5);
-	culito b: higuerote = "Hola Mundo";
-	culito ayuda: mango = x[4];
-	ayuda = x[index];
 };
