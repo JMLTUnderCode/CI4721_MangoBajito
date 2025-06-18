@@ -204,7 +204,7 @@ LabelGenerator labelGen;
 %type <ast> secuencia
 %type <ast> condicion guardia_siesasi alternativa guardia guardia_con_bloque
 %type <ast> bucle indeterminado determinado var_ciclo_determinado
-%type <ast> firma_funcion parametro secuencia_parametros funcion llamada_funcion entrada_salida
+%type <ast> firma_funcion parametro secuencia_parametros funcion llamada_funcion
 %type <ast> manejo_error manejador var_manejo_error
 %type <ast> casting
 
@@ -303,7 +303,6 @@ instruccion:
 	| llamada_funcion { $$ = $1; }
 	| condicion { $$ = $1; }
 	| bucle { $$ = $1; }
-	| entrada_salida { $$ = $1; }
 	| manejo_error { $$ = $1; }
 	| T_KIETO { $$ = nullptr; }
 	| T_ROTALO { $$ = nullptr; }
@@ -372,6 +371,43 @@ instruccion:
 	}
 	| T_BORRADOL T_ID { $$ = nullptr; }
 	| T_BORRADOL T_ID T_PUNTO T_ID { $$ = nullptr; }
+	| T_RESCATA T_IZQPAREN secuencia T_DERPAREN { // Output
+		$$ = makeASTNode("rescata", "Output", "higuerote");
+		if ($3) {
+			$$->children.push_back($3);
+			string output = "";
+			set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Elemento_String", "Atributo_Estructura"};
+			vector<ASTNode*> secuencia_elements;
+			collect_nodes_by_categories($3, categories, secuencia_elements);
+			for (auto elem : secuencia_elements) {
+				if (elem->type == "mango") {
+					output += to_string(elem->ivalue);
+				} else if (elem->type == "manguita") {
+					output += to_string(elem->fvalue);
+				} else if (elem->type == "manguangua") {
+					output += to_string(elem->dvalue);
+				} else if (elem->type == "negro") {
+					output += string(1, elem->cvalue);
+				} else if (elem->type == "higuerote") {
+					output += elem->svalue;
+				} else if (elem->type == "tas_claro") {
+					output += (elem->bvalue ? "Sisa" : "Nolsa");
+				} else if (elem->type == "pointer"){
+					/* POR IMPLEMENTAR */
+					//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
+					output += "nullptr";
+				} else {
+					FLAG_ERROR = INTERNAL;
+					string error_msg = "RESCATA -> TIPO DESCONOCIDO: '" + elem->type + "'.";
+					yyerror(error_msg.c_str());
+				}
+			}
+			$$->svalue = output;
+		} else {
+			FLAG_ERROR = SEMANTIC;
+			yyerror("No hay nada que imprimir");
+		}
+	}
 	;
 
 declaracion:
@@ -1565,7 +1601,21 @@ expresion:
 	}
 	| expresion T_YUNTA expresion { $$ = solver_operation($1, "yunta", $3, yylineno, yylloc.first_column); }
 	| expresion T_OSEA expresion { $$ = solver_operation($1, "o_sea", $3, yylineno, yylloc.first_column); }
-	| entrada_salida
+	| T_HABLAME T_IZQPAREN expresion T_DERPAREN { // Inputs
+		$$ = makeASTNode("hablame", "input", "higuerote");
+		if ($3->type != "higuerote") {
+			FLAG_ERROR = TYPE_ERROR;
+			string error_msg = "el tipo '" + $3->type + "' en vez de 'higuerote', hablas con higuerotes no vainas raras.";
+			yyerror(error_msg.c_str());
+		} else {
+			$$->svalue = "0"; // Valor por defecto para el input
+			$$->children.push_back($3);
+			// Generar TAC para la entrada
+			string temp = labelGen.newTemp();
+			$$->tac.push_back(temp + " := input()");
+			$$->temp = temp;
+		}
+	}
 	| llamada_funcion
 	| casting
 	;
@@ -1916,11 +1966,6 @@ determinado:
 		$$->tac.push_back("goto " + label0);
 		$$->tac.push_back(label2 + ": ");
 	}
-	;
-
-entrada_salida:
-	T_RESCATA T_IZQPAREN secuencia T_DERPAREN { $$ = nullptr; }
-	| T_HABLAME T_IZQPAREN expresion T_DERPAREN { $$ = nullptr; }
 	;
 
 firma_estructura:
