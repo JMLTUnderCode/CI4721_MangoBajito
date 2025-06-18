@@ -348,6 +348,6 @@ SizeType maxOfSizeType(vector<pair<Information, Attributes*>> info);
 // Obtiene el tamaño acumulado de un tipo de dato específico en la información de los atributos.
 int accumulateSizeType(vector<pair<Information, Attributes*>> info, string var); 
 // Genera Jumping Code TAC (expresiones booleanas).
-void generateJumpingCode(ASTNode* main_node, ASTNode* expresion, string label_true, string label_false, string new_label);
+void generateJumpingCode(ASTNode* main_node, ASTNode* expresion, string label_true, string label_false, function<string()> new_label);
 
 #endif

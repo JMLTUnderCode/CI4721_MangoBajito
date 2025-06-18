@@ -1651,7 +1651,8 @@ expresion:
 	| expresion T_OPIGUAL expresion {
 		$$ = solver_operation($1, "igualito", $3, yylineno, yylloc.first_column);
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back("_");
+		$$->tac.push_back("if " + $1->temp + " == " + $3->temp + " goto ");
+		$$->tac.push_back("goto ");
 	}
 	| expresion T_OPDIFERENTE expresion {
 		$$ = solver_operation($1, "nie", $3, yylineno, yylloc.first_column);
@@ -1686,10 +1687,8 @@ expresion:
 	| expresion T_OSEA expresion { 
 		$$ = solver_operation($1, "o_sea", $3, yylineno, yylloc.first_column);
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back("_");
+		//$$->tac.push_back("_");
 	}
-	| expresion T_YUNTA expresion { $$ = solver_operation($1, "yunta", $3, yylineno, yylloc.first_column); }
-	| expresion T_OSEA expresion { $$ = solver_operation($1, "o_sea", $3, yylineno, yylloc.first_column); }
 	| T_HABLAME T_IZQPAREN expresion T_DERPAREN { // Inputs
 		$$ = makeASTNode("hablame", "input", "higuerote");
 		if ($3->type != "higuerote") {
@@ -1748,12 +1747,11 @@ condicion:
 		concat_TAC($$, siesasi_guard);
 		// label del si_es_asi
 		string label_false = labelGen.newLabel();
-		string new_label = labelGen.newLabel();
-		generateJumpingCode($$, $1->children[0], "fall", label_false, new_label);
-		//$$->tac.push_back(label_false + ": ");
-		//concat_TAC($$, siesasi_instr);
-		// Guardado de las instrucciones si_es_asi
-		backup_instrs.emplace_back(siesasi_instr, new_label);
+		string label_end = labelGen.newLabel();
+		generateJumpingCode($$, $1->children[0], "fall", label_false, &labelGen.newLabel);
+		concat_TAC($$, siesasi_instr);
+		$$->tac.push_back("goto " + label_end);
+		$$->tac.push_back(label_false + ": ");
 		// Si hay una alternativa, se agrega al nodo de la guardia.
 		if ($2) {
 			for (ASTNode* node : $2->children)  {
@@ -1768,7 +1766,10 @@ condicion:
 					string new_label = labelGen.newLabel();
 					generateJumpingCode($$, node->children[0], "fall", label_false, new_label);
 					//$$->tac.push_back(label_false + ": ");
-					backup_instrs.emplace_back(oasi_instr, new_label);
+					//backup_instrs.emplace_back(oasi_instr, new_label);
+					concat_TAC($$, oasi_instr);
+					$$->tac.push_back("goto " + label_end);
+					$$->tac.push_back(label_false + ": ");
 				}else{
 					// Agregar instrucciones nojoda
 					if (node->children.size() != 0) concat_TAC($$, node->children[0]);
@@ -1776,7 +1777,8 @@ condicion:
 				$$->children.push_back(node); // Agregar cada alternativa como un nodo hijo.
 			}
 		}
-		// Agregar instrucciones de los condicionales (si_es_asi, o_asi)
+		$$->tac.push_back(label_end + ": ");
+		/* // Agregar instrucciones de los condicionales (si_es_asi, o_asi)
 		string label3 = labelGen.newLabel();
 		$$->tac.push_back("goto " + label3);
 		for (size_t i = 0; i < backup_instrs.size(); ++i) {
@@ -1788,7 +1790,7 @@ condicion:
 			}
 		}
 		// Salida del bloque if
-		$$->tac.push_back(label3 + ": ");
+		$$->tac.push_back(label3 + ": "); */
 	}
 	;
 
