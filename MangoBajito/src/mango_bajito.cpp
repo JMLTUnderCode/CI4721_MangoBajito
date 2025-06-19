@@ -737,70 +737,60 @@ string convertBoolOperation(string op) {
 	return op; // Retorna el operador original si no es uno de los booleanos
 }
 
-void generateJumpingCode(ASTNode* main_node, ASTNode* guardia, string label_true, string label_false, function<string()> new_label) {
-	if (!guardia || !main_node) {
+void generateJumpingCode(ASTNode* guardia, vector<string>& out, function<string()> newLabelFunc) {
+	if (!guardia) {
 		return;
 	}
 
-	set<string> ops_numericas = {"+", "-", "*", "/", "//", "%", "**"};
-    set<string> ops_booleanas = {"igualito", "nie", "mayol", "lidel", "menol", "peluche"};
-	vector<string> tac_instruction;
-	
-	for (auto expr : guardia->children){
-		if(expr->name == "o_sea"){
-			expr->children[0]->trueLabel = label_true != "fall" ? label_true : new_label();
-			expr->children[0]->falseLabel = "fall";
+	set<string> ops_booleanasFuertes = {"igualito", "nie", "yunta", "o_sea"};
 
-			expr->children[1]->trueLabel = label_true;
-			expr->children[1]->falseLabel = label_false;
-
-			if (label_true == "fall") tac_instruction.push_back("goto " + label_false + "\n" + expr->children[0]->trueLabel + ": ");
-
-			generateJumpingCode(main_node, expr, expr->children[0]->trueLabel, expr->children[0]->falseLabel, new_label);
-
-		}else if(expr->name == "yunta"){
-			expr->children[0]->falseLabel = label_false != "fall" ? label_false : new_label();
+	for(auto expr : guardia->children){
+		if (expr->name == "yunta"){
+			expr->children[0]->falseLabel = expr->falseLabel != "fall" ? expr->falseLabel : newLabelFunc();
 			expr->children[0]->trueLabel = "fall";
 
-			expr->children[1]->trueLabel = label_true;
-			expr->children[1]->falseLabel = label_false;
+			expr->children[1]->trueLabel = expr->trueLabel;
+			expr->children[1]->falseLabel = expr->falseLabel;
 
-			if (label_true == "fall") tac_instruction.push_back(expr->children[0]->falseLabel + ": ");
+			generateJumpingCode(expr, out, newLabelFunc);
 
-			generateJumpingCode(main_node, expr, expr->children[0]->trueLabel, expr->children[0]->falseLabel, new_label);
-		}else if(ops_booleanas.count(expr->name)){
-			generateJumpingCode(main_node, expr, label_true, label_false, new_label);
-			string operation = expr->children[0]->temp + " " + convertBoolOperation(expr->name) + " " + expr->children[1]->temp;
-			
-			if (label_true != "fall" && label_false != "fall"){
-				tac_instruction.push_back(
-					"if " + operation + " goto " + label_true +
-					"\ngoto " + label_false
+			if (expr->falseLabel == "fall") out.push_back(expr->children[0]->falseLabel + ": ");
+		
+		}else if (expr->name == "o_sea"){
+			expr->children[0]->trueLabel = expr->trueLabel != "fall" ? expr->trueLabel : newLabelFunc();
+			expr->children[0]->falseLabel = "fall";
+
+			expr->children[1]->trueLabel = expr->trueLabel;
+			expr->children[1]->falseLabel = expr->falseLabel;
+
+			generateJumpingCode(expr, out, newLabelFunc);
+
+			if (expr->trueLabel == "fall") out.push_back(expr->children[0]->trueLabel + ": ");
+		}else if (expr->name == "nelson"){
+			expr->children[0]->falseLabel = expr->trueLabel;
+			expr->children[0]->trueLabel = expr->falseLabel;
+			generateJumpingCode(expr, out, newLabelFunc); 
+		}else if (expr->name == "Literal" && expr->kind == "Sisa"){
+			if(expr->trueLabel != "fall") out.push_back("goto " + expr->trueLabel);
+		}else if (expr->name == "Literal" && expr->kind == "Nolsa"){
+			if(expr->falseLabel != "fall") out.push_back("goto " + expr->falseLabel);
+		}else{
+			out.insert(out.end(), expr->tac.begin(), expr->tac.end());
+
+			if (expr->trueLabel != "fall" && expr->falseLabel != "fall"){
+				out.push_back(
+				"if " + expr->temp + " goto " + expr->trueLabel +
+				"\ngoto " + expr->falseLabel
 				);
-			} else if (label_true != "fall"){
-				tac_instruction.push_back(
-					"if " + operation + " goto " + label_true
+			} else if (expr->trueLabel != "fall"){
+				out.push_back(
+				"if " + expr->temp + " goto " + expr->trueLabel
 				);
-			} else if (label_false != "fall"){
-				tac_instruction.push_back(
-					"ifnot " + operation + " goto " + label_false
+			} else if (expr->falseLabel != "fall"){
+				out.push_back(
+				"ifnot " + expr->temp + " goto " + expr->falseLabel
 				);
 			}
-		}else if(ops_numericas.count(expr->name)){
-			generateJumpingCode(main_node, expr, label_true, label_false, new_label);
-		}else{ // literales o variables
-			return;
-		}
-	}
-
-	for (auto tac : tac_instruction){
-		auto it = find(main_node->tac.begin(), main_node->tac.end(), "_");
-		if (it != main_node->tac.end()){
-			int index = distance(main_node->tac.begin(), it);
-			main_node->tac[index] = tac;
-		}else{
-			cout << "ERROR" << endl;
-			return;
 		}
 	}
 }

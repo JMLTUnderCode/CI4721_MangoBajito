@@ -214,8 +214,8 @@ struct ASTNode {
 	string type;      // Tipo de dato (para literales, variables, constantes, retorno de función, etc)
 	string kind;      // Tipo de declaracion, por ejemplo: "variable", "constante", "pointer constante", "pointer variable".
 	string temp;      // Nombre del temporal asociado al TAC del nodo (si aplica)
-	string trueLabel; // Nombre del label True asociado al TAC del nodo (si aplica)
-	string falseLabel;// Nombre del label False asociado al TAC del nodo (si aplica)
+	string trueLabel = "";
+	string falseLabel = "";
 	
 	int ivalue;    // Valor entero
 	float fvalue;  // Valor flotante
@@ -234,8 +234,8 @@ struct ASTNode {
 	vector<pair<string, string> > tac_data; // Información adicional para las instrucciones TAC
 	vector<pair<int, pair<string, int> > > tac_declaraciones; // Información adicional para las instrucciones TAC
 
-	ASTNode(const string& n, const string& c = "", const string& t = "", const string& k = "", const string& tmp = "", const string& trLbl = "", const string& flsLbl = "")
-		: name(n), category(c), type(t), kind(k), temp(tmp), trueLabel(trLbl), falseLabel(flsLbl) {}
+	ASTNode(const string& n, const string& c = "", const string& t = "", const string& k = "", const string& tmp = "")
+		: name(n), category(c), type(t), kind(k), temp(tmp) {}
 };
 
 
@@ -348,6 +348,6 @@ SizeType maxOfSizeType(vector<pair<Information, Attributes*>> info);
 // Obtiene el tamaño acumulado de un tipo de dato específico en la información de los atributos.
 int accumulateSizeType(vector<pair<Information, Attributes*>> info, string var); 
 // Genera Jumping Code TAC (expresiones booleanas).
-void generateJumpingCode(ASTNode* main_node, ASTNode* expresion, string label_true, string label_false, function<string()> new_label);
+void generateJumpingCode(ASTNode* guardia, vector<string>& out, function<string()> newLabelFunc);
 
 #endif

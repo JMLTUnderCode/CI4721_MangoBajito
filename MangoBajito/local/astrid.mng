@@ -4,7 +4,11 @@ jeva index: mango = 3;
 se_prende(){
 	culito a: mango = 5;
 	
-	si_es_asi(a + 1 igualito 5 o_sea index igualito 5){
+	si_es_asi(Nolsa o_sea index + 1 mayol 5 o_sea 2 - 3 menol 0){
 		culito b: mango = 10;
+	}o_asi(5 lidel a - 1 yunta index + 2 menol 3 o_sea 1 mayol 4){
+		culito b: mango = 20;
+	}nojoda{
+		culito b: mango = 30;
 	};
 };

@@ -1883,43 +1883,38 @@ expresion:
 	| expresion T_OPIGUAL expresion {
 		$$ = solver_operation($1, "igualito", $3, yylineno, yylloc.first_column);
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back("if " + $1->temp + " == " + $3->temp + " goto ");
-		$$->tac.push_back("goto ");
+		$$->temp = $1->temp + " == " + $3->temp; // Asignar el resultado de la comparación
 	}
 	| expresion T_OPDIFERENTE expresion {
 		$$ = solver_operation($1, "nie", $3, yylineno, yylloc.first_column);
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back("_");
+		$$->temp = $1->temp + " != " + $3->temp; // Asignar el resultado de la comparación
 	}
 	| expresion T_OPMAYOR expresion { 
 		$$ = solver_operation($1, "mayol", $3, yylineno, yylloc.first_column);
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back("_");
+		$$->temp = $1->temp + " > " + $3->temp; // Asignar el resultado de la comparación
 	}
 	| expresion T_OPMAYORIGUAL expresion {
 		$$ = solver_operation($1, "lidel", $3, yylineno, yylloc.first_column);
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back("_");
+		$$->temp = $1->temp + " >= " + $3->temp; // Asignar el resultado de la comparación
 	}
 	| expresion T_OPMENOR expresion {
 		$$ = solver_operation($1, "menol", $3, yylineno, yylloc.first_column);
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back("_");
+		$$->temp = $1->temp + " < " + $3->temp; // Asignar el resultado de la comparación
 	}
 	| expresion T_OPMENORIGUAL expresion {
 		$$ = solver_operation($1, "peluche", $3, yylineno, yylloc.first_column);
 		concat_TAC($$, $1, $3);
-		$$->tac.push_back("_");
+		$$->temp = $1->temp + " <= " + $3->temp; // Asignar el resultado de la comparación
 	}
 	| expresion T_YUNTA expresion { 
 		$$ = solver_operation($1, "yunta", $3, yylineno, yylloc.first_column);
-		concat_TAC($$, $1, $3);
-		$$->tac.push_back("_");
 	}
 	| expresion T_OSEA expresion { 
 		$$ = solver_operation($1, "o_sea", $3, yylineno, yylloc.first_column);
-		concat_TAC($$, $1, $3);
-		//$$->tac.push_back("_");
 	}
 	| T_HABLAME T_IZQPAREN expresion T_DERPAREN { // Inputs
 		$$ = makeASTNode("hablame", "input", "higuerote");
@@ -1970,59 +1965,41 @@ condicion:
 		$$ = makeASTNode("Condición");
 		$$->children.push_back($1);
 
-		// Vector para guardar los bloques de instrucciones de las condiciones (si_es_asi, o_asi)
-		vector<pair<ASTNode*, string> >backup_instrs;
-		// Extraer guardia e instruccion de si_es_asi
-		ASTNode* siesasi_guard = $1->children[0]->children[0];
 		ASTNode* siesasi_instr = $1->children.size() > 1 ? $1->children[1] : nullptr;
-		// Agregar instrucciones de la guardia si_es_asi
-		concat_TAC($$, siesasi_guard);
-		// label del si_es_asi
-		string label_false = labelGen.newLabel();
-		string label_end = labelGen.newLabel();
-		generateJumpingCode($$, $1->children[0], "fall", label_false, &labelGen.newLabel);
+		
+		string final_label;
+		if ($2) final_label = labelGen.newLabel();
+		
+		$1->children[0]->children[0]->trueLabel = "fall";
+		$1->children[0]->children[0]->falseLabel = labelGen.newLabel();
+		vector<string> out;
+		generateJumpingCode($1->children[0], out, [&](){ return labelGen.newLabel(); });
+		$$->tac.insert($$->tac.end(), out.begin(), out.end());
 		concat_TAC($$, siesasi_instr);
-		$$->tac.push_back("goto " + label_end);
-		$$->tac.push_back(label_false + ": ");
+		if($2) $$->tac.push_back("goto " + final_label);
+		$$->tac.push_back($1->children[0]->children[0]->falseLabel + ": ");
 		// Si hay una alternativa, se agrega al nodo de la guardia.
 		if ($2) {
 			for (ASTNode* node : $2->children)  {
 				if (node->name == "o_asi"){
-					// Extraer guardia e instruccion de o_asi
-					ASTNode* oasi_guard = node->children[0]->children[0];
 					ASTNode* oasi_instr = node->children.size() > 1 ? node->children[1] : nullptr;
-					// Agregar instrucciones de la guardia o_asi
-					concat_TAC($$, oasi_guard);
-					// label del o_asi
-					string label_false = labelGen.newLabel();
-					string new_label = labelGen.newLabel();
-					generateJumpingCode($$, node->children[0], "fall", label_false, new_label);
-					//$$->tac.push_back(label_false + ": ");
-					//backup_instrs.emplace_back(oasi_instr, new_label);
+					node->children[0]->children[0]->trueLabel = "fall";
+					node->children[0]->children[0]->falseLabel = labelGen.newLabel();
+					vector<string> out;
+					generateJumpingCode(node->children[0], out, [&](){ return labelGen.newLabel(); });
+					$$->tac.insert($$->tac.end(), out.begin(), out.end());
 					concat_TAC($$, oasi_instr);
-					$$->tac.push_back("goto " + label_end);
-					$$->tac.push_back(label_false + ": ");
+					if($2->children.size() != 1) $$->tac.push_back("goto " + final_label);
+					$$->tac.push_back(node->children[0]->children[0]->falseLabel + ": ");
 				}else{
 					// Agregar instrucciones nojoda
 					if (node->children.size() != 0) concat_TAC($$, node->children[0]);
 				}
 				$$->children.push_back(node); // Agregar cada alternativa como un nodo hijo.
 			}
+
+			if($2->children.size() != 1) $$->tac.push_back(final_label + ": ");
 		}
-		$$->tac.push_back(label_end + ": ");
-		/* // Agregar instrucciones de los condicionales (si_es_asi, o_asi)
-		string label3 = labelGen.newLabel();
-		$$->tac.push_back("goto " + label3);
-		for (size_t i = 0; i < backup_instrs.size(); ++i) {
-			auto pares = backup_instrs[i];
-			$$->tac.push_back(pares.second + ": ");
-			concat_TAC($$, pares.first);
-			if (i != backup_instrs.size() - 1) {
-				$$->tac.push_back("goto " + label3);
-			}
-		}
-		// Salida del bloque if
-		$$->tac.push_back(label3 + ": "); */
 	}
 	;
 
