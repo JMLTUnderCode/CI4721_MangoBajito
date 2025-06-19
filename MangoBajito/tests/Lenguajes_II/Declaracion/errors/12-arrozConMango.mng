@@ -1,0 +1,16 @@
+# Test 12: Errores de uso del tipo arroz_con_mango.
+se_prende(){
+	arroz_con_mango Persona {
+		nombre : higuerote;
+		sexo : negro;
+		edad : mango;
+	};
+
+	culito yo : Persona;
+	culito ella : Persona;
+	culito el : Persona;
+	
+	culito nombres : higuerote[3] = [ella.nombre, el.nombre, yo.nombre];
+	culito sexos : negro[3] = [ella.sexo, el.sexo, yo.sexo];
+	culito edades : mango[3] = [ella.edad, el.edad, yo.edad];
+};
