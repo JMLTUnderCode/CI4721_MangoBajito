@@ -479,6 +479,76 @@ declaracion:
 						yyerror($2);
 					}
 				}
+			// Declaracion de Estructuras y Uniones
+			} else if ($4->category == "Identificador") { 
+				queue<vector<string> > queue_structs;
+				queue_structs.push({string($2), declared_type});
+				bool father_struct = false;
+				while(!queue_structs.empty()) {
+					auto data = queue_structs.front();
+					queue_structs.pop();
+
+					string struct_name = data[0];
+					string struct_type = data[1];
+
+					type_attr = symbolTable.search_symbol(struct_type);
+
+					int size_struct = type_attr->info.size();
+
+					// Crear atributo de la estructura
+					Attributes* struct_attr = new Attributes();
+					struct_attr->symbol_name = struct_name;
+					struct_attr->category = STRUCT;
+					struct_attr->scope = symbolTable.current_scope;
+					struct_attr->type = type_attr;
+
+					for (int i = 0; i < size_struct; i++) {
+						const auto& field = type_attr->info[i];
+						string full_field = get<string>(field.first);
+						size_t dot_pos = full_field.find('.');
+						if (dot_pos == string::npos) continue; // No es un campo válido
+
+						string field_type = field.second->type->symbol_name;
+
+						string attr_name = full_field.substr(dot_pos + 1);
+						string new_field_name = struct_name + "." + attr_name;
+						if (symbolTable.search_symbol(new_field_name)) {
+							FLAG_ERROR = ALREADY_DEF_VAR;
+							yyerror(new_field_name.c_str());
+						} else {
+							if (field.second->type->category == STRUCT || field.second->type->category == UNION) {
+								queue_structs.push({new_field_name, field_type});
+								continue; // Procesar subestructura
+							}
+
+							Attributes* new_attr = new Attributes();
+							new_attr->symbol_name = new_field_name;
+							new_attr->scope = symbolTable.current_scope;
+							new_attr->type = symbolTable.search_symbol(field_type);
+							new_attr->category = STRUCT_ATTRIBUTE;
+							new_attr->value = nullptr;
+
+							// Agregar a la info de la variable y a la tabla de símbolos
+							struct_attr->info.push_back({new_field_name, new_attr});
+							symbolTable.insert_symbol(new_field_name, *new_attr);
+						}
+					}
+					
+					// Insertar en tabla de símbolos
+					if (!symbolTable.insert_symbol(struct_name, *struct_attr)) {
+						FLAG_ERROR = ALREADY_DEF_VAR;
+						yyerror(struct_name.c_str());
+					}
+					// Actualizar vector de informacion de estructura padre.
+					if (father_struct) {
+						size_t pos = struct_name.rfind('.');
+						string father = struct_name.substr(0, pos);
+						Attributes* father_attr = symbolTable.search_symbol(father);
+						father_attr->info.push_back({struct_name, struct_attr});
+					}
+					father_struct = true;
+				}
+				
 			// Declaracion de tipos basicos
 			} else {
 				Attributes* attribute = new Attributes();
@@ -491,32 +561,6 @@ declaracion:
 				else if ($1->kind == "POINTER_C") attribute->category = POINTER_C;
 				else if ($1->kind == "VARIABLE") attribute->category = VARIABLE;
 				else if ($1->kind == "CONSTANTE") attribute->category = CONSTANT;
-
-				if ($4->category == "Identificador") { // Estructuras
-					for (const auto& field : type_attr->info) {
-						string full_field = get<string>(field.first);
-						size_t dot_pos = full_field.find('.');
-						if (dot_pos == string::npos) continue; // No es un campo válido
-
-						string attr_name = full_field.substr(dot_pos + 1);
-						string new_field_name = string($2) + "." + attr_name;
-						if (symbolTable.search_symbol(new_field_name)) {
-							FLAG_ERROR = ALREADY_DEF_VAR;
-							yyerror(new_field_name.c_str());
-						} else {
-							Attributes* new_attr = new Attributes();
-							new_attr->symbol_name = new_field_name;
-							new_attr->scope = symbolTable.current_scope;
-							new_attr->type = field.second->type;
-							new_attr->category = STRUCT_ATTRIBUTE;
-							new_attr->value = nullptr;
-
-							// Agregar a la info de la variable y a la tabla de símbolos
-							attribute->info.push_back({new_field_name, new_attr});
-							symbolTable.insert_symbol(new_field_name, *new_attr);
-						}
-					}
-				}
 
 				// En caso de cadena de caracteres se agrega el size.
 				if (type_attr->symbol_name == "higuerote"){
