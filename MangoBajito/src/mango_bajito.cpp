@@ -291,7 +291,10 @@ ASTNode* makeASTNode(const string& name, const string& category, const string& t
 void collect_nodes_by_categories(ASTNode* node, const set<string>& categories, vector<ASTNode*>& out) {
     if (!node) return;
     if (categories.count(node->category)) out.push_back(node);
-    for (auto child : node->children) collect_nodes_by_categories(child, categories, out);
+	for (auto child : node->children) {
+		if (child->category != "Estructura") collect_nodes_by_categories(child, categories, out);
+		else out.push_back(child);
+	}
 }
 
 // Recolecta todos los nodos de tipo guardia ("o_asi" o "nojoda") en el AST.
