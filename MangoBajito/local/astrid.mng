@@ -6,5 +6,7 @@ se_prende(){
 	
 	echale_bolas_si (a menol 10 yunta index nie -1 o_sea a mayol 20){
 		a = a + 2;
+		culito input: higuerote = hablame("Ingrese un valor: ");
+		rescata("Escribiste: " + input, "!¡Gracias por tu entrada!", 5);
 	};
 };

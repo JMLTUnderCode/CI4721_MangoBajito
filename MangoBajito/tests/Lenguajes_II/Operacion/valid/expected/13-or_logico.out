@@ -78,17 +78,17 @@ Programa
           |    |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
           |    |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
           |    |    |    |    |    |--> Asignación | Type: tas_claro | Kind: = | Value: 1
-          |    |    |    |    |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 0
+          |    |    |    |    |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 1
           |    |    |    |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
           |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
           |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
           |    |    |    |    |--> Asignación | Type: tas_claro | Kind: = | Value: 1
-          |    |    |    |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 0
+          |    |    |    |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 1
           |    |    |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
           |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
           |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
           |    |    |    |--> Asignación | Type: tas_claro | Kind: = | Value: 0
-          |    |    |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 0
+          |    |    |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 1
           |    |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
           |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
           |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
@@ -98,12 +98,12 @@ Programa
           |    |              |--> var_true | Category: Identificador | Type: tas_claro | Kind: Sisa | Value: 1
           |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
           |    |--> Asignación | Type: tas_claro | Kind: = | Value: 1
-          |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 0
+          |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 1
           |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
           |              |--> var_false | Category: Identificador | Type: tas_claro | Kind: Nolsa | Value: 0
           |              |--> var_true | Category: Identificador | Type: tas_claro | Kind: Sisa | Value: 1
           |--> Asignación | Type: tas_claro | Kind: = | Value: 1
-               |--> resultado | Category: Identificador | Type: tas_claro | Value: 0
+               |--> resultado | Category: Identificador | Type: tas_claro | Value: 1
                |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
                     |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
                     |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1

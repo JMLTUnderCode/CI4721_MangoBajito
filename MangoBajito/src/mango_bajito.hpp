@@ -248,6 +248,10 @@ ASTNode* makeASTNode(const string& name, const string& category = "", const stri
 // node: nodo raíz a partir del cual buscar, categories: conjunto de categorías a buscar, out: vector donde se almacenan los nodos encontrados.
 void collect_nodes_by_categories(ASTNode* node, const set<string>& categories, vector<ASTNode*>& out);
 
+// Recolecta nodos por una lista de categorías.
+// node: nodo raíz a partir del cual buscar, out: vector donde se almacenan los nodos encontrados.
+void collect_arguments(ASTNode* node, vector<ASTNode*>& out);
+
 // Recolecta todos los nodos de tipo guardia ("o_asi" o "nojoda") en el AST.
 // node: nodo raíz a partir del cual buscar, out: vector donde se almacenan los nodos guardia encontrados.
 void collect_guardias(ASTNode* node, vector<ASTNode*>& out);

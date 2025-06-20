@@ -1,0 +1,174 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: num[0m
+    |---> Símbolo: num, Categoría: (1)VARIABLE, Scope: 3, Type: higuerote, Informacion: 1 , Value: "0"
+
+    |---> Símbolo: num, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 0
+
+[1;35m[5m    Clave: 2: p3[0m
+    |---> Símbolo: p3, Categoría: (3)PARAMETERS, Scope: 3, Type: mango
+
+[1;35m[5m    Clave: 3: fun1[0m
+    |---> Símbolo: fun1, Categoría: (2)FUNCTION, Scope: 2, Type: mango, Informacion: PARAM(p1) PARAM(p2) PARAM(p3) 
+
+[1;35m[5m    Clave: 4: p1[0m
+    |---> Símbolo: p1, Categoría: (3)PARAMETERS, Scope: 3, Type: mango, Value: 2
+
+[1;35m[5m    Clave: 5: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 6: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 7: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 8: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 9: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 10: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 11: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 12: p2[0m
+    |---> Símbolo: p2, Categoría: (3)PARAMETERS, Scope: 3, Type: manguita, Value: 0
+
+[1;35m[5m    Clave: 13: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 14: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 15: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 16: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 17: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 18: p[0m
+    |---> Símbolo: p, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 23
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Asignación | Kind: =
+          |    |    |--> p | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |--> Literal | Category: Numérico | Type: mango | Value: 23
+          |    |--> fun1 | Category: Declaración | Type: mango | Kind: Función
+          |         |--> Secuencia | Category: Declaración | Kind: ,
+          |         |    |--> Secuencia | Category: Declaración | Kind: ,
+          |         |    |    |--> p1 | Category: Parámetro | Type: mango
+          |         |    |    |--> p2 | Category: Parámetro | Type: manguita
+          |         |    |--> p3 | Category: Parámetro | Type: mango
+          |         |--> Instrucción | Kind: ;
+          |              |--> Instrucción | Kind: ;
+          |              |    |--> Asignación | Type: mango | Kind: = | Value: 2
+          |              |    |    |--> p1 | Category: Identificador | Type: mango
+          |              |    |    |--> Literal | Category: Numérico | Type: mango | Value: 2
+          |              |    |--> Asignación | Kind: =
+          |              |         |--> num | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |              |         |--> hablame | Category: input | Type: higuerote | Value: "0"
+          |              |              |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Dame un mango: "
+          |              |--> Asignación | Type: manguita | Kind: = | Value: 0
+          |                   |--> p2 | Category: Identificador | Type: manguita
+          |                   |--> Literal | Category: Numérico | Type: manguita | Kind: CAST(higuerote) | Value: 0
+          |                        |--> num | Category: Identificador | Type: higuerote | Value: "0"
+          |--> Asignación | Kind: =
+               |--> num | Category: Declaración | Type: mango | Kind: VARIABLE
+               |--> Literal | Category: Numérico | Type: mango | Kind: CAST(higuerote) | Value: 0
+                    |--> hablame | Category: input | Type: higuerote | Value: "0"
+                         |--> + | Category: Operación | Type: higuerote | Kind: Concatenación | Value: "Entrada num 23: "
+                              |--> + | Category: Operación | Type: higuerote | Kind: Concatenación | Value: "Entrada num 23"
+                              |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Entrada num "
+                              |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Kind: CAST(mango) | Value: "23"
+                              |         |--> p | Category: Identificador | Type: mango | Value: 23
+                              |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: ": "
+--> Print TAC? (s/n): [1;36m[5m
+               =======================================================
+                                   TAC Representation                 
+               =======================================================
+[0m
+.data:
+str0 := "Dame un mango: "
+str1 := "Entrada num "
+str2 := ": "
+
+.declaration:
+Scope 2: 
+p: alloc 4
+num: alloc 4
+
+Scope 3: 
+num: alloc 32
+
+.code:
+p := 23
+fun1: 
+begin_func:
+p1 := 2
+param &str0
+t0 := call read, 1
+num := t0
+p2 := (float)num
+end_func:
+t1 := call alloc 14
+i := 0
+j := 0
+L0: 
+t2 := *(&str1 + i)
+*(t1 + i) := t2
+if t1 == '\0' goto L1
+i := i + 1
+goto L0
+L1: 
+t2 := *((string)p + j)
+*(t1 + i) := t2
+if t1 == '\0' goto L2
+i := i + 1
+j := j + 1
+goto L1
+L2: 
+t3 := call alloc 16
+i := 0
+j := 0
+L3: 
+t4 := *(t1 + i)
+*(t3 + i) := t4
+if t3 == '\0' goto L4
+i := i + 1
+goto L3
+L4: 
+t4 := *(&str2 + j)
+*(t3 + i) := t4
+if t3 == '\0' goto L5
+i := i + 1
+j := j + 1
+goto L4
+L5: 
+param t3
+t5 := call read, 1
+num := (int)t5
+[1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

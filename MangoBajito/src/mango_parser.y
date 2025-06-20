@@ -376,9 +376,8 @@ instruccion:
 		if ($3) {
 			$$->children.push_back($3);
 			string output = "";
-			set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Elemento_String", "Atributo_Estructura"};
 			vector<ASTNode*> secuencia_elements;
-			collect_nodes_by_categories($3, categories, secuencia_elements);
+			collect_arguments($3, secuencia_elements);
 			for (auto elem : secuencia_elements) {
 				if (elem->type == "mango") {
 					output += to_string(elem->ivalue);
@@ -407,6 +406,16 @@ instruccion:
 			FLAG_ERROR = SEMANTIC;
 			yyerror("No hay nada que imprimir");
 		}
+
+		// Agregar TAC de salida
+		vector<ASTNode*> arg_nodes;
+		collect_arguments($3, arg_nodes);
+		for (ASTNode* arg_node : arg_nodes) {
+			concat_TAC($$, arg_node);
+			$$->tac.push_back("param " + arg_node->temp);
+		}
+
+		$$->tac.push_back("call print, " + to_string(arg_nodes.size()));
 	}
 	;
 
@@ -1130,13 +1139,16 @@ asignacion:
 							}
 							$2->dvalue = get<double>(attribute->value);
 						} else if (left_type == "negro" && op == "=") {
+							if (new_node->show_value) new_node->cvalue = get<char>(attribute->value);
 							attribute->value = $3->cvalue;
 							$2->cvalue = $3->cvalue;
 						} else if (left_type == "higuerote" && op == "=") {
+							if (new_node->show_value) new_node->svalue = get<string>(attribute->value);
 							attribute->value = $3->svalue;
 							attribute->info[0].first = static_cast<int>($3->svalue.size()); // Actualizar el tamaño de la cadena
 							$2->svalue = $3->svalue;
 						} else if (left_type == "tas_claro" && op == "="){
+							if (new_node->show_value) new_node->bvalue = get<bool>(attribute->value);
 							attribute->value = $3->bvalue;
 							$2->bvalue = $3->bvalue;
 							if (!attribute->info.empty()) attribute->info[0].first = ($3->bvalue ? "Sisa" : "Nolsa");
@@ -1964,8 +1976,10 @@ expresion:
 			$$->svalue = "0"; // Valor por defecto para el input
 			$$->children.push_back($3);
 			// Generar TAC para la entrada
+			concat_TAC($$, $3);
 			string temp = labelGen.newTemp();
-			$$->tac.push_back(temp + " := input()");
+			$$->tac.push_back("param "+ $3->temp);
+			$$->tac.push_back(temp + " := call read, 1");
 			$$->temp = temp;
 		}
 	}
@@ -2498,9 +2512,8 @@ llamada_funcion:
 		} else {
 			new_node->type = func_attr->type->symbol_name;
 			// Recolectar todos los nodos de argumentos.
-			set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Elemento_String", "Atributo_Estructura"};
 			vector<ASTNode*> arg_nodes;
-			collect_nodes_by_categories($3, categories, arg_nodes);
+			collect_arguments($3, arg_nodes);
 			
 			if (arg_nodes.size() > func_attr->info.size()) {
 				FLAG_ERROR = FUNC_PARAM_EXCEEDED;
@@ -2536,9 +2549,8 @@ llamada_funcion:
 		$$ = new_node;
 
 		// Generación de TAC para llamada a función
-		set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Elemento_String", "Atributo_Estructura"};
 		vector<ASTNode*> arg_nodes;
-		collect_nodes_by_categories($3, categories, arg_nodes);
+		collect_arguments($3, arg_nodes);
 		for (ASTNode* arg_node : arg_nodes) {
 			concat_TAC($$, arg_node);
 			$$->tac.push_back("param " + arg_node->temp);
