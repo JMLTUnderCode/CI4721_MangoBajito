@@ -1,4 +1,4 @@
-# Test 13: Errores de uso del tipo Coliao.
+# Test 14: Errores de uso del tipo Coliao.
 se_prende(){
 	coliao Persona {
 		nombre : higuerote;

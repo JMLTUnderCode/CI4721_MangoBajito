@@ -1,0 +1,117 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: registro_1.usuario.edad[0m
+    |---> Símbolo: registro_1.usuario.edad, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: mango, Value: 26
+
+[1;35m[5m    Clave: 2: registro_1.usuario.nombre[0m
+    |---> Símbolo: registro_1.usuario.nombre, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: higuerote, Value: "Junior"
+
+[1;35m[5m    Clave: 3: registro_1.codigo[0m
+    |---> Símbolo: registro_1.codigo, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: mango, Value: 0
+
+[1;35m[5m    Clave: 4: Registro.usuario[0m
+    |---> Símbolo: Registro.usuario, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 4, Type: Persona
+
+[1;35m[5m    Clave: 5: Registro.codigo[0m
+    |---> Símbolo: Registro.codigo, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 4, Type: mango
+
+[1;35m[5m    Clave: 6: Registro[0m
+    |---> Símbolo: Registro, Categoría: (4)STRUCT, Scope: 2, Informacion: Registro.codigo Registro.usuario 
+
+[1;35m[5m    Clave: 7: Persona.edad[0m
+    |---> Símbolo: Persona.edad, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: mango
+
+[1;35m[5m    Clave: 8: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 9: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 10: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 11: Persona.nombre[0m
+    |---> Símbolo: Persona.nombre, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: higuerote
+
+[1;35m[5m    Clave: 12: Persona[0m
+    |---> Símbolo: Persona, Categoría: (4)STRUCT, Scope: 2, Informacion: Persona.nombre Persona.sexo Persona.edad 
+
+[1;35m[5m    Clave: 13: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 14: registro_1.usuario.sexo[0m
+    |---> Símbolo: registro_1.usuario.sexo, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: negro, Value: 'M'
+
+[1;35m[5m    Clave: 15: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 16: registro_1.usuario[0m
+    |---> Símbolo: registro_1.usuario, Categoría: (4)STRUCT, Scope: 2, Type: Persona, Informacion: registro_1.usuario.nombre registro_1.usuario.sexo registro_1.usuario.edad 
+
+[1;35m[5m    Clave: 17: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 18: registro_1[0m
+    |---> Símbolo: registro_1, Categoría: (4)STRUCT, Scope: 2, Type: Registro, Informacion: registro_1.codigo registro_1.usuario 
+
+[1;35m[5m    Clave: 19: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 20: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 21: Persona.sexo[0m
+    |---> Símbolo: Persona.sexo, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: negro
+
+[1;35m[5m    Clave: 22: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 23: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 24: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 25: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Persona | Category: Declaración | Type: arroz_con_mango | Kind: Estructura
+          |    |    |--> Instrucción | Kind: ;
+          |    |         |--> Instrucción | Kind: ;
+          |    |         |    |--> nombre | Category: Atributo_Estructura | Type: higuerote | Value: ""
+          |    |         |    |--> sexo | Category: Atributo_Estructura | Type: negro | Value: ''
+          |    |         |--> edad | Category: Atributo_Estructura | Type: mango | Value: 0
+          |    |--> Registro | Category: Declaración | Type: arroz_con_mango | Kind: Estructura
+          |         |--> Instrucción | Kind: ;
+          |              |--> codigo | Category: Atributo_Estructura | Type: mango | Value: 0
+          |              |--> usuario | Category: Atributo_Estructura | Type: Persona
+          |--> Asignación | Kind: =
+               |--> registro_1 | Category: Declaración | Type: Registro | Kind: VARIABLE
+               |--> Literal | Category: Estructura
+                    |--> Secuencia | Category: Expresión | Kind: ,
+                         |--> Literal | Category: Numérico | Type: mango | Value: 0
+                         |--> Literal | Category: Estructura
+                              |--> Secuencia | Category: Expresión | Kind: ,
+                                   |--> Secuencia | Category: Expresión | Kind: ,
+                                   |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Junior"
+                                   |    |--> Literal | Category: Caracter | Type: negro | Value: 'M'
+                                   |--> Literal | Category: Numérico | Type: mango | Value: 26
+--> Print TAC? (s/n): [1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

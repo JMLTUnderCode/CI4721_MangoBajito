@@ -1,4 +1,4 @@
-# Test 12: Error de Size para el array.
+# Test 15: Error de Size para el array.
 se_prende(){
 	culito decl0: mango[0] = [123, 345];
 	culito decl1: mango[1] = [123, 345];
