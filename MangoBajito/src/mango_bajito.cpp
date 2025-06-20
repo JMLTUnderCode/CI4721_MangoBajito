@@ -742,8 +742,6 @@ void generateJumpingCode(ASTNode* guardia, vector<string>& out, function<string(
 		return;
 	}
 
-	set<string> ops_booleanasFuertes = {"igualito", "nie", "yunta", "o_sea"};
-
 	for(auto expr : guardia->children){
 		if (expr->name == "yunta"){
 			expr->children[0]->falseLabel = expr->falseLabel != "fall" ? expr->falseLabel : newLabelFunc();
@@ -754,6 +752,7 @@ void generateJumpingCode(ASTNode* guardia, vector<string>& out, function<string(
 
 			generateJumpingCode(expr, out, newLabelFunc);
 
+			
 			if (expr->falseLabel == "fall") out.push_back(expr->children[0]->falseLabel + ": ");
 		
 		}else if (expr->name == "o_sea"){

@@ -2094,24 +2094,19 @@ indeterminado:
 			$$->children.push_back(new_node);
 
 			// Generacion de TAC para bucle while
-			// label de repeticion
-			string label0 = labelGen.newLabel();
+			
+			string label0 = labelGen.newLabel();	// Label de inicio del bucle
+			$3->trueLabel = "fall";
+			$3->falseLabel = labelGen.newLabel(); // Label de salida del bucle
 			$$->tac.push_back(label0 + ": ");
-			// Agregar instrucciones de la guardia while
-			concat_TAC($$, $3);
-			// Agregar condicional de la guardia
-			string label1 = labelGen.newLabel();
-			string echalebola = "if " + $3->temp + " goto " + label1;
-			$$->tac.push_back(echalebola);
-			// Agregar el label de salida del bucle
-			string label2 = labelGen.newLabel();
-			$$->tac.push_back("goto " + label2);
-			// Instrucciones del while
-			$$->tac.push_back(label1 + ": ");
+			vector<string> out;
+			generateJumpingCode(guardia_node, out, [&](){ return labelGen.newLabel(); });
+			$$->tac.insert($$->tac.end(), out.begin(), out.end());
+			// Si la condición es falsa, salimos del bucle
 			concat_TAC($$, $6);
 			$$->tac.push_back("goto " + label0);
-			// Salida del bucle
-			$$->tac.push_back(label2 + ": ");
+			// Label de salida del bucle
+			$$->tac.push_back($3->falseLabel + ": ");
 		}
 	}
 	;
