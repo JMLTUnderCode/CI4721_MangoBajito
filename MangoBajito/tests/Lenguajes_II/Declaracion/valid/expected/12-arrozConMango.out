@@ -26,7 +26,7 @@
     |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 [1;35m[5m    Clave: 8: yo[0m
-    |---> Símbolo: yo, Categoría: (1)VARIABLE, Scope: 2, Type: Persona, Informacion: yo.nombre yo.sexo yo.edad 
+    |---> Símbolo: yo, Categoría: (4)STRUCT, Scope: 2, Type: Persona, Informacion: yo.nombre yo.sexo yo.edad 
 
 [1;35m[5m    Clave: 9: caramba_ñero[0m
     |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
@@ -50,7 +50,7 @@
     |---> Símbolo: sexos[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: negro, Value: 'M'
 
 [1;35m[5m    Clave: 16: ella[0m
-    |---> Símbolo: ella, Categoría: (1)VARIABLE, Scope: 2, Type: Persona, Informacion: ella.nombre ella.sexo ella.edad 
+    |---> Símbolo: ella, Categoría: (4)STRUCT, Scope: 2, Type: Persona, Informacion: ella.nombre ella.sexo ella.edad 
 
 [1;35m[5m    Clave: 17: nombres[2][0m
     |---> Símbolo: nombres[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "Junior"
