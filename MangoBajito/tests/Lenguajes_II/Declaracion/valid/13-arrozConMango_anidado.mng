@@ -21,7 +21,7 @@ se_prende(){
 	culito registro_1 : Registro = {0, {"Junior", 'M', 26, {8, 6, 1999}}};
 
 	culito registro_2 : Registro;
-	#registro_2 = {1, {"Astrid", 'F', 23, {7, 5, 2002}}};
+	registro_2 = {1, {"Astrid", 'F', 23, {7, 5, 2002}}};
 
 	#culito registro_3 : Registro;
 	#registro_3.codigo = 2;
