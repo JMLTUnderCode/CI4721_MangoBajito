@@ -16,6 +16,7 @@
 #include <math.h>
 #include <climits>
 #include <cfloat>
+#include <functional>
 
 using namespace std;
 
