@@ -1,15 +1,15 @@
+# Test 13: Errores de uso anidado del tipo arroz_con_mango.
 se_prende(){
 	arroz_con_mango Persona {
 		nombre : higuerote;
 		sexo : negro;
 		edad : mango;
 	};
-
+	
 	arroz_con_mango Registro {
 		codigo : mango;
-		usuario : Persona;
-	}
+		usuario : higuerote;
+	};
 
 	culito registro_1 : Registro = {0, {"Junior", 'M', 26}};
-	culito registro_2 : Registro = {1, {"Astrid", 'F', 23}};
 };

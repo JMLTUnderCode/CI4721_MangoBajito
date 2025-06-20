@@ -1,4 +1,4 @@
-# Test 13: Definicion y uso del tipo Coliao.
+# Test 14: Definicion y uso del tipo Coliao.
 se_prende(){
 	coliao Persona {
 		nombre : higuerote;

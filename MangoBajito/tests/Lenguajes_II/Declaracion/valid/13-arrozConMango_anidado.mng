@@ -1,0 +1,23 @@
+# Test 13: Definicion y uso de estructuras anidadas.
+se_prende(){
+	arroz_con_mango Persona {
+		nombre : higuerote;
+		sexo : negro;
+		edad : mango;
+	};
+
+	arroz_con_mango Registro {
+		codigo : mango;
+		usuario : Persona;
+	};
+
+	#culito user : Persona = {"Junior", 'M', 26};
+	culito registro_1 : Registro = {0, {"Junior", 'M', 26}};
+
+	#culito registro_2 : Registro;
+	#registro_2 = {1, {"Astrid", 'F', 23}};
+
+	#culito registro_3 : Registro;
+	#registro_3.codigo = 2;
+	#registro_3.usuario = {"Jhonaiker", 'M', 25}};
+};
