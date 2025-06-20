@@ -1062,63 +1062,105 @@ asignacion:
 
 			// Asignacion de estructuras
 			} else if (attribute->type->category == STRUCT && $3->category == "Estructura" && op == "=") {
-				new_node->type = attribute->type->symbol_name;
+				left_type = attribute->type->symbol_name;
+				new_node->type = left_type;
 				
-				int size_struct = attribute->info.size();
-				
-				set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Elemento_String", "Atributo_Estructura"};
-				vector<ASTNode*> struct_elements;
-				collect_nodes_by_categories($3, categories, struct_elements);
-				int count_elems = struct_elements.size();
+				queue<pair<vector<string>, ASTNode*> > queue_structs;
+				queue_structs.push({{string($1), left_type}, $3});
+				while(!queue_structs.empty()) {
+					auto data = queue_structs.front();
+					queue_structs.pop();
 
-				if (size_struct == 0 || count_elems == 0) {
-					FLAG_ERROR = EMPTY_STRUCT;
-					yyerror($1);
-				} else if (count_elems > size_struct) {
-					FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
-					string error_msg = "Ay vale! Te gusta meterte más cosas verdad?. Sólo te caben '" + to_string(size_struct) + "' cositas.";
-					yyerror(error_msg.c_str());
-				} else if (count_elems < size_struct) {
-					FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
-					string error_msg = "Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '" + to_string(count_elems) + "' de '" + to_string(size_struct) + "'.";
-					yyerror(error_msg.c_str());
-				} else {
-					for (int i = 0; i < count_elems; i++) {
-						ASTNode* elem = struct_elements[i];
-						
-						Attributes* attr_elem = symbolTable.search_symbol(get<string>(attribute->info[i].first));
-						left_type = attr_elem->type->symbol_name;
-						
-						if (left_type != elem->type && (left_type != "manguangua" || elem->type != "manguita")) {
-							FLAG_ERROR = TYPE_ERROR;
-							string error_msg = "\"" + attr_elem->symbol_name + "\" de tipo '" + left_type + 
-								"' y le quieres meter un '" + elem->type + "', marbaa' bruja.";
+					string struct_name = data.first[0];
+					string struct_type = data.first[1];
+					ASTNode* struct_elements_node = data.second;
+
+					Attributes* type_attr = symbolTable.search_symbol(struct_type);
+
+					if (type_attr->category != STRUCT || struct_elements_node->category != "Estructura"){
+						FLAG_ERROR = TYPE_ERROR;
+						string error_msg = "\"" + struct_name + "\" de tipo '" + struct_type + 
+							"' y le quieres meter un 'arroz_con_mango', marbaa' bruja.";
+						yyerror(error_msg.c_str());
+					} else {
+						int size_struct = type_attr->info.size();
+
+						// Buscar atributo de la estructura
+						Attributes* struct_attr = symbolTable.search_symbol(struct_name);
+
+						set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Elemento_String", "Atributo_Estructura", "Estructura"};
+						vector<ASTNode*> struct_elements;
+						collect_nodes_by_categories(struct_elements_node, categories, struct_elements);
+						// Remover el primer elemento del vector de elementos. Se captura el mismo nodo "Estructura".
+						struct_elements.erase(struct_elements.begin());
+
+						int count_elems = struct_elements.size();
+
+						if (size_struct == 0 || count_elems == 0) {
+							FLAG_ERROR = EMPTY_STRUCT;
+							yyerror(struct_name.c_str());
+						} else if (count_elems > size_struct) {
+							FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
+							string error_msg = "Ay vale! Te gusta meterte más cosas verdad?. Sólo te caben '" + to_string(size_struct) + "' cositas.";
 							yyerror(error_msg.c_str());
-							attr_elem->value = nullptr;
+						} else if (count_elems < size_struct) {
+							FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
+							string error_msg = "Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '" + to_string(count_elems) + "' de '" + to_string(size_struct) + "'.";
+							yyerror(error_msg.c_str());
 						} else {
-							if (elem->type == "mango") {
-								attr_elem->value = elem->ivalue;
-							} else if (elem->type == "manguita") {
-								attr_elem->value = elem->fvalue;
-							} else if (elem->type == "manguangua") {
-								attr_elem->value = elem->dvalue;
-							} else if (elem->type == "negro") {
-								attr_elem->value = elem->cvalue;
-							} else if (elem->type == "higuerote") {
-								attr_elem->value = elem->svalue;
-							} else if (elem->type == "tas_claro") {
-								attr_elem->value = elem->bvalue;
-								if (!attr_elem->info.empty()) attr_elem->info[0].first = (elem->bvalue ? "Sisa" : "Nolsa");
-								else attr_elem->info.push_back({(elem->bvalue ? "Sisa" : "Nolsa"), nullptr});
-							} else if (elem->type == "pointer"){
-								/* POR IMPLEMENTAR */
-								//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
-								attr_elem->value = nullptr;
-							} else {
-								FLAG_ERROR = INTERNAL;
-								string error_msg = "TIPO DESCONOCIDO: '" + elem->type + "'.";
-								yyerror(error_msg.c_str());
-								attr_elem->value = nullptr;
+							for (int i = 0; i < count_elems; i++) {
+								const auto& field = type_attr->info[i];
+								string full_field = get<string>(field.first);
+								size_t dot_pos = full_field.find('.');
+								if (dot_pos == string::npos) continue; // No es un campo válido
+
+								string field_type = field.second->type->symbol_name;
+
+								string attr_name = full_field.substr(dot_pos + 1);
+								string new_field_name = struct_name + "." + attr_name;
+
+								Attributes* new_attr = symbolTable.search_symbol(new_field_name);
+								
+								ASTNode* elem = struct_elements[i];
+
+								if (elem->category == "Estructura") {
+									queue_structs.push({{new_field_name, field_type}, elem});
+									continue; // Procesar subestructura
+								}
+
+								if (field_type != elem->type && (field_type != "manguangua" || elem->type != "manguita")) {
+									FLAG_ERROR = TYPE_ERROR;
+									string error_msg = "\"" + new_field_name + "\" de tipo '" + field_type + 
+										"' y le quieres meter un '" + elem->type + "', marbaa' bruja.";
+									yyerror(error_msg.c_str());
+									new_attr->value = nullptr;
+								} else {
+									if (elem->type == "mango") {
+										new_attr->value = elem->ivalue;
+									} else if (elem->type == "manguita") {
+										new_attr->value = elem->fvalue;
+									} else if (elem->type == "manguangua") {
+										new_attr->value = elem->dvalue;
+									} else if (elem->type == "negro") {
+										new_attr->value = elem->cvalue;
+									} else if (elem->type == "higuerote") {
+										new_attr->value = elem->svalue;
+									} else if (elem->type == "tas_claro") {
+										new_attr->value = elem->bvalue;
+										if (!new_attr->info.empty()) new_attr->info[0].first = (elem->bvalue ? "Sisa" : "Nolsa");
+										else new_attr->info.push_back({(elem->bvalue ? "Sisa" : "Nolsa"), nullptr});
+									} else if (elem->type == "pointer"){
+										/* POR IMPLEMENTAR */
+										//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
+										new_attr->value = nullptr;
+									} else {
+										FLAG_ERROR = INTERNAL;
+										string error_msg = "TIPO DESCONOCIDO: '" + elem->type + "'.";
+										yyerror(error_msg.c_str());
+										new_attr->value = nullptr;
+									}
+								}
+								
 							}
 						}
 					}
