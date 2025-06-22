@@ -727,12 +727,16 @@ SizeType maxOfSizeType(vector<pair<Information, Attributes*>> info){
 }
 
 int accumulateSizeType(vector<pair<Information, Attributes*>> info, string var){
-	int accumulate = 0,
-		i = 0;
+	cout << " entry fun\n";
+	if (info.empty()) return 0;
+	int accumulate = 0;
 
-	while(info[i].second->symbol_name != var){
-		accumulate += strToSizeType(info[i].second->type->symbol_name);
-		i++;
+	for (int i = 0; i < info.size(); i++) {
+		if (info[i].second->symbol_name == var) break;
+		if (info[i].second->category == STRUCT || info[i].second->category == UNION)
+			accumulate += accumulateSizeType(info[i].second->info, var);
+		else
+			accumulate += strToSizeType(info[i].second->type->symbol_name);
 	}
 
 	return accumulate;
