@@ -1926,34 +1926,29 @@ expresion:
 	| T_ID T_PUNTO acceso_struct { // Acceso a atributos de una struct/variant
 		string field_name = string($1) + "." + $3->name;
 		string type_field = "Desconocido_s";
-		Category category_struct = UNKNOWN;
+		Category category_field = UNKNOWN;
 		ASTNode* new_node = makeASTNode(field_name, "Atributo_Estructura");
-		
-		Attributes* struct_attr = symbolTable.search_symbol($1);
-
-		if (struct_attr == nullptr) {
-			FLAG_ERROR = NON_DEF_VAR;
-			yyerror($1);
-		} else if (struct_attr->type == nullptr) {
+	
+		Attributes* field_attr = symbolTable.search_symbol(field_name);
+		if (field_attr == nullptr) {
+			FLAG_ERROR = NON_DEF_ATTR;
+			yyerror(field_name.c_str());
+		} else if (field_attr->type == nullptr) {
 			FLAG_ERROR = INTERNAL;
-			yyerror("ERROR INTERNO: Tipo desconocido.");
-		} else if (struct_attr->type->category != STRUCT && struct_attr->type->category != UNION) {
-			FLAG_ERROR = TYPE_ERROR;
-			string error_msg = "\"" + string($1) + "\" que ni es un 'arroz_con_mango' ni un 'coliao', marbaa' bruja.";
-			yyerror(error_msg.c_str());
+			yyerror("ERROR INTERNO: Atributo sin tipo definido.");
 		} else {
-			category_struct = struct_attr->type->category;
-			Attributes* field_attr = symbolTable.search_symbol(field_name);
-			
-			if (field_attr == nullptr) {
-				FLAG_ERROR = NON_DEF_ATTR;
-				yyerror(field_name.c_str());
-			} else if (field_attr->type == nullptr) {
-				FLAG_ERROR = INTERNAL;
-				yyerror("ERROR INTERNO: Atributo sin tipo definido.");
+			type_field = field_attr->type->symbol_name;
+			new_node->type = type_field;
+			category_field = field_attr->type->category;
+			if (category_field == STRUCT) {
+				new_node->category = "Estructura";
+				if (field_attr->info.empty()) {
+					FLAG_ERROR = EMPTY_STRUCT;
+					yyerror(field_name.c_str());
+				} else {
+					buildAST_by_struct(new_node, field_attr->info, symbolTable);
+				}
 			} else {
-				type_field = field_attr->type->symbol_name;
-				new_node->type = type_field;
 				if (holds_alternative<nullptr_t>(field_attr->value)) {
 					FLAG_ERROR = NON_VALUE;
 					yyerror(field_name.c_str());
