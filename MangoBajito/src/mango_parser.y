@@ -1189,6 +1189,7 @@ asignacion:
 					} else {
 						new_node->show_value = !holds_alternative<nullptr_t>(attribute->value);
 						if (left_type == "mango") {
+							if (new_node->show_value) new_node->ivalue = get<int>(attribute->value);
 							int r_ivalue = $3->ivalue;
 							if (op == "=") attribute->value = r_ivalue;
 							else {
@@ -1200,6 +1201,7 @@ asignacion:
 							}
 							$2->ivalue = get<int>(attribute->value);
 						} else if (left_type == "manguita") {
+							if (new_node->show_value) new_node->fvalue = get<float>(attribute->value);
 							float r_fvalue = $3->fvalue;
 							if (op == "=") attribute->value = r_fvalue;
 							else {
@@ -1211,6 +1213,7 @@ asignacion:
 							}
 							$2->fvalue = get<float>(attribute->value);
 						} else if (left_type == "manguangua") {
+							if (new_node->show_value) new_node->dvalue = get<double>(attribute->value);
 							double r_dvalue = 0.0;
 							if (right_type == "manguita") r_dvalue = $3->fvalue;
 							else r_dvalue = $3->dvalue;
@@ -1454,13 +1457,16 @@ asignacion:
 		$$->children.push_back(new_node);
 		$$->children.push_back($6);
 	}
-	| T_ID T_PUNTO T_ID operadores_asignacion expresion { // Structs/Unions
-		ASTNode* new_node = makeASTNode($1, "Atributo_Estructura");
+	| T_ID T_PUNTO acceso_struct operadores_asignacion expresion { // Structs/Unions
+		string field_name = string($1) + "." + $3->name;
+		
+		ASTNode* new_node = makeASTNode(field_name, "Atributo_Estructura");
 		
 		Attributes* struct_attr = symbolTable.search_symbol($1);
 		string type_struct = "Desconocido_s";
 		string type_field = "Desconocido_f";
 		string right_type = $5->type;
+		string op = $4->kind;
 		Category category_struct = UNKNOWN;
 
 		if (struct_attr == nullptr) {
@@ -1474,102 +1480,218 @@ asignacion:
 			type_struct = struct_attr->type->symbol_name;
 			category_struct = struct_attr->type->category;
 
-			string field_name = string($1) + "." + string($3);
 			Attributes* field_attr = symbolTable.search_symbol(field_name);
 
 			if (field_attr == nullptr) {
 				FLAG_ERROR = NON_DEF_ATTR;
-				yyerror($3);
+				yyerror(field_name.c_str());
 			} else {
-				new_node->name = field_name;
 				type_field = field_attr->type->symbol_name;
-				if (type_field != right_type && (type_field != "manguangua" || right_type != "manguita")) {
+				new_node->type = type_field;
+				Category field_category = field_attr->type->category;
+				// Atributo de tipo struct/union
+				if (field_category == STRUCT && $5->category == "Estructura" && op != "=") {
 					FLAG_ERROR = TYPE_ERROR;
-					string error_msg = "\"" + string($1) + "\" de tipo '" + type_field + 
-						"' y le quieres meter un tipo '" + right_type + "', marbaa' bruja.";
-					yyerror(error_msg.c_str());
-				} else {
-					// Vaciar los demas campos en caso de un UNION
-					if (category_struct == UNION) {
-						string other_field_name = "";
-						for (const auto& info : struct_attr->info) {
-							other_field_name = get<string>(info.first);
-							if (other_field_name != field_name) {
-								Attributes* other_field = symbolTable.search_symbol(other_field_name);
-								if (other_field != nullptr) other_field->value = nullptr; // Limpiar valor de otros campos
+					string error_msg = "\"" + field_name + "\" de tipo '" + type_field + 
+						"' y quieres operar con '" + op + "', solo se vale '=`, marbaa' bruja.";
+					yyerror(error_msg.c_str()); 
+
+				} else if (field_category == STRUCT && $5->category == "Estructura" && op == "=") {
+					new_node->category = "Estructura";
+
+					queue<pair<vector<string>, ASTNode*> > queue_structs;
+					queue_structs.push({{field_name, type_field}, $5});
+					while(!queue_structs.empty()) {
+						auto data = queue_structs.front();
+						queue_structs.pop();
+
+						string struct_name = data.first[0];
+						string struct_type = data.first[1];
+						ASTNode* struct_elements_node = data.second;
+
+						Attributes* type_attr = symbolTable.search_symbol(struct_type);
+
+						if (type_attr->category != STRUCT || struct_elements_node->category != "Estructura"){
+							FLAG_ERROR = TYPE_ERROR;
+							string error_msg = "\"" + struct_name + "\" de tipo '" + struct_type + 
+								"' y le quieres meter un 'arroz_con_mango', marbaa' bruja.";
+							yyerror(error_msg.c_str());
+						} else {
+							int size_struct = type_attr->info.size();
+
+							// Buscar atributo de la estructura
+							Attributes* struct_attr = symbolTable.search_symbol(struct_name);
+
+							set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Elemento_String", "Atributo_Estructura", "Estructura"};
+							vector<ASTNode*> struct_elements;
+							collect_nodes_by_categories(struct_elements_node, categories, struct_elements);
+							// Remover el primer elemento del vector de elementos. Se captura el mismo nodo "Estructura".
+							struct_elements.erase(struct_elements.begin());
+
+							int count_elems = struct_elements.size();
+
+							if (size_struct == 0 || count_elems == 0) {
+								FLAG_ERROR = EMPTY_STRUCT;
+								yyerror(struct_name.c_str());
+							} else if (count_elems > size_struct) {
+								FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
+								string error_msg = "Ay vale! Te gusta meterte más cosas verdad?. Sólo te caben '" + to_string(size_struct) + "' cositas.";
+								yyerror(error_msg.c_str());
+							} else if (count_elems < size_struct) {
+								FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
+								string error_msg = "Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '" + to_string(count_elems) + "' de '" + to_string(size_struct) + "'.";
+								yyerror(error_msg.c_str());
+							} else {
+								for (int i = 0; i < count_elems; i++) {
+									const auto& field = type_attr->info[i];
+									string full_field = get<string>(field.first);
+									size_t dot_pos = full_field.find('.');
+									if (dot_pos == string::npos) continue; // No es un campo válido
+
+									string field_type = field.second->type->symbol_name;
+
+									string attr_name = full_field.substr(dot_pos + 1);
+									string new_field_name = struct_name + "." + attr_name;
+
+									Attributes* new_attr = symbolTable.search_symbol(new_field_name);
+									
+									ASTNode* elem = struct_elements[i];
+
+									if (elem->category == "Estructura") {
+										queue_structs.push({{new_field_name, field_type}, elem});
+										continue; // Procesar subestructura
+									}
+
+									if (field_type != elem->type && (field_type != "manguangua" || elem->type != "manguita")) {
+										FLAG_ERROR = TYPE_ERROR;
+										string error_msg = "\"" + new_field_name + "\" de tipo '" + field_type + 
+											"' y le quieres meter un '" + elem->type + "', marbaa' bruja.";
+										yyerror(error_msg.c_str());
+										new_attr->value = nullptr;
+									} else {
+										if (elem->type == "mango") {
+											new_attr->value = elem->ivalue;
+										} else if (elem->type == "manguita") {
+											new_attr->value = elem->fvalue;
+										} else if (elem->type == "manguangua") {
+											new_attr->value = elem->dvalue;
+										} else if (elem->type == "negro") {
+											new_attr->value = elem->cvalue;
+										} else if (elem->type == "higuerote") {
+											new_attr->value = elem->svalue;
+										} else if (elem->type == "tas_claro") {
+											new_attr->value = elem->bvalue;
+											if (!new_attr->info.empty()) new_attr->info[0].first = (elem->bvalue ? "Sisa" : "Nolsa");
+											else new_attr->info.push_back({(elem->bvalue ? "Sisa" : "Nolsa"), nullptr});
+										} else if (elem->type == "pointer"){
+											/* POR IMPLEMENTAR */
+											//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
+											new_attr->value = nullptr;
+										} else {
+											FLAG_ERROR = INTERNAL;
+											string error_msg = "TIPO DESCONOCIDO: '" + elem->type + "'.";
+											yyerror(error_msg.c_str());
+											new_attr->value = nullptr;
+										}
+									}
+									
+								}
 							}
 						}
 					}
-
-					string op = $4->kind;
-					if (op != "=" && holds_alternative<nullptr_t>(field_attr->value)) {
-						FLAG_ERROR = NON_VALUE;
-						yyerror(field_name.c_str());
+				} else {
+					if (type_field != right_type && (type_field != "manguangua" || right_type != "manguita")) {
+						FLAG_ERROR = TYPE_ERROR;
+						string error_msg = "\"" + string($1) + "\" de tipo '" + type_field + 
+							"' y le quieres meter un tipo '" + right_type + "', marbaa' bruja.";
+						yyerror(error_msg.c_str());
 					} else {
-						new_node->show_value = !holds_alternative<nullptr_t>(field_attr->value);
-						if (type_field == "mango") {
-							int r_ivalue = $5->ivalue;
-							if (op == "=") field_attr->value = r_ivalue;
-							else {
-								int l_ivalue = get<int>(field_attr->value);
-								new_node->ivalue = l_ivalue; // Guardar el valor antes de modificarlo
-								if (op == "+=") field_attr->value = l_ivalue + r_ivalue;
-								if (op == "-=") field_attr->value = l_ivalue - r_ivalue;
-								if (op == "*=") field_attr->value = l_ivalue * r_ivalue;
+						// Vaciar los demas campos en caso de un UNION
+						if (category_struct == UNION) {
+							string other_field_name = "";
+							for (const auto& info : struct_attr->info) {
+								other_field_name = get<string>(info.first);
+								if (other_field_name != field_name) {
+									Attributes* other_field = symbolTable.search_symbol(other_field_name);
+									if (other_field != nullptr) other_field->value = nullptr; // Limpiar valor de otros campos
+								}
 							}
-							$4->ivalue = get<int>(field_attr->value);
-						} else if (type_field == "manguita") {
-							float r_fvalue = $5->fvalue;
-							if (op == "=") field_attr->value = r_fvalue;
-							else {
-								float l_fvalue = get<float>(field_attr->value);
-								new_node->fvalue = l_fvalue; // Guardar el valor antes de modificarlo
-								if (op == "+=") field_attr->value = l_fvalue + r_fvalue;
-								if (op == "-=") field_attr->value = l_fvalue - r_fvalue;
-								if (op == "*=") field_attr->value = l_fvalue * r_fvalue;
-							}
-							$4->fvalue = get<float>(field_attr->value);
-						} else if (type_field == "manguangua") {
-							double r_dvalue = 0.0;
-							if (right_type == "manguita") r_dvalue = $5->fvalue;
-							else r_dvalue = $5->dvalue;
-	
-							if (op == "=") field_attr->value = r_dvalue;
-							else {
-								double l_dvalue = get<double>(field_attr->value);
-								new_node->dvalue = l_dvalue; // Guardar el valor antes de modificarlo
-								if (op == "+=") field_attr->value = l_dvalue + r_dvalue;
-								if (op == "-=") field_attr->value = l_dvalue - r_dvalue;
-								if (op == "*=") field_attr->value = l_dvalue * r_dvalue;
-							}
-							$4->dvalue = get<double>(field_attr->value);
-						} else if (type_field == "negro" && op == "=") {
-							field_attr->value = $5->cvalue;
-							$4->cvalue = $5->cvalue;
-						} else if (type_field == "higuerote" && op == "=") {
-							field_attr->value = $5->svalue;
-							$4->svalue = $5->svalue;
-						} else if (type_field == "tas_claro" && op == "="){
-							field_attr->value = $5->bvalue;
-							$4->bvalue = $5->bvalue;
-							if (!field_attr->info.empty()) field_attr->info[0].first = ($5->bvalue ? "Sisa" : "Nolsa");
-							else field_attr->info.push_back({($5->bvalue ? "Sisa" : "Nolsa"), nullptr});
-						} else if (type_field == "pointer"){
-							/* POR IMPLEMENTAR */
-							//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
-							field_attr->value = nullptr;
+						}
+
+						if (op != "=" && holds_alternative<nullptr_t>(field_attr->value)) {
+							FLAG_ERROR = NON_VALUE;
+							yyerror(field_name.c_str());
 						} else {
-							FLAG_ERROR = INTERNAL;
-							string error_msg = "TIPO DESCONOCIDO: '" + type_field + "'.";
-							yyerror(error_msg.c_str());
-							field_attr->value = nullptr;
+							new_node->show_value = !holds_alternative<nullptr_t>(field_attr->value);
+							if (type_field == "mango") {
+								if (new_node->show_value) new_node->ivalue = get<int>(field_attr->value);
+								int r_ivalue = $5->ivalue;
+								if (op == "=") field_attr->value = r_ivalue;
+								else {
+									int l_ivalue = get<int>(field_attr->value);
+									new_node->ivalue = l_ivalue; // Guardar el valor antes de modificarlo
+									if (op == "+=") field_attr->value = l_ivalue + r_ivalue;
+									if (op == "-=") field_attr->value = l_ivalue - r_ivalue;
+									if (op == "*=") field_attr->value = l_ivalue * r_ivalue;
+								}
+								$4->ivalue = get<int>(field_attr->value);
+							} else if (type_field == "manguita") {
+								if (new_node->show_value) new_node->fvalue = get<float>(field_attr->value);
+								float r_fvalue = $5->fvalue;
+								if (op == "=") field_attr->value = r_fvalue;
+								else {
+									float l_fvalue = get<float>(field_attr->value);
+									new_node->fvalue = l_fvalue; // Guardar el valor antes de modificarlo
+									if (op == "+=") field_attr->value = l_fvalue + r_fvalue;
+									if (op == "-=") field_attr->value = l_fvalue - r_fvalue;
+									if (op == "*=") field_attr->value = l_fvalue * r_fvalue;
+								}
+								$4->fvalue = get<float>(field_attr->value);
+							} else if (type_field == "manguangua") {
+								if (new_node->show_value) new_node->dvalue = get<double>(field_attr->value);
+								double r_dvalue = 0.0;
+								if (right_type == "manguita") r_dvalue = $5->fvalue;
+								else r_dvalue = $5->dvalue;
+		
+								if (op == "=") field_attr->value = r_dvalue;
+								else {
+									double l_dvalue = get<double>(field_attr->value);
+									new_node->dvalue = l_dvalue; // Guardar el valor antes de modificarlo
+									if (op == "+=") field_attr->value = l_dvalue + r_dvalue;
+									if (op == "-=") field_attr->value = l_dvalue - r_dvalue;
+									if (op == "*=") field_attr->value = l_dvalue * r_dvalue;
+								}
+								$4->dvalue = get<double>(field_attr->value);
+							} else if (type_field == "negro" && op == "=") {
+								if (new_node->show_value) new_node->cvalue = get<char>(field_attr->value);
+								field_attr->value = $5->cvalue;
+								$4->cvalue = $5->cvalue;
+							} else if (type_field == "higuerote" && op == "=") {
+								if (new_node->show_value) new_node->svalue = get<string>(field_attr->value);
+								field_attr->value = $5->svalue;
+								$4->svalue = $5->svalue;
+							} else if (type_field == "tas_claro" && op == "="){
+								if (new_node->show_value) new_node->bvalue = get<bool>(field_attr->value);
+								field_attr->value = $5->bvalue;
+								$4->bvalue = $5->bvalue;
+								if (!field_attr->info.empty()) field_attr->info[0].first = ($5->bvalue ? "Sisa" : "Nolsa");
+								else field_attr->info.push_back({($5->bvalue ? "Sisa" : "Nolsa"), nullptr});
+							} else if (type_field == "pointer"){
+								/* POR IMPLEMENTAR */
+								//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
+								field_attr->value = nullptr;
+							} else {
+								FLAG_ERROR = INTERNAL;
+								string error_msg = "TIPO DESCONOCIDO: '" + type_field + "'.";
+								yyerror(error_msg.c_str());
+								field_attr->value = nullptr;
+							}
 						}
 					}
 				}
 			}
 		}
 		$$ = $4;
-
 		if(struct_attr != nullptr){// Agregar instrucciones TAC para la asignación de atributos
 			string op_tac = "";
 			if ($4->kind == "+=") op_tac = " + ";
@@ -1580,8 +1702,8 @@ asignacion:
 			concat_TAC($$, $5);
 			// Generar el TAC para asignacion
 			string temp_base = labelGen.newTemp(),
-				temp_attr = labelGen.newTemp(string($1) + "_" + string($3)),
-				attr = string($1) + "." + string($3);
+				temp_attr = labelGen.newTemp(string($1) + "_" + $3->name),
+				attr = field_name;
 			$$->tac.push_back(temp_base + " := " + "&" + string($1));
 			
 			if(struct_attr->type->category == STRUCT){
@@ -1589,7 +1711,6 @@ asignacion:
 			}else{// UNION
 				$$->tac.push_back(temp_attr + " := " + temp_base); 
 			}
-			
 			if(op_tac == " := "){
 				$$->tac.push_back("*" + temp_attr + op_tac + $5->temp);
 			}else{
