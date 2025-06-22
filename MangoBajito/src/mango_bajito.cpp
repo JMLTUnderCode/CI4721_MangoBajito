@@ -568,7 +568,7 @@ void buildAST_by_struct(ASTNode* node, vector<pair<Information, Attributes*>> in
 
 		if (attr->category == STRUCT) {
 			child->category = "Estructura";
-			buildASTStructure(child, attr->info, symbolTable);
+			buildAST_by_struct(child, attr->info, symbolTable);
 		} else {
 			string type = attr->type ? attr->type->symbol_name : "Desconocido";
 			child->type = type;
