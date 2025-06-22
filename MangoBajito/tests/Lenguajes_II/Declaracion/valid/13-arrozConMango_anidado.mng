@@ -28,4 +28,8 @@ se_prende(){
 	registro_3.usuario = {"Jhonaiker", 'M', 25, {5, 5, 2000}};
 	registro_3.usuario.nacimiento = {10, 10, 2001};
 	registro_3.usuario.nacimiento.anio = 2002;
+
+	registro_3.usuario.nacimiento = registro_2.usuario.nacimiento;
+
+	registro_3.usuario = registro_2.usuario;
 };
