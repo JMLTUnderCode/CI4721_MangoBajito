@@ -156,13 +156,13 @@ Programa
           |    |    |    |    |    |    |    |    |    |    |    |    |    |--> ella | Category: Declaración | Type: Persona | Kind: VARIABLE
           |    |    |    |    |    |    |    |    |    |    |    |    |--> el | Category: Declaración | Type: Persona | Kind: VARIABLE
           |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |    |    |    |    |         |--> yo.nombre | Category: Atributo_Estructura
+          |    |    |    |    |    |    |    |    |    |    |         |--> yo.nombre | Category: Atributo_Estructura | Type: higuerote
           |    |    |    |    |    |    |    |    |    |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Junior"
           |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |    |    |    |         |--> ella.nombre | Category: Atributo_Estructura
+          |    |    |    |    |    |    |    |    |    |         |--> ella.nombre | Category: Atributo_Estructura | Type: higuerote
           |    |    |    |    |    |    |    |    |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Astrid"
           |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |    |    |         |--> el.nombre | Category: Atributo_Estructura
+          |    |    |    |    |    |    |    |    |         |--> el.nombre | Category: Atributo_Estructura | Type: higuerote
           |    |    |    |    |    |    |    |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Jhonaiker"
           |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |    |    |    |    |         |--> nombres | Category: Declaración | Type: higuerote | Kind: VARIABLE
@@ -174,13 +174,13 @@ Programa
           |    |    |    |    |    |    |    |                   |    |--> el.nombre | Category: Atributo_Estructura | Type: higuerote | Value: "Jhonaiker"
           |    |    |    |    |    |    |    |                   |--> yo.nombre | Category: Atributo_Estructura | Type: higuerote | Value: "Junior"
           |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |         |--> yo.sexo | Category: Atributo_Estructura
+          |    |    |    |    |    |    |         |--> yo.sexo | Category: Atributo_Estructura | Type: negro
           |    |    |    |    |    |    |         |--> Literal | Category: Caracter | Type: negro | Value: 'M'
           |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |         |--> ella.sexo | Category: Atributo_Estructura
+          |    |    |    |    |    |         |--> ella.sexo | Category: Atributo_Estructura | Type: negro
           |    |    |    |    |    |         |--> Literal | Category: Caracter | Type: negro | Value: 'F'
           |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |         |--> el.sexo | Category: Atributo_Estructura
+          |    |    |    |    |         |--> el.sexo | Category: Atributo_Estructura | Type: negro
           |    |    |    |    |         |--> Literal | Category: Caracter | Type: negro | Value: 'M'
           |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |         |--> sexos | Category: Declaración | Type: negro | Kind: VARIABLE
@@ -192,13 +192,13 @@ Programa
           |    |    |    |                   |    |--> el.sexo | Category: Atributo_Estructura | Type: negro | Value: 'M'
           |    |    |    |                   |--> yo.sexo | Category: Atributo_Estructura | Type: negro | Value: 'M'
           |    |    |    |--> Asignación | Kind: =
-          |    |    |         |--> yo.edad | Category: Atributo_Estructura
+          |    |    |         |--> yo.edad | Category: Atributo_Estructura | Type: mango
           |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 26
           |    |    |--> Asignación | Kind: =
-          |    |         |--> ella.edad | Category: Atributo_Estructura
+          |    |         |--> ella.edad | Category: Atributo_Estructura | Type: mango
           |    |         |--> Literal | Category: Numérico | Type: mango | Value: 23
           |    |--> Asignación | Kind: =
-          |         |--> el.edad | Category: Atributo_Estructura
+          |         |--> el.edad | Category: Atributo_Estructura | Type: mango
           |         |--> Literal | Category: Numérico | Type: mango | Value: 24
           |--> Asignación | Kind: =
                |--> edades | Category: Declaración | Type: mango | Kind: VARIABLE

@@ -105,7 +105,7 @@ Programa
           |    |    |    |         |--> Operación | Category: Decremento | Type: mango | Value: -10
           |    |    |    |              |--> decl0 | Category: Identificador | Type: mango | Value: -9
           |    |    |    |--> Asignación | Type: mango | Kind: = | Value: -11
-          |    |    |         |--> decl0 | Category: Identificador | Type: mango | Value: 0
+          |    |    |         |--> decl0 | Category: Identificador | Type: mango | Value: -10
           |    |    |         |--> Operación | Category: Decremento | Type: mango | Value: -11
           |    |    |              |--> decl3 | Category: Identificador | Type: mango | Value: -10
           |    |    |--> bar0 | Category: Declaración | Type: un_coño | Kind: Función

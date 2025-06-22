@@ -89,19 +89,19 @@ Programa
           |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> n0 | Category: Declaración | Type: mango | Kind: VARIABLE
           |    |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: -8
           |    |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Type: mango | Kind: = | Value: -88
-          |    |    |    |    |    |    |    |    |    |    |    |    |         |--> n0 | Category: Identificador | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |    |    |    |    |         |--> n0 | Category: Identificador | Type: mango | Value: -8
           |    |    |    |    |    |    |    |    |    |    |    |    |         |--> * | Category: Operación | Type: mango | Kind: Numérica | Value: -88
           |    |    |    |    |    |    |    |    |    |    |    |    |              |--> n0 | Category: Identificador | Type: mango | Value: -8
           |    |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 11
           |    |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Type: mango | Kind: = | Value: -2816
-          |    |    |    |    |    |    |    |    |    |    |    |         |--> n0 | Category: Identificador | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |    |    |    |         |--> n0 | Category: Identificador | Type: mango | Value: -88
           |    |    |    |    |    |    |    |    |    |    |    |         |--> * | Category: Operación | Type: mango | Kind: Numérica | Value: -2816
           |    |    |    |    |    |    |    |    |    |    |    |              |--> * | Category: Operación | Type: mango | Kind: Numérica | Value: -704
           |    |    |    |    |    |    |    |    |    |    |    |              |    |--> n0 | Category: Identificador | Type: mango | Value: -88
           |    |    |    |    |    |    |    |    |    |    |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 8
           |    |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 4
           |    |    |    |    |    |    |    |    |    |    |    |--> Asignación | Type: mango | Kind: = | Value: 15859712
-          |    |    |    |    |    |    |    |    |    |    |         |--> n0 | Category: Identificador | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |    |    |         |--> n0 | Category: Identificador | Type: mango | Value: -2816
           |    |    |    |    |    |    |    |    |    |    |         |--> * | Category: Operación | Type: mango | Kind: Numérica | Value: 15859712
           |    |    |    |    |    |    |    |    |    |    |              |--> * | Category: Operación | Type: mango | Kind: Numérica | Value: -2816
           |    |    |    |    |    |    |    |    |    |    |              |    |--> n0 | Category: Identificador | Type: mango | Value: -2816
@@ -118,19 +118,19 @@ Programa
           |    |    |    |    |    |    |    |    |         |--> n1 | Category: Declaración | Type: manguita | Kind: VARIABLE
           |    |    |    |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguita | Value: -8.9
           |    |    |    |    |    |    |    |    |--> Asignación | Type: manguita | Kind: = | Value: -99.68
-          |    |    |    |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita | Value: 0
+          |    |    |    |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita | Value: -8.9
           |    |    |    |    |    |    |    |         |--> * | Category: Operación | Type: manguita | Kind: Numérica | Value: -99.68
           |    |    |    |    |    |    |    |              |--> n1 | Category: Identificador | Type: manguita | Value: -8.9
           |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 11.2
           |    |    |    |    |    |    |    |--> Asignación | Type: manguita | Kind: = | Value: -3572.93
-          |    |    |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita | Value: 0
+          |    |    |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita | Value: -99.68
           |    |    |    |    |    |    |         |--> * | Category: Operación | Type: manguita | Kind: Numérica | Value: -3572.93
           |    |    |    |    |    |    |              |--> * | Category: Operación | Type: manguita | Kind: Numérica | Value: -867.216
           |    |    |    |    |    |    |              |    |--> n1 | Category: Identificador | Type: manguita | Value: -99.68
           |    |    |    |    |    |    |              |    |--> Literal | Category: Numérico | Type: manguita | Value: 8.7
           |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 4.12
           |    |    |    |    |    |    |--> Asignación | Type: manguita | Kind: = | Value: 3.48584e+07
-          |    |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita | Value: 0
+          |    |    |    |    |    |         |--> n1 | Category: Identificador | Type: manguita | Value: -3572.93
           |    |    |    |    |    |         |--> * | Category: Operación | Type: manguita | Kind: Numérica | Value: 3.48584e+07
           |    |    |    |    |    |              |--> * | Category: Operación | Type: manguita | Kind: Numérica | Value: -4394.7
           |    |    |    |    |    |              |    |--> n1 | Category: Identificador | Type: manguita | Value: -3572.93
@@ -147,19 +147,19 @@ Programa
           |    |    |    |         |--> n2 | Category: Declaración | Type: manguangua | Kind: VARIABLE
           |    |    |    |         |--> Literal | Category: Numérico | Type: manguangua | Value: 8.2e+10
           |    |    |    |--> Asignación | Type: manguangua | Kind: = | Value: 9.184e+21
-          |    |    |         |--> n2 | Category: Identificador | Type: manguangua | Value: 0
+          |    |    |         |--> n2 | Category: Identificador | Type: manguangua | Value: 8.2e+10
           |    |    |         |--> * | Category: Operación | Type: manguangua | Kind: Numérica | Value: 9.184e+21
           |    |    |              |--> n2 | Category: Identificador | Type: manguangua | Value: 8.2e+10
           |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 1.12e+11
           |    |    |--> Asignación | Type: manguangua | Kind: = | Value: 3.16297e+43
-          |    |         |--> n2 | Category: Identificador | Type: manguangua | Value: 0
+          |    |         |--> n2 | Category: Identificador | Type: manguangua | Value: 9.184e+21
           |    |         |--> * | Category: Operación | Type: manguangua | Kind: Numérica | Value: 3.16297e+43
           |    |              |--> * | Category: Operación | Type: manguangua | Kind: Numérica | Value: 7.53088e+32
           |    |              |    |--> n2 | Category: Identificador | Type: manguangua | Value: 9.184e+21
           |    |              |    |--> Literal | Category: Numérico | Type: manguangua | Value: 8.2e+10
           |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 4.2e+10
           |    |--> Asignación | Type: manguangua | Kind: = | Value: 2.64116e+107
-          |         |--> n2 | Category: Identificador | Type: manguangua | Value: 0
+          |         |--> n2 | Category: Identificador | Type: manguangua | Value: 3.16297e+43
           |         |--> * | Category: Operación | Type: manguangua | Kind: Numérica | Value: 2.64116e+107
           |              |--> * | Category: Operación | Type: manguangua | Kind: Numérica | Value: 3.79556e+53
           |              |    |--> n2 | Category: Identificador | Type: manguangua | Value: 3.16297e+43

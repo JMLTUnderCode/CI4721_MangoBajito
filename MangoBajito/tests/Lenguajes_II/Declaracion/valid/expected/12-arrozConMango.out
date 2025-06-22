@@ -1,4 +1,7 @@
 | Acomódate que te lo estan analizando d:-)
+ entry fun
+ entry fun
+ entry fun
 --> Print table? (s/n): [1;36m[5m
                =======================================================
                              Symbol Table Representation              
@@ -149,13 +152,13 @@ Programa
           |    |    |    |    |    |    |    |    |    |         |--> edad | Category: Atributo_Estructura | Type: mango | Value: 0
           |    |    |    |    |    |    |    |    |    |--> yo | Category: Declaración | Type: Persona | Kind: VARIABLE
           |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |    |         |--> yo.nombre | Category: Atributo_Estructura
+          |    |    |    |    |    |    |    |         |--> yo.nombre | Category: Atributo_Estructura | Type: higuerote
           |    |    |    |    |    |    |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Junior"
           |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |         |--> yo.sexo | Category: Atributo_Estructura
+          |    |    |    |    |    |    |         |--> yo.sexo | Category: Atributo_Estructura | Type: negro
           |    |    |    |    |    |    |         |--> Literal | Category: Caracter | Type: negro | Value: 'M'
           |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |         |--> yo.edad | Category: Atributo_Estructura
+          |    |    |    |    |    |         |--> yo.edad | Category: Atributo_Estructura | Type: mango
           |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 26
           |    |    |    |    |    |--> ella | Category: Declaración | Type: Persona | Kind: VARIABLE
           |    |    |    |    |--> Asignación | Kind: =
