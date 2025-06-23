@@ -306,8 +306,8 @@ instruccion:
 	| condicion { $$ = $1; }
 	| bucle { $$ = $1; }
 	| manejo_error { $$ = $1; }
-	| T_KIETO { $$ = nullptr; }
-	| T_ROTALO { $$ = nullptr; }
+	| T_KIETO { $$ = makeASTNode("uy_kieto", "Control de Flujo"); }
+	| T_ROTALO { $$ = makeASTNode("rotalo", "Control de Flujo"); }
 	| T_LANZATE expresion { 
 		string type = $2->type;
 		$$ = makeASTNode("lanzate", "Control de Flujo", type);
