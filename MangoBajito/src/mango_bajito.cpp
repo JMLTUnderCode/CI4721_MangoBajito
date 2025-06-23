@@ -574,6 +574,62 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 	} 
 }
 
+// Construir arbol AST de una Estructura(Arroz Con Mango).
+void buildAST_by_struct(ASTNode* node, vector<pair<Information, Attributes*>> info, SymbolTable& symbolTable) {
+	if (info.empty()) return;
+	
+	// Vector para almacenar los hijos (atributos o subestructuras)
+    vector<ASTNode*> children;
+	for (size_t i = 0; i < info.size(); i++) {
+		Attributes* attr = symbolTable.search_symbol(get<string>(info[i].first));
+		if (attr == nullptr) continue; // Si el atributo es nulo, saltar.
+		
+		//ASTNode* secuence_node = makeASTNode("Secuencia", "Expresión", "", ",");
+		ASTNode* child = makeASTNode(attr->symbol_name, "Atributo_Estructura");
+
+		if (attr->category == STRUCT) {
+			child->category = "Estructura";
+			buildAST_by_struct(child, attr->info, symbolTable);
+		} else {
+			string type = attr->type ? attr->type->symbol_name : "Desconocido";
+			child->type = type;
+			child->show_value = !holds_alternative<nullptr_t>(attr->value);
+			if (type == "mango") {
+				if (child->show_value) child->ivalue = get<int>(attr->value);
+				else child->ivalue = 0; // Valor nulo para int
+			} else if (type == "manguita") {
+				if (child->show_value) child->fvalue = get<float>(attr->value);
+				else child->fvalue = 0.0f; // Valor nulo para float
+			} else if (type == "manguangua") {
+				if (child->show_value) child->dvalue = get<double>(attr->value);
+				else child->dvalue = 0.0; // Valor nulo para double
+			} else if (type == "negro") {
+				if (child->show_value) child->cvalue = get<char>(attr->value);
+				else child->cvalue = '\0'; // Valor nulo para char
+			} else if (type == "higuerote") {
+				if (child->show_value) child->svalue = get<string>(attr->value);
+				else child->svalue = ""; // Valor nulo para string
+			} else if (type == "tas_claro") {
+				if (child->show_value) child->bvalue = get<bool>(attr->value);
+				else child->bvalue = false; // Valor nulo para bool
+			}
+		}
+		children.push_back(child);
+	}
+	// Ahora construimos la secuencia anidada
+    ASTNode* secuencia = nullptr;
+    if (!children.empty()) {
+        secuencia = children[0];
+        for (size_t i = 1; i < children.size(); ++i) {
+            ASTNode* nuevo = makeASTNode("Secuencia", "Expresión", "", ",");
+            nuevo->children.push_back(secuencia);
+            nuevo->children.push_back(children[i]);
+            secuencia = nuevo;
+        }
+        node->children.push_back(secuencia);
+    }
+}
+
 // Muestra el AST en consola de forma jerárquica.
 // node: nodo raíz a mostrar, depth: nivel de profundidad, prefix: prefijo para formato, isLast: indica si es el último hijo.
 void showAST(const ASTNode* node, int depth, const string& prefix, bool isLast) {
@@ -748,12 +804,15 @@ SizeType maxOfSizeType(vector<pair<Information, Attributes*>> info){
 }
 
 int accumulateSizeType(vector<pair<Information, Attributes*>> info, string var){
-	int accumulate = 0,
-		i = 0;
+	if (info.empty()) return 0;
+	int accumulate = 0;
 
-	while(info[i].second->symbol_name != var){
-		accumulate += strToSizeType(info[i].second->type->symbol_name);
-		i++;
+	for (int i = 0; i < info.size(); i++) {
+		if (info[i].second->symbol_name == var) break;
+		if (info[i].second->category == STRUCT || info[i].second->category == UNION)
+			accumulate += accumulateSizeType(info[i].second->info, var);
+		else
+			accumulate += strToSizeType(info[i].second->type->symbol_name);
 	}
 
 	return accumulate;

@@ -75,7 +75,7 @@ Programa
           |    |    |         |    |--> con_flow | Category: Pasos
           |    |    |         |         |--> Literal | Category: Numérico | Type: mango | Value: 2
           |    |    |         |--> Asignación | Type: mango | Kind: = | Value: 6
-          |    |    |              |--> n | Category: Identificador | Type: mango | Value: 0
+          |    |    |              |--> n | Category: Identificador | Type: mango | Value: 5
           |    |    |              |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 6
           |    |    |                   |--> n | Category: Identificador | Type: mango | Value: 5
           |    |    |                   |--> i | Category: Identificador | Type: mango | Value: 1
@@ -88,7 +88,7 @@ Programa
           |    |         |    |--> con_flow | Category: Pasos
           |    |         |         |--> Literal | Category: Numérico | Type: mango | Value: 2
           |    |         |--> Asignación | Type: mango | Kind: = | Value: -14
-          |    |              |--> n | Category: Identificador | Type: mango | Value: 0
+          |    |              |--> n | Category: Identificador | Type: mango | Value: 6
           |    |              |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: -14
           |    |                   |--> n | Category: Identificador | Type: mango | Value: 6
           |    |                   |--> i | Category: Identificador | Type: mango | Value: -20
@@ -101,7 +101,7 @@ Programa
           |         |    |--> con_flow | Category: Pasos
           |         |         |--> Literal | Category: Numérico | Type: mango | Value: -2
           |         |--> Asignación | Type: mango | Kind: = | Value: 6
-          |              |--> n | Category: Identificador | Type: mango | Value: 0
+          |              |--> n | Category: Identificador | Type: mango | Value: -14
           |              |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 6
           |                   |--> n | Category: Identificador | Type: mango | Value: -14
           |                   |--> i | Category: Identificador | Type: mango | Value: 20
@@ -114,7 +114,7 @@ Programa
                |    |--> con_flow | Category: Pasos
                |         |--> Literal | Category: Numérico | Type: mango | Value: -2
                |--> Asignación | Type: mango | Kind: = | Value: 5
-                    |--> n | Category: Identificador | Type: mango | Value: 0
+                    |--> n | Category: Identificador | Type: mango | Value: 6
                     |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 5
                          |--> n | Category: Identificador | Type: mango | Value: 6
                          |--> i | Category: Identificador | Type: mango | Value: -1
