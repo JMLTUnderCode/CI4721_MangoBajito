@@ -53,10 +53,10 @@
     |---> Símbolo: ella, Categoría: (4)STRUCT, Scope: 2, Type: Persona, Informacion: ella.nombre ella.sexo ella.edad 
 
 [1;35m[5m    Clave: 17: nombres[2][0m
-    |---> Símbolo: nombres[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "Junior"
+    |---> Símbolo: nombres[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 6 , Value: "Junior"
 
 [1;35m[5m    Clave: 18: nombres[1][0m
-    |---> Símbolo: nombres[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "Jhonaiker"
+    |---> Símbolo: nombres[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 9 , Value: "Jhonaiker"
 
 [1;35m[5m    Clave: 19: negro[0m
     |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
@@ -122,7 +122,7 @@
     |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
 [1;35m[5m    Clave: 40: nombres[0][0m
-    |---> Símbolo: nombres[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "Astrid"
+    |---> Símbolo: nombres[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 6 , Value: "Astrid"
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================

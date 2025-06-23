@@ -5,31 +5,31 @@
                =======================================================
 [0m
 [1;35m[5m    Clave: 1: decl2[1][0m
-    |---> Símbolo: decl2[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "string 2"
+    |---> Símbolo: decl2[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 8 , Value: "string 2"
 
 [1;35m[5m    Clave: 2: decl1[4][0m
-    |---> Símbolo: decl1[4], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "Etapa 5"
+    |---> Símbolo: decl1[4], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 7 , Value: "Etapa 5"
 
 [1;35m[5m    Clave: 3: decl1[3][0m
-    |---> Símbolo: decl1[3], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "Etapa 4"
+    |---> Símbolo: decl1[3], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 7 , Value: "Etapa 4"
 
 [1;35m[5m    Clave: 4: decl2[0][0m
-    |---> Símbolo: decl2[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "string 1"
+    |---> Símbolo: decl2[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 8 , Value: "string 1"
 
 [1;35m[5m    Clave: 5: decl1[2][0m
-    |---> Símbolo: decl1[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "Etapa 3"
+    |---> Símbolo: decl1[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 7 , Value: "Etapa 3"
 
 [1;35m[5m    Clave: 6: decl1[1][0m
-    |---> Símbolo: decl1[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "Etapa 2"
+    |---> Símbolo: decl1[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 7 , Value: "Etapa 2"
 
 [1;35m[5m    Clave: 7: decl0[1][0m
-    |---> Símbolo: decl0[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "string 1"
+    |---> Símbolo: decl0[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 8 , Value: "string 1"
 
 [1;35m[5m    Clave: 8: decl0[0][0m
-    |---> Símbolo: decl0[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "sirve?"
+    |---> Símbolo: decl0[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 6 , Value: "sirve?"
 
 [1;35m[5m    Clave: 9: decl0[2][0m
-    |---> Símbolo: decl0[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "Etapa 1"
+    |---> Símbolo: decl0[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 7 , Value: "Etapa 1"
 
 [1;35m[5m    Clave: 10: n1[0m
     |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Informacion: 8 , Value: "string 2"
@@ -68,7 +68,7 @@
     |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
 [1;35m[5m    Clave: 22: decl1[0][0m
-    |---> Símbolo: decl1[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Value: "Etapa 1"
+    |---> Símbolo: decl1[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 7 , Value: "Etapa 1"
 
 [1;35m[5m    Clave: 23: caramba_ñero[0m
     |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
