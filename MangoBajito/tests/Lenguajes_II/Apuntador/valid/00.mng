@@ -1,0 +1,13 @@
+# Test 00: Declaracion y asignacion de apuntadores.
+se_prende(){
+    culito var_mango: mango = 10;
+    
+    # Declaracion de apuntador y alocacion dinamica con 'cero_km'
+    ahi_ta culito ptr_mango: mango = cero_km mango(10);
+    
+    # Declaracion de apuntador nulo con 'pelabola'
+    ahi_ta culito ptr_nulo: manguita = pelabola;
+    
+    # Asignacion de un apuntador a otro
+    ahi_ta culito ptr_copia: mango;
+};

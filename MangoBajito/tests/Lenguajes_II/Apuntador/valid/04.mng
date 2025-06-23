@@ -1,0 +1,14 @@
+# Test 04: Asignacion a un apuntador dereferenciado.
+arroz_con_mango Persona {
+    edad: mango;
+    nombre: higuerote;
+};
+
+se_prende(){
+    ahi_ta culito ptr_mango: mango = cero_km mango;
+    aki_toy ptr_mango = 42; # El espacio de memoria ahora contiene 42
+
+    ahi_ta culito ptr_persona: Persona = cero_km Persona;
+    aki_toy ptr_persona.edad = 25;
+    ptr_persona->nombre = "Jhonaiker"; # Usando el atajo '->'
+};

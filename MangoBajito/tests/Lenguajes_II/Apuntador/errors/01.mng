@@ -1,0 +1,23 @@
+# Test 01: Error "Apunta bien vale" por usar un puntero nulo o liberado.
+arroz_con_mango Cosa {
+    id: mango;
+};
+
+se_prende(){
+    ahi_ta culito ptr_nulo: mango = pelabola;
+    culito valor: mango;
+    
+    # Error: Dereferenciar un puntero 'pelabola'.
+    valor = aki_toy ptr_nulo;
+    
+    ahita culito ptr_struct_nulo: Cosa = pelabola;
+    
+    # Error: Acceder a campo de un puntero a struct nulo.
+    valor = ptr_struct_nulo->id;
+
+    ahita culito ptr_liberado: mango = cero_km mango(5);
+    borradol ptr_liberado;
+    
+    # Error: Dereferenciar un puntero despues de 'borradol'.
+    valor = aki_toy ptr_liberado;
+};

@@ -602,6 +602,7 @@ declaracion:
 		}
 	}
 	| tipo_declaracion T_ID T_DOSPUNTOS tipos T_ASIGNACION expresion {
+		string declared_name = $2;
 		string left_type = $4->type;
 		string right_type = $6->type;
 		
@@ -610,8 +611,49 @@ declaracion:
 			FLAG_ERROR = INTERNAL;
 			yyerror("ERROR: Tipo no encontrado");
 		} else {
-			// Declaracion de Arreglo con asignacion
-			if ($4->category == "Array" && $6->category == "Array") {
+
+            if ($1->kind == "POINTER_V" || $1->kind == "POINTER_C") {
+                Attributes *attribute = new Attributes();
+                attribute->symbol_name = declared_name;
+                attribute->scope = symbolTable.current_scope;
+                attribute->type = type_attr; // Este es el tipo al que apunta (ej. mango)
+                attribute->category = ($1->kind == "POINTER_V") ? POINTER_V : POINTER_C;
+
+                if (right_type == "pointer") {
+                    string pointed_type_by_right = $6->kind;
+                    if (left_type != pointed_type_by_right) {
+                        FLAG_ERROR = TYPE_ERROR;
+                        string error_msg = "tas metiendo un apuntador a '" + pointed_type_by_right + "' en un apuntador a '" + left_type + "', marbaa' bruja.";
+                        yyerror(error_msg.c_str());
+                        attribute->value = nullptr;
+                    } else {
+                        if ($6->name == "POINTER") {
+                            attribute->value = $6->children[0]->name;
+                        } else if ($6->category == "Nuevo") {
+                            attribute->value = $6->temp;
+                        } else {
+                            Attributes* right_attr = symbolTable.search_symbol($6->name);
+                            if (right_attr) attribute->value = right_attr->value;
+                            else attribute->value = nullptr;
+                        }
+                    }
+                } else if ($6->name == "pelabola") { // Asignando null
+                    attribute->value = nullptr;
+                } else {
+                    FLAG_ERROR = TYPE_ERROR;
+                    string error_msg = "a un apuntador solo le puedes meter 'ahi_ta', 'cero_km' o 'pelabola', no esa vaina rara de tipo '" + right_type + "'.";
+                    yyerror(error_msg.c_str());
+                    attribute->value = nullptr;
+                }
+
+                if (!symbolTable.insert_symbol(declared_name, *attribute)) {
+                    FLAG_ERROR = ALREADY_DEF_VAR;
+                    yyerror(declared_name.c_str());
+                }
+
+            }
+
+			else if ($4->category == "Array" && $6->category == "Array") {
 				int size_array = 0;
 				for (auto child : $4->children){
 					if (child->category == "Array_Size"){
@@ -1689,7 +1731,10 @@ expresion:
 	}
 	| T_SISA { $$ = makeASTNode("Literal", "Bool", "tas_claro", "Sisa"); $$->bvalue = true; }
 	| T_NOLSA { $$ = makeASTNode("Literal", "Bool", "tas_claro", "Nolsa"); $$->bvalue = false; }
-	| T_PELABOLA { $$ = nullptr; }
+	| T_PELABOLA { 
+        $$ = makeASTNode("pelabola", "Literal");
+        $$->temp = "nullptr";		
+	}
 	| expresion_apuntador 
 	| expresion_nuevo
 	| T_IZQCORCHE secuencia T_DERCORCHE { // Arreglos
@@ -2087,13 +2132,199 @@ operaciones_unitarias:
 	;
 
 expresion_apuntador:
-	T_AKITOY T_ID { $$ = nullptr; }
-	| T_AKITOY T_ID T_PUNTO T_ID { $$ = nullptr; }
-	;
+    T_AKITOY T_ID { 
+        Attributes* ptr_attr = symbolTable.search_symbol($2);
+        if (!ptr_attr) {
+            FLAG_ERROR = NON_DEF_VAR; 
+            yyerror($2);
+        } else if (ptr_attr->category != POINTER_V && ptr_attr->category != POINTER_C) {
+            FLAG_ERROR = TYPE_ERROR; 
+            yyerror($2);
+        } else if (holds_alternative<nullptr_t>(ptr_attr->value)) {
+            FLAG_ERROR = NON_VALUE; 
+            yyerror($2);
+        } else {
+            $$ = makeASTNode($2, "Deref_Pointer", ptr_attr->type->symbol_name);
+            
+            string pointed_var = get<string>(ptr_attr->value);
+            Attributes* pointed_attr = symbolTable.search_symbol(pointed_var);
+            
+            if (!pointed_attr) {
+                FLAG_ERROR = SEGMENTATION_FAULT;
+                yyerror($2);
+            } else {
+                string type = pointed_attr->type->symbol_name;
+                $$->type = type;
+                
+                if (!holds_alternative<nullptr_t>(pointed_attr->value)) {
+                    if (type == "mango") {
+                        $$->ivalue = get<int>(pointed_attr->value);
+                    } else if (type == "manguita") {
+                        $$->fvalue = get<float>(pointed_attr->value);
+                    } else if (type == "manguangua") {
+                        $$->dvalue = get<double>(pointed_attr->value);
+                    } else if (type == "negro") {
+                        $$->cvalue = get<char>(pointed_attr->value);
+                    } else if (type == "higuerote") {
+                        $$->svalue = get<string>(pointed_attr->value);
+                    } else if (type == "tas_claro") {
+                        $$->bvalue = get<bool>(pointed_attr->value);
+                        $$->kind = $$->bvalue ? "Sisa" : "Nolsa";
+                    } else {
+                        FLAG_ERROR = INTERNAL;
+                        yyerror("ERROR INTERNO: Tipo de pointer invalido.");
+                    }
+                } else {
+                    FLAG_ERROR = NON_VALUE;
+                    yyerror("la variable apuntada no tiene valor.");
+                }
+            }
+            
+            // Generar TAC para dereferenciamiento
+            string deref_temp = labelGen.newTemp();
+            $$->tac.push_back(deref_temp + " := *" + string($2));
+            $$->temp = deref_temp;
+        }
+    }
+    | T_AKITOY T_ID T_PUNTO T_ID { 
+        // Dereferenciamiento de campo de estructura a través de pointer
+        Attributes* ptr_attr = symbolTable.search_symbol($2);
+        if (!ptr_attr) {
+            FLAG_ERROR = NON_DEF_VAR;
+            yyerror($2);
+        } else if (ptr_attr->category != POINTER_V && ptr_attr->category != POINTER_C) {
+            FLAG_ERROR = TYPE_ERROR;
+            yyerror($2);
+        } else if (holds_alternative<nullptr_t>(ptr_attr->value)) {
+            FLAG_ERROR = NON_VALUE;
+            yyerror($2);
+        } else {
+            string pointed_var = get<string>(ptr_attr->value);
+            Attributes* pointed_attr = symbolTable.search_symbol(pointed_var);
+            
+            if (!pointed_attr) {
+                FLAG_ERROR = SEGMENTATION_FAULT;
+                yyerror($2);
+            } else if (pointed_attr->type->category != STRUCT && pointed_attr->type->category != UNION) {
+                FLAG_ERROR = TYPE_ERROR;
+                yyerror($2);
+            } else {
+                string field_name = pointed_var + "." + string($4);
+                Attributes* field_attr = symbolTable.search_symbol(field_name);
+                
+                if (!field_attr) {
+                    FLAG_ERROR = NON_DEF_ATTR;
+                    yyerror($4);
+                } else {
+                    // Crear nodo para acceso indirecto a campo
+                    $$ = makeASTNode(field_name, "Deref_Struct_Field", field_attr->type->symbol_name);
+                    
+                    string type = field_attr->type->symbol_name;
+                    $$->type = type;
+                    
+                    if (!holds_alternative<nullptr_t>(field_attr->value)) {
+                        if (type == "mango") {
+                            $$->ivalue = get<int>(field_attr->value);
+                        } else if (type == "manguita") {
+                            $$->fvalue = get<float>(field_attr->value);
+                        } else if (type == "manguangua") {
+                            $$->dvalue = get<double>(field_attr->value);
+                        } else if (type == "negro") {
+                            $$->cvalue = get<char>(field_attr->value);
+                        } else if (type == "higuerote") {
+                            $$->svalue = get<string>(field_attr->value);
+                        } else if (type == "tas_claro") {
+                            $$->bvalue = get<bool>(field_attr->value);
+                            $$->kind = $$->bvalue ? "Sisa" : "Nolsa";
+                        } else {
+                            FLAG_ERROR = INTERNAL;
+                            yyerror($4);
+                        }
+                    } else {
+                        FLAG_ERROR = NON_VALUE;
+                        yyerror($4);
+                    }
+                    
+                    // Generar TAC para acceso indirecto a campo
+                    string temp_base = labelGen.newTemp();
+                    string temp_field = labelGen.newTemp();
+                    $$->tac.push_back(temp_base + " := *" + string($2));
+                    
+                    if (pointed_attr->type->category == STRUCT) {
+                        $$->tac.push_back(temp_field + " := " + temp_base + " + " + 
+                                         to_string(accumulateSizeType(pointed_attr->info, field_name)));
+                    } else { // UNION
+                        $$->tac.push_back(temp_field + " := " + temp_base);
+                    }
+                    
+                    string deref_temp = labelGen.newTemp();
+                    $$->tac.push_back(deref_temp + " := *" + temp_field);
+                    $$->temp = deref_temp;
+                }
+            }
+        }
+    }
+    ;
+
 
 expresion_nuevo:
-	T_CEROKM tipos { $$ = $2; }
-	| expresion_nuevo T_IZQPAREN expresion T_DERPAREN
+	T_CEROKM tipos { 
+        string allocated_type_str = $2->type;
+        Attributes* type_attr = symbolTable.search_symbol(allocated_type_str);
+
+        if (!type_attr) {
+            FLAG_ERROR = NON_DEF_TYPE;
+            yyerror(allocated_type_str.c_str());
+        } else {
+            string anon_var_name = labelGen.newHeapVar();
+            Attributes* anon_attr = new Attributes();
+            anon_attr->symbol_name = anon_var_name;
+            anon_attr->scope = symbolTable.current_scope;
+            anon_attr->type = type_attr;
+            anon_attr->category = HEAP_VAR;
+            anon_attr->value = nullptr;
+            symbolTable.insert_symbol(anon_var_name, *anon_attr);
+
+            string temp_for_address = labelGen.newTemp();
+            int size = 0;
+
+            if (type_attr->category == STRUCT) {
+                size = sumOfSizeTypes(type_attr->info);
+            } else if (type_attr->category == UNION) {
+                size = maxOfSizeType(type_attr->info);
+            } else {
+                size = strToSizeType(allocated_type_str);
+            }
+            
+            $$ = makeASTNode("Nuevo", "Nuevo", "pointer");
+            $$->tac.push_back(temp_for_address + " := NEW " + allocated_type_str + ", " + to_string(size));
+            $$->temp = temp_for_address;
+            $$->kind = allocated_type_str;
+            $$->svalue = anon_var_name;
+        }
+	 }
+	| expresion_nuevo T_IZQPAREN expresion T_DERPAREN {
+        ASTNode* cero_km_node = $1;
+        ASTNode* init_val_node = $3;
+
+        if (cero_km_node->name == "error_cero_km") {
+            $$ = cero_km_node;
+        } else {
+            // Verificar que el tipo del inicializador coincida con el tipo alocado
+            string allocated_type = cero_km_node->kind;
+            string init_type = init_val_node->type;
+            if (allocated_type != init_type && !(allocated_type == "manguangua" && init_type == "manguita")) {
+                FLAG_ERROR = TYPE_ERROR;
+                string err_msg = "Tipo de inicializador para cero_km " + allocated_type + " no coincide. Se obtuvo " + init_type;
+                yyerror(err_msg.c_str());
+            }
+            
+            $$ = cero_km_node; // El resultado de la expresión sigue siendo el apuntador
+            concat_TAC($$, init_val_node);
+            // Generar TAC: *t_addr = valor_inicial
+            $$->tac.push_back("*" + $$->temp + " := " + init_val_node->temp);
+        }
+    }
 	;
 
 secuencia:

@@ -67,6 +67,7 @@ enum Category{
 	ARRAY_ELEMENT,
 	VAR_FOR,
 	ERROR_HANDLER,
+	HEAP_VAR,
 	UNKNOWN
 };
 
@@ -301,8 +302,9 @@ class LabelGenerator {
 	int counter_temp;  		 // Contador de etiquetas temporales
 	int counter_temp_string; // Contador de etiquetas temporales para strings
 	int counter_temp_const;  // Contador de etiquetas temporales para constantes
+	int counter_heap_var; 
 public:
-    LabelGenerator() : counter_label(0), counter_temp(0) {}
+    LabelGenerator() : counter_label(0), counter_temp(0), counter_temp_string(0), counter_temp_const(0), counter_heap_var(0) {}
 
     string newLabel(const string& base = "L") {
 		if (base != "L") return base;
@@ -318,10 +320,15 @@ public:
 		return base + to_string(counter_temp_string++);
 	}
 
-	void reset() {
-		counter_label = 0;
-		counter_temp = 0;
-	}
+    string newHeapVar(const string& base = "_heap_var_") {
+        return base + to_string(counter_heap_var++);
+    }
+
+    void reset() {
+        counter_label = 0;
+        counter_temp = 0;
+        counter_heap_var = 0;
+    }
 
 	void resetLabel() {
 		counter_label = 0;

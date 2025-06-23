@@ -1,0 +1,14 @@
+# Test 03: Errores por uso invalido de 'borradol'.
+arroz_con_mango MiStruct {
+    campo: mango;
+};
+
+se_prende(){
+    culito var_atomica: mango = 10;
+    # Error "Piaso e' loco": Intentar aplicar 'borradol' a un tipo atomico.
+    borradol var_atomica;
+
+    culito mi_registro: MiStruct;
+    # Error "Sapegato Garabato": Intentar aplicar 'borradol' a un atributo de un registro.
+    borradol mi_registro.campo;
+};

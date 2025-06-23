@@ -1,0 +1,14 @@
+# Test 00: Errores de tipo con apuntadores.
+se_prende(){
+    culito no_es_puntero: mango = 10;
+    culito valor: mango;
+    
+    # Error: 'aki_toy' en una variable que no es apuntador.
+    valor = aki_toy no_es_puntero;
+    
+    ahi_ta culito ptr_mango: mango;
+    culito var_manguita: manguita = 3.14;
+    
+    # Error: Asignar direccion de un tipo a un apuntador de otro tipo.
+    ptr_mango = ahi_ta var_manguita;
+};

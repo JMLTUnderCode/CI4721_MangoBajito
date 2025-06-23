@@ -1,0 +1,9 @@
+# Test 01: Alocacion dinamica con cero_km para tipos primitivos.
+se_prende(){
+    # Alocacion simple (solo reserva de memoria)
+    ahi_ta culito ptr_mango: mango = cero_km mango;
+    
+    # Alocacion con inicializacion
+    ahi_ta culito ptr_manguita: manguita = cero_km manguita(-99.5);
+    ahi_ta culito ptr_negro: negro = cero_km negro('Z');
+};

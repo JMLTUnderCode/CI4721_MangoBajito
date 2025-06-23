@@ -1,0 +1,17 @@
+# Test 03: Dereferencia de apuntadores con 'aki_toy'.
+arroz_con_mango Punto {
+    x: manguita;
+    y: manguita;
+};
+
+se_prende(){
+    culito var: mango = 123;
+    ahi_ta culito ptr_var: mango = ahi_ta var;
+    culito valor_leido: mango = aki_toy ptr_var; # valor_leido deberia ser 123
+
+    ahi_ta culito ptr_punto: Punto = cero_km Punto({1.1, 2.2});
+    culito valor_x: manguita = aki_toy ptr_punto.x; # valor_x deberia ser 1.1
+    
+    # Prueba del operador flecha '->' como atajo
+    culito valor_y: manguita = ptr_punto->y; # valor_y deberia ser 2.2
+};

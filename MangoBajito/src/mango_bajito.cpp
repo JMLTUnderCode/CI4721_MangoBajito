@@ -203,20 +203,41 @@ void SymbolTable::print_table() {
 }
 
 void SymbolTable::print_attribute(Attributes &attr){
-	cout << "    |---> Símbolo: " << attr.symbol_name;
-	cout << ", Categoría: (" << attr.category  << ")" << categoryToString(attr.category);
-	cout << ", Scope: " << attr.scope;
-	if (attr.type) cout << ", Type: "<< attr.type->symbol_name;
-	if (!attr.info.empty()) {
-		cout <<  ", Informacion: ";
-		print_info(attr.info);
-	} 
-	if (!holds_alternative<nullptr_t>(attr.value)) {
-		cout << ", Value: ";
-		print_values(attr.value);
-	}
-	cout << "\n\n";
-}	
+    cout << "    |---> Símbolo: " << attr.symbol_name;
+    cout << ", Categoría: (" << attr.category  << ")" 
+         << categoryToString(attr.category);
+    cout << ", Scope: " << attr.scope;
+    if (attr.type) 
+        cout << ", Type: "<< attr.type->symbol_name;
+    
+    // Valor almacenado en el atributo
+    if (!holds_alternative<nullptr_t>(attr.value)) {
+        cout << ", Value: ";
+        print_values(attr.value);
+    }
+
+    // Si es puntero, imprimir también el valor al que apunta
+    if (attr.category == POINTER_V || attr.category == POINTER_C) {
+        cout << ", PointedValue: ";
+        if (holds_alternative<string>(attr.value)) {
+            string target = get<string>(attr.value);
+            Attributes* tgt = search_symbol(target);
+            if (tgt && !holds_alternative<nullptr_t>(tgt->value)) {
+                print_values(tgt->value);
+            } else {
+                cout << "null";
+            }
+        } else {
+            cout << "null";
+        }
+    }
+
+    if (!attr.info.empty()) {
+        cout <<  ", Informacion: ";
+        print_info(attr.info);
+    }
+    cout << "\n\n";
+}
 
 void SymbolTable::print_info(vector<pair<Information, Attributes*> > informations){
 	for (auto &info : informations){

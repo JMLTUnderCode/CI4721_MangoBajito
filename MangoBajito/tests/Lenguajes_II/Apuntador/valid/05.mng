@@ -1,0 +1,12 @@
+# Test 05: Liberacion de memoria con 'borradol'.
+se_prende(){
+    ahi_ta culito ptr1: mango = cero_km mango(10);
+    ahi_ta culito ptr2: manguita = cero_km manguita(3.14);
+    
+    borradol ptr1;
+    borradol ptr2;
+    
+    # Es valido reasignar el puntero despues de liberarlo
+    ptr1 = cero_km mango(20);
+    borradol ptr1;
+};

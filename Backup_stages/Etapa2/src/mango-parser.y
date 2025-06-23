@@ -1505,7 +1505,10 @@ expresion:
         }
         $$.temp = $1.temp; // Asignar el valor temporal
     }
-    | T_PELABOLA
+    | T_PELABOLA {
+        $$ = makeASTNode("pelabola", "Literal", "pointer");
+        $$->temp = "nullptr";
+    }
     | T_IZQPAREN expresion T_DERPAREN { $$ = $2; }
     | valores_booleanos { 
         $$ = $1; }

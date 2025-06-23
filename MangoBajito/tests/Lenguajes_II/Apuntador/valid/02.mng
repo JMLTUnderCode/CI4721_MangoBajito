@@ -1,0 +1,13 @@
+# Test 02: Alocacion dinamica con cero_km para 'arroz_con_mango'.
+arroz_con_mango Coordenada {
+    x: mango;
+    y: mango;
+};
+
+se_prende(){
+    # Alocacion de struct sin inicializar
+    ahi_ta culito ptr_coord1: Coordenada = cero_km Coordenada;
+    
+    # Alocacion de struct con inicializacion
+    ahi_ta culito ptr_coord2: Coordenada = cero_km Coordenada({10, 20});
+};

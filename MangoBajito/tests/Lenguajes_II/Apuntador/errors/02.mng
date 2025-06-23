@@ -1,0 +1,8 @@
+# Test 02: Errores en la alocacion con cero_km.
+se_prende(){
+    # Error: Alocar un tipo que no existe.
+    ahi_ta culito ptr1: TipoInexistente = cero_km TipoInexistente;
+    
+    # Error: Tipo de inicializador no coincide con el tipo alocado.
+    ahi_ta culito ptr2: mango = cero_km mango(3.14);
+};
