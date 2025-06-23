@@ -30,6 +30,8 @@ vector<string> sysErrorToString = {
 	"SEGMENTATION_FAULT",
 	"FUNC_PARAM_EXCEEDED",
 	"FUNC_PARAM_MISSING",
+	"FUNC_RETURN_VALUE",
+	"FUNC_NO_RETURN",
 	"ALREADY_DEF_PARAM",
 	"EMPTY_ARRAY_CONSTANT",
 	"POINTER_ARRAY",
@@ -309,7 +311,7 @@ void collect_arguments(ASTNode* node, vector<ASTNode*>& out) {
 
 // Recolecta todos los nodos de tipo guardia ("o_asi" o "nojoda") en el AST.
 // node: nodo raíz a partir del cual buscar, out: vector donde se almacenan los nodos guardia encontrados.
-void collect_guardias(ASTNode* node, vector<ASTNode*>& out) {
+void collect_guards(ASTNode* node, vector<ASTNode*>& out) {
     if (!node) return;
     // Si el nodo es una guardia, lo agregamos como hijo directo
     if (node->name == "o_asi" || node->name == "nojoda") {
@@ -317,7 +319,21 @@ void collect_guardias(ASTNode* node, vector<ASTNode*>& out) {
     } else {
         // Si no, recorremos sus hijos
         for (ASTNode* child : node->children) {
-            collect_guardias(child, out);
+            collect_guards(child, out);
+        }
+    }
+}
+
+// Recolecta todos los nodos de tipo Lanzate.
+void collect_returns(ASTNode* node, vector<ASTNode*>& out){
+    if (!node) return;
+    // Si el nodo es una guardia, lo agregamos como hijo directo
+    if (node->name == "lanzate") {
+        out.push_back(node);
+    } else {
+        // Si no, recorremos sus hijos
+        for (ASTNode* child : node->children) {
+            collect_returns(child, out);
         }
     }
 }
