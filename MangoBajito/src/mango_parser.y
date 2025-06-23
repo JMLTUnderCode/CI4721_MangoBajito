@@ -2440,7 +2440,6 @@ determinado:
 	T_REPITEBURDA abrir_scope var_ciclo_determinado bloque_instrucciones cerrar_scope {
 		ASTNode* new_node = makeASTNode("Bucle", "Determinado");
 		
-		/* IMPLEMENTAR CONDICIONAL PARA RANGOS */
 		string kind_range = "Creciente";
 		int entre_val = $3->children[0]->children[0]->ivalue;
 		int hasta_val = $3->children[1]->children[0]->ivalue;
@@ -2479,8 +2478,6 @@ determinado:
 	}
 	| T_REPITEBURDA abrir_scope var_ciclo_determinado T_CONFLOW expresion bloque_instrucciones cerrar_scope {
 		ASTNode* new_node = makeASTNode("Bucle", "Determinado");
-		
-		/* IMPLEMENTAR CONDICIONAL PARA RANGOS */
 
 		// Incluimos el flow
 		ASTNode* node_flow = makeASTNode("con_flow", "Pasos");
