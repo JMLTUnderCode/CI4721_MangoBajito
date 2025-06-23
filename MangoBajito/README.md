@@ -123,9 +123,9 @@ Módulo desarrollados del proyecto Mango Bajito.
     - [x] Llamada con cantidad de parametros correctos
     - [x] Llamada con tipos de parametros correctos
     - [ ] Funciones y Procedimientos del lenguajes
-        - [ ] `lanzate`
-		- [ ] `rescata`
-		- [ ] `hablame`
+        - [x] `lanzate`
+		- [x] `rescata`
+		- [x] `hablame`
         - [ ] `que_monda_ejesa`
         - [ ] `ah_vaina`
         - [ ] `pegao`
@@ -141,26 +141,26 @@ Módulo desarrollados del proyecto Mango Bajito.
         - [x] Instrucciones
     - [x] Bloque: nojoda
         - [x] Instrucciones
-- [ ] Ciclo Determinado
+- [x] Ciclo Determinado
     - [x] Variable de ciclo (repite_burda)
     - [x] Rango de ciclo (desde y hasta)
     - [x] Paso de ciclo (con_flow)
-    - [ ] Verificar condiciones de rangos y pasos validos
+    - [x] Verificar condiciones de rangos y pasos validos
 - [x] Ciclo Indeterminado
     - [x] Guardia
     - [x] Bloque de Instrucciones
-- [ ] Control de Flujo en Bucles
-    - [ ] `uy_kieto`
-    - [ ] `rotalo`
+- [x] Control de Flujo en Bucles
+    - [x] `uy_kieto`
+    - [x] `rotalo`
 - [ ] Manejo de Errores
     - [ ] Variable de manejo (`fuera_del_perol` y `con`)
     - [ ] `caramba_ñero`
-- [ ] Casteo
-    - [ ] Verificacion de casteos
-- [ ] Operaciones
+- [x] Casteo
+    - [x] Verificacion de casteos
+- [x] Operaciones
 	- [x] Compuestas (+=, -=, *=)
 	- [x] Decremento y aumento ++ y --
-	- [ ] Expresiones logicas.
+	- [x] Expresiones logicas.
     	- [x] yunta
     	- [x] o_sea
     	- [x] Nelson
