@@ -1,0 +1,103 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: i[0m
+    |---> Símbolo: i, Categoría: (13)VAR_FOR, Scope: 3, Type: mango, Informacion: 1 20 , Value: 1
+
+[1;35m[5m    Clave: 2: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 3: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 4: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 5: n[0m
+    |---> Símbolo: n, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 0
+
+[1;35m[5m    Clave: 6: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 7: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 8: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 9: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 10: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 11: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 12: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 13: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 14: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 15: suma[0m
+    |---> Símbolo: suma, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 0
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Asignación | Kind: =
+          |    |    |--> suma | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |--> Literal | Category: Numérico | Type: mango | Value: 0
+          |    |--> n | Category: Declaración | Type: mango | Kind: VARIABLE
+          |--> Bucle | Category: Determinado
+               |--> i | Category: Var_Ciclo | Type: mango | Value: 1
+               |    |--> entre | Category: Rango
+               |    |    |--> Literal | Category: Numérico | Type: mango | Value: 1
+               |    |--> hasta | Category: Rango
+               |         |--> Literal | Category: Numérico | Type: mango | Value: 20
+               |--> Instrucción | Kind: ;
+                    |--> Instrucción | Kind: ;
+                    |    |--> Asignación | Type: mango | Kind: = | Value: 0
+                    |    |    |--> n | Category: Identificador | Type: mango | Value: 0
+                    |    |    |--> Literal | Category: Numérico | Type: mango | Kind: CAST(higuerote) | Value: 0
+                    |    |         |--> hablame | Category: input | Type: higuerote | Value: "0"
+                    |    |              |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: ""
+                    |    |--> Condición
+                    |         |--> si_es_asi
+                    |              |--> Guardia
+                    |              |    |--> igualito | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
+                    |              |         |--> % | Category: Operación | Type: mango | Kind: Numérica | Value: 1
+                    |              |         |    |--> i | Category: Identificador | Type: mango | Value: 1
+                    |              |         |    |--> Literal | Category: Numérico | Type: mango | Value: 2
+                    |              |         |--> Literal | Category: Numérico | Type: mango | Value: 0
+                    |              |--> Instrucción | Kind: ;
+                    |                   |--> Suma Compuesta | Category: Operación | Type: mango | Kind: += | Value: 0
+                    |                   |    |--> suma | Category: Identificador | Type: mango | Value: 0
+                    |                   |    |--> n | Category: Identificador | Type: mango | Value: 0
+                    |                   |--> rotalo | Category: Control de Flujo
+                    |--> Condición
+                         |--> si_es_asi
+                              |--> Guardia
+                              |    |--> igualito | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
+                              |         |--> i | Category: Identificador | Type: mango | Value: 1
+                              |         |--> Literal | Category: Numérico | Type: mango | Value: 10
+                              |--> uy_kieto | Category: Control de Flujo
+--> Print TAC? (s/n): [1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]
