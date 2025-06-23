@@ -78,6 +78,8 @@ unordered_map<systemError, vector<string>> errorDictionary = {
 	{SEGMENTATION_FAULT, {}},
 	{FUNC_PARAM_EXCEEDED, {}},
 	{FUNC_PARAM_MISSING, {}},
+	{FUNC_RETURN_VALUE, {}},
+	{FUNC_NO_RETURN, {}},
 	{ALREADY_DEF_PARAM, {}},
 	{EMPTY_ARRAY_CONSTANT, {}},
 	{POINTER_ARRAY, {}},
@@ -307,7 +309,20 @@ instruccion:
 	| T_KIETO { $$ = nullptr; }
 	| T_ROTALO { $$ = nullptr; }
 	| T_LANZATE expresion { 
-		$$ = $2;
+		string type = $2->type;
+		$$ = makeASTNode("lanzate", "Control de Flujo", type);
+		$$->children.push_back($2);
+
+		if (type == "mango") $$->ivalue = $2->ivalue;
+		else if (type == "manguita") $$->fvalue = $2->fvalue;
+		else if (type == "manguangua") $$->dvalue = $2->dvalue;
+		else if (type == "negro") $$->cvalue = $2->cvalue;
+		else if (type == "higuerote") $$->svalue = $2->svalue;
+		else if (type == "tas_claro") $$->bvalue = $2->bvalue;
+		else if (type == "pointer") {
+			// Por implementar
+		}
+		
 		concat_TAC($$, $2);
 		if ($2) {
 			$$->tac.push_back("return " + $2->temp);
@@ -425,8 +440,8 @@ declaracion:
 		
 		Attributes* type_attr = symbolTable.search_symbol(declared_type);
 		if (type_attr == nullptr){
-			FLAG_ERROR = INTERNAL;
-			yyerror("ERROR: Tipo no encontrado");
+			FLAG_ERROR = NON_DEF_TYPE;
+			yyerror(declared_type.c_str());
 		} else {
 			// Declaracion de Arreglos
 			if ($4->category == "Array") {
@@ -464,7 +479,14 @@ declaracion:
 							elem->scope = symbolTable.current_scope;
 							elem->category = ARRAY_ELEMENT;
 							elem->type = type_attr;
-							elem->value = nullptr;
+							
+							string type = type_attr->symbol_name;
+							if (type == "mango") elem->value = 0;
+							else if (type == "manguita") elem->value = 0.0f;
+							else if (type == "manguangua") elem->value = 0.0;
+							else if (type == "negro") elem->value = '\0';
+							else if (type == "higuerote") elem->value = "";
+							else if (type == "tas_claro") elem->value = false;
 
 							// Usar el índice como clave en formato string
 							array_attr->info.push_back({elem_name, elem});
@@ -480,7 +502,7 @@ declaracion:
 					}
 				}
 			// Declaracion de Estructuras y Uniones
-			} else if ($4->category == "Identificador") { 
+			} else if (type_attr->category == STRUCT || type_attr->category == UNION) { 
 				queue<vector<string> > queue_structs;
 				queue_structs.push({string($2), declared_type});
 				bool father_struct = false;
@@ -526,7 +548,15 @@ declaracion:
 							new_attr->scope = symbolTable.current_scope;
 							new_attr->type = symbolTable.search_symbol(field_type);
 							new_attr->category = STRUCT_ATTRIBUTE;
-							new_attr->value = nullptr;
+							
+							if (type_attr->category == STRUCT){
+								if (field_type == "mango") new_attr->value = 0;
+								else if (field_type == "manguita") new_attr->value = 0.0f;
+								else if (field_type == "manguangua") new_attr->value = 0.0;
+								else if (field_type == "negro") new_attr->value = '\0';
+								else if (field_type == "higuerote") new_attr->value = "";
+								else if (field_type == "tas_claro") new_attr->value = false;
+							}
 
 							// Agregar a la info de la variable y a la tabla de símbolos
 							struct_attr->info.push_back({new_field_name, new_attr});
@@ -555,7 +585,14 @@ declaracion:
 				attribute->symbol_name = $2;
 				attribute->scope = symbolTable.current_scope;
 				attribute->type = type_attr;
-				attribute->value = nullptr; // Inicializar valor como nulo
+
+				string type = type_attr->symbol_name;
+				if (type == "mango") attribute->value = 0;
+				else if (type == "manguita") attribute->value = 0.0f;
+				else if (type == "manguangua") attribute->value = 0.0;
+				else if (type == "negro") attribute->value = '\0';
+				else if (type == "higuerote") attribute->value = "";
+				else if (type == "tas_claro") attribute->value = false;
 
 				if ($1->kind == "POINTER_V") attribute->category = POINTER_V;
 				else if ($1->kind == "POINTER_C") attribute->category = POINTER_C;
@@ -563,7 +600,7 @@ declaracion:
 				else if ($1->kind == "CONSTANTE") attribute->category = CONSTANT;
 
 				// En caso de cadena de caracteres se agrega el size.
-				if (type_attr->symbol_name == "higuerote"){
+				if (type == "higuerote"){
 					attribute->info.push_back({0, nullptr});
 				}
 
@@ -607,8 +644,8 @@ declaracion:
 		
 		Attributes* type_attr = symbolTable.search_symbol(left_type);
 		if (type_attr == nullptr){
-			FLAG_ERROR = INTERNAL;
-			yyerror("ERROR: Tipo no encontrado");
+			FLAG_ERROR = NON_DEF_TYPE;
+			yyerror(left_type.c_str());
 		} else {
 			// Declaracion de Arreglo con asignacion
 			if ($4->category == "Array" && $6->category == "Array") {
@@ -1005,17 +1042,8 @@ tipos:
 			$$->children.push_back(size_node);
 		}
 	}
-	| T_ID {
-		$$ = makeASTNode($1, "Identificador");
-		Attributes* attr = symbolTable.search_symbol($1);
-		$$->type = $1;
-		if (attr == nullptr) {
-			FLAG_ERROR = NON_DEF_TYPE;
-			yyerror($1);
-			$$->type = "Desconocido"; // Asignar un valor por defecto para evitar errores posteriores
-		}
-	}
-	| T_UNCONO { $$ = makeASTNode("un_coño", "Tipo_Funcion"); }
+	| T_ID { $$ = makeASTNode($1, "Identificador", $1); }
+	| T_UNCONO { $$ = makeASTNode("un_coño", "Tipo_Funcion", "un_coño"); }
 	;
 
 tipo_valor:
@@ -1055,13 +1083,8 @@ asignacion:
 				yyerror($1);
 			}
 			
-			if (attribute->type == nullptr) {
-				FLAG_ERROR = INTERNAL;
-				string error_msg = "ERROR INTERNO: El tipo de \"" + id + "\" no esta definido.";
-				yyerror(error_msg.c_str());
-
 			// Asignacion de estructuras
-			} else if (attribute->type->category == STRUCT && $3->category == "Estructura" && op == "=") {
+			if (attribute->type->category == STRUCT && $3->category == "Estructura" && op == "=") {
 				left_type = attribute->type->symbol_name;
 				new_node->type = left_type;
 				
@@ -1736,7 +1759,6 @@ operadores_asignacion:
 expresion:
 	T_ID {
 		ASTNode* new_node = makeASTNode($1, "Identificador");
-
 		Attributes* attr = symbolTable.search_symbol($1);
 		if (attr == nullptr) {
 			FLAG_ERROR = NON_DEF_VAR;
@@ -2324,8 +2346,8 @@ alternativa:
 		}
 		if (!error) {
 			vector<ASTNode*> guardias;
-			if ($1) collect_guardias($1, guardias);
-			if ($2) collect_guardias($2, guardias);
+			if ($1) collect_guards($1, guardias);
+			if ($2) collect_guards($2, guardias);
 			for (ASTNode* g : guardias) {
 				$$->children.push_back(g);
 			}
@@ -2638,12 +2660,100 @@ parametro:
 	T_AKITOY T_ID T_DOSPUNTOS tipos { $$ = nullptr; }
 	| T_ID T_DOSPUNTOS tipos {
 		Attributes* param_attr = new Attributes();
+		Attributes* type_attr = symbolTable.search_symbol($3->type);
+		
 		param_attr->symbol_name = $1;
 		param_attr->scope = symbolTable.current_scope;
-		param_attr->type = symbolTable.search_symbol($3->type);
+		param_attr->type = type_attr;
 		param_attr->category = PARAMETERS;
-		param_attr->value = nullptr;
+	
+		string type = type_attr->symbol_name;
+		// En caso de ser una estructura.
+		if (type_attr->category == STRUCT) {
+			queue<vector<string> > queue_structs;
+			queue_structs.push({string($1), type});
+			bool father_struct = false;
+			while(!queue_structs.empty()) {
+				auto data = queue_structs.front();
+				queue_structs.pop();
 
+				string struct_name = data[0];
+				string struct_type = data[1];
+
+				type_attr = symbolTable.search_symbol(struct_type);
+
+				int size_struct = type_attr->info.size();
+
+				// Crear atributo de la estructura
+				Attributes* struct_attr = new Attributes();
+				struct_attr->symbol_name = struct_name;
+				struct_attr->category = STRUCT;
+				struct_attr->scope = symbolTable.current_scope;
+				struct_attr->type = type_attr;
+
+				for (int i = 0; i < size_struct; i++) {
+					const auto& field = type_attr->info[i];
+					string full_field = get<string>(field.first);
+					size_t dot_pos = full_field.find('.');
+					if (dot_pos == string::npos) continue; // No es un campo válido
+
+					string field_type = field.second->type->symbol_name;
+
+					string attr_name = full_field.substr(dot_pos + 1);
+					string new_field_name = struct_name + "." + attr_name;
+					if (symbolTable.search_symbol(new_field_name)) {
+						FLAG_ERROR = ALREADY_DEF_VAR;
+						yyerror(new_field_name.c_str());
+					} else {
+						if (field.second->type->category == STRUCT || field.second->type->category == UNION) {
+							queue_structs.push({new_field_name, field_type});
+							continue; // Procesar subestructura
+						}
+
+						Attributes* new_attr = new Attributes();
+						new_attr->symbol_name = new_field_name;
+						new_attr->scope = symbolTable.current_scope;
+						new_attr->type = symbolTable.search_symbol(field_type);
+						new_attr->category = STRUCT_ATTRIBUTE;
+						new_attr->value = nullptr;
+
+						if (field_type == "mango") new_attr->value = 0;
+						else if (field_type == "manguita") new_attr->value = 0.0f;
+						else if (field_type == "manguangua") new_attr->value = 0.0;
+						else if (field_type == "negro") new_attr->value = '\0';
+						else if (field_type == "higuerote") new_attr->value = "";
+						else if (field_type == "tas_claro") new_attr->value = false;
+
+						// Agregar a la info de la variable y a la tabla de símbolos
+						struct_attr->info.push_back({new_field_name, new_attr});
+						symbolTable.insert_symbol(new_field_name, *new_attr);
+					}
+				}
+				
+				// Insertar en tabla de símbolos
+				if (!symbolTable.insert_symbol(struct_name, *struct_attr)) {
+					FLAG_ERROR = ALREADY_DEF_VAR;
+					yyerror(struct_name.c_str());
+				}
+				// Actualizar vector de informacion de estructura padre.
+				if (father_struct) {
+					size_t pos = struct_name.rfind('.');
+					string father = struct_name.substr(0, pos);
+					Attributes* father_attr = symbolTable.search_symbol(father);
+					father_attr->info.push_back({struct_name, struct_attr});
+				}
+				father_struct = true;
+			}
+		// En caso de ser tipos basicos.
+		} else {
+			if (type == "mango") param_attr->value = 0;
+			else if (type == "manguita") param_attr->value = 0.0f;
+			else if (type == "manguangua") param_attr->value = 0.0;
+			else if (type == "negro") param_attr->value = '\0';
+			else if (type == "higuerote") param_attr->value = "";
+			else if (type == "tas_claro") param_attr->value = false;
+		}
+		
 		if (!symbolTable.insert_symbol($1, *param_attr)){
 			FLAG_ERROR = ALREADY_DEF_PARAM;
 			string error_msg = "'" + param_attr->symbol_name + "' dos veces en el mismo cuento?, te gusta la versatilidad locota.";
@@ -2659,7 +2769,6 @@ secuencia_parametros:
 	| parametro { $$ = $1; }
 	| secuencia_parametros T_COMA parametro {
 		$$ = makeASTNode("Secuencia", "Declaración", "", ",");
-		$$->show_value = false;
 		$$->children.push_back($1);
 		$$->children.push_back($3);
 	}
@@ -2690,6 +2799,26 @@ funcion:
 			if ($4) $$->children.push_back($4); // Agregar la secuencia de parámetros
 			if ($8) $$->children.push_back($8); // Agregar instrucciones
 
+			// Verificar si la función retorna un tipo válido
+			vector<ASTNode*> out;
+			collect_returns($8, out);
+			if (out.empty() && func_type != "un_coño") {
+				FLAG_ERROR = FUNC_NO_RETURN;
+				yyerror(func_name.c_str());
+			} else if (!out.empty() && func_type == "un_coño") {
+				FLAG_ERROR = FUNC_RETURN_VALUE;
+				yyerror(func_name.c_str());
+			} else {
+				for (auto lanza : out) {
+					if (lanza->type != func_type) {
+						FLAG_ERROR = TYPE_ERROR;
+						string error_msg = "el tipo de retorno '" + lanza->type + "' no coincide con el tipo de la función '" + func_name + "' que es '" + func_type + "'.";
+						yyerror(error_msg.c_str());
+					}
+				}
+			}
+
+			// Generación de TAC para la función
 			string label_func = labelGen.newLabel(func_name);
 			$$->tac.push_back(label_func + ": \n" + "begin_func:");
 			concat_TAC($$, $8);
@@ -2832,7 +2961,8 @@ casting:
 					string error_msg = "'" + err_value + "' en una 'manguita', no cabe piaso e' loca.";
 					yyerror(error_msg.c_str());
 				} else {
-					cast_node->fvalue = static_cast<float>(expr->dvalue);				}
+					cast_node->fvalue = static_cast<float>(expr->dvalue);
+				}
 			} else if (expr->type == "higuerote") {
 				try {
 					cast_node->fvalue = stof(expr->svalue);
@@ -2981,10 +3111,10 @@ void yyerror(const char *var) {
 				break;
 
 			case NON_DEF_TYPE:
-				error_msg += "El tipo este \"" + string(var) + "\" lo tienes adentro debe ser. Nadie lo ve.";
+				error_msg += "Al tipo este \"" + string(var) + "\" lo tienes adentro debe ser. Nadie lo ve.";
 				break;
 			case ALREADY_DEF_TYPE:
-				error_msg += "El tipo este \"" + string(var) + "\" ya existe. Dice que te extraña de anoche.";
+				error_msg += "El tipo \"" + string(var) + "\" ya existe. Dice que te extraña de anoche.";
 				break;
 
 			case NON_DEF_ATTR:
@@ -3027,6 +3157,13 @@ void yyerror(const char *var) {
 			case FUNC_PARAM_MISSING:
 				error_msg += "Párale bolas al cuento \"" + string(var) + "\" que faltan más vainas.";
 				break;
+			case FUNC_RETURN_VALUE:
+				error_msg += "El cuento \"" + string(var) + "\" no debería lanzar algo, pero tas lanzando algo, locota.";
+				break;
+			case FUNC_NO_RETURN:
+				error_msg += "El cuento \"" + string(var) + "\" debería lanzar algo, pero no lo haces, marbao'.";
+				break;
+
 			case ALREADY_DEF_PARAM:
 				error_msg += "Ay vale!. Te gusta tener " + string(var);
 				break;
