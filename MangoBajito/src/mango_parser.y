@@ -1349,15 +1349,15 @@ asignacion:
 									+ right_type + "', marbaa' bruja.";
 								yyerror(error_msg.c_str());
 							} else {
-							    new_node->type = right_type;
-							    string new_string = get<string>(array_attr->value);
-							    if ($6->cvalue == '\0') {
-							        new_string.erase(index, 1); // Eliminar el carácter en la posición index
-							    } else {
-							        new_string[index] = $6->cvalue;
-							    }
-							    array_attr->value = new_string;
-							    array_attr->info[0].first = static_cast<int>(new_string.size());
+								new_node->type = right_type;
+								string new_string = get<string>(array_attr->value);
+								if ($6->cvalue == '\0') {
+									new_string.erase(index, 1); // Eliminar el carácter en la posición index
+								} else {
+									new_string[index] = $6->cvalue;
+								}
+								array_attr->value = new_string;
+								array_attr->info[0].first = static_cast<int>(new_string.size());
 							}
 						}
 					
@@ -1884,8 +1884,8 @@ expresion:
 						FLAG_ERROR = SEGMENTATION_FAULT;
 						yyerror(to_string(index).c_str());
 					} else {
-					    left_type = "negro";
-					    new_node->cvalue = get<string>(array_attr->value)[index];
+						left_type = "negro";
+						new_node->cvalue = get<string>(array_attr->value)[index];
 					}
 				
 				// En caso de arrays
