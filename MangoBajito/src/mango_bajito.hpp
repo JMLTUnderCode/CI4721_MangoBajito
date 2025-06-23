@@ -14,6 +14,7 @@
 #include <variant>
 #include <set>
 #include <math.h>
+#include <cmath>
 #include <climits>
 #include <cfloat>
 #include <functional>
