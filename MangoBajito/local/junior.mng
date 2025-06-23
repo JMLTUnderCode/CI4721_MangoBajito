@@ -1,13 +1,15 @@
 se_prende(){
-	arroz_con_mango Persona {
-		nombre : higuerote;
-		sexo : negro;
-		edad : mango;
+	culito a : higuerote = "¡Hola, MangoBajito!";
+	culito char : negro = a[20];
+	echar_cuento me_mide(cadena : higuerote) lanza mango {
+		culito longitud : mango = 0;
+		echale_bolas_si (Sisa) {
+			si_es_asi (cadena[longitud] nie '\0'){
+				longitud += 1;
+			} nojoda {
+				uy_kieto;
+			};
+		};
+		lanzate longitud;
 	};
-	culito yo : Persona;
-	yo.nombre = "Junior";
-	yo.sexo = 'M';
-	yo.edad = 26;
-
-	culito vec_edades : mango[3] = [25, yo.edad, 27];
 };
