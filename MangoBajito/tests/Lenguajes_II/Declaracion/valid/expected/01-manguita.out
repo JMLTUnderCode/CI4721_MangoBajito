@@ -74,7 +74,7 @@ Programa
           |    |         |--> decl0 | Category: Identificador | Type: manguita | Value: 2.00002
           |    |--> decl3 | Category: Declaración | Type: manguita | Kind: VARIABLE
           |--> Asignación | Type: manguita | Kind: = | Value: -2.03216
-               |--> decl3 | Category: Identificador | Type: manguita
+               |--> decl3 | Category: Identificador | Type: manguita | Value: 0
                |--> decl1 | Category: Identificador | Type: manguita | Value: -2.03216
 --> Print TAC? (s/n): [1;32m[5m
                =======================================================

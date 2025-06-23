@@ -149,13 +149,13 @@ Programa
           |    |    |    |    |    |    |    |    |    |         |--> edad | Category: Atributo_Estructura | Type: mango | Value: 0
           |    |    |    |    |    |    |    |    |    |--> yo | Category: Declaración | Type: Persona | Kind: VARIABLE
           |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |    |         |--> yo.nombre | Category: Atributo_Estructura | Type: higuerote
+          |    |    |    |    |    |    |    |         |--> yo.nombre | Category: Atributo_Estructura | Type: higuerote | Value: ""
           |    |    |    |    |    |    |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Junior"
           |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |         |--> yo.sexo | Category: Atributo_Estructura | Type: negro
+          |    |    |    |    |    |    |         |--> yo.sexo | Category: Atributo_Estructura | Type: negro | Value: ''
           |    |    |    |    |    |    |         |--> Literal | Category: Caracter | Type: negro | Value: 'M'
           |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |         |--> yo.edad | Category: Atributo_Estructura | Type: mango
+          |    |    |    |    |    |         |--> yo.edad | Category: Atributo_Estructura | Type: mango | Value: 0
           |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 26
           |    |    |    |    |    |--> ella | Category: Declaración | Type: Persona | Kind: VARIABLE
           |    |    |    |    |--> Asignación | Kind: =

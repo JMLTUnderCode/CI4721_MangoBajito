@@ -128,13 +128,13 @@ Programa
           |    |    |                   |--> n0 | Category: Identificador | Type: higuerote | Value: "string 1"
           |    |    |                   |--> n1 | Category: Identificador | Type: higuerote | Value: "string 2"
           |    |    |--> Asignación | Kind: =
-          |    |         |--> decl0[0] | Category: Elemento_Array | Type: higuerote
+          |    |         |--> decl0[0] | Category: Elemento_Array | Type: higuerote | Value: ""
           |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "sirve?"
           |    |--> Asignación | Kind: =
-          |         |--> decl0[1] | Category: Elemento_Array | Type: higuerote
+          |         |--> decl0[1] | Category: Elemento_Array | Type: higuerote | Value: ""
           |         |--> n0 | Category: Identificador | Type: higuerote | Value: "string 1"
           |--> Asignación | Kind: =
-               |--> decl0[2] | Category: Elemento_Array | Type: higuerote
+               |--> decl0[2] | Category: Elemento_Array | Type: higuerote | Value: ""
                |--> decl1[0] | Category: Elemento_Array | Type: higuerote | Value: "Etapa 1"
 --> Print TAC? (s/n): [1;32m[5m
                =======================================================

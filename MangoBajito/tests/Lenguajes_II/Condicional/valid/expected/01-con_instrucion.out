@@ -72,7 +72,7 @@ Programa
           |    |--> Instrucción | Kind: ;
           |         |--> a | Category: Declaración | Type: mango | Kind: VARIABLE
           |         |--> Asignación | Type: mango | Kind: = | Value: 100
-          |              |--> a | Category: Identificador | Type: mango
+          |              |--> a | Category: Identificador | Type: mango | Value: 0
           |              |--> Literal | Category: Numérico | Type: mango | Value: 100
           |--> o_asi
           |    |--> Guardia
