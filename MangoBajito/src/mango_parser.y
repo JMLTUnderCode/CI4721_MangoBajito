@@ -175,7 +175,7 @@ LabelGenerator labelGen;
 %token <sval> T_NEGRO       // Token para caracter
 %token <sval> T_HIGUEROTE   // Token para string
 
-%token T_SE_PRENDE T_ASIGNACION T_DOSPUNTOS T_PUNTOCOMA T_COMA
+%token T_MEPIDE T_SE_PRENDE T_ASIGNACION T_DOSPUNTOS T_PUNTOCOMA T_COMA
 %token T_SIESASI T_OASI T_NOJODA
 %token T_REPITEBURDA T_ENTRE T_HASTA T_CONFLOW
 %token T_ECHALEBOLAS
@@ -196,7 +196,7 @@ LabelGenerator labelGen;
 %token T_IZQPAREN T_DERPAREN T_IZQLLAVE T_DERLLAVE T_IZQCORCHE T_DERCORCHE
 
 // Declaracion de tipos de retorno para las producciones 
-%type <ast> programa main 
+%type <ast> programa librerias main 
 %type <ast> asignacion operadores_asignacion operaciones_unitarias
 %type <ast> instruccion secuencia_instrucciones instrucciones bloque_instrucciones
 %type <ast> declaracion tipo_declaracion declaracion_aputador 
@@ -244,19 +244,24 @@ cerrar_scope:
 	;
 
 programa:
-	abrir_scope instrucciones main cerrar_scope {
+	abrir_scope librerias instrucciones main cerrar_scope {
 		ast_root = makeASTNode("Programa");
 		if ($2) {
-			ASTNode* global_node = makeASTNode("Global");
-			global_node->children.push_back($2);
-			ast_root->children.push_back(global_node);
+			ASTNode* encabezado_node = makeASTNode("Encabezado");
+			encabezado_node->children.push_back($2);
+			ast_root->children.push_back(encabezado_node);
 		}
 		if ($3) {
+			ASTNode* global_node = makeASTNode("Global");
+			global_node->children.push_back($3);
+			ast_root->children.push_back(global_node);
+		}
+		if ($4) {
 			ASTNode* main_node = makeASTNode("Main");
-			main_node->children.push_back($3);
+			main_node->children.push_back($4);
 			ast_root->children.push_back(main_node);
 		}
-		concat_TAC(ast_root, $2, $3);
+		concat_TAC(ast_root, $3, $4);
 		$$ = ast_root;
 		if (FIRST_ERROR) printErrors();
 		else {
@@ -275,6 +280,14 @@ programa:
 			cout << "                       ---->       Correct Program       <----        \n";
 			cout << "               =======================================================\n\033[0m\n";
 		}
+	}
+	;
+
+librerias: 
+	{ $$ = nullptr; }
+	| T_MEPIDE T_ID T_PUNTOCOMA librerias {
+		$$ = makeASTNode("me_pide", "Libreria");
+		if ($4) $$->children.push_back($4->children[0]);
 	}
 	;
 
@@ -485,8 +498,10 @@ declaracion:
 							else if (type == "manguita") elem->value = 0.0f;
 							else if (type == "manguangua") elem->value = 0.0;
 							else if (type == "negro") elem->value = '\0';
-							else if (type == "higuerote") elem->value = "";
-							else if (type == "tas_claro") elem->value = false;
+							else if (type == "higuerote") {
+								elem->value = "";
+								elem->info.push_back({0, nullptr});
+							} else if (type == "tas_claro") elem->value = false;
 
 							// Usar el índice como clave en formato string
 							array_attr->info.push_back({elem_name, elem});
@@ -591,18 +606,15 @@ declaracion:
 				else if (type == "manguita") attribute->value = 0.0f;
 				else if (type == "manguangua") attribute->value = 0.0;
 				else if (type == "negro") attribute->value = '\0';
-				else if (type == "higuerote") attribute->value = "";
-				else if (type == "tas_claro") attribute->value = false;
+				else if (type == "higuerote") {
+					attribute->value = "";
+					attribute->info.push_back({0, nullptr});
+				} else if (type == "tas_claro") attribute->value = false;
 
 				if ($1->kind == "POINTER_V") attribute->category = POINTER_V;
 				else if ($1->kind == "POINTER_C") attribute->category = POINTER_C;
 				else if ($1->kind == "VARIABLE") attribute->category = VARIABLE;
 				else if ($1->kind == "CONSTANTE") attribute->category = CONSTANT;
-
-				// En caso de cadena de caracteres se agrega el size.
-				if (type == "higuerote"){
-					attribute->info.push_back({0, nullptr});
-				}
 
 				// Insertar en tabla de símbolos
 				if (!symbolTable.insert_symbol($2, *attribute)) {
@@ -706,6 +718,7 @@ declaracion:
 								attr_elem->value = elem->cvalue;
 							} else if (elem->type == "higuerote") {
 								attr_elem->value = elem->svalue;
+								attr_elem->info.push_back({static_cast<int>(elem->svalue.size()), nullptr});
 							} else if (elem->type == "tas_claro") {
 								attr_elem->value = elem->bvalue;
 								if (!attr_elem->info.empty()) attr_elem->info[0].first = (elem->bvalue ? "Sisa" : "Nolsa");
@@ -1430,6 +1443,7 @@ asignacion:
 									$5->cvalue = $6->cvalue;
 								} else if (left_type == "higuerote" && op == "=") {
 									elem_attr->value = $6->svalue;
+									elem_attr->info[0].first = static_cast<int>($6->svalue.size());
 									$5->svalue = $6->svalue;
 								} else if (left_type == "tas_claro" && op == "=") {
 									elem_attr->value = $6->bvalue;
@@ -1880,9 +1894,12 @@ expresion:
 					new_node->name = string($1) + "[" + to_string(index) + "]";
 					new_node->category = "Elemento_String";
 					size_array = get<int>(array_attr->info[0].first);
-					if (index < 0 || index >= size_array) {
+					if (index < 0 || index > size_array) {
 						FLAG_ERROR = SEGMENTATION_FAULT;
 						yyerror(to_string(index).c_str());
+					} else if (index == size_array) {
+						left_type = "negro";
+						new_node->cvalue = '\0';
 					} else {
 						left_type = "negro";
 						new_node->cvalue = get<string>(array_attr->value)[index];
@@ -2718,8 +2735,10 @@ parametro:
 						else if (field_type == "manguita") new_attr->value = 0.0f;
 						else if (field_type == "manguangua") new_attr->value = 0.0;
 						else if (field_type == "negro") new_attr->value = '\0';
-						else if (field_type == "higuerote") new_attr->value = "";
-						else if (field_type == "tas_claro") new_attr->value = false;
+						else if (field_type == "higuerote") {
+							new_attr->value = "";
+							new_attr->info.push_back({0, nullptr});
+						} else if (field_type == "tas_claro") new_attr->value = false;
 
 						// Agregar a la info de la variable y a la tabla de símbolos
 						struct_attr->info.push_back({new_field_name, new_attr});
@@ -2747,8 +2766,10 @@ parametro:
 			else if (type == "manguita") param_attr->value = 0.0f;
 			else if (type == "manguangua") param_attr->value = 0.0;
 			else if (type == "negro") param_attr->value = '\0';
-			else if (type == "higuerote") param_attr->value = "";
-			else if (type == "tas_claro") param_attr->value = false;
+			else if (type == "higuerote") {
+				param_attr->value = "";
+				param_attr->info.push_back({0, nullptr});
+			} else if (type == "tas_claro") param_attr->value = false;
 		}
 		
 		if (!symbolTable.insert_symbol($1, *param_attr)){
