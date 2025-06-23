@@ -43,6 +43,7 @@ CASTING			\(mango\)|\(manguita\)|\(manguangua\)|\(negro\)|\(higuerote\)|\(tas_cl
 [ \t]+				{ current_column += yyleng; }  // Espacios/tabs
 \r?\n				{ current_column = 1; }  // Saltos de línea
 
+"me_pide"           { UPDATE_LOC return T_MEPIDE; }
 "se_prende"			{ UPDATE_LOC return T_SE_PRENDE; }
 
 "="					{ UPDATE_LOC return T_ASIGNACION; }

@@ -17,6 +17,10 @@ int main(int argc, char** argv) {
     }
 
     cout << "| Acomódate que te lo estan analizando d:-)" << endl;
+
+    // Incluir logistica de inclusion de librerias.
+    
+
     yyparse();
     cout << "| Hay un poquito de código en tu marihuana d:-]" << endl;
 
