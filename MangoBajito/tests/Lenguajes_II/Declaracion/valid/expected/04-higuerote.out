@@ -78,7 +78,7 @@ Programa
           |    |    |         |--> decl0 | Category: Identificador | Type: higuerote | Value: "hola"
           |    |    |--> decl3 | Category: Declaración | Type: higuerote | Kind: VARIABLE
           |    |--> Asignación | Type: higuerote | Kind: = | Value: " mundo"
-          |         |--> decl3 | Category: Identificador | Type: higuerote
+          |         |--> decl3 | Category: Identificador | Type: higuerote | Value: ""
           |         |--> decl1 | Category: Identificador | Type: higuerote | Value: " mundo"
           |--> Asignación | Kind: =
                |--> n0 | Category: Declaración | Type: negro | Kind: VARIABLE

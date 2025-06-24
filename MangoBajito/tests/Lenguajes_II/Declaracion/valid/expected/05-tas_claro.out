@@ -74,7 +74,7 @@ Programa
           |    |         |--> decl0 | Category: Identificador | Type: tas_claro | Kind: Sisa | Value: 1
           |    |--> decl3 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
           |--> Asignación | Type: tas_claro | Kind: = | Value: 0
-               |--> decl3 | Category: Identificador | Type: tas_claro
+               |--> decl3 | Category: Identificador | Type: tas_claro | Value: 0
                |--> decl1 | Category: Identificador | Type: tas_claro | Kind: Nolsa | Value: 0
 --> Print TAC? (s/n): [1;32m[5m
                =======================================================

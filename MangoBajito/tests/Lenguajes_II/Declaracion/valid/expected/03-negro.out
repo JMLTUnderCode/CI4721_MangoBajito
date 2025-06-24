@@ -74,7 +74,7 @@ Programa
           |    |         |--> decl0 | Category: Identificador | Type: negro | Value: 'c'
           |    |--> decl3 | Category: Declaración | Type: negro | Kind: VARIABLE
           |--> Asignación | Type: negro | Kind: = | Value: '$'
-               |--> decl3 | Category: Identificador | Type: negro
+               |--> decl3 | Category: Identificador | Type: negro | Value: ''
                |--> decl1 | Category: Identificador | Type: negro | Value: '$'
 --> Print TAC? (s/n): [1;32m[5m
                =======================================================

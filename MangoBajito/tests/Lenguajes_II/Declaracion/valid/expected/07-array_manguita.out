@@ -118,13 +118,13 @@ Programa
           |    |    |                   |--> n0 | Category: Identificador | Type: manguita | Value: 2.1
           |    |    |                   |--> n1 | Category: Identificador | Type: manguita | Value: 3.3
           |    |    |--> Asignación | Kind: =
-          |    |         |--> decl0[0] | Category: Elemento_Array | Type: manguita
+          |    |         |--> decl0[0] | Category: Elemento_Array | Type: manguita | Value: 0
           |    |         |--> Literal | Category: Numérico | Type: manguita | Value: 123.12
           |    |--> Asignación | Kind: =
-          |         |--> decl0[1] | Category: Elemento_Array | Type: manguita
+          |         |--> decl0[1] | Category: Elemento_Array | Type: manguita | Value: 0
           |         |--> n0 | Category: Identificador | Type: manguita | Value: 2.1
           |--> Asignación | Kind: =
-               |--> decl0[2] | Category: Elemento_Array | Type: manguita
+               |--> decl0[2] | Category: Elemento_Array | Type: manguita | Value: 0
                |--> decl1[0] | Category: Elemento_Array | Type: manguita | Value: 30.123
 --> Print TAC? (s/n): [1;32m[5m
                =======================================================

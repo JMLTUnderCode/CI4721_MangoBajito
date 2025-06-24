@@ -1,0 +1,29 @@
+# Test 03: Error de funcion lanzate.
+se_prende(){
+	culito p : mango = 23;
+	echar_cuento fun1(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
+		p1 = 2;
+		p2 = 3.0;
+		lanzate p2 + (manguita)p1;
+	};
+
+	echar_cuento fun2(p1 : mango, p2 : manguita, p3 : mango) lanza un_coño {
+		p1 = 2;
+		p2 = 3.0;
+		lanzate p2 + (manguita)p1;
+	};
+
+	echar_cuento fun3(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
+		p1 = 2;
+		p2 = 3.0;
+	};
+
+	echar_cuento fun4(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
+		culito sum : manguita = p2 + (manguita)p1;
+		si_es_asi (sum mayol 0.0){
+			lanzate 100;
+		} nojoda {
+			lanzate sum + (manguita)p;
+		};
+	};
+};

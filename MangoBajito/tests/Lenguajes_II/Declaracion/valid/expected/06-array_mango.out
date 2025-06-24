@@ -118,13 +118,13 @@ Programa
           |    |    |                   |--> n0 | Category: Identificador | Type: mango | Value: 3
           |    |    |                   |--> n1 | Category: Identificador | Type: mango | Value: 2
           |    |    |--> Asignación | Kind: =
-          |    |         |--> decl0[0] | Category: Elemento_Array | Type: mango
+          |    |         |--> decl0[0] | Category: Elemento_Array | Type: mango | Value: 0
           |    |         |--> Literal | Category: Numérico | Type: mango | Value: 11
           |    |--> Asignación | Kind: =
-          |         |--> decl0[1] | Category: Elemento_Array | Type: mango
+          |         |--> decl0[1] | Category: Elemento_Array | Type: mango | Value: 0
           |         |--> n0 | Category: Identificador | Type: mango | Value: 3
           |--> Asignación | Kind: =
-               |--> decl0[2] | Category: Elemento_Array | Type: mango
+               |--> decl0[2] | Category: Elemento_Array | Type: mango | Value: 0
                |--> decl1[0] | Category: Elemento_Array | Type: mango | Value: 30
 --> Print TAC? (s/n): [1;32m[5m
                =======================================================

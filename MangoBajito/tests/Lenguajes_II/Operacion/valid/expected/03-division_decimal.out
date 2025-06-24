@@ -97,7 +97,7 @@ Programa
           |    |    |    |    |    |                   |--> n1 | Category: Identificador | Type: manguita | Value: 0.041848
           |    |    |    |    |    |                   |--> Literal | Category: Numérico | Type: manguita | Value: 2.22
           |    |    |    |    |    |--> Asignación | Type: manguita | Kind: = | Value: 1.49163
-          |    |    |    |    |         |--> div_decimal_manguita | Category: Identificador | Type: manguita
+          |    |    |    |    |         |--> div_decimal_manguita | Category: Identificador | Type: manguita | Value: 0
           |    |    |    |    |         |--> / | Category: Operación | Type: manguita | Kind: Numérica | Value: 1.49163
           |    |    |    |    |              |--> n1 | Category: Identificador | Type: manguita | Value: 1.80488
           |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 1.21
@@ -126,7 +126,7 @@ Programa
           |                   |--> n2 | Category: Identificador | Type: manguangua | Value: 2.12585e-22
           |                   |--> Literal | Category: Numérico | Type: manguangua | Value: 2.2e+10
           |--> Asignación | Type: manguangua | Kind: = | Value: 1.52778e-10
-               |--> div_decimal_manguangua | Category: Identificador | Type: manguangua
+               |--> div_decimal_manguangua | Category: Identificador | Type: manguangua | Value: 0
                |--> / | Category: Operación | Type: manguangua | Kind: Numérica | Value: 1.52778e-10
                     |--> n2 | Category: Identificador | Type: manguangua | Value: 1.83333
                     |--> Literal | Category: Numérico | Type: manguangua | Value: 1.2e+10

@@ -4,7 +4,7 @@ se_prende(){
 	echar_cuento fun1(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
 		p1 = 2;
 		p2 = 3.0;
-		lanzate p2;
+		lanzate p1;
 	};
 	
 	culito value : manguita = 1.0;
