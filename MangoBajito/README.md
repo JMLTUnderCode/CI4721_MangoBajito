@@ -197,9 +197,14 @@ Módulo desarrollados del proyecto Mango Bajito.
 - [x] Sentencia while
 - [x] Sentencia for
 - [x] Funciones
-- [ ] Structs y Variantes
-- [ ] Arrays
-- [ ] jumping code
+- [ ] Struct/variantes anidadas y no anidadas
+- [ ] Arrays 
+    - [ ] Multidimensión
+    - [ ] Arreglos de atributos
+- [ ] jumping code para asignaciones de booleanos
+- [ ] Apuntadores
+- [ ] Asignaciones de atributos de structs/variantes (caso anidado)
+- [ ] Acceso a atributos 
 
 ## Pruebas del Proyecto
 - [ ] Suit de pruebas
