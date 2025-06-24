@@ -72,7 +72,7 @@ Programa
           |    |--> Instrucción | Kind: ;
           |         |--> a | Category: Declaración | Type: mango | Kind: VARIABLE
           |         |--> Asignación | Type: mango | Kind: = | Value: 100
-          |              |--> a | Category: Identificador | Type: mango
+          |              |--> a | Category: Identificador | Type: mango | Value: 0
           |              |--> Literal | Category: Numérico | Type: mango | Value: 100
           |--> o_asi
           |    |--> Guardia
@@ -102,44 +102,7 @@ Programa
                     |--> Asignación | Kind: =
                          |--> c | Category: Declaración | Type: mango | Kind: VARIABLE
                          |--> Literal | Category: Numérico | Type: mango | Value: 11
---> Print TAC? (s/n): [1;36m[5m
-               =======================================================
-                                   TAC Representation                 
-               =======================================================
-[0m
-
-.declaration:
-Scope 3: 
-a: alloc 4
-
-Scope 4: 
-b: alloc 4
-
-Scope 5: 
-z: alloc 8
-
-Scope 6: 
-a: alloc 4
-c: alloc 4
-
-.code:
-L3: 
-L2: 
-a := 100
-goto L0
-L1: 
-b := 12
-goto L0
-L4: 
-goto L5
-z := 12.321000
-z := z + 21.100000
-goto L0
-L5: 
-a := 1155
-c := 11
-L0: 
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

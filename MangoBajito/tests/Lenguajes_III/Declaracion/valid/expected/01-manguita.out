@@ -74,29 +74,9 @@ Programa
           |    |         |--> decl0 | Category: Identificador | Type: manguita | Value: 2.00002
           |    |--> decl3 | Category: Declaración | Type: manguita | Kind: VARIABLE
           |--> Asignación | Type: manguita | Kind: = | Value: -2.03216
-               |--> decl3 | Category: Identificador | Type: manguita
+               |--> decl3 | Category: Identificador | Type: manguita | Value: 0
                |--> decl1 | Category: Identificador | Type: manguita | Value: -2.03216
---> Print TAC? (s/n): [1;36m[5m
-               =======================================================
-                                   TAC Representation                 
-               =======================================================
-[0m
-.data:
-decl1 := -2.032160
-
-.declaration:
-Scope 1: 
-decl0: alloc 8
-
-Scope 2: 
-decl2: alloc 8
-decl3: alloc 8
-
-.code:
-decl0 := 2.000020
-decl2 := decl0
-decl3 := decl1
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

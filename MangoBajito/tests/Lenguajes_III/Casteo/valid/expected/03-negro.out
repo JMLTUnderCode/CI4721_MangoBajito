@@ -70,25 +70,7 @@ Programa
                |--> n2 | Category: Declaración | Type: negro | Kind: VARIABLE
                |--> Literal | Category: Caracter | Type: negro | Kind: CAST(higuerote) | Value: 'z'
                     |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "z"
---> Print TAC? (s/n): [1;36m[5m
-               =======================================================
-                                   TAC Representation                 
-               =======================================================
-[0m
-.data:
-str0 := "z"
-
-.declaration:
-Scope 2: 
-n0: alloc 1
-n1: alloc 1
-n2: alloc 1
-
-.code:
-n0 := (char)105
-n1 := (char)-105
-n2 := (char)&str0
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

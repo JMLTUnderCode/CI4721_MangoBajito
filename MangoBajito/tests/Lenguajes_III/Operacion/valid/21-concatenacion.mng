@@ -1,0 +1,8 @@
+# Test 21: Concatenacion de cadenas
+se_prende(){
+	culito n0 : higuerote = "hola " + "mundo";
+	culito n1 : higuerote = "hola " + "";
+	culito n2 : higuerote = "" + "";
+	culito n3 : higuerote = "hola" + "mundo" + "!";
+	culito n4 : higuerote = "hola" + " " + "mundo";
+};

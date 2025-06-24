@@ -2,9 +2,12 @@
 se_prende(){
 	culito p : mango = 23;
 	echar_cuento fun1(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
-		p1 = 2;
-		p2 = 3.0;
-		lanzate p2;
+		culito sum : mango = p1 + (mango)p2 + p3;
+		si_es_asi (sum mayol 0){
+			lanzate sum + 1;
+		} nojoda {
+			lanzate sum + p;
+		};
 	};
 	
 	culito value : mango = fun1(p, 2.0, 3);

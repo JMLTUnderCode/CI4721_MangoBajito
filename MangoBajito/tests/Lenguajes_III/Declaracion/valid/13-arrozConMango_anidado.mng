@@ -1,0 +1,35 @@
+# Test 13: Definicion y uso de estructuras anidadas.
+se_prende(){
+	arroz_con_mango Fecha {
+		dia : mango;
+		mes : mango;
+		anio : mango;
+	};
+
+	arroz_con_mango Persona {
+		nombre : higuerote;
+		sexo : negro;
+		edad : mango;
+		nacimiento : Fecha;
+	};
+
+	arroz_con_mango Registro {
+		codigo : mango;
+		usuario : Persona;
+	};
+
+	culito registro_1 : Registro = {0, {"Junior", 'M', 26, {8, 6, 1999}}};
+
+	culito registro_2 : Registro;
+	registro_2 = {1, {"Astrid", 'F', 23, {7, 5, 2002}}};
+
+	culito registro_3 : Registro;
+	registro_3.codigo = 2;
+	registro_3.usuario = {"Jhonaiker", 'M', 25, {5, 5, 2000}};
+	registro_3.usuario.nacimiento = {10, 10, 2001};
+	registro_3.usuario.nacimiento.anio = 2002;
+
+	registro_3.usuario.nacimiento = registro_2.usuario.nacimiento;
+
+	registro_3.usuario = registro_2.usuario;
+};

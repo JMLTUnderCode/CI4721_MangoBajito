@@ -106,38 +106,7 @@ Programa
                     |    |--> Literal | Category: Numérico | Type: manguangua | Value: 1.22e+13
                     |    |--> Literal | Category: Numérico | Type: manguangua | Value: 1.02e+11
                     |--> Literal | Category: Numérico | Type: mango | Value: 12000
---> Print TAC? (s/n): [1;36m[5m
-               =======================================================
-                                   TAC Representation                 
-               =======================================================
-[0m
-
-.declaration:
-Scope 2: 
-n0: alloc 4
-n1: alloc 4
-n2: alloc 4
-n3: alloc 4
-n4: alloc 4
-n5: alloc 4
-
-.code:
-t0 := 7 // 2
-n0 := t0
-t1 := 121 // 3
-t2 := t1 // 3
-n1 := t2
-t3 := 143.199997 // 2.300000
-n2 := t3
-t4 := 143.199997 // 2.300000
-t5 := t4 // 3
-n3 := t5
-t6 := 12200000000000.000000 // 102000000000.000000
-n4 := t6
-t7 := 12200000000000.000000 // 102000000000.000000
-t8 := t7 // 12000
-n5 := t8
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

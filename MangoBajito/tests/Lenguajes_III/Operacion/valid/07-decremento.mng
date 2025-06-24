@@ -10,6 +10,9 @@ se_prende(){
 	culito decl2: manguangua = 1.21e+2;
 	decl2--;
 
+	culito decl3: mango = decl0--;
+	decl0 = decl3--;
+	
 	# A excepcion de las funciones.
     echar_cuento bar0(x: mango) lanza un_coño {
 		x--;

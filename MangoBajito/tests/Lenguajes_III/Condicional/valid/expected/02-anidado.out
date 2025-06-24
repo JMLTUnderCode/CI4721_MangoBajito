@@ -72,31 +72,7 @@ Programa
           |    |--> Guardia
           |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
           |--> nojoda
---> Print TAC? (s/n): [1;36m[5m
-               =======================================================
-                                   TAC Representation                 
-               =======================================================
-[0m
-
-.code:
-goto L4
-L5: 
-goto L1
-goto L0
-L1: 
-goto L3
-goto L2
-L3: 
-goto L0
-L2: 
-L0: 
-goto L4
-L6: 
-goto L7
-goto L4
-L7: 
-L4: 
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

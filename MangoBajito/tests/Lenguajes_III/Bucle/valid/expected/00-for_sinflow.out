@@ -1,0 +1,118 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: i[0m
+    |---> Símbolo: i, Categoría: (13)VAR_FOR, Scope: 3, Type: mango, Informacion: 1 10 , Value: 1
+
+    |---> Símbolo: i, Categoría: (13)VAR_FOR, Scope: 4, Type: mango, Informacion: -20 -1 , Value: -20
+
+    |---> Símbolo: i, Categoría: (13)VAR_FOR, Scope: 5, Type: mango, Informacion: 20 0 , Value: 20
+
+    |---> Símbolo: i, Categoría: (13)VAR_FOR, Scope: 6, Type: mango, Informacion: -1 -20 , Value: -1
+
+[1;35m[5m    Clave: 2: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 3: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 4: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 5: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 6: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 7: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 8: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 9: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 10: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 11: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 12: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 13: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 14: n[0m
+    |---> Símbolo: n, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 5
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Instrucción | Kind: ;
+          |    |    |--> Instrucción | Kind: ;
+          |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |--> n | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: 5
+          |    |    |    |--> Bucle | Category: Determinado
+          |    |    |         |--> i | Category: Var_Ciclo | Type: mango | Value: 1
+          |    |    |         |    |--> entre | Category: Rango
+          |    |    |         |    |    |--> Literal | Category: Numérico | Type: mango | Value: 1
+          |    |    |         |    |--> hasta | Category: Rango
+          |    |    |         |         |--> Literal | Category: Numérico | Type: mango | Value: 10
+          |    |    |         |--> Asignación | Type: mango | Kind: = | Value: 6
+          |    |    |              |--> n | Category: Identificador | Type: mango | Value: 5
+          |    |    |              |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 6
+          |    |    |                   |--> n | Category: Identificador | Type: mango | Value: 5
+          |    |    |                   |--> i | Category: Identificador | Type: mango | Value: 1
+          |    |    |--> Bucle | Category: Determinado
+          |    |         |--> i | Category: Var_Ciclo | Type: mango | Value: -20
+          |    |         |    |--> entre | Category: Rango
+          |    |         |    |    |--> Literal | Category: Numérico | Type: mango | Value: -20
+          |    |         |    |--> hasta | Category: Rango
+          |    |         |         |--> Literal | Category: Numérico | Type: mango | Value: -1
+          |    |         |--> Asignación | Type: mango | Kind: = | Value: -14
+          |    |              |--> n | Category: Identificador | Type: mango | Value: 6
+          |    |              |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: -14
+          |    |                   |--> n | Category: Identificador | Type: mango | Value: 6
+          |    |                   |--> i | Category: Identificador | Type: mango | Value: -20
+          |    |--> Bucle | Category: Determinado
+          |         |--> i | Category: Var_Ciclo | Type: mango | Value: 20
+          |         |    |--> entre | Category: Rango
+          |         |    |    |--> Literal | Category: Numérico | Type: mango | Value: 20
+          |         |    |--> hasta | Category: Rango
+          |         |         |--> Literal | Category: Numérico | Type: mango | Value: 0
+          |         |--> Asignación | Type: mango | Kind: = | Value: 6
+          |              |--> n | Category: Identificador | Type: mango | Value: -14
+          |              |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 6
+          |                   |--> n | Category: Identificador | Type: mango | Value: -14
+          |                   |--> i | Category: Identificador | Type: mango | Value: 20
+          |--> Bucle | Category: Determinado
+               |--> i | Category: Var_Ciclo | Type: mango | Value: -1
+               |    |--> entre | Category: Rango
+               |    |    |--> Literal | Category: Numérico | Type: mango | Value: -1
+               |    |--> hasta | Category: Rango
+               |         |--> Literal | Category: Numérico | Type: mango | Value: -20
+               |--> Asignación | Type: mango | Kind: = | Value: 5
+                    |--> n | Category: Identificador | Type: mango | Value: 6
+                    |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 5
+                         |--> n | Category: Identificador | Type: mango | Value: 6
+                         |--> i | Category: Identificador | Type: mango | Value: -1
+--> Print TAC? (s/n): [1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

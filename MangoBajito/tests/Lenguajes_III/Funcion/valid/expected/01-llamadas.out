@@ -5,7 +5,7 @@
                =======================================================
 [0m
 [1;35m[5m    Clave: 1: p3[0m
-    |---> Símbolo: p3, Categoría: (3)PARAMETERS, Scope: 3, Type: mango
+    |---> Símbolo: p3, Categoría: (3)PARAMETERS, Scope: 3, Type: mango, Value: 0
 
 [1;35m[5m    Clave: 2: fun1[0m
     |---> Símbolo: fun1, Categoría: (2)FUNCTION, Scope: 2, Type: un_coño, Informacion: PARAM(p1) PARAM(p2) PARAM(p3) 
@@ -76,10 +76,10 @@ Programa
           |    |         |    |--> p3 | Category: Parámetro | Type: mango
           |    |         |--> Instrucción | Kind: ;
           |    |              |--> Asignación | Type: mango | Kind: = | Value: 2
-          |    |              |    |--> p1 | Category: Identificador | Type: mango
+          |    |              |    |--> p1 | Category: Identificador | Type: mango | Value: 0
           |    |              |    |--> Literal | Category: Numérico | Type: mango | Value: 2
           |    |              |--> Asignación | Type: manguita | Kind: = | Value: 3.1
-          |    |                   |--> p2 | Category: Identificador | Type: manguita
+          |    |                   |--> p2 | Category: Identificador | Type: manguita | Value: 0
           |    |                   |--> Literal | Category: Numérico | Type: manguita | Value: 3.1
           |    |--> fun1 | Category: Llamada_Funcion | Type: un_coño
           |         |--> Secuencia | Category: Expresión | Kind: ,
@@ -93,32 +93,7 @@ Programa
                     |    |--> p | Category: Identificador | Type: mango | Value: 23
                     |    |--> Literal | Category: Numérico | Type: manguita | Value: 2.3
                     |--> p | Category: Identificador | Type: mango | Value: 23
---> Print TAC? (s/n): [1;36m[5m
-               =======================================================
-                                   TAC Representation                 
-               =======================================================
-[0m
-
-.declaration:
-Scope 2: 
-p: alloc 4
-
-.code:
-p := 23
-fun1: 
-begin_func:
-p1 := 2
-p2 := 3.100000
-end_func:
-param p
-param 2.200000
-param 3
-call fun1, 3
-param p
-param 2.300000
-param p
-call fun1, 3
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

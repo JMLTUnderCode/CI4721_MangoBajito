@@ -16,35 +16,38 @@
 [1;35m[5m    Clave: 4: manguangua[0m
     |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 5: tas_claro[0m
-    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 5: n[0m
+    |---> Símbolo: n, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 6
 
-[1;35m[5m    Clave: 6: hablame[0m
-    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
-
-[1;35m[5m    Clave: 7: un_coño[0m
-    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 8: funcion$[0m
-    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 9: caramba_ñero[0m
-    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 10: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
-
-[1;35m[5m    Clave: 11: higuerote[0m
-    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 12: rescata[0m
-    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
-
-[1;35m[5m    Clave: 13: negro[0m
+[1;35m[5m    Clave: 6: negro[0m
     |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 14: n[0m
-    |---> Símbolo: n, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 6
+[1;35m[5m    Clave: 7: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 8: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 9: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 10: array$[0m
+    |---> Símbolo: array$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 11: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 12: error$[0m
+    |---> Símbolo: error$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 13: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 14: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 15: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
@@ -68,29 +71,7 @@ Programa
                     |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 6
                          |--> n | Category: Identificador | Type: mango | Value: 5
                          |--> i | Category: Identificador | Type: mango | Value: 1
---> Print TAC? (s/n): [1;36m[5m
-               =======================================================
-                                   TAC Representation                 
-               =======================================================
-[0m
-
-.declaration:
-Scope 2: 
-n: alloc 4
-
-.code:
-n := 5
-i := 1
-L0: 
-if i < 4 goto L1
-goto L2
-L1: 
-t0 := n + i
-n := t0
-i := i + 1
-goto L0
-L2: 
-[1;32m[5m
+--> Print TAC? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================
