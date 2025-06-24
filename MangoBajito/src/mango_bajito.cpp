@@ -303,9 +303,13 @@ void collect_nodes_by_categories(ASTNode* node, const set<string>& categories, v
 // node: nodo raíz a partir del cual buscar, out: vector donde se almacenan los nodos encontrados.
 void collect_arguments(ASTNode* node, vector<ASTNode*>& out) {
 	if (!node) return;
+	if (node->children.empty()) {
+		out.push_back(node);
+		return;
+	}
 	for (auto child : node->children) {
-	if (child->name != "Secuencia") out.push_back(child);
-	else collect_arguments(child, out);
+		if (child->name != "Secuencia") out.push_back(child);
+		else collect_arguments(child, out);
 	}
 }
 

@@ -6,7 +6,8 @@ se_prende(){
 	
 	echale_bolas_si (a menol 10 yunta index nie -1 o_sea a mayol 20){
 		a = a + 2;
-		culito input: higuerote = hablame("Ingrese un valor: ");
-		rescata("Escribiste: " + input, "!¡Gracias por tu entrada!", 5);
+		echale_bolas_si(a % 2 igualito 1 yunta a menol 15){
+			rescata("El valor de a es impar y menor que 15");
+		};
 	};
 };
