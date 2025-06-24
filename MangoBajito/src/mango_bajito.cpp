@@ -909,7 +909,7 @@ BasicBlock* FlowGraph::getBlockByName(const string& name) {
 	for(auto& block : this->blocks){
 		if(block.first == name) return block.second;
 	}
-    return nullptr;
+	return nullptr;
 }
 
 BasicBlock* FlowGraph::getBlockByLabel(const string& label){
@@ -922,20 +922,20 @@ BasicBlock* FlowGraph::getBlockByLabel(const string& label){
 // Crea un bloque con la etiqueta dada. Retorna true si lo creó, false si ya existía.
 bool FlowGraph::createBlock(const string& name, vector<string> code, const string& label) {
 	BasicBlock* block = this->getBlockByName(name);
-    if (block) return false;
-    blocks.emplace_back(name, new BasicBlock(name, code, label));
-    this->count_blocks++;
-    return true;
+	if (block) return false;
+	blocks.emplace_back(name, new BasicBlock(name, code, label));
+	this->count_blocks++;
+	return true;
 }
 
 // Agrega una arista dirigida de 'from' a 'to'
 void FlowGraph::addEdge(const string& from, const string& to) {
-    BasicBlock* b_from = this->getBlockByName(from);
-    BasicBlock* b_to = this->getBlockByName(to);
-    if (b_from && b_to) {
-        b_from->childs.push_back(b_to);
-        b_to->fathers.push_back(b_from);
-    }
+	BasicBlock* b_from = this->getBlockByName(from);
+	BasicBlock* b_to = this->getBlockByName(to);
+	if (b_from && b_to) {
+		b_from->childs.push_back(b_to);
+		b_to->fathers.push_back(b_from);
+	}
 }
 
 // Devuelve la cantidad de bloques en el grafo.
@@ -944,18 +944,31 @@ int FlowGraph::length(){
 }
 
 string extractGotoLabel(const string& line) {
-    smatch match;
-    regex rgx(R"(goto\s+(L\d+))");
-    if (regex_search(line, match, rgx)) {
-        return match[1]; // El grupo de captura (L<num>)
-    }
-    return "";
+	smatch match;
+	regex rgx(R"(goto\s+(L\d+))");
+	if (regex_search(line, match, rgx)) {
+		return match[1]; // El grupo de captura (L<num>)
+	}
+	return "";
 }
 
+template<typename T>
+void remove_duplicates_keep_order(vector<T>& vec) {
+	set<T> seen;
+	vector<T> result;
+	for (const auto& v : vec) {
+		if (seen.insert(v).second) { // insert retorna pair<iterator,bool>
+			result.push_back(v);
+		}
+	}
+	vec = move(result);
+}
 
 // Genera el grafo de flujo a partir del TAC
 void FlowGraph::generateFlowGraph(vector<string>& tac) {
 	int block_count = 1;
+	regex b(R"(^\s*L[0-9]+:)");
+
 	// Iterar sobre las líneas de TAC
 	vector<size_t> lider_index; // Conjunto para almacenar los índices de los líderes
 	for (size_t i = 0; i < tac.size(); i++) {
@@ -964,28 +977,37 @@ void FlowGraph::generateFlowGraph(vector<string>& tac) {
 			lider_index.push_back(i);
 		} else {
 			const string& line = tac[i];
+			// También el siguiente bloque es un líder
 			if (line.find("goto") != string::npos) {
-				// También el siguiente bloque es un líder
 				if (i + 1 < tac.size()) lider_index.push_back(i + 1);
 			}
-			if (regex_match(line, regex(R"(L[0-9]+:)"))) {
-				// Los labels que cumplen con el patrón son un líder
-				lider_index.push_back(i);
-			}
+			// Los labels que cumplen con el patrón son un líder
+			if (regex_search(line, b)) lider_index.push_back(i);
 		}
 	}
+	remove_duplicates_keep_order(lider_index);
+
 	// Creacion de Bloques basicos
 	size_t size_lider = lider_index.size();
+	string block_name = "";
 	for (size_t i = 0; i < size_lider; i++) {
 		size_t left, right;
 		if (i + 1 < size_lider) { 
 			left = lider_index[i]; right = lider_index[i+1];
-			vector<string> code(tac.begin() + left, tac.begin() + right - 1);
-			string lider_label = "";
-			if (regex_match(code[0], regex(R"(L[0-9]+:)"))) lider_label = code[0].substr(0, code[0].size() - 1);
-			string block_name = "B" + to_string(block_count++);
-			this->createBlock(block_name, code, lider_label);
+			right--;
+		} else {
+			left = lider_index[i]; right = lider_index[i];
 		}
+		if (right < left) {
+			cout << "[ERROR] right < left, saltando bloque." << endl;
+			continue;
+		}
+		vector<string> code(tac.begin() + left, tac.begin() + right+1);
+		string lider_label = "";
+		if (regex_search(code[0], b)) lider_label = code[0].substr(0, code[0].size() - 2);
+		
+		block_name = "B" + to_string(block_count++);
+		this->createBlock(block_name, code, lider_label);
 	}
 	this->createBlock("EXIT");
 	
@@ -1007,21 +1029,98 @@ void FlowGraph::generateFlowGraph(vector<string>& tac) {
 		}else{
 			for(auto line : currentBlock->TAC_code){
 				label = extractGotoLabel(line);
-
 				if(!label.empty()){
 					BasicBlock* nodo = this->getBlockByLabel(label);
 					this->addEdge(currentBlockName, nodo->name); // Arista del flujo 'goto Label'
 				}
 
 			}
-			size_tac_code = currentBlock->TAC_code.size();
-			last_line = currentBlock->TAC_code[size_tac_code - 1];
-			if (last_line.find("if") != string::npos) {
-				this->addEdge(fatherBlock->name, currentBlockName);
-			} else if (last_line.find("goto") == string::npos){
+			if (fatherBlock->name != "ENTRY"){
+				// Verificar nodo padre si existe condicional "if".
+				size_tac_code = fatherBlock->TAC_code.size();
+				last_line = fatherBlock->TAC_code[size_tac_code - 1];
+				if (last_line.find("if") != string::npos) {
+					this->addEdge(fatherBlock->name, currentBlockName);
+				} else if (last_line.find("goto") == string::npos){
+					this->addEdge(fatherBlock->name, currentBlockName);
+				}
+			} else {
 				this->addEdge(fatherBlock->name, currentBlockName);
 			}
 			fatherBlock = currentBlock;
 		}
+	}
+}
+
+// Centra un string en un campo de ancho fijo
+string center(const string& s, int width) {
+	int len = s.length();
+	if (len >= width) return s.substr(0, width);
+	int left = (width - len) / 2;
+	int right = width - len - left;
+	return string(left, ' ') + s + string(right, ' ');
+}
+
+void FlowGraph::print() {
+	const int CELL_SIZE = 10;
+	cout << "\033[1;36m\033[5m\n               =======================================================\n";
+	cout << "                                  Control Flow Graphs                 \n";
+	cout << "               =======================================================\n\033[0m\n";
+	cout << "----------------------------------------------------------" << endl;
+	// 1. Mostrar información de los nodos
+	for (const auto& block : this->blocks) {
+		const string& name = block.first;
+		BasicBlock* bb = block.second;
+		cout << "Name: " << name << endl;
+		if (name != "ENTRY" && name != "EXIT") {
+			cout << "Lider Label: " << bb->lider_label << endl;
+			cout << "Code:" << endl;
+			for (const auto& line : bb->TAC_code) cout << "     | " << line << endl;
+		}
+		if (!bb->childs.empty()){
+			cout << "Childs: ";
+			for (auto child : bb->childs) cout << child->name << " ";
+			cout << endl;
+		}
+		if (!bb->fathers.empty()){
+			cout << "Fathers: ";
+			for (auto father : bb->fathers) cout << father->name << " ";
+			cout << endl;
+		}
+		cout << "----------------------------------------------------------" << endl;
+	}
+
+	// 2. Construir lista de nombres de bloques (en orden)
+	vector<string> block_names;
+	for (const auto& block : this->blocks) {
+		block_names.push_back(block.first);
+	}
+
+	// 3. Imprimir encabezado de la matriz
+	cout << endl << "         * | Matriz de Adyacencia | *" << endl << endl;
+	cout << center("-", CELL_SIZE);
+	for (const auto& col : block_names) cout << "|" << center(col, CELL_SIZE - 1);
+	cout << "|" << endl;
+	cout << string((CELL_SIZE) + block_names.size() * (CELL_SIZE - 1) + block_names.size() + 1, '-') << endl;
+
+	// 4. Imprimir filas de la matriz
+	for (const auto& row_name : block_names) {
+		cout << center(row_name, CELL_SIZE);
+		for (const auto& col_name : block_names) {
+			BasicBlock* row_block = this->getBlockByName(row_name);
+			BasicBlock* col_block = this->getBlockByName(col_name);
+			bool found = false;
+			if (row_block && col_block && row_block != col_block) {
+				for (auto child : row_block->childs) {
+					if (child == col_block) { found = true; break; }
+				}
+			}
+			string cell;
+			if (found) cell = "o";
+			else cell = "";
+			cout << "|" << center(cell, CELL_SIZE - 1);
+		}
+		cout << "|" << endl;
+		cout << string((CELL_SIZE) + block_names.size() * (CELL_SIZE - 1) + block_names.size() + 1, '-') << endl;
 	}
 }

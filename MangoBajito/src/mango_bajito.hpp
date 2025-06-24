@@ -416,6 +416,7 @@ struct FlowGraph {
     void addEdge(const string& from, const string& to);
 	int length();
 	void generateFlowGraph(vector<string>& tac);
+	void print();
 };
 
 #endif

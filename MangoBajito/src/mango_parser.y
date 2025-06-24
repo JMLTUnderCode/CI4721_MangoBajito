@@ -49,8 +49,11 @@ extern YYLTYPE yylloc;
 // Ininicializacion de nodo raiz para el AST.
 ASTNode* ast_root = nullptr;
 
-// Instancia global de la tabla de símbolos
+// Inicializacion de la tabla de símbolos
 SymbolTable symbolTable = SymbolTable();
+
+// Inicializacion de Grafo de Control de Flujo
+FlowGraph flow_graph = FlowGraph();
 
 // Diccionario global para almacenar errores clasificados por tipo
 unordered_map<systemError, vector<string>> errorDictionary = {
@@ -267,9 +270,12 @@ programa:
 		else {
 			symbolTable.print_table();
 			if (ast_root) print_AST(ast_root);
-			if (ast_root){
-				print_TAC(ast_root);
-			};
+			if (ast_root) print_TAC(ast_root);
+			if (!ast_root->tac.empty()) {
+				flow_graph.generateFlowGraph(ast_root->tac);
+				flow_graph.print();
+			}
+			
 		}
 		if (FIRST_ERROR) {
 			cout << "\033[1;31m\033[5m\n               =======================================================\n";
