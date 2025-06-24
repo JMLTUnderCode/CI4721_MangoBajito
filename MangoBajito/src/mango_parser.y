@@ -319,8 +319,8 @@ instruccion:
 	| condicion { $$ = $1; }
 	| bucle { $$ = $1; }
 	| manejo_error { $$ = $1; }
-	| T_KIETO { $$ = makeASTNode("uy_kieto", "Control de Flujo"); }
-	| T_ROTALO { $$ = makeASTNode("rotalo", "Control de Flujo"); }
+	| T_KIETO { $$ = makeASTNode("uy_kieto", "Control de Flujo"); $$->tac.push_back("break"); }
+	| T_ROTALO { $$ = makeASTNode("rotalo", "Control de Flujo"); $$->tac.push_back("continue"); }
 	| T_LANZATE expresion { 
 		string type = $2->type;
 		$$ = makeASTNode("lanzate", "Control de Flujo", type);
@@ -2101,29 +2101,10 @@ expresion:
 		$$ = solver_operation($1, "+", $3, yylineno, yylloc.first_column); 
 		string temp = labelGen.newTemp();
 		concat_TAC($$, $1, $3);
-		if ($1->type == "higuerote" || $3->type == "higuerote") {
-			$$->tac.push_back(temp + " := call alloc " + to_string($1->svalue.size() + $3->svalue.size()));
-			// Concatenar cadenas
-			string label_copy1 = labelGen.newLabel(),
-				label_copy2 = labelGen.newLabel(),
-				label_end = labelGen.newLabel(),
-				temp_char = labelGen.newTemp();
-
-			// Copiar primer string al temporal
-			$$->tac.push_back("i := 0\nj := 0");
-			$$->tac.push_back(label_copy1 + ": ");
-			$$->tac.push_back(temp_char + " := *(" + $1->temp + " + i)");
-			$$->tac.push_back("*(" + temp + " + i) := " + temp_char);
-			$$->tac.push_back("if " + temp + " == '\\0' goto " + label_copy2);
-			$$->tac.push_back("i := i + 1\ngoto " + label_copy1);
-			// Copiar segundo string al temporal
-			$$->tac.push_back(label_copy2 + ": ");
-			$$->tac.push_back(temp_char + " := *(" + $3->temp + " + j)");
-			$$->tac.push_back("*(" + temp + " + i) := " + temp_char);
-			$$->tac.push_back("if " + temp + " == '\\0' goto " + label_end);
-			$$->tac.push_back("i := i + 1\nj := j + 1\ngoto " + label_copy2);
-			// Fin del copiado
-			$$->tac.push_back(label_end + ": ");
+		if ($$->type == "higuerote") {
+			$$->tac.push_back("param " +  $1->temp);
+			$$->tac.push_back("param " +  $3->temp);
+			$$->tac.push_back(temp + " := call concat, 2");
 		} else{
 			$$->tac.push_back(temp + " := " + $1->temp + " + " + $3->temp);
 		}
@@ -2299,7 +2280,7 @@ condicion:
 				$$->children.push_back(node); // Agregar cada alternativa como un nodo hijo.
 			}
 
-			if($2->children.size() != 1) $$->tac.push_back(final_label + ": ");
+			$$->tac.push_back(final_label + ": ");
 		}
 	}
 	;
@@ -2404,6 +2385,23 @@ indeterminado:
 			generateJumpingCode(guardia_node, out, [&](){ return labelGen.newLabel(); });
 			$$->tac.insert($$->tac.end(), out.begin(), out.end());
 			// Si la condición es falsa, salimos del bucle
+			auto find_indices = [](const vector<string>& vec, const string& search) {
+				vector<size_t> indices;
+				for (size_t i = 0; i < vec.size(); ++i) {
+					if (vec[i].find(search) != string::npos) {
+						indices.push_back(i);
+					}
+				}
+				return indices;
+			};
+			// Agregar tac uy_kieto
+			vector<size_t> break_indices = find_indices($6->tac, "break");
+			if(break_indices.size() > 0){
+				// Concatenar a los elementos encontrados
+				for (size_t idx : break_indices) {
+					$6->tac[idx] = "goto " + $3->falseLabel;
+				}
+			}
 			concat_TAC($$, $6);
 			$$->tac.push_back("goto " + label0);
 			// Label de salida del bucle
@@ -2486,6 +2484,41 @@ determinado:
 		else $$->tac.push_back("if " + var + " > " + finish + " goto " + label1);
 		$$->tac.push_back("goto " + label2);
 		$$->tac.push_back(label1 + ": ");
+		auto find_indices = [](const vector<string>& vec, const string& search) {
+			vector<size_t> indices;
+			for (size_t i = 0; i < vec.size(); ++i) {
+				if (vec[i].find(search) != string::npos) {
+					indices.push_back(i);
+				}
+			}
+			return indices;
+		};
+		// Agregar tac rotalo
+		vector<size_t> continue_indices = find_indices($4->tac, "continue");
+		if(continue_indices.size() > 0){
+			// Concatenar a los elementos encontrados
+			for (size_t idx : continue_indices) {
+				$4->tac[idx] = "goto " + label0;
+			}
+
+			// Insertar antes de cada índice (de atrás hacia adelante para no desfasar)
+			string incr = "";
+			if (kind_range == "Creciente")
+				incr = var + " := " + var + " + " + "1";
+			else incr = var + " := " + var + " - " + "1";
+			for (auto it = continue_indices.rbegin(); it != continue_indices.rend(); ++it) {
+				size_t idx = *it;
+				$4->tac.insert($4->tac.begin() + idx, incr);
+			}
+		}
+		// Agregar tac uy_kieto
+		vector<size_t> break_indices = find_indices($4->tac, "break");
+		if(break_indices.size() > 0){
+			// Concatenar a los elementos encontrados
+			for (size_t idx : break_indices) {
+				$4->tac[idx] = "goto " + label2;
+			}
+		}
 		concat_TAC($$, $4);
 		if (kind_range == "Creciente")
 			$$->tac.push_back(var + " := " + var + " + " + "1");
@@ -2555,6 +2588,38 @@ determinado:
 		else $$->tac.push_back("if " + var + " > " + finish + " goto " + label1);
 		$$->tac.push_back("goto " + label2);
 		$$->tac.push_back(label1 + ": ");
+		auto find_indices = [](const vector<string>& vec, const string& search) {
+			vector<size_t> indices;
+			for (size_t i = 0; i < vec.size(); ++i) {
+				if (vec[i].find(search) != string::npos) {
+					indices.push_back(i);
+				}
+			}
+			return indices;
+		};
+		// Agregar tac rotalo
+		vector<size_t> continue_indices = find_indices($6->tac, "continue");
+		if(continue_indices.size() > 0){
+			// Concatenar a los elementos encontrados
+			for (size_t idx : continue_indices) {
+				$6->tac[idx] = "goto " + label0;
+			}
+
+			// Insertar antes de cada índice (de atrás hacia adelante para no desfasar)
+			string incr = var + " := " + var + " + " + $5->temp;
+			for (auto it = continue_indices.rbegin(); it != continue_indices.rend(); ++it) {
+				size_t idx = *it;
+				$6->tac.insert($6->tac.begin() + idx, incr);
+			}
+		}
+		// Agregar tac uy_kieto
+		vector<size_t> break_indices = find_indices($6->tac, "break");
+		if(break_indices.size() > 0){
+			// Concatenar a los elementos encontrados
+			for (size_t idx : break_indices) {
+				$6->tac[idx] = "goto " + label2;
+			}
+		}
 		concat_TAC($$, $6);
 		$$->tac.push_back(var + " := " + var + " + " + $5->temp);
 		$$->tac.push_back("goto " + label0);
