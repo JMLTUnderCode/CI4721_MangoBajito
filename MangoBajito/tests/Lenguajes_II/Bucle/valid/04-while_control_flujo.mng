@@ -1,0 +1,14 @@
+# Test 04: Bucle WHILE con control de flujo.
+se_prende(){
+	culito suma: mango = 0;
+	culito n: mango;
+
+	echale_bolas_si (Sisa) {
+		n = (mango)hablame("");
+		
+		si_es_asi (n igualito 0) {
+			uy_kieto;
+		};
+		suma += n;
+	};
+};

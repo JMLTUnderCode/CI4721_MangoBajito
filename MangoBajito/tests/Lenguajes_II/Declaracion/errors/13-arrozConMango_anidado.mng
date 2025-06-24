@@ -8,8 +8,14 @@ se_prende(){
 	
 	arroz_con_mango Registro {
 		codigo : mango;
-		usuario : higuerote;
+		usuario : Persona;
 	};
 
-	culito registro_1 : Registro = {0, {"Junior", 'M', 26}};
+	culito registro_0 : Registro = {{"Junior", 'M', 26}};
+
+	culito registro_1 : Registro = {1, {"Junior", 'M', 26}, "otro campo"};
+	
+	culito registro_2 : Registro = {2, {"Junior", 'M'}};
+
+	culito registro_3 : Registro = {3, {"Junior", 'M', 26, 1999}};
 };

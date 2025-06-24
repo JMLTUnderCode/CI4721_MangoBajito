@@ -30,6 +30,8 @@ vector<string> sysErrorToString = {
 	"SEGMENTATION_FAULT",
 	"FUNC_PARAM_EXCEEDED",
 	"FUNC_PARAM_MISSING",
+	"FUNC_RETURN_VALUE",
+	"FUNC_NO_RETURN",
 	"ALREADY_DEF_PARAM",
 	"EMPTY_ARRAY_CONSTANT",
 	"POINTER_ARRAY",
@@ -310,8 +312,8 @@ ASTNode* makeASTNode(const string& name, const string& category, const string& t
 // Recolecta nodos por una lista de categorías.
 // node: nodo raíz a partir del cual buscar, categories: conjunto de categorías a buscar, out: vector donde se almacenan los nodos encontrados.
 void collect_nodes_by_categories(ASTNode* node, const set<string>& categories, vector<ASTNode*>& out) {
-    if (!node) return;
-    if (categories.count(node->category)) out.push_back(node);
+	if (!node) return;
+	if (categories.count(node->category)) out.push_back(node);
 	for (auto child : node->children) {
 		if (child->category != "Estructura") collect_nodes_by_categories(child, categories, out);
 		else out.push_back(child);
@@ -330,17 +332,31 @@ void collect_arguments(ASTNode* node, vector<ASTNode*>& out) {
 
 // Recolecta todos los nodos de tipo guardia ("o_asi" o "nojoda") en el AST.
 // node: nodo raíz a partir del cual buscar, out: vector donde se almacenan los nodos guardia encontrados.
-void collect_guardias(ASTNode* node, vector<ASTNode*>& out) {
-    if (!node) return;
-    // Si el nodo es una guardia, lo agregamos como hijo directo
-    if (node->name == "o_asi" || node->name == "nojoda") {
-        out.push_back(node);
-    } else {
-        // Si no, recorremos sus hijos
-        for (ASTNode* child : node->children) {
-            collect_guardias(child, out);
-        }
-    }
+void collect_guards(ASTNode* node, vector<ASTNode*>& out) {
+	if (!node) return;
+	// Si el nodo es una guardia, lo agregamos como hijo directo
+	if (node->name == "o_asi" || node->name == "nojoda") {
+		out.push_back(node);
+	} else {
+		// Si no, recorremos sus hijos
+		for (ASTNode* child : node->children) {
+			collect_guards(child, out);
+		}
+	}
+}
+
+// Recolecta todos los nodos de tipo Lanzate.
+void collect_returns(ASTNode* node, vector<ASTNode*>& out){
+	if (!node) return;
+	// Si el nodo es una guardia, lo agregamos como hijo directo
+	if (node->name == "lanzate") {
+		out.push_back(node);
+	} else {
+		// Si no, recorremos sus hijos
+		for (ASTNode* child : node->children) {
+			collect_returns(child, out);
+		}
+	}
 }
 
 // Verifica si el tipo de dato dado corresponde a un tipo numérico ("mango", "manguita" o "manguangua").
@@ -354,17 +370,17 @@ bool isNumeric(const string& typeStr) {
 // left: nodo izquierdo, op: operador, right: nodo derecho, line_number y column_number: ubicación para reporte de errores.
 // Retorna un puntero al nodo AST resultante de la operación.
 ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int line_number, int column_number) {
-    ASTNode* new_node = makeASTNode(op, "Operación");
+	ASTNode* new_node = makeASTNode(op, "Operación");
 	string type = "Desconocido";
-    string kind = "Desconocido";
-    
+	string kind = "Desconocido";
+	
 	string error_msg = "Sendo peo en la linea " + to_string(line_number) +
 		", columna " + to_string(column_number) + ": ";
 
-    set<string> ops_numericas = {"+", "-", "*", "/", "//", "%", "**"};
+	set<string> ops_numericas = {"+", "-", "*", "/", "//", "%", "**"};
 	if (ops_numericas.count(op)) kind = "Numérica";
 
-    set<string> ops_booleana = {"igualito", "nie", "mayol", "lidel", "menol", "peluche", "yunta", "o_sea"};
+	set<string> ops_booleana = {"igualito", "nie", "mayol", "lidel", "menol", "peluche", "yunta", "o_sea"};
 	if (ops_booleana.count(op)) kind = "Booleana";
 
 	string left_type = left ? left->type : "Desconocido";
@@ -411,10 +427,18 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 						addError(TYPE_ERROR, error_msg);
 					}
 				} else if (op == "**") {
-					new_node->dvalue = pow(left->ivalue, right->ivalue);
-					type = "manguangua";
+					double res = pow(left->ivalue, right->ivalue);
+					if (res >= INT_MIN && res <= INT_MAX && floor(res) == res) {
+						new_node->ivalue = static_cast<int>(res);
+						type = "mango";
+					} else if (res >= -FLT_MAX && res <= FLT_MAX) {
+						new_node->fvalue = static_cast<float>(res);
+						type = "manguita";
+					} else {
+						new_node->dvalue = res;
+						type = "manguangua";
+					}
 				}
-			
 			} else if (type == "manguita"){
 				if (op == "+") new_node->fvalue = left->fvalue + right->fvalue;
 				else if (op == "-") new_node->fvalue = left->fvalue - right->fvalue;
@@ -439,14 +463,19 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 					addError(TYPE_ERROR, error_msg);
 				} else if (op == "**") {
 					float base = left->fvalue;
-				    float exp = right->fvalue;
-				    // Raíz impar de negativo: resultado negativo
-					if (base < 0 && fmod(exp, 2.0f) != 0.0f) {
-				        new_node->dvalue = -pow(-base, exp);
-				    } else {
-				        new_node->dvalue = pow(base, exp);
-				    }
-					type = "manguangua";
+					float exp = right->fvalue;
+					double res;
+					if (base < 0 && fmod(exp, 2.0f) != 0.0f) res = -pow(-base, exp);
+					else res = pow(base, exp);
+
+					// Prioridad: manguita → manguangua
+					if (res >= -FLT_MAX && res <= FLT_MAX) {
+						new_node->fvalue = static_cast<float>(res);
+						type = "manguita";
+					} else {
+						new_node->dvalue = res;
+						type = "manguangua";
+					}
 				}
 			} else if (type == "manguangua"){
 				if (op == "+") new_node->dvalue = left->dvalue + right->dvalue;
@@ -469,15 +498,16 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 				} else if (op == "%") {
 					error_msg += "Modulo operation not supported for double types.";
 					addError(TYPE_ERROR, error_msg);
-				} else if (op == "**"){
+				} else if (op == "**") {
 					double base = left->dvalue;
-				    double exp = right->dvalue;
-				    // Raíz impar de negativo: resultado negativo
-					if (base < 0 && fmod(exp, 2.0) != 0.0f) {
-				        new_node->dvalue = -pow(-base, exp);
-				    } else {
-				        new_node->dvalue = pow(base, exp);
-				    }
+					double exp = right->dvalue;
+					double res;
+					if (base < 0 && fmod(exp, 2.0) != 0.0f) res = -pow(-base, exp);
+					else res = pow(base, exp);
+
+					// Siempre manguangua
+					new_node->dvalue = res;
+					type = "manguangua";
 				}
 			} else {
 				error_msg += "Unsupported type for operation: " + type;
@@ -490,10 +520,10 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 
 		} else if (kind == "Booleana") {
 			if (type == "tas_claro" && left_type == right_type) {
-		        if (op == "yunta") { // and
+				if (op == "yunta") { // and
 					new_node->bvalue = left->bvalue && right->bvalue;
-		        } else if (op == "o_sea") { // or
-		            new_node->bvalue = left->bvalue || right->bvalue;
+				} else if (op == "o_sea") { // or
+					new_node->bvalue = left->bvalue || right->bvalue;
 				} else if (op == "igualito") {
 					new_node->bvalue = (left->bvalue == right->bvalue);
 				} else if (op == "nie") {
@@ -507,53 +537,53 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 				type = "tas_claro"; // Asignar tipo por defecto para operaciones booleanas
 
 				auto isNumeric = [](const string& t) {
-				    return t == "mango" || t == "manguita" || t == "manguangua";
+					return t == "mango" || t == "manguita" || t == "manguangua";
 				};
 
 				auto get_double = [](ASTNode* n) -> double {
-				    if (n->type == "mango") return static_cast<double>(n->ivalue);
-				    if (n->type == "manguita") return static_cast<double>(n->fvalue);
-				    if (n->type == "manguangua") return n->dvalue;
-				    return 0.0;
+					if (n->type == "mango") return static_cast<double>(n->ivalue);
+					if (n->type == "manguita") return static_cast<double>(n->fvalue);
+					if (n->type == "manguangua") return n->dvalue;
+					return 0.0;
 				};
 
 				auto get_char = [](ASTNode* n) -> char {
-				    if (n->type == "negro") return n->cvalue;
-				    return '\0';
+					if (n->type == "negro") return n->cvalue;
+					return '\0';
 				};
 
 				auto get_string = [](ASTNode* n) -> string {
-				    if (n->type == "higuerote") return n->svalue;
-				    return "";
+					if (n->type == "higuerote") return n->svalue;
+					return "";
 				};
 
 				if (isNumeric(left->type) && isNumeric(right->type)) {
-				    double l = get_double(left);
-				    double r = get_double(right);
-				    if (op == "igualito")      new_node->bvalue = (l == r);
-				    else if (op == "nie")      new_node->bvalue = (l != r);
-				    else if (op == "mayol")    new_node->bvalue = (l > r);
-				    else if (op == "lidel")    new_node->bvalue = (l >= r);
-				    else if (op == "menol")    new_node->bvalue = (l < r);
-				    else if (op == "peluche")  new_node->bvalue = (l <= r);
+					double l = get_double(left);
+					double r = get_double(right);
+					if (op == "igualito")      new_node->bvalue = (l == r);
+					else if (op == "nie")      new_node->bvalue = (l != r);
+					else if (op == "mayol")    new_node->bvalue = (l > r);
+					else if (op == "lidel")    new_node->bvalue = (l >= r);
+					else if (op == "menol")    new_node->bvalue = (l < r);
+					else if (op == "peluche")  new_node->bvalue = (l <= r);
 				} else if (left->type == "higuerote" && right->type == "higuerote") {
-				    string l = get_string(left);
-				    string r = get_string(right);
-				    if (op == "igualito")      new_node->bvalue = (l == r);
-				    else if (op == "nie")      new_node->bvalue = (l != r);
-				    else if (op == "mayol")    new_node->bvalue = (l > r);
-				    else if (op == "lidel")    new_node->bvalue = (l >= r);
-				    else if (op == "menol")    new_node->bvalue = (l < r);
-				    else if (op == "peluche")  new_node->bvalue = (l <= r);
+					string l = get_string(left);
+					string r = get_string(right);
+					if (op == "igualito")      new_node->bvalue = (l == r);
+					else if (op == "nie")      new_node->bvalue = (l != r);
+					else if (op == "mayol")    new_node->bvalue = (l > r);
+					else if (op == "lidel")    new_node->bvalue = (l >= r);
+					else if (op == "menol")    new_node->bvalue = (l < r);
+					else if (op == "peluche")  new_node->bvalue = (l <= r);
 				} else if (left->type == "negro" && right->type == "negro") {
-				    char l = get_char(left);
-				    char r = get_char(right);
-				    if (op == "igualito")      new_node->bvalue = (l == r);
-				    else if (op == "nie")      new_node->bvalue = (l != r);
-				    else if (op == "mayol")    new_node->bvalue = (l > r);
-				    else if (op == "lidel")    new_node->bvalue = (l >= r);
-				    else if (op == "menol")    new_node->bvalue = (l < r);
-				    else if (op == "peluche")  new_node->bvalue = (l <= r);
+					char l = get_char(left);
+					char r = get_char(right);
+					if (op == "igualito")      new_node->bvalue = (l == r);
+					else if (op == "nie")      new_node->bvalue = (l != r);
+					else if (op == "mayol")    new_node->bvalue = (l > r);
+					else if (op == "lidel")    new_node->bvalue = (l >= r);
+					else if (op == "menol")    new_node->bvalue = (l < r);
+					else if (op == "peluche")  new_node->bvalue = (l <= r);
 				} else {
 					if (op == "igualito") {
 						new_node->bvalue = false;
@@ -568,9 +598,9 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 		}
 		new_node->type = type;
 		new_node->kind = kind;
-	    if (left) new_node->children.push_back(left);
-	    if (right) new_node->children.push_back(right);
-	    return new_node;
+		if (left) new_node->children.push_back(left);
+		if (right) new_node->children.push_back(right);
+		return new_node;
 	} 
 }
 
@@ -579,7 +609,7 @@ void buildAST_by_struct(ASTNode* node, vector<pair<Information, Attributes*>> in
 	if (info.empty()) return;
 	
 	// Vector para almacenar los hijos (atributos o subestructuras)
-    vector<ASTNode*> children;
+	vector<ASTNode*> children;
 	for (size_t i = 0; i < info.size(); i++) {
 		Attributes* attr = symbolTable.search_symbol(get<string>(info[i].first));
 		if (attr == nullptr) continue; // Si el atributo es nulo, saltar.
@@ -617,17 +647,17 @@ void buildAST_by_struct(ASTNode* node, vector<pair<Information, Attributes*>> in
 		children.push_back(child);
 	}
 	// Ahora construimos la secuencia anidada
-    ASTNode* secuencia = nullptr;
-    if (!children.empty()) {
-        secuencia = children[0];
-        for (size_t i = 1; i < children.size(); ++i) {
-            ASTNode* nuevo = makeASTNode("Secuencia", "Expresión", "", ",");
-            nuevo->children.push_back(secuencia);
-            nuevo->children.push_back(children[i]);
-            secuencia = nuevo;
-        }
-        node->children.push_back(secuencia);
-    }
+	ASTNode* secuencia = nullptr;
+	if (!children.empty()) {
+		secuencia = children[0];
+		for (size_t i = 1; i < children.size(); ++i) {
+			ASTNode* nuevo = makeASTNode("Secuencia", "Expresión", "", ",");
+			nuevo->children.push_back(secuencia);
+			nuevo->children.push_back(children[i]);
+			secuencia = nuevo;
+		}
+		node->children.push_back(secuencia);
+	}
 }
 
 // Muestra el AST en consola de forma jerárquica.
@@ -635,14 +665,14 @@ void buildAST_by_struct(ASTNode* node, vector<pair<Information, Attributes*>> in
 void showAST(const ASTNode* node, int depth, const string& prefix, bool isLast) {
 	if (!node) return;
 	
-    // Imprimir el prefijo visual
-    cout << prefix;
-    if (depth > 0) {
-        cout << (isLast ? "|--> " : "|--> ");
-    }
+	// Imprimir el prefijo visual
+	cout << prefix;
+	if (depth > 0) {
+		cout << (isLast ? "|--> " : "|--> ");
+	}
 
-    // Imprimir la línea del nodo
-    cout << node->name;
+	// Imprimir la línea del nodo
+	cout << node->name;
 	if (!node->category.empty()) cout << " | Category: " << node->category;
 	if (!node->type.empty())     cout << " | Type: " << node->type;
 	if (!node->kind.empty())     cout << " | Kind: " << node->kind;
@@ -658,19 +688,19 @@ void showAST(const ASTNode* node, int depth, const string& prefix, bool isLast) 
 		if (type == "tas_claro") cout << " | Value: " << node->bvalue ? "Sisa" : "Nolsa";
 	}
 	
-    cout << endl;
+	cout << endl;
 
-    // Construir el prefijo para los hijos
-    string childPrefix = prefix;
-    if (depth > 0) {
-        childPrefix += (isLast ? "     " : "|    ");
-    }
+	// Construir el prefijo para los hijos
+	string childPrefix = prefix;
+	if (depth > 0) {
+		childPrefix += (isLast ? "     " : "|    ");
+	}
 
-    // Imprimir hijos recursivamente
-    for (size_t i = 0; i < node->children.size(); ++i) {
-        bool lastChild = (i == node->children.size() - 1);
-        showAST(node->children[i], depth + 1, childPrefix, lastChild);
-    }
+	// Imprimir hijos recursivamente
+	for (size_t i = 0; i < node->children.size(); ++i) {
+		bool lastChild = (i == node->children.size() - 1);
+		showAST(node->children[i], depth + 1, childPrefix, lastChild);
+	}
 }
 
 // Imprime el AST completo en consola.

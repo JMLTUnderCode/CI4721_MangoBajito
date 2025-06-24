@@ -14,6 +14,7 @@
 #include <variant>
 #include <set>
 #include <math.h>
+#include <cmath>
 #include <climits>
 #include <cfloat>
 #include <functional>
@@ -136,6 +137,8 @@ enum systemError {
 	SEGMENTATION_FAULT,
 	FUNC_PARAM_EXCEEDED,
 	FUNC_PARAM_MISSING,
+	FUNC_RETURN_VALUE,
+	FUNC_NO_RETURN,
 	ALREADY_DEF_PARAM,
 	EMPTY_ARRAY_CONSTANT,
 	POINTER_ARRAY,
@@ -256,7 +259,10 @@ void collect_arguments(ASTNode* node, vector<ASTNode*>& out);
 
 // Recolecta todos los nodos de tipo guardia ("o_asi" o "nojoda") en el AST.
 // node: nodo raíz a partir del cual buscar, out: vector donde se almacenan los nodos guardia encontrados.
-void collect_guardias(ASTNode* node, vector<ASTNode*>& out);
+void collect_guards(ASTNode* node, vector<ASTNode*>& out);
+
+// Recolecta todos los nodos de tipo Lanzate.
+void collect_returns(ASTNode* node, vector<ASTNode*>& out);
 
 // Verifica si el tipo de dato dado corresponde a un tipo numérico ("mango", "manguita" o "manguangua").
 // typeStr: nombre del tipo a verificar.

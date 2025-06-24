@@ -1,0 +1,18 @@
+# Test 02: Bucle FOR con control de flujo.
+se_prende(){
+	culito suma: mango = 0;
+	culito n: mango;
+
+	repite_burda i entre 1 hasta 20 {
+		n = (mango)hablame("");
+		
+		si_es_asi (i % 2 igualito 0) {
+			suma += n;    
+			rotalo;
+		};
+
+		si_es_asi (i igualito 10) {
+			uy_kieto;
+		};
+	};
+};

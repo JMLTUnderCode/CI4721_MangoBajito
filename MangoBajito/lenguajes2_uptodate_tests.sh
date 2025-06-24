@@ -3,7 +3,7 @@
 # Define las secciones y los números de test a actualizar para valid
 declare -A valid_tests
 valid_tests["Apuntador"]=""
-valid_tests["Bucle"]="00 01 03"
+valid_tests["Bucle"]="00 01 02 03 04"
 valid_tests["Casteo"]="00 01 02 03 04"
 valid_tests["Condicional"]="00 01 02"
 valid_tests["Declaracion"]="00 01 02 03 04 05 06 07 08 09 10 11 12 13 14"
@@ -18,9 +18,9 @@ error_tests["Apuntador"]=""
 error_tests["Bucle"]="00 01 02"
 error_tests["Casteo"]="00 01 02 03"
 error_tests["Condicional"]="00"
-error_tests["Declaracion"]="00 01 02 03 04 05 06 07 08 09 10 11 12 14 15"
+error_tests["Declaracion"]="00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15"
 error_tests["Entrada_Salida"]=""
-error_tests["Funcion"]="00 01 02"
+error_tests["Funcion"]="00 01 02 03"
 error_tests["Operacion"]="07 08 16 17 18 19 20 21"
 error_tests["ManejoError"]=""
 

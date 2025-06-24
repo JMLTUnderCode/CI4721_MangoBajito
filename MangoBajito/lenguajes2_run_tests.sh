@@ -76,7 +76,15 @@ for error_dir in $(find "$ROOT" -type d \( -iname "errors" \) | sort); do
 		base=$(basename "$file" .mng)
 		expected="$error_dir/expected/$base.out"
 		TOTAL_ERROR=$((TOTAL_ERROR+1))
-		OUTPUT=$(echo "s" | $BIN "$file" 2>&1)
+		OUTPUT=$(echo -e "s\ns\nn" | $BIN "$file" 2>&1)
+		
+		# --- Control: ¿El test es realmente un programa correcto? ---
+        if echo "$OUTPUT" | grep -q -- "--> Print table? (s/n):"; then
+            echo -e "${RED}${BLINK} - [FAIL]${NC} $file [PROGRAMA CORRECTO, DEBERÍA FALLAR]"
+            FAILED_ERROR=$((FAILED_ERROR+1))
+            continue
+        fi
+
 		if [ -f "$expected" ]; then
 			diff -u <(echo "$OUTPUT") "$expected" > /dev/null
 			if [ $? -eq 0 ]; then

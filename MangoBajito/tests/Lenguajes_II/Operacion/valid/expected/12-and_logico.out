@@ -73,7 +73,7 @@ Programa
           |    |    |    |    |    |    |    |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
           |    |    |    |    |    |    |    |--> resultado | Category: Declaración | Type: tas_claro | Kind: VARIABLE
           |    |    |    |    |    |    |--> Asignación | Type: tas_claro | Kind: = | Value: 1
-          |    |    |    |    |    |         |--> resultado | Category: Identificador | Type: tas_claro
+          |    |    |    |    |    |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 0
           |    |    |    |    |    |         |--> yunta | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
           |    |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
           |    |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1

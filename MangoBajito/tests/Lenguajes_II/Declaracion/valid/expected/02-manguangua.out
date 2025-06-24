@@ -74,7 +74,7 @@ Programa
           |    |         |--> decl0 | Category: Identificador | Type: manguangua | Value: 1.79769e+308
           |    |--> decl3 | Category: Declaración | Type: manguangua | Kind: VARIABLE
           |--> Asignación | Type: manguangua | Kind: = | Value: -1.79769e-307
-               |--> decl3 | Category: Identificador | Type: manguangua
+               |--> decl3 | Category: Identificador | Type: manguangua | Value: 0
                |--> decl1 | Category: Identificador | Type: manguangua | Value: -1.79769e-307
 --> Print TAC? (s/n): [1;32m[5m
                =======================================================

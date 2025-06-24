@@ -29,7 +29,7 @@
     |---> Símbolo: decl0[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
 
 [1;35m[5m    Clave: 9: decl0[2][0m
-    |---> Símbolo: decl0[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro
+    |---> Símbolo: decl0[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: tas_claro, Value: false
 
 [1;35m[5m    Clave: 10: n1[0m
     |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
@@ -127,10 +127,10 @@ Programa
           |    |                   |--> n0 | Category: Identificador | Type: tas_claro | Kind: Sisa | Value: 1
           |    |                   |--> n1 | Category: Identificador | Type: tas_claro | Kind: Nolsa | Value: 0
           |    |--> Asignación | Kind: =
-          |         |--> decl0[0] | Category: Elemento_Array | Type: tas_claro
+          |         |--> decl0[0] | Category: Elemento_Array | Type: tas_claro | Value: 0
           |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
           |--> Asignación | Kind: =
-               |--> decl0[1] | Category: Elemento_Array | Type: tas_claro
+               |--> decl0[1] | Category: Elemento_Array | Type: tas_claro | Value: 0
                |--> n0 | Category: Identificador | Type: tas_claro | Kind: Sisa | Value: 1
 --> Print TAC? (s/n): [1;32m[5m
                =======================================================

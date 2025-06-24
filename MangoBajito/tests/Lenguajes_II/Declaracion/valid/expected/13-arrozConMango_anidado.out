@@ -242,7 +242,7 @@ Programa
           |    |    |    |    |    |    |                                       |--> Literal | Category: Numérico | Type: mango | Value: 2002
           |    |    |    |    |    |    |--> registro_3 | Category: Declaración | Type: Registro | Kind: VARIABLE
           |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |         |--> registro_3.codigo | Category: Atributo_Estructura | Type: mango
+          |    |    |    |    |         |--> registro_3.codigo | Category: Atributo_Estructura | Type: mango | Value: 0
           |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 2
           |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |         |--> registro_3.usuario | Category: Estructura | Type: Persona
