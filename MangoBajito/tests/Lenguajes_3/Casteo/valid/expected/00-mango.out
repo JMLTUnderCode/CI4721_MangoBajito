@@ -1,0 +1,147 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: n7[0m
+    |---> Símbolo: n7, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: -1234
+
+[1;35m[5m    Clave: 2: n6[0m
+    |---> Símbolo: n6, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 1234
+
+[1;35m[5m    Clave: 3: n2[0m
+    |---> Símbolo: n2, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 123312300
+
+[1;35m[5m    Clave: 4: n1[0m
+    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: -3
+
+[1;35m[5m    Clave: 5: n5[0m
+    |---> Símbolo: n5, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 0
+
+[1;35m[5m    Clave: 6: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 7: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 8: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 9: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 10: n4[0m
+    |---> Símbolo: n4, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 97
+
+[1;35m[5m    Clave: 11: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 12: n3[0m
+    |---> Símbolo: n3, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: -123312300
+
+[1;35m[5m    Clave: 13: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 14: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 15: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 16: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 17: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 18: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 19: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 20: n0[0m
+    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 3
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Instrucción | Kind: ;
+          |    |    |--> Instrucción | Kind: ;
+          |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |--> n0 | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |    |    |    |--> Literal | Category: Numérico | Type: mango | Kind: CAST(manguita) | Value: 3
+          |    |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguita | Value: 3.2
+          |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |         |--> n1 | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Kind: CAST(manguita) | Value: -3
+          |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: -3.2
+          |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |         |--> n2 | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Kind: CAST(manguangua) | Value: 123312300
+          |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 1.23312e+08
+          |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |         |--> n3 | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Kind: CAST(manguangua) | Value: -123312300
+          |    |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: -1.23312e+08
+          |    |    |    |--> Asignación | Kind: =
+          |    |    |         |--> n4 | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |         |--> Literal | Category: Numérico | Type: mango | Kind: CAST(negro) | Value: 97
+          |    |    |              |--> Literal | Category: Caracter | Type: negro | Value: 'a'
+          |    |    |--> Asignación | Kind: =
+          |    |         |--> n5 | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |         |--> Literal | Category: Numérico | Type: mango | Kind: CAST(negro) | Value: 0
+          |    |              |--> Literal | Category: Caracter | Type: negro | Value: ''
+          |    |--> Asignación | Kind: =
+          |         |--> n6 | Category: Declaración | Type: mango | Kind: VARIABLE
+          |         |--> Literal | Category: Numérico | Type: mango | Kind: CAST(higuerote) | Value: 1234
+          |              |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "1234"
+          |--> Asignación | Kind: =
+               |--> n7 | Category: Declaración | Type: mango | Kind: VARIABLE
+               |--> Literal | Category: Numérico | Type: mango | Kind: CAST(higuerote) | Value: -1234
+                    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "-1234"
+--> Print TAC? (s/n): [1;36m[5m
+               =======================================================
+                                   TAC Representation                 
+               =======================================================
+[0m
+.data:
+str0 := "1234"
+str1 := "-1234"
+
+.declaration:
+Scope 2: 
+n0: alloc 4
+n1: alloc 4
+n2: alloc 4
+n3: alloc 4
+n4: alloc 4
+n5: alloc 4
+n6: alloc 4
+n7: alloc 4
+
+.code:
+n0 := (int)3.200000
+n1 := (int)-3.200000
+n2 := (int)123312300.000000
+n3 := (int)-123312300.000000
+n4 := (int)'a'
+n5 := (int)'\0'
+n6 := (int)&str0
+n7 := (int)&str1
+[1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]
