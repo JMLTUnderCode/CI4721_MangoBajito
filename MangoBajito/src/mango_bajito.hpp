@@ -18,6 +18,7 @@
 #include <climits>
 #include <cfloat>
 #include <functional>
+#include <regex>
 
 using namespace std;
 
@@ -370,8 +371,11 @@ void generateJumpingCode(ASTNode* guardia, vector<string>& out, function<string(
 // ======================================================
 
 struct BasicBlock {
-	// Etiqueta asociada al bloque de codigo TAC.
-	string label;
+	// Nombre del bloque
+	string name;
+
+	// Etiqueta lider asociada al bloque de codigo TAC (si aplica)
+	string lider_label;
 
 	// Bloque de codigo
 	vector<string> TAC_code;
@@ -393,12 +397,12 @@ struct BasicBlock {
 	vector<BasicBlock*> childs;
 	vector<BasicBlock*> fathers;
 
-	BasicBlock(string label, vector<string> code) : label(label), TAC_code(code) {};
+	BasicBlock(string name, vector<string> code, string label = "") : name(name), TAC_code(code), lider_label(label) {};
 	~BasicBlock() = default;
 };
 
 struct FlowGraph {
-    unordered_map<string, BasicBlock*> blocks;
+    vector<pair<string, BasicBlock*> > blocks;
 	int count_blocks = 0;
 
     FlowGraph();
@@ -406,10 +410,12 @@ struct FlowGraph {
         for (auto& p : blocks) delete p.second;
     }
 
-	BasicBlock* getBlock(const string& label);
-	bool createBlock(const string& label, vector<string> code = {});
+	BasicBlock* getBlockByName(const string& name);
+	BasicBlock* getBlockByLabel(const string& label);
+	bool createBlock(const string& name, vector<string> code = {}, const string& label = "");
     void addEdge(const string& from, const string& to);
 	int length();
+	void generateFlowGraph(vector<string>& tac);
 };
 
 #endif

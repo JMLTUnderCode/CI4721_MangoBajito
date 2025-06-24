@@ -902,28 +902,36 @@ void generateJumpingCode(ASTNode* guardia, vector<string>& out, function<string(
 
 FlowGraph::FlowGraph(){
 	this->createBlock("ENTRY");
-	this->createBlock("EXIT");
 }
 
 // Obtiene un bloque por etiqueta. Retorna nullptr si no existe.
-BasicBlock* FlowGraph::getBlock(const string& label) {
-    auto it = this->blocks.find(label);
-    if (it != this->blocks.end()) return it->second;
+BasicBlock* FlowGraph::getBlockByName(const string& name) {
+	for(auto& block : this->blocks){
+		if(block.first == name) return block.second;
+	}
     return nullptr;
 }
 
+BasicBlock* FlowGraph::getBlockByLabel(const string& label){
+	for(auto& block : this->blocks){
+		if(block.second->lider_label == label) return block.second;
+	}
+	return nullptr;
+}
+
 // Crea un bloque con la etiqueta dada. Retorna true si lo creó, false si ya existía.
-bool FlowGraph::createBlock(const string& label, vector<string> code) {
-    if (this->blocks.count(label)) return false;
-    blocks[label] = new BasicBlock(label, code);
+bool FlowGraph::createBlock(const string& name, vector<string> code, const string& label) {
+	BasicBlock* block = this->getBlockByName(name);
+    if (block) return false;
+    blocks.emplace_back(name, new BasicBlock(name, code, label));
     this->count_blocks++;
     return true;
 }
 
 // Agrega una arista dirigida de 'from' a 'to'
 void FlowGraph::addEdge(const string& from, const string& to) {
-    BasicBlock* b_from = this->getBlock(from);
-    BasicBlock* b_to = this->getBlock(to);
+    BasicBlock* b_from = this->getBlockByName(from);
+    BasicBlock* b_to = this->getBlockByName(to);
     if (b_from && b_to) {
         b_from->childs.push_back(b_to);
         b_to->fathers.push_back(b_from);
@@ -933,4 +941,87 @@ void FlowGraph::addEdge(const string& from, const string& to) {
 // Devuelve la cantidad de bloques en el grafo.
 int FlowGraph::length(){
 	return this->count_blocks;
+}
+
+string extractGotoLabel(const string& line) {
+    smatch match;
+    regex rgx(R"(goto\s+(L\d+))");
+    if (regex_search(line, match, rgx)) {
+        return match[1]; // El grupo de captura (L<num>)
+    }
+    return "";
+}
+
+
+// Genera el grafo de flujo a partir del TAC
+void FlowGraph::generateFlowGraph(vector<string>& tac) {
+	int block_count = 1;
+	// Iterar sobre las líneas de TAC
+	vector<size_t> lider_index; // Conjunto para almacenar los índices de los líderes
+	for (size_t i = 0; i < tac.size(); i++) {
+		if (i == 0) {
+			// La primera línea siempre es un líder
+			lider_index.push_back(i);
+		} else {
+			const string& line = tac[i];
+			if (line.find("goto") != string::npos) {
+				// También el siguiente bloque es un líder
+				if (i + 1 < tac.size()) lider_index.push_back(i + 1);
+			}
+			if (regex_match(line, regex(R"(L[0-9]+:)"))) {
+				// Los labels que cumplen con el patrón son un líder
+				lider_index.push_back(i);
+			}
+		}
+	}
+	// Creacion de Bloques basicos
+	size_t size_lider = lider_index.size();
+	for (size_t i = 0; i < size_lider; i++) {
+		size_t left, right;
+		if (i + 1 < size_lider) { 
+			left = lider_index[i]; right = lider_index[i+1];
+			vector<string> code(tac.begin() + left, tac.begin() + right - 1);
+			string lider_label = "";
+			if (regex_match(code[0], regex(R"(L[0-9]+:)"))) lider_label = code[0].substr(0, code[0].size() - 1);
+			string block_name = "B" + to_string(block_count++);
+			this->createBlock(block_name, code, lider_label);
+		}
+	}
+	this->createBlock("EXIT");
+	
+	BasicBlock* fatherBlock;
+	string currentBlockName, currentBlockLabel;
+	string label;
+	size_t size_tac_code;
+	string last_line;
+	for(auto block : this->blocks){
+		currentBlockName = block.first;
+		currentBlockLabel = block.second->lider_label;
+		BasicBlock* currentBlock = block.second;
+
+		if(currentBlockName == "ENTRY"){
+			fatherBlock = currentBlock;
+		}else if (currentBlockName == "EXIT"){
+			// Conectar el último bloque con EXIT
+			this->addEdge(fatherBlock->name, "EXIT");
+		}else{
+			for(auto line : currentBlock->TAC_code){
+				label = extractGotoLabel(line);
+
+				if(!label.empty()){
+					BasicBlock* nodo = this->getBlockByLabel(label);
+					this->addEdge(currentBlockName, nodo->name); // Arista del flujo 'goto Label'
+				}
+
+			}
+			size_tac_code = currentBlock->TAC_code.size();
+			last_line = currentBlock->TAC_code[size_tac_code - 1];
+			if (last_line.find("if") != string::npos) {
+				this->addEdge(fatherBlock->name, currentBlockName);
+			} else if (last_line.find("goto") == string::npos){
+				this->addEdge(fatherBlock->name, currentBlockName);
+			}
+			fatherBlock = currentBlock;
+		}
+	}
 }
