@@ -839,7 +839,7 @@ string convertBoolOperation(string op) {
 	return op; // Retorna el operador original si no es uno de los booleanos
 }
 
-void generateJumpingCode(ASTNode* guardia, vector<string>& out, function<string()> newLabelFunc) {
+void generateJumpingCode(ASTNode* guardia, vector<string>& out, function<string()> newLabelFunc) {	
 	if (!guardia) {
 		return;
 	}
@@ -894,4 +894,43 @@ void generateJumpingCode(ASTNode* guardia, vector<string>& out, function<string(
 			}
 		}
 	}
+}
+
+// ======================================================
+// =                    Flow Graph                      =
+// ======================================================
+
+FlowGraph::FlowGraph(){
+	this->createBlock("ENTRY");
+	this->createBlock("EXIT");
+}
+
+// Obtiene un bloque por etiqueta. Retorna nullptr si no existe.
+BasicBlock* FlowGraph::getBlock(const string& label) {
+    auto it = this->blocks.find(label);
+    if (it != this->blocks.end()) return it->second;
+    return nullptr;
+}
+
+// Crea un bloque con la etiqueta dada. Retorna true si lo creó, false si ya existía.
+bool FlowGraph::createBlock(const string& label, vector<string> code) {
+    if (this->blocks.count(label)) return false;
+    blocks[label] = new BasicBlock(label, code);
+    this->count_blocks++;
+    return true;
+}
+
+// Agrega una arista dirigida de 'from' a 'to'
+void FlowGraph::addEdge(const string& from, const string& to) {
+    BasicBlock* b_from = this->getBlock(from);
+    BasicBlock* b_to = this->getBlock(to);
+    if (b_from && b_to) {
+        b_from->childs.push_back(b_to);
+        b_to->fathers.push_back(b_from);
+    }
+}
+
+// Devuelve la cantidad de bloques en el grafo.
+int FlowGraph::length(){
+	return this->count_blocks;
 }

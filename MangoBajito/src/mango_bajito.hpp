@@ -365,4 +365,51 @@ int accumulateSizeType(vector<pair<Information, Attributes*>> info, string var);
 // Genera Jumping Code TAC (expresiones booleanas).
 void generateJumpingCode(ASTNode* guardia, vector<string>& out, function<string()> newLabelFunc);
 
+// ======================================================
+// =                    Flow Graph                      =
+// ======================================================
+
+struct BasicBlock {
+	// Etiqueta asociada al bloque de codigo TAC.
+	string label;
+
+	// Bloque de codigo
+	vector<string> TAC_code;
+
+	// Variables definidas en B antes de ser usadas en el mismo bloque. (Se les asignó un valor concreto)
+	// Cualquier variable en "def" esta muerta al entrar a B.
+	vector<string> def; 
+
+	// Variables posiblemente usadas en B antes de ser definidas en el mismo bloque.
+	// Cualquier variable en "use" esta viva al entrar a B.
+	vector<string> use;
+
+	// Sea 's' una instruccion del bloque basico.
+	// IN[s] valor antes de ejecutar 's'.
+	vector<string> in; 
+	// OUT[s] valor despues de ejecutar 's'.
+	vector<string> out;
+
+	vector<BasicBlock*> childs;
+	vector<BasicBlock*> fathers;
+
+	BasicBlock(string label, vector<string> code) : label(label), TAC_code(code) {};
+	~BasicBlock() = default;
+};
+
+struct FlowGraph {
+    unordered_map<string, BasicBlock*> blocks;
+	int count_blocks = 0;
+
+    FlowGraph();
+    ~FlowGraph() {
+        for (auto& p : blocks) delete p.second;
+    }
+
+	BasicBlock* getBlock(const string& label);
+	bool createBlock(const string& label, vector<string> code = {});
+    void addEdge(const string& from, const string& to);
+	int length();
+};
+
 #endif
