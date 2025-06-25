@@ -273,6 +273,7 @@ programa:
 			if (ast_root) print_TAC(ast_root);
 			if (!ast_root->tac.empty()) {
 				flow_graph.generateFlowGraph(ast_root->tac);
+				flow_graph.computeINandOUT_lived_var();
 				flow_graph.print();
 			}
 			

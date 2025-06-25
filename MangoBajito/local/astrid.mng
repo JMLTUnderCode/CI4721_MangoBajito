@@ -3,11 +3,16 @@ jeva pi: manguita = 3.14;
 jeva index: mango = 3;
 se_prende(){
 	culito a: mango = 5;
+	culito b: mango = a + 1;
 	
-	echale_bolas_si (a menol 10 yunta index nie -1 o_sea a mayol 20){
+	si_es_asi(a + b igualito 100){
 		a = a + 2;
-		echale_bolas_si(a % 2 igualito 1 yunta a menol 15){
-			rescata("El valor de a es impar y menor que 15");
-		};
+		culito w : mango = b + 2;
+		a = w + 1; 
+	};
+
+	repite_burda i entre 0 hasta 10{
+		culito s: mango = i + a;
+		s = s + 1;
 	};
 };

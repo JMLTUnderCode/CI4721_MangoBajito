@@ -1014,7 +1014,7 @@ void FlowGraph::generateFlowGraph(vector<string>& tac) {
 		this->createBlock(block_name, code, lider_label);
 	}
 	this->createBlock("EXIT");
-	
+	this->computeDefAndUseSets();
 	BasicBlock* fatherBlock;
 	string currentBlockName, currentBlockLabel;
 	string label;
@@ -1091,6 +1091,26 @@ void FlowGraph::print() {
 			for (auto father : bb->fathers) cout << father->name << " ";
 			cout << endl;
 		}
+		if(!bb->def.empty()){
+			cout << "Def: ";
+			for (const auto& def : bb->def) cout << def << " ";
+			cout << endl;
+		}
+		if(!bb->use.empty()){
+			cout << "Use: ";
+			for (const auto& use : bb->use) cout << use << " ";
+			cout << endl;
+		}
+		if (!bb->in.empty()) {
+			cout << "In: ";
+			for (const auto& in : bb->in) cout << in << " ";
+			cout << endl;
+		}
+		if (!bb->out.empty()) {
+			cout << "Out: ";
+			for (const auto& out : bb->out) cout << out << " ";
+			cout << endl;
+		}
 		cout << "----------------------------------------------------------" << endl;
 	}
 
@@ -1127,4 +1147,123 @@ void FlowGraph::print() {
 		cout << "|" << endl;
 		cout << string((CELL_SIZE) + block_names.size() * (CELL_SIZE - 1) + block_names.size() + 1, '-') << endl;
 	}
+}
+
+void FlowGraph::computeDefAndUseSets(){
+	// Calcular Def para cada bloque
+	set<string> reserved_words = {"if", "goto", "ifnot", "return", "call", "param", "alloc", "print", "read"};
+	regex b(R"(^\s*L[0-9]+)");
+	regex def_regex(R"(\b([a-zA-Z_][a-zA-Z0-9_]*)\s*:=)");
+	regex use_regex(R"(\b([a-zA-Z_][a-zA-Z0-9_]*)\b)");
+	int count;
+	for (auto& block : this->blocks) {
+		map<string, vector<pair<string, int> >> def_and_used_map;
+		set<string> recursive_vars;
+		BasicBlock* bb = block.second;
+		count = 0;
+		for (const auto& l : bb->TAC_code) {
+			count++;
+			// Primero, encontrar todas las variables definidas en el bloque
+			smatch match;
+			if (regex_search(l, match, def_regex)) {
+				def_and_used_map[match[1]].emplace_back("def", count);
+
+				vector<string> split_code;
+				istringstream iss(l);
+				string token;
+				while (iss >> token) {
+					split_code.push_back(token);
+				}
+				if(split_code.size() > 2){
+					auto it = find(split_code.begin() + 2, split_code.end(), match[1]);
+					if (it != split_code.end()) {
+						recursive_vars.insert(match[1]);
+					}
+				}
+			}
+
+			// Ahora, encontrar todas las variables usadas en el bloque
+			auto words_begin = sregex_iterator(l.begin(), l.end(), use_regex);
+			auto words_end = sregex_iterator();
+			for (sregex_iterator it = words_begin; it != words_end; ++it) {
+				string var_name = (*it)[1];
+				if (reserved_words.find(var_name) != reserved_words.end()) continue; // Ignorar palabras reservadas
+				if (regex_search(var_name, b)) continue; // Ignorar etiquetas de bloque
+				if(l.find(":=") != string::npos && it == words_begin) continue;
+				def_and_used_map[var_name].emplace_back("used", count);
+			}
+			
+			// Def = variables definidas en el bloque, pero que no son recursivas
+			for (const auto& var : def_and_used_map) {
+				string key = var.first; vector<pair<string, int>> value = var.second;
+				bool is_recursive = recursive_vars.find(key) != recursive_vars.end();
+				size_t size_vector = value.size();
+				bool is_defined = false, is_used = false;
+				int currentLine = 1;
+				for (auto info : value){
+					if (info.first == "def" && is_used && !is_defined) break;
+					if (info.first == "used" && is_defined && !is_used && info.second != currentLine) {bb->def.insert(key); break;}
+					if (info.first == "def") {is_defined = true; currentLine = info.second;}
+					if (info.first == "used") {is_used = true; currentLine = info.second;}
+				}
+				is_defined = false; is_used = false;
+				for (auto info : value){
+					if (info.first == "def") {is_defined = true; break;}
+					else is_used = true;
+				}
+				if(!is_defined && is_used) bb->use.insert(key);
+			}
+		}
+	}
+}
+
+void FlowGraph::computeINandOUT_lived_var(){
+	// Inicializar Conjuntos IN/OUT
+	bool changed = true;
+	int count = 0;
+	while(changed){
+		cout << "\nIteracion: " << count++ << endl;
+		changed = false; // Reiniciar el estado de cambio
+		set<string> previous_in;
+		for(size_t i = this->blocks.size() - 1; i > 0; i--) { // Iterar desde el último bloque hasta el primero
+			if(this->blocks[i].first == "EXIT") continue; // Saltar el bloque EXIT
+			BasicBlock* block = this->blocks[i].second;
+			cout << "Bloque: " << block->name << endl;
+			previous_in = block->in;
+			// Calcular el conjunto OUT
+			set<string> unor_set;
+			for(auto& child : block->childs) {
+				unor_set.insert(child->in.begin(), child->in.end());
+			}
+			block->out = unor_set; // Asignar el conjunto OUT al bloque actual
+			// Calcular el conjunto IN
+			set<string> in_set;
+			set<string> diff;
+			set_difference(unor_set.begin(), unor_set.end(),
+						   block->def.begin(), block->def.end(),
+						   inserter(diff, diff.begin()));
+			in_set = block->use;
+			in_set.insert(diff.begin(), diff.end());
+			block->in = in_set;
+
+			cout << "IN: ";
+			for (const auto& in : block->in) cout << in << " ";
+			cout << "\nOUT: ";
+			for (const auto& out : block->out) cout << out << " ";
+			cout << endl;
+
+			// Verificar si hubo cambios
+			if (previous_in != block->in) {
+				changed = true; // Hubo cambios, continuar iterando
+			}
+		}
+	}
+}
+
+// ======================================================
+// =               Data Flow Problem                    =
+// ======================================================
+
+void DataFlowProblem::solve_data_flow_problem(FlowGraph& flow_graph){
+	
 }

@@ -382,17 +382,17 @@ struct BasicBlock {
 
 	// Variables definidas en B antes de ser usadas en el mismo bloque. (Se les asignó un valor concreto)
 	// Cualquier variable en "def" esta muerta al entrar a B.
-	vector<string> def; 
+	set<string> def = {}; 
 
 	// Variables posiblemente usadas en B antes de ser definidas en el mismo bloque.
 	// Cualquier variable en "use" esta viva al entrar a B.
-	vector<string> use;
+	set<string> use = {};
 
 	// Sea 's' una instruccion del bloque basico.
 	// IN[s] valor antes de ejecutar 's'.
-	vector<string> in; 
+	set<string> in = {}; 
 	// OUT[s] valor despues de ejecutar 's'.
-	vector<string> out;
+	set<string> out = {};
 
 	vector<BasicBlock*> childs;
 	vector<BasicBlock*> fathers;
@@ -417,6 +417,25 @@ struct FlowGraph {
 	int length();
 	void generateFlowGraph(vector<string>& tac);
 	void print();
+	// Metodos para analisis de flujo
+	void computeDefAndUseSets();
+	void computeINandOUT_lived_var(); // Método para calcular los conjuntos IN y OUT de los bloques básicos.
+	// Metodos pendientes para lazy code motion
 };
 
+// ======================================================
+// =               Data Flow Problem                    =
+// ======================================================
+struct DataFlowProblem{
+	enum Direction{
+		FORWARD,  // Análisis hacia adelante
+		BACKWARD  // Análisis hacia atrás
+	};
+	Direction direction; // Dirección del análisis de flujo de datos
+	vector<string> initial_in; // Valor inicial de IN
+	vector<string> initial_out; // Valor inicial de OUT
+	vector<string> (*transfer_function)(const vector<string>&, const vector<string>&); // Función de transferencia
+
+	void solve_data_flow_problem(FlowGraph& flow_graph); // Método para resolver el problema de flujo de datos
+};
 #endif
