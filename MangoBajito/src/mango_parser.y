@@ -2910,7 +2910,8 @@ funcion:
 
 			// Generación de TAC para la función
 			string label_func = labelGen.newLabel(func_name);
-			$$->tac.push_back(label_func + ": \n" + "begin_func:");
+			$$->tac.push_back(label_func + ":");
+			$$->tac.push_back("begin_func:");
 			concat_TAC($$, $8);
 			$$->tac.push_back("end_func:");
 		}
