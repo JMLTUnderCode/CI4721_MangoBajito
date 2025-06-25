@@ -188,8 +188,8 @@ void SymbolTable::finding_variables_in_scope(int scope){
 // Imprime la tabla de simbolos
 void SymbolTable::print_table() {
 	string ss;
-	cout << "--> Print table? (s/n): "; cin >> ss;
-	while(ss != "s" && ss != "n") { cout << "Key Error. Print table? (s/n): "; cin >> ss; }
+	cout << "--> Print Symbol Table? (s/n): "; cin >> ss;
+	while(ss != "s" && ss != "n") { cout << "Key Error. Print Symbol Table? (s/n): "; cin >> ss; }
 	if (ss == "n") return;
 	
 	cout << "\033[1;36m\033[5m\n               =======================================================\n";
@@ -696,7 +696,7 @@ void print_AST(const ASTNode* node) {
 
 	string ss;
 	cout << "--> Print AST? (s/n): "; cin >> ss;
-	while(ss != "s" && ss != "n") { cout << "Key Error. Print table? (s/n): "; cin >> ss; }
+	while(ss != "s" && ss != "n") { cout << "Key Error. Print AST? (s/n): "; cin >> ss; }
 	if (ss == "n") return;
 
 	cout << "\033[1;36m\033[5m\n               =======================================================\n";
@@ -725,7 +725,7 @@ void show_TAC(const ASTNode* node){
 	if (!node) return;
 	
 	// Imprimir la sección de datos si hay información adicional
-	if (!node->tac_data.empty()) cout << ".data:" << endl; 
+	if (!node->tac_data.empty()) cout << "\033[1;36m\033[5m\n.data:\033[0m\n";
 
 	for (const auto& tac_data : node->tac_data) {
 		cout << tac_data.first << " := " << tac_data.second << endl;
@@ -733,7 +733,7 @@ void show_TAC(const ASTNode* node){
 
 	// Imprimir las declaraciones TAC si hay
 	if (!node->tac_declaraciones.empty()){ 
-		cout << "\n.declaration:" << endl;
+		cout << "\033[1;36m\033[5m\n.declaration:\033[0m\n";
 		auto tac_declaraciones = node->tac_declaraciones;
 		sort(tac_declaraciones.begin(), tac_declaraciones.end(), [](const pair<int, pair<string, int>>& a, const pair<int, pair<string, int>>& b) {
 			return a.first < b.first; // Ordenar por el primer elemento (scope)
@@ -743,7 +743,7 @@ void show_TAC(const ASTNode* node){
 			static int last_scope = -1;
 			if (tac_decl.first != last_scope) {
 				if (last_scope != -1) cout << endl; // Agrega salto de línea antes de cada scope excepto el primero
-				cout << "Scope " << tac_decl.first << ": " << endl;
+				cout << "\033[1;33m\033[5mScope " << tac_decl.first << ":\033[0m" << endl;
 				last_scope = tac_decl.first;
 			}
 			cout << tac_decl.second.first << ": alloc " << tac_decl.second.second << endl;
@@ -751,7 +751,7 @@ void show_TAC(const ASTNode* node){
 	} 
 	
 	// Imprimir el codigo principal
-	cout << "\n.code:\n";
+	cout << "\033[1;36m\033[5m\n.code:\033[0m\n";
 	for (auto tac : node->tac){
 		cout << tac << endl;
 	}
@@ -1067,6 +1067,10 @@ string center(const string& s, int width) {
 
 void FlowGraph::print() {
 	const int CELL_SIZE = 10;
+	string ss;
+	cout << "--> Print Control Flow Graphs? (s/n): "; cin >> ss;
+	while(ss != "s" && ss != "n") { cout << "Key Error. Print Control Flow Graphs? (s/n): "; cin >> ss; }
+	if (ss == "n") return;
 	cout << "\033[1;36m\033[5m\n               =======================================================\n";
 	cout << "                                  Control Flow Graphs                 \n";
 	cout << "               =======================================================\n\033[0m\n";
@@ -1075,7 +1079,7 @@ void FlowGraph::print() {
 	for (const auto& block : this->blocks) {
 		const string& name = block.first;
 		BasicBlock* bb = block.second;
-		cout << "Name: " << name << endl;
+		cout << "\033[1;33m\033[5mName: " << name << ":\033[0m" << endl;
 		if (name != "ENTRY" && name != "EXIT") {
 			cout << "Lider Label: " << bb->lider_label << endl;
 			cout << "Code:" << endl;
@@ -1121,7 +1125,7 @@ void FlowGraph::print() {
 	}
 
 	// 3. Imprimir encabezado de la matriz
-	cout << endl << "         * | Matriz de Adyacencia | *" << endl << endl;
+	cout << endl << center("* | Matriz de Adyacencia | *", (CELL_SIZE) + block_names.size() * (CELL_SIZE - 1) + block_names.size() + 1) << endl;
 	cout << center("-", CELL_SIZE);
 	for (const auto& col : block_names) cout << "|" << center(col, CELL_SIZE - 1);
 	cout << "|" << endl;
