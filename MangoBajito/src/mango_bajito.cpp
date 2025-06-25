@@ -1155,7 +1155,7 @@ void FlowGraph::print() {
 
 void FlowGraph::computeDefAndUseSets(){
 	// Calcular Def para cada bloque
-	set<string> reserved_words = {"if", "goto", "ifnot", "begin_func", "return", "call", "param", "alloc", "print", "read"};
+	set<string> reserved_words = {"if", "goto", "ifnot", "begin_func", "end_func", "return", "call", "param", "alloc", "print", "read"};
 	regex b(R"(^\s*L[0-9]+)");
 	regex def_regex(R"(\b([a-zA-Z_][a-zA-Z0-9_]*)\s*:=)");
 	regex use_regex(R"(\b([a-zA-Z_][a-zA-Z0-9_]*)\b)");
