@@ -1155,7 +1155,7 @@ void FlowGraph::print() {
 
 void FlowGraph::computeDefAndUseSets(){
 	// Calcular Def para cada bloque
-	set<string> reserved_words = {"if", "goto", "ifnot", "return", "call", "param", "alloc", "print", "read"};
+	set<string> reserved_words = {"if", "goto", "ifnot", "begin_func", "return", "call", "param", "alloc", "print", "read"};
 	regex b(R"(^\s*L[0-9]+)");
 	regex def_regex(R"(\b([a-zA-Z_][a-zA-Z0-9_]*)\s*:=)");
 	regex use_regex(R"(\b([a-zA-Z_][a-zA-Z0-9_]*)\b)");
@@ -1226,7 +1226,7 @@ void FlowGraph::computeINandOUT_lived_var(){
 	bool changed = true;
 	int count = 0;
 	while(changed){
-		cout << "\nIteracion: " << count++ << endl;
+		cout << "\nIteracion: " << count++ << endl; /* DEBUG */
 		changed = false; // Reiniciar el estado de cambio
 		set<string> previous_in;
 		for(size_t i = this->blocks.size() - 1; i > 0; i--) { // Iterar desde el último bloque hasta el primero
@@ -1250,6 +1250,7 @@ void FlowGraph::computeINandOUT_lived_var(){
 			in_set.insert(diff.begin(), diff.end());
 			block->in = in_set;
 
+			/* DEBUG: PARA PRESENTACION, MOSTRAR EJECUCION DE ALGORITMO */
 			cout << "IN: ";
 			for (const auto& in : block->in) cout << in << " ";
 			cout << "\nOUT: ";
