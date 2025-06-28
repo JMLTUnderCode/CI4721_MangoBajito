@@ -928,7 +928,6 @@ bool FlowGraph::createBlock(const string& name, vector<string> code, const strin
 	BasicBlock* block = this->getBlockByName(name);
 	if (block) return false;
 	blocks.emplace_back(name, new BasicBlock(name, code, label));
-	this->count_blocks++;
 	return true;
 }
 
@@ -943,8 +942,8 @@ void FlowGraph::addEdge(const string& from, const string& to) {
 }
 
 // Devuelve la cantidad de bloques en el grafo.
-int FlowGraph::length(){
-	return this->count_blocks;
+int FlowGraph::len(){
+	return this->blocks.size();
 }
 
 string extractGotoLabel(const string& line) {
@@ -1226,36 +1225,29 @@ void FlowGraph::computeINandOUT_lived_var(){
 	bool changed = true;
 	int count = 0;
 	while(changed){
-		cout << "\nIteracion: " << count++ << endl; /* DEBUG */
 		changed = false; // Reiniciar el estado de cambio
 		set<string> previous_in;
-		for(size_t i = this->blocks.size() - 1; i > 0; i--) { // Iterar desde el último bloque hasta el primero
+		for(int i = this->len() - 1; i > -1; i--) { // Iterar desde el último bloque hasta el primero
 			if(this->blocks[i].first == "EXIT") continue; // Saltar el bloque EXIT
 			BasicBlock* block = this->blocks[i].second;
-			cout << "Bloque: " << block->name << endl;
 			previous_in = block->in;
+			
 			// Calcular el conjunto OUT
-			set<string> unor_set;
+			set<string> union_p_outs;
 			for(auto& child : block->childs) {
-				unor_set.insert(child->in.begin(), child->in.end());
+				union_p_outs.insert(child->in.begin(), child->in.end());
 			}
-			block->out = unor_set; // Asignar el conjunto OUT al bloque actual
+			block->out = union_p_outs; // Asignar el conjunto OUT al bloque actual
+			
 			// Calcular el conjunto IN
 			set<string> in_set;
 			set<string> diff;
-			set_difference(unor_set.begin(), unor_set.end(),
+			set_difference(union_p_outs.begin(), union_p_outs.end(),
 						   block->def.begin(), block->def.end(),
 						   inserter(diff, diff.begin()));
 			in_set = block->use;
 			in_set.insert(diff.begin(), diff.end());
 			block->in = in_set;
-
-			/* DEBUG: PARA PRESENTACION, MOSTRAR EJECUCION DE ALGORITMO */
-			cout << "IN: ";
-			for (const auto& in : block->in) cout << in << " ";
-			cout << "\nOUT: ";
-			for (const auto& out : block->out) cout << out << " ";
-			cout << endl;
 
 			// Verificar si hubo cambios
 			if (previous_in != block->in) {
@@ -1269,6 +1261,66 @@ void FlowGraph::computeINandOUT_lived_var(){
 // =               Data Flow Problem                    =
 // ======================================================
 
-void DataFlowProblem::solve_data_flow_problem(FlowGraph& flow_graph){
-	
+void SolverFlowGraphProblem::set_direction(Direction dir) {
+	this->direction = dir;
+}
+
+void SolverFlowGraphProblem::solver_data_flow_problem(FlowGraph& flow_graph){
+	Direction current_dir = this->direction;
+	int count_blocks = flow_graph.len();
+	int iter;
+
+	bool changed = true;
+	while(changed){
+		changed = false; // Reiniciar el estado de cambio
+		
+		iter = current_dir == FORWARD ? 0 : count_blocks - 1;
+		while (true) {
+			// Condicion de terminacion de iteracion de bloques.
+			if (current_dir == FORWARD && iter >= count_blocks) break;
+			else if (current_dir == BACKWARD && iter < 0) break;
+
+			BasicBlock* block = flow_graph.blocks[iter].second;
+
+			// Algoritmo: Caso BACKWARD
+			if (current_dir == BACKWARD) {
+				if (block->name != "EXIT") {
+					set<string> previous_in = block->in;
+					
+					// Calcular el conjunto OUT
+					set<string> union_p_outs;
+					for(auto& child : block->childs) {
+						union_p_outs.insert(child->in.begin(), child->in.end());
+					}
+					block->out = union_p_outs;
+					
+					// Calcular el conjunto IN
+					set<string> in_set;
+					set<string> diff;
+					set_difference(union_p_outs.begin(), union_p_outs.end(),
+								   block->def.begin(), block->def.end(),
+								   inserter(diff, diff.begin()));
+					in_set = block->use;
+					in_set.insert(diff.begin(), diff.end());
+					block->in = in_set;
+
+					// Verificar si hubo cambios
+					if (previous_in != block->in) changed = true;
+				}
+			}
+			// Algoritmo: Caso FORWARD
+			
+			if (current_dir == FORWARD) {
+				if (block->name != "ENTRY"){
+					set<string> previous_out = block->out;
+
+					// IMPLEMENTAR LOGICA DEL CASO
+				}
+			}
+
+			// Incremento de iteradores
+			if (current_dir == FORWARD) iter++;
+			else if (current_dir == BACKWARD) iter--;
+		}
+	}
 }

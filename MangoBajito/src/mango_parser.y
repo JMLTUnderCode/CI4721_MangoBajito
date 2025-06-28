@@ -54,6 +54,7 @@ SymbolTable symbolTable = SymbolTable();
 
 // Inicializacion de Grafo de Control de Flujo
 FlowGraph flow_graph = FlowGraph();
+SolverFlowGraphProblem solver_problem = SolverFlowGraphProblem();
 
 // Diccionario global para almacenar errores clasificados por tipo
 unordered_map<systemError, vector<string>> errorDictionary = {
@@ -273,7 +274,9 @@ programa:
 			if (ast_root) print_TAC(ast_root);
 			if (!ast_root->tac.empty()) {
 				flow_graph.generateFlowGraph(ast_root->tac);
-				flow_graph.computeINandOUT_lived_var();
+				//flow_graph.computeINandOUT_lived_var();
+				solver_problem.set_direction(BACKWARD);
+				solver_problem.solver_data_flow_problem(flow_graph);
 				flow_graph.print();
 			}
 			

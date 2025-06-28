@@ -403,7 +403,6 @@ struct BasicBlock {
 
 struct FlowGraph {
     vector<pair<string, BasicBlock*> > blocks;
-	int count_blocks = 0;
 
     FlowGraph();
     ~FlowGraph() {
@@ -414,11 +413,12 @@ struct FlowGraph {
 	BasicBlock* getBlockByLabel(const string& label);
 	bool createBlock(const string& name, vector<string> code = {}, const string& label = "");
     void addEdge(const string& from, const string& to);
-	int length();
+	int len();
 	void generateFlowGraph(vector<string>& tac);
 	void print();
 	// Metodos para analisis de flujo
 	void computeDefAndUseSets();
+	
 	void computeINandOUT_lived_var(); // Método para calcular los conjuntos IN y OUT de los bloques básicos.
 	// Metodos pendientes para lazy code motion
 };
@@ -426,16 +426,18 @@ struct FlowGraph {
 // ======================================================
 // =               Data Flow Problem                    =
 // ======================================================
-struct DataFlowProblem{
-	enum Direction{
-		FORWARD,  // Análisis hacia adelante
-		BACKWARD  // Análisis hacia atrás
-	};
+enum Direction{
+	FORWARD,  // Análisis hacia adelante
+	BACKWARD  // Análisis hacia atrás
+};
+struct SolverFlowGraphProblem{
 	Direction direction; // Dirección del análisis de flujo de datos
-	vector<string> initial_in; // Valor inicial de IN
-	vector<string> initial_out; // Valor inicial de OUT
-	vector<string> (*transfer_function)(const vector<string>&, const vector<string>&); // Función de transferencia
+	//vector<string> (*transfer_function)(const vector<string>&, const vector<string>&); // Función de transferencia
 
-	void solve_data_flow_problem(FlowGraph& flow_graph); // Método para resolver el problema de flujo de datos
+	SolverFlowGraphProblem() = default;
+	~SolverFlowGraphProblem() = default;
+
+	void set_direction(Direction dir); // Inicializa la direccion del algoritmo.
+	void solver_data_flow_problem(FlowGraph& flow_graph); // Método para resolver el problema de flujo de datos
 };
 #endif
