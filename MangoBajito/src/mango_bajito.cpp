@@ -1065,7 +1065,7 @@ string center(const string& s, int width) {
 }
 
 void FlowGraph::print() {
-	const int CELL_SIZE = 10;
+	const int CELL_SIZE = 7;
 	string ss;
 	cout << "--> Print Control Flow Graphs? (s/n): "; cin >> ss;
 	while(ss != "s" && ss != "n") { cout << "Key Error. Print Control Flow Graphs? (s/n): "; cin >> ss; }
