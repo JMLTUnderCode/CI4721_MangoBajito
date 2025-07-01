@@ -1,5 +1,5 @@
 | Acomódate que te lo estan analizando d:-)
---> Print table? (s/n): [1;36m[5m
+--> Print Symbol Table? (s/n): [1;36m[5m
                =======================================================
                              Symbol Table Representation              
                =======================================================
@@ -132,7 +132,7 @@ Programa
           |--> Asignación | Kind: =
                |--> decl0[1] | Category: Elemento_Array | Type: tas_claro | Value: 0
                |--> n0 | Category: Identificador | Type: tas_claro | Kind: Sisa | Value: 1
---> Print TAC? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

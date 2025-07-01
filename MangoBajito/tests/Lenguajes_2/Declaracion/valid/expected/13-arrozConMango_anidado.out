@@ -1,5 +1,5 @@
 | Acomódate que te lo estan analizando d:-)
---> Print table? (s/n): [1;36m[5m
+--> Print Symbol Table? (s/n): [1;36m[5m
                =======================================================
                              Symbol Table Representation              
                =======================================================
@@ -293,7 +293,7 @@ Programa
                                    |    |--> registro_2.usuario.nacimiento.dia | Category: Atributo_Estructura | Type: mango | Value: 7
                                    |    |--> registro_2.usuario.nacimiento.mes | Category: Atributo_Estructura | Type: mango | Value: 5
                                    |--> registro_2.usuario.nacimiento.anio | Category: Atributo_Estructura | Type: mango | Value: 2002
---> Print TAC? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

@@ -1,5 +1,5 @@
 | Acomódate que te lo estan analizando d:-)
---> Print table? (s/n): [1;36m[5m
+--> Print Symbol Table? (s/n): [1;36m[5m
                =======================================================
                              Symbol Table Representation              
                =======================================================
@@ -110,7 +110,7 @@ Programa
                |--> n7 | Category: Declaración | Type: higuerote | Kind: VARIABLE
                |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Kind: CAST(negro) | Value: ""
                     |--> Literal | Category: Caracter | Type: negro | Value: ''
---> Print TAC? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

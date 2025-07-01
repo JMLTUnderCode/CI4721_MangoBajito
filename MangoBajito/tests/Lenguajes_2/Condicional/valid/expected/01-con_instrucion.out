@@ -1,5 +1,5 @@
 | Acomódate que te lo estan analizando d:-)
---> Print table? (s/n): [1;36m[5m
+--> Print Symbol Table? (s/n): [1;36m[5m
                =======================================================
                              Symbol Table Representation              
                =======================================================
@@ -102,7 +102,7 @@ Programa
                     |--> Asignación | Kind: =
                          |--> c | Category: Declaración | Type: mango | Kind: VARIABLE
                          |--> Literal | Category: Numérico | Type: mango | Value: 11
---> Print TAC? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

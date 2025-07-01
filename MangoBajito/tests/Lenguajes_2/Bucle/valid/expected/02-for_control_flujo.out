@@ -1,5 +1,5 @@
 | Acomódate que te lo estan analizando d:-)
---> Print table? (s/n): [1;36m[5m
+--> Print Symbol Table? (s/n): [1;36m[5m
                =======================================================
                              Symbol Table Representation              
                =======================================================
@@ -95,7 +95,7 @@ Programa
                               |         |--> i | Category: Identificador | Type: mango | Value: 1
                               |         |--> Literal | Category: Numérico | Type: mango | Value: 10
                               |--> uy_kieto | Category: Control de Flujo
---> Print TAC? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

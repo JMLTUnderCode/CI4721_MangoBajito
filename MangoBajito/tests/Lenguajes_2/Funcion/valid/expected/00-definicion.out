@@ -1,5 +1,5 @@
 | Acomódate que te lo estan analizando d:-)
---> Print table? (s/n): [1;36m[5m
+--> Print Symbol Table? (s/n): [1;36m[5m
                =======================================================
                              Symbol Table Representation              
                =======================================================
@@ -77,7 +77,7 @@ Programa
                     |--> Asignación | Type: manguita | Kind: = | Value: 3.1
                          |--> p2 | Category: Identificador | Type: manguita | Value: 0
                          |--> Literal | Category: Numérico | Type: manguita | Value: 3.1
---> Print TAC? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================
