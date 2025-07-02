@@ -12,4 +12,7 @@ se_prende(){
 		};
 		lanzate longitud;
 	};
+	culito len : mango = me_mide(a);
+	a = a + " Esto es un string.";
+	# a += "string"; No implementado
 };
