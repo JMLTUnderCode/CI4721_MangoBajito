@@ -946,6 +946,7 @@ int FlowGraph::len(){
 	return this->blocks.size();
 }
 
+// Extrae la etiqueta de un salto goto de una línea de TAC.
 string extractGotoLabel(const string& line) {
 	smatch match;
 	regex rgx(R"(goto\s+(L\d+))");
@@ -955,6 +956,30 @@ string extractGotoLabel(const string& line) {
 	return "";
 }
 
+// Extrae el nombre de una función llamada en una línea de TAC.
+string extractCallLabel(const string& line) {
+	size_t pos = line.find("call ");
+	if (pos != string::npos && pos + 5 < line.size()) {
+		char next_char = line[pos + 5];
+		if (next_char != ':') { // Si no es una etiqueta
+			string func_name = line.substr(pos + 5); // Extrae desde después de "call "
+			size_t comma_pos = func_name.find(",");
+			
+			// Solo hasta la coma si existe
+			if (comma_pos != string::npos) {
+				func_name = func_name.substr(0, comma_pos); 
+			}
+			
+			// Quita espacios
+			func_name.erase(remove(func_name.begin(), func_name.end(), ' '), func_name.end());
+			
+			return func_name; // Retorna el nombre de la función llamada
+		}
+	}
+	return ""; // Retorna vacío si no es una llamada válida
+}
+
+// Elimina duplicados de un vector manteniendo el orden original.
 template<typename T>
 void remove_duplicates_keep_order(vector<T>& vec) {
 	set<T> seen;
@@ -971,24 +996,46 @@ void remove_duplicates_keep_order(vector<T>& vec) {
 void FlowGraph::generateFlowGraph(vector<string>& tac) {
 	int block_count = 1;
 	regex b(R"(^\s*L[0-9]+:)");
+	regex c(R"(^\s*[a-zA-Z_][a-zA-Z0-9_]*:)");
 
 	// Iterar sobre las líneas de TAC
 	vector<size_t> lider_index; // Conjunto para almacenar los índices de los líderes
 	for (size_t i = 0; i < tac.size(); i++) {
-		if (i == 0) {
-			// La primera línea siempre es un líder
+		if (i == 0) { // La primera línea siempre es un líder
 			lider_index.push_back(i);
 		} else {
 			const string& line = tac[i];
-			// También el siguiente bloque es un líder
+			// Instruccion posterior a goto es un lider.
 			if (line.find("goto") != string::npos) {
 				if (i + 1 < tac.size()) lider_index.push_back(i + 1);
 			}
-			// Los labels que cumplen con el patrón son un líder
+			// Las etiquetas de salto son lideres.
 			if (regex_search(line, b)) lider_index.push_back(i);
+			else if (regex_search(line, c)) { // Si es un label de funcion, también es un líder
+				if (i + 1 < tac.size() && tac[i + 1] == "begin_func:") {
+					lider_index.push_back(i);
+				}
+			}
+			if (line == "end_func:") { // Fin de una función, siguiente línea es un líder
+				if (i + 1 < tac.size()) lider_index.push_back(i + 1);
+			}
+
+			// Instruccion siguiente a una call de funcion es lider.
+			if (line.find("call ") != string::npos) {
+				size_t pos = line.find("call ");
+				if (pos != string::npos && pos + 5 < line.size()) {
+					char next_char = line[pos + 5];
+					if (next_char != ':') {
+						if (i + 1 < tac.size()) lider_index.push_back(i + 1);
+					}
+				}
+			}
 		}
 	}
 	remove_duplicates_keep_order(lider_index);
+
+	map<string, string> returns_func; // Mapa para almacenar las funciones y sus bloques de retorno
+	stack<string> func_stack; // Pila para manejar el contexto de funciones
 
 	// Creacion de Bloques basicos
 	size_t size_lider = lider_index.size();
@@ -1000,6 +1047,7 @@ void FlowGraph::generateFlowGraph(vector<string>& tac) {
 			right--;
 		} else {
 			left = lider_index[i]; right = lider_index[i];
+			if (right+1 < tac.size()) right = tac.size() - 1; // Último bloque hasta el final del TAC
 		}
 		if (right < left) {
 			cout << "[ERROR] right < left, saltando bloque." << endl;
@@ -1008,17 +1056,33 @@ void FlowGraph::generateFlowGraph(vector<string>& tac) {
 		vector<string> code(tac.begin() + left, tac.begin() + right+1);
 		string lider_label = "";
 		if (regex_search(code[0], b)) lider_label = code[0].substr(0, code[0].size() - 2);
-		
+		else if (regex_search(code[0], c)) {
+			lider_label = code[0].substr(0, code[0].size() - 1);
+			func_stack.push(lider_label); // Agregar a la pila de funciones
+		}
+
 		block_name = "B" + to_string(block_count++);
 		this->createBlock(block_name, code, lider_label);
+
+		if (code.back() == "end_func:") {
+			if (!func_stack.empty()) {
+				lider_label = func_stack.top(); // Obtener el nombre de la función
+				func_stack.pop(); // Sacar de la pila
+				returns_func[lider_label] = block_name; // Guardar el bloque de retorno
+			}
+		}
 	}
 	this->createBlock("EXIT");
+
 	this->computeDefAndUseSets();
+
+	// Creacion de aristas entre Bloques Basicos
 	BasicBlock* fatherBlock;
 	string currentBlockName, currentBlockLabel;
 	string label;
 	size_t size_tac_code;
 	string last_line;
+	set<string> sys_func = {"concat", "print", "read"};
 	for(auto block : this->blocks){
 		currentBlockName = block.first;
 		currentBlockLabel = block.second->lider_label;
@@ -1030,25 +1094,53 @@ void FlowGraph::generateFlowGraph(vector<string>& tac) {
 			// Conectar el último bloque con EXIT
 			this->addEdge(fatherBlock->name, "EXIT");
 		}else{
+			// Repaso por lineas de TAC
 			for(auto line : currentBlock->TAC_code){
+				// Inclusion de conexion entre bloques por etiquetas de salto.
 				label = extractGotoLabel(line);
 				if(!label.empty()){
 					BasicBlock* nodo = this->getBlockByLabel(label);
 					this->addEdge(currentBlockName, nodo->name); // Arista del flujo 'goto Label'
 				}
 
+				// Inclusion de conexion por llamadas de funciones.
+				string func_name = extractCallLabel(line);
+				if (func_name != "") {
+					// Verificar llamadas a funciones del sistema.
+					if (sys_func.find(func_name) == sys_func.end()) {
+						BasicBlock* func_block = this->getBlockByLabel(func_name);
+						if (func_block) {
+							this->addEdge(currentBlockName, func_block->name);
+						}
+					}
+				}
 			}
-			if (fatherBlock->name != "ENTRY"){
-				// Verificar nodo padre si existe condicional "if".
+
+			if (fatherBlock->name == "ENTRY"){
+				this->addEdge(fatherBlock->name, currentBlockName);
+			} else {
+				// Verificar ultima linea de nodo padre, si existe condicional "if".
 				size_tac_code = fatherBlock->TAC_code.size();
 				last_line = fatherBlock->TAC_code[size_tac_code - 1];
 				if (last_line.find("if") != string::npos) {
 					this->addEdge(fatherBlock->name, currentBlockName);
+				// Verificar si no hay goto en la ultima linea del padre.
 				} else if (last_line.find("goto") == string::npos){
 					this->addEdge(fatherBlock->name, currentBlockName);
 				}
-			} else {
-				this->addEdge(fatherBlock->name, currentBlockName);
+
+				// Verificar si hay una llamada a una función en la última línea del padre.
+				// En ese caso, seria conectar el bloque retorno con el bloque actual.
+				string func_name = extractCallLabel(last_line);
+				if (func_name != "") {
+					if (sys_func.find(func_name) == sys_func.end()) {
+						auto it = returns_func.find(func_name);
+						if (it != returns_func.end()) {
+							string return_block = it->second;
+							this->addEdge(return_block, currentBlockName);
+						}
+					}
+				}
 			}
 			fatherBlock = currentBlock;
 		}
@@ -1064,6 +1156,7 @@ string center(const string& s, int width) {
 	return string(left, ' ') + s + string(right, ' ');
 }
 
+// Imprime el grafo de flujo de control en consola.
 void FlowGraph::print() {
 	const int CELL_SIZE = 7;
 	string ss;
@@ -1152,9 +1245,10 @@ void FlowGraph::print() {
 	}
 }
 
+// Calcula los conjuntos Def y Use para cada bloque del grafo de flujo.
 void FlowGraph::computeDefAndUseSets(){
 	// Calcular Def para cada bloque
-	set<string> reserved_words = {"if", "goto", "ifnot", "begin_func", "end_func", "return", "call", "param", "alloc", "print", "read"};
+	set<string> reserved_words = {"if", "goto", "ifnot", "begin_func", "end_func", "return", "call", "param", "alloc", "print", "read", "concat"};
 	regex b(R"(^\s*L[0-9]+)");
 	regex def_regex(R"(\b([a-zA-Z_][a-zA-Z0-9_]*)\s*:=)");
 	regex use_regex(R"(\b([a-zA-Z_][a-zA-Z0-9_]*)\b)");
@@ -1220,6 +1314,7 @@ void FlowGraph::computeDefAndUseSets(){
 	}
 }
 
+// Calcula los conjuntos IN y OUT para cada bloque del grafo de flujo.
 void FlowGraph::computeINandOUT_lived_var(){
 	// Inicializar Conjuntos IN/OUT
 	bool changed = true;

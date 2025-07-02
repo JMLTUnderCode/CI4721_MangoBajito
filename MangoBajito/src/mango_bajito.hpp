@@ -423,6 +423,19 @@ struct FlowGraph {
 	// Metodos pendientes para lazy code motion
 };
 
+// Extrae la etiqueta de un salto goto de una línea de TAC.
+string extractGotoLabel(const string& line);
+
+// Extrae el nombre de una función llamada en una línea de TAC.
+string extractCallLabel(const string& line);
+
+// Elimina duplicados de un vector manteniendo el orden original.
+template<typename T>
+void remove_duplicates_keep_order(vector<T>& vec);
+
+// Centra un string en un campo de ancho fijo
+string center(const string& s, int width);
+
 // ======================================================
 // =               Data Flow Problem                    =
 // ======================================================
