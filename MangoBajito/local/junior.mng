@@ -14,4 +14,5 @@ se_prende(){
 	};
 	culito len : mango = me_mide(a);
 	a += " Esto es un string.";
+	culito multi : mango[2][3][4];
 };
