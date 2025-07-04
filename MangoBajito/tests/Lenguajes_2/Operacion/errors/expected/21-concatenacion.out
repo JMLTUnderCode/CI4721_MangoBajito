@@ -1,10 +1,12 @@
 | Acomódate que te lo estan analizando d:-)
-Error: TYPE_ERROR
-  - Sendo peo en la linea 3, columna 37: Type mismatch in operation: higuerote + mango
-  - Sendo peo en la linea 4, columna 39: Type mismatch in operation: higuerote + manguita
-  - Sendo peo en la linea 5, columna 44: Type mismatch in operation: higuerote + manguangua
-  - Sendo peo en la linea 6, columna 39: Type mismatch in operation: higuerote + negro
-  - Sendo peo en la linea 7, columna 40: Type mismatch in operation: higuerote + tas_claro
+Error: INVALID_OPERATION
+  - Sendo peo en la linea 3, columna 37: Estas operando "+" entre 'higuerote' y 'mango', que vaina es loca?
+  - Sendo peo en la linea 4, columna 39: Estas operando "+" entre 'higuerote' y 'manguita', que vaina es loca?
+  - Sendo peo en la linea 5, columna 44: Estas operando "+" entre 'higuerote' y 'manguangua', que vaina es loca?
+  - Sendo peo en la linea 6, columna 39: Estas operando "+" entre 'higuerote' y 'negro', que vaina es loca?
+  - Sendo peo en la linea 7, columna 40: Estas operando "+" entre 'higuerote' y 'tas_claro', que vaina es loca?
+  - Sendo peo en la linea 10, columna 15: Estas operando "-=" entre 'higuerote', que vaina es loca?
+  - Sendo peo en la linea 11, columna 15: Estas operando "*=" entre 'higuerote', que vaina es loca?
 [1;31m[5m
                =======================================================
                        ---->        Error Program        <----        

@@ -5,4 +5,8 @@ se_prende(){
 	culito n2 : higuerote = "hola " + 3.2e+204;
 	culito n3 : higuerote = "hola " + 'c';
 	culito n4 : higuerote = "hola " + Sisa;
+
+	culito n5 : higuerote = "hola ";
+	n5 -= "mundo";
+	n5 *= "mundo";
 };
