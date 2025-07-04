@@ -78,6 +78,7 @@ unordered_map<systemError, vector<string>> errorDictionary = {
 	{TRY_ERROR, {}},
 	{NON_VALUE, {}},
 	{TYPE_ERROR, {}},
+	{INVALID_OPERATION, {}},
 	{MODIFY_CONST, {}},
 	{SEGMENTATION_FAULT, {}},
 	{FUNC_PARAM_EXCEEDED, {}},
@@ -200,7 +201,7 @@ LabelGenerator labelGen;
 %token T_IZQPAREN T_DERPAREN T_IZQLLAVE T_DERLLAVE T_IZQCORCHE T_DERCORCHE
 
 // Declaracion de tipos de retorno para las producciones 
-%type <ast> programa librerias main 
+%type <ast> programa librerias main
 %type <ast> asignacion operadores_asignacion operaciones_unitarias
 %type <ast> instruccion secuencia_instrucciones instrucciones bloque_instrucciones
 %type <ast> declaracion tipo_declaracion declaracion_aputador 
@@ -216,7 +217,7 @@ LabelGenerator labelGen;
 
 // Declaracion de precedencia y asociatividad de Operadores
 // Asignacion
-%right T_ASIGNACION 
+%right T_ASIGNACION
 
 // Logicos y comparativos
 %left T_OSEA
@@ -234,7 +235,7 @@ LabelGenerator labelGen;
 %right T_NELSON
 %left T_FLECHA
 
-%right T_CASTEO  // VERIFICAR PRECEDENCIA
+%right T_CASTEO
 
 %start programa
 %%
@@ -1277,11 +1278,24 @@ asignacion:
 							if (new_node->show_value) new_node->cvalue = get<char>(attribute->value);
 							attribute->value = $3->cvalue;
 							$2->cvalue = $3->cvalue;
-						} else if (left_type == "higuerote" && op == "=") {
+						} else if (left_type == "higuerote") {
 							if (new_node->show_value) new_node->svalue = get<string>(attribute->value);
-							attribute->value = $3->svalue;
-							attribute->info[0].first = static_cast<int>($3->svalue.size()); // Actualizar el tamaño de la cadena
-							$2->svalue = $3->svalue;
+							if (op == "=") {
+								attribute->value = $3->svalue;
+								attribute->info[0].first = static_cast<int>($3->svalue.size()); // Actualizar el tamaño de la cadena
+								$2->svalue = $3->svalue;
+							} else if (op == "+=") {
+								string old_value = get<string>(attribute->value);
+								string new_value = old_value + $3->svalue;
+								attribute->value = new_value;
+								attribute->info[0].first = static_cast<int>(new_value.size());
+								$2->svalue = new_value;
+							} else {
+								FLAG_ERROR = INVALID_OPERATION;
+								string error_msg = "\"" + op + "\"" + " entre '" + left_type + "', que vaina es loca?";
+								yyerror(error_msg.c_str());
+							}
+							
 						} else if (left_type == "tas_claro" && op == "="){
 							if (new_node->show_value) new_node->bvalue = get<bool>(attribute->value);
 							attribute->value = $3->bvalue;
@@ -3235,6 +3249,10 @@ void yyerror(const char *var) {
 
 			case TYPE_ERROR:
 				error_msg += "Tas en droga?. Tienes " + string(var);
+				break;
+
+			case INVALID_OPERATION:
+				error_msg += "Estas operando " + string(var);
 				break;
 
 			case MODIFY_CONST:

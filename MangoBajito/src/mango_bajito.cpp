@@ -26,6 +26,7 @@ vector<string> sysErrorToString = {
 	"TRY_ERROR",
 	"NON_VALUE",
 	"TYPE_ERROR",
+	"INVALID_OPERATION",
 	"MODIFY_CONST",
 	"SEGMENTATION_FAULT",
 	"FUNC_PARAM_EXCEEDED",
@@ -379,8 +380,8 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 			kind = "Concatenación";	
 			if (op == "+") new_node->svalue = left->svalue + right->svalue;
 			else {
-				error_msg += "Unsupported type for operation: " + type;
-				addError(TYPE_ERROR, error_msg);
+				error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "', que vaina es loca?";
+				addError(INVALID_OPERATION, error_msg);
 			}
 		} else if (kind == "Numérica" && left_type == right_type) {
 			if (type == "mango"){
@@ -493,13 +494,13 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 					type = "manguangua";
 				}
 			} else {
-				error_msg += "Unsupported type for operation: " + type;
-				addError(TYPE_ERROR, error_msg);
+				error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "', que vaina es loca?";
+				addError(INVALID_OPERATION, error_msg);
 			}
 
 		} else if (kind == "Numérica" && left_type != right_type) {
-			error_msg += "Type mismatch in operation: " + left_type + " " + op + " " + right_type;
-			addError(TYPE_ERROR, error_msg);
+			error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "' y '" + right_type + "', que vaina es loca?";
+			addError(INVALID_OPERATION, error_msg);
 
 		} else if (kind == "Booleana") {
 			if (type == "tas_claro" && left_type == right_type) {
@@ -512,8 +513,8 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 				} else if (op == "nie") {
 					new_node->bvalue = (left->bvalue != right->bvalue);
 				} else {
-					error_msg += "Operación '" + op + "' no soportada entre tipos: '" + left->type + "' y '" + right->type + "'.";
-					addError(TYPE_ERROR, error_msg);
+					error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "', que vaina es loca?";
+					addError(INVALID_OPERATION, error_msg);
 				}
 
 			} else {
@@ -540,7 +541,7 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 					return "";
 				};
 
-				if (isNumeric(left->type) && isNumeric(right->type)) {
+				if (isNumeric(left_type) && isNumeric(right_type)) {
 					double l = get_double(left);
 					double r = get_double(right);
 					if (op == "igualito")      new_node->bvalue = (l == r);
@@ -549,7 +550,7 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 					else if (op == "lidel")    new_node->bvalue = (l >= r);
 					else if (op == "menol")    new_node->bvalue = (l < r);
 					else if (op == "peluche")  new_node->bvalue = (l <= r);
-				} else if (left->type == "higuerote" && right->type == "higuerote") {
+				} else if (left_type == "higuerote" && right_type == "higuerote") {
 					string l = get_string(left);
 					string r = get_string(right);
 					if (op == "igualito")      new_node->bvalue = (l == r);
@@ -558,7 +559,7 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 					else if (op == "lidel")    new_node->bvalue = (l >= r);
 					else if (op == "menol")    new_node->bvalue = (l < r);
 					else if (op == "peluche")  new_node->bvalue = (l <= r);
-				} else if (left->type == "negro" && right->type == "negro") {
+				} else if (left_type == "negro" && right_type == "negro") {
 					char l = get_char(left);
 					char r = get_char(right);
 					if (op == "igualito")      new_node->bvalue = (l == r);
@@ -573,8 +574,8 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 					} else if (op == "nie") {
 						new_node->bvalue = true;
 					} else {
-						error_msg += "Operación '" + op + "' no soportada entre tipos: '" + left->type + "' y '" + right->type + "'.";
-						addError(TYPE_ERROR, error_msg);
+						error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "', que vaina es loca?";
+						addError(INVALID_OPERATION, error_msg);
 					}
 				}
 			}
