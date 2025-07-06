@@ -2338,17 +2338,19 @@ guardia_siesasi:
 			FLAG_ERROR = TYPE_ERROR;
 			string error_msg = "Condición de tipo '" + $3->type + "', se esperaba 'tas_claro'.";
 			yyerror(error_msg.c_str());
-		} else {
-			ASTNode* siesasi_node = makeASTNode("si_es_asi");
-			
-			ASTNode* guardia_node = makeASTNode("Guardia");
-			guardia_node->children.push_back($3);
-			
-			siesasi_node->children.push_back(guardia_node); 
-			if($6) siesasi_node->children.push_back($6); // Incluir instrucciones de si_es_asi
-
-			$$ = siesasi_node;
 		}
+
+		$$ = makeASTNode("si_es_asi");
+		
+		// Construccion de la guardia.
+		ASTNode* guardia_node = makeASTNode("Guardia");
+		guardia_node->children.push_back($3);
+		
+		
+		$$->children.push_back(guardia_node); 
+
+		// Inclusion de instrucciones de si_es_asi
+		if($6) $$->children.push_back($6);
 	}
 	;
 
@@ -2358,13 +2360,16 @@ guardia:
 			FLAG_ERROR = TYPE_ERROR;
 			string error_msg = "Condición de tipo '" + $3->type + "', se esperaba 'tas_claro'.";
 			yyerror(error_msg.c_str());
-			$$ = nullptr;
-		} else {
-			$$ = makeASTNode("o_asi");
-			ASTNode* guardia_node = makeASTNode("Guardia");
-			guardia_node->children.push_back($3); // Agregar la expresión de la guardia.
-			$$->children.push_back(guardia_node);
 		}
+		$$ = makeASTNode("o_asi");
+		
+		// Construccion de la guardia.
+		ASTNode* guardia_node = makeASTNode("Guardia");
+		guardia_node->children.push_back($3); // Agregar la expresión de la guardia.
+		
+		// Inclusion de guardia en el nodo si_es_asi
+		$$->children.push_back(guardia_node);
+		
 	}
 	| T_NOJODA { $$ = makeASTNode("nojoda"); }
 	;
