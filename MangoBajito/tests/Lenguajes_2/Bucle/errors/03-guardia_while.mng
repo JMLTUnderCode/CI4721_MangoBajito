@@ -1,0 +1,33 @@
+# Test 03: Error de guardia en while.
+se_prende(){
+	culito n : mango = 0;
+
+	culito n0 : mango = 1;
+	echale_bolas_si (n) {
+		n = n + 1;
+	};
+
+	culito n1 : manguita = 1.23;
+	echale_bolas_si (n1) {
+		n = n + 1;
+	};
+
+	culito n2 : manguangua = 1.23e+200;
+	echale_bolas_si (n2) {
+		n = n + 1;
+	};
+
+	culito n3 : negro = 'c';
+	echale_bolas_si (n3) {
+		n = n + 1;
+	};
+
+	culito n4 : higuerote = "hola";
+	echale_bolas_si (n4) {
+		n = n + 1;
+	};
+
+	echale_bolas_si (n + n0) {
+		n = n + 1;
+	};
+};

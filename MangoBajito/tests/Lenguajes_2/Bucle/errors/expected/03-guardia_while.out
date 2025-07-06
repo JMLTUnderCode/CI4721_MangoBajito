@@ -1,0 +1,14 @@
+| Acomódate que te lo estan analizando d:-)
+Error: TYPE_ERROR
+  - Sendo peo en la linea 8, columna 2: Tas en droga?. Tienes Condición de tipo 'mango', se esperaba 'tas_claro'.
+  - Sendo peo en la linea 13, columna 2: Tas en droga?. Tienes Condición de tipo 'manguita', se esperaba 'tas_claro'.
+  - Sendo peo en la linea 18, columna 2: Tas en droga?. Tienes Condición de tipo 'manguangua', se esperaba 'tas_claro'.
+  - Sendo peo en la linea 23, columna 2: Tas en droga?. Tienes Condición de tipo 'negro', se esperaba 'tas_claro'.
+  - Sendo peo en la linea 28, columna 2: Tas en droga?. Tienes Condición de tipo 'higuerote', se esperaba 'tas_claro'.
+  - Sendo peo en la linea 32, columna 2: Tas en droga?. Tienes Condición de tipo 'mango', se esperaba 'tas_claro'.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]
