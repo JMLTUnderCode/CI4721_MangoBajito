@@ -63,9 +63,11 @@
 Programa
 |--> Main
      |--> Instrucción | Kind: ;
-          |--> Asignación | Kind: =
-          |    |--> p | Category: Declaración | Type: mango | Kind: VARIABLE
-          |    |--> Literal | Category: Numérico | Type: mango | Value: 23
+          |--> Instrucción | Kind: ;
+          |    |--> rescata | Category: Output | Type: higuerote | Value: ""
+          |    |--> Asignación | Kind: =
+          |         |--> p | Category: Declaración | Type: mango | Kind: VARIABLE
+          |         |--> Literal | Category: Numérico | Type: mango | Value: 23
           |--> fun1 | Category: Declaración | Type: un_coño | Kind: Función
                |--> Secuencia | Category: Declaración | Kind: ,
                |    |--> Secuencia | Category: Declaración | Kind: ,
