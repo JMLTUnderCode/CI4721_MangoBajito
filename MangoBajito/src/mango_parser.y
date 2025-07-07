@@ -206,7 +206,7 @@ LabelGenerator labelGen;
 %type <ast> instruccion secuencia_instrucciones instrucciones bloque_instrucciones
 %type <ast> declaracion tipo_declaracion declaracion_aputador 
 %type <ast> estructura firma_estructura clase_estructura acceso_struct atributo secuencia_atributos
-%type <ast> tipo_valor size_array multidimension tipos
+%type <ast> tipos tipo_valor lista_dimensiones dimension
 %type <ast> expresion expresion_apuntador expresion_nuevo 
 %type <ast> secuencia
 %type <ast> condicion guardia_siesasi alternativa guardia guardia_con_bloque
@@ -412,9 +412,10 @@ instruccion:
 	| T_BORRADOL T_ID T_PUNTO T_ID { $$ = nullptr; }
 	| T_RESCATA T_IZQPAREN secuencia T_DERPAREN { // Output
 		$$ = makeASTNode("rescata", "Output", "higuerote");
+		string output = "";
+		// Procesar secuencia de elementos a convertir en string(output)
 		if ($3) {
 			$$->children.push_back($3);
-			string output = "";
 			vector<ASTNode*> secuencia_elements;
 			collect_arguments($3, secuencia_elements);
 			for (auto elem : secuencia_elements) {
@@ -430,21 +431,22 @@ instruccion:
 					output += elem->svalue;
 				} else if (elem->type == "tas_claro") {
 					output += (elem->bvalue ? "Sisa" : "Nolsa");
-				} else if (elem->type == "pointer"){
+				} else if (elem->type == "pointer") {
 					/* POR IMPLEMENTAR */
 					//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
 					output += "nullptr";
+				} else if (elem->type == "un_coño") {
+					FLAG_ERROR = TYPE_ERROR;
+					string error_msg = "'" + elem->name +  "' de tipo '" + elem->type + "' en el argumento de \"rescata\", cómo muestro un coño?.";
+					yyerror(error_msg.c_str());
 				} else {
 					FLAG_ERROR = INTERNAL;
 					string error_msg = "RESCATA -> TIPO DESCONOCIDO: '" + elem->type + "'.";
 					yyerror(error_msg.c_str());
 				}
 			}
-			$$->svalue = output;
-		} else {
-			FLAG_ERROR = SEMANTIC;
-			yyerror("No hay nada que imprimir");
 		}
+		$$->svalue = output;
 
 		// Agregar TAC de salida
 		vector<ASTNode*> arg_nodes;
@@ -471,7 +473,7 @@ declaracion:
 			if ($4->category == "Array") {
 				int size_array = 0;
 				for (auto child : $4->children){
-					if (child->category == "Array_Size"){
+					if (child->category == "Array_Size" && child->type == "mango"){
 						size_array = child->ivalue;
 						if (size_array < 0){
 							FLAG_ERROR = SIZE_ARRAY_INVALID;
@@ -674,7 +676,7 @@ declaracion:
 			if ($4->category == "Array" && $6->category == "Array") {
 				int size_array = 0;
 				for (auto child : $4->children){
-					if (child->category == "Array_Size"){
+					if (child->category == "Array_Size" && child->type == "mango"){
 						size_array = child->ivalue;
 						if (size_array <= 0){
 							FLAG_ERROR = SIZE_ARRAY_INVALID;
@@ -1053,6 +1055,16 @@ declaracion_aputador:
 	| T_AHITA { $$ = makeASTNode("POINTER"); }
 	;
 
+tipos:
+	tipo_valor { $$ = $1; }
+	| tipo_valor lista_dimensiones {
+		$$ = makeASTNode("Array", "Array", $1->type);
+		$$->children = $2->children;
+	}
+	| T_ID { $$ = makeASTNode($1, "Identificador", $1); }
+	| T_UNCONO { $$ = makeASTNode("un_coño", "Tipo_Funcion", "un_coño"); }
+	;
+
 tipo_valor:
 	T_MANGO { $$ = makeASTNode("mango", "Type", "mango"); }
 	| T_MANGUITA { $$ = makeASTNode("manguita", "Type", "manguita"); }
@@ -1062,44 +1074,26 @@ tipo_valor:
 	| T_TASCLARO { $$ = makeASTNode("tas_claro", "Type", "tas_claro"); }
 	;
 
-multidimension:
-	{ $$ = nullptr; }
-	| T_IZQCORCHE expresion T_DERCORCHE multidimension {
+lista_dimensiones:
+	dimension {
 		$$ = makeASTNode("Dimension");
-		if ($2->type != "mango") {
-			FLAG_ERROR = SIZE_ARRAY_INVALID;
-			yyerror($2->type.c_str());
-		} else {
-			ASTNode* size_node = makeASTNode($2->name, "Array_Size", "mango");
-			size_node->ivalue = $2->ivalue; // Asignar el valor del tamaño del array
-			$$->children.push_back(size_node);
-			if ($4) $$->children.insert($$->children.end(), $4->children.begin(), $4->children.end());
-		}
+		$$->children.push_back($1);
+	}
+	| lista_dimensiones dimension {
+		$$ = $1;
+		$$->children.push_back($2);
 	}
 	;
 
-size_array:
-	T_IZQCORCHE expresion T_DERCORCHE multidimension {
-		$$ = makeASTNode("Dimension");
+dimension:
+	T_IZQCORCHE expresion T_DERCORCHE {
+		$$ = makeASTNode($2->name, "Array_Size", $2->type);
 		if ($2->type != "mango") {
 			FLAG_ERROR = SIZE_ARRAY_INVALID;
 			yyerror($2->type.c_str());
-		} else {
-			ASTNode* size_node = makeASTNode($2->name, "Array_Size", "mango");
-			size_node->ivalue = $2->ivalue; // Asignar el valor del tamaño del array
-			$$->children.push_back(size_node);
-			if ($4) $$->children.insert($$->children.end(), $4->children.begin(), $4->children.end());
 		}
+		$$->ivalue = $2->ivalue;
 	}
-
-tipos:
-	tipo_valor { $$ = $1; }
-	| tipos size_array {
-		$$ = makeASTNode("Array", "Array", $1->type);
-		$$->children = $2->children;
-	}
-	| T_ID { $$ = makeASTNode($1, "Identificador", $1); }
-	| T_UNCONO { $$ = makeASTNode("un_coño", "Tipo_Funcion", "un_coño"); }
 	;
 
 asignacion:
