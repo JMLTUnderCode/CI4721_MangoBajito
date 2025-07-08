@@ -1,0 +1,6 @@
+# Test 17: Declaracion de arreglos multidimensionales.
+se_prende(){
+	culito row : mango = 2;
+	culito col : mango = 3;
+	culito a : mango[2][col];
+};

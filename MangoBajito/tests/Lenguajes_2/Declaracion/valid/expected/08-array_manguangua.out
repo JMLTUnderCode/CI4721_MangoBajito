@@ -5,79 +5,76 @@
                =======================================================
 [0m
 [1;35m[5m    Clave: 1: decl2[1][0m
-    |---> Símbolo: decl2[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguangua, Value: 3.22e-12
+    |---> Símbolo: decl2[1], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 3.22e-12
 
 [1;35m[5m    Clave: 2: decl2[0][0m
-    |---> Símbolo: decl2[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguangua, Value: 3.22e+12
+    |---> Símbolo: decl2[0], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 3.22e+12
 
 [1;35m[5m    Clave: 3: decl1[2][0m
-    |---> Símbolo: decl1[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguangua, Value: 3.3e-15
+    |---> Símbolo: decl1[2], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 3.3e-15
 
 [1;35m[5m    Clave: 4: decl1[1][0m
-    |---> Símbolo: decl1[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguangua, Value: 1.22
+    |---> Símbolo: decl1[1], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 1.22
 
 [1;35m[5m    Clave: 5: decl0[1][0m
-    |---> Símbolo: decl0[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguangua, Value: 3.22e+12
+    |---> Símbolo: decl0[1], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 3.22e+12
 
 [1;35m[5m    Clave: 6: decl0[0][0m
-    |---> Símbolo: decl0[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguangua, Value: 123.12
+    |---> Símbolo: decl0[0], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 123.12
 
-[1;35m[5m    Clave: 7: decl0[2][0m
-    |---> Símbolo: decl0[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguangua, Value: 2.22e+12
+[1;35m[5m    Clave: 7: decl2[0m
+    |---> Símbolo: decl2, Categoría: (5)ARRAY, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Informacion: decl2[0] decl2[1] , Value: 2
 
-[1;35m[5m    Clave: 8: n1[0m
-    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: manguangua, Value: 3.22e-12
+[1;35m[5m    Clave: 8: mango[0m
+    |---> Símbolo: mango, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 9: decl2[0m
-    |---> Símbolo: decl2, Categoría: (11)ARRAY, Scope: 2, Type: manguangua, Informacion: decl2[0] decl2[1] , Value: 2
+[1;35m[5m    Clave: 9: manguita[0m
+    |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 10: mango[0m
-    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 10: decl0[0m
+    |---> Símbolo: decl0, Categoría: (5)ARRAY, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Informacion: decl0[0] decl0[1] decl0[2] , Value: 3
 
-[1;35m[5m    Clave: 11: manguita[0m
-    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 11: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 12: decl0[0m
-    |---> Símbolo: decl0, Categoría: (11)ARRAY, Scope: 2, Type: manguangua, Informacion: decl0[0] decl0[1] decl0[2] , Value: 3
+[1;35m[5m    Clave: 12: negro[0m
+    |---> Símbolo: negro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 13: manguangua[0m
-    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 13: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 14: negro[0m
-    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 14: decl1[0m
+    |---> Símbolo: decl1, Categoría: (5)ARRAY, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Informacion: decl1[0] decl1[1] decl1[2] , Value: 3
 
-[1;35m[5m    Clave: 15: tas_claro[0m
-    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 15: hablame[0m
+    |---> Símbolo: hablame, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 16: decl1[0m
-    |---> Símbolo: decl1, Categoría: (11)ARRAY, Scope: 2, Type: manguangua, Informacion: decl1[0] decl1[1] decl1[2] , Value: 3
+[1;35m[5m    Clave: 16: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 17: hablame[0m
-    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 17: decl1[0][0m
+    |---> Símbolo: decl1[0], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 2.22e+12
 
-[1;35m[5m    Clave: 18: un_coño[0m
-    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 18: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 19: funcion$[0m
-    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 19: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 20: decl1[0][0m
-    |---> Símbolo: decl1[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: manguangua, Value: 2.22e+12
+[1;35m[5m    Clave: 20: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 21: caramba_ñero[0m
-    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 21: rescata[0m
+    |---> Símbolo: rescata, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 22: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 22: n0[0m
+    |---> Símbolo: n0, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 3.22e+12
 
-[1;35m[5m    Clave: 23: higuerote[0m
-    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 23: decl0[2][0m
+    |---> Símbolo: decl0[2], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 2.22e+12
 
-[1;35m[5m    Clave: 24: rescata[0m
-    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
-
-[1;35m[5m    Clave: 25: n0[0m
-    |---> Símbolo: n0, Categoría: (0)CONSTANT, Scope: 2, Type: manguangua, Value: 3.22e+12
+[1;35m[5m    Clave: 24: n1[0m
+    |---> Símbolo: n1, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: manguangua, Value: 3.22e-12
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================

@@ -5,124 +5,121 @@
                =======================================================
 [0m
 [1;35m[5m    Clave: 1: edades[1][0m
-    |---> Símbolo: edades[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: mango, Value: 25
+    |---> Símbolo: edades[1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 25
 
 [1;35m[5m    Clave: 2: sexos[0m
-    |---> Símbolo: sexos, Categoría: (11)ARRAY, Scope: 2, Type: negro, Informacion: sexos[0] sexos[1] sexos[2] , Value: 3
+    |---> Símbolo: sexos, Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: negro, Informacion: sexos[0] sexos[1] sexos[2] , Value: 3
 
 [1;35m[5m    Clave: 3: sexos[0][0m
-    |---> Símbolo: sexos[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: negro, Value: 'F'
+    |---> Símbolo: sexos[0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: negro, Value: 'F'
 
 [1;35m[5m    Clave: 4: nombres[0m
-    |---> Símbolo: nombres, Categoría: (11)ARRAY, Scope: 2, Type: higuerote, Informacion: nombres[0] nombres[1] nombres[2] , Value: 3
+    |---> Símbolo: nombres, Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: nombres[0] nombres[1] nombres[2] , Value: 3
 
-[1;35m[5m    Clave: 5: rescata[0m
-    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 5: Persona.nombre[0m
+    |---> Símbolo: Persona.nombre, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 3, Type: higuerote
 
-[1;35m[5m    Clave: 6: higuerote[0m
-    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 6: Persona[0m
+    |---> Símbolo: Persona, Categoría: (3)STRUCT, Declaración: (1)CONSTANT, Scope: 2, Informacion: Persona.nombre Persona.sexo Persona.edad 
 
-[1;35m[5m    Clave: 7: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 7: rescata[0m
+    |---> Símbolo: rescata, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 8: yo[0m
-    |---> Símbolo: yo, Categoría: (4)STRUCT, Scope: 2, Type: Persona, Informacion: yo.nombre yo.sexo yo.edad 
+[1;35m[5m    Clave: 8: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 9: caramba_ñero[0m
-    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 9: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 10: funcion$[0m
-    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 10: yo[0m
+    |---> Símbolo: yo, Categoría: (3)STRUCT, Declaración: (0)VARIABLE, Scope: 2, Type: Persona, Informacion: yo.nombre yo.sexo yo.edad 
 
-[1;35m[5m    Clave: 11: edades[2][0m
-    |---> Símbolo: edades[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: mango, Value: 26
+[1;35m[5m    Clave: 11: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 12: un_coño[0m
-    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 12: edades[2][0m
+    |---> Símbolo: edades[2], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 26
 
-[1;35m[5m    Clave: 13: yo.edad[0m
-    |---> Símbolo: yo.edad, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: mango, Value: 26
+[1;35m[5m    Clave: 13: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 14: tas_claro[0m
-    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 14: yo.edad[0m
+    |---> Símbolo: yo.edad, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 26
 
-[1;35m[5m    Clave: 15: sexos[1][0m
-    |---> Símbolo: sexos[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: negro, Value: 'M'
+[1;35m[5m    Clave: 15: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 16: ella[0m
-    |---> Símbolo: ella, Categoría: (4)STRUCT, Scope: 2, Type: Persona, Informacion: ella.nombre ella.sexo ella.edad 
+[1;35m[5m    Clave: 16: sexos[1][0m
+    |---> Símbolo: sexos[1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: negro, Value: 'M'
 
-[1;35m[5m    Clave: 17: nombres[2][0m
-    |---> Símbolo: nombres[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 6 , Value: "Junior"
+[1;35m[5m    Clave: 17: ella[0m
+    |---> Símbolo: ella, Categoría: (3)STRUCT, Declaración: (0)VARIABLE, Scope: 2, Type: Persona, Informacion: ella.nombre ella.sexo ella.edad 
 
-[1;35m[5m    Clave: 18: nombres[1][0m
-    |---> Símbolo: nombres[1], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 9 , Value: "Jhonaiker"
+[1;35m[5m    Clave: 18: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 19: negro[0m
-    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 19: ella.sexo[0m
+    |---> Símbolo: ella.sexo, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: negro, Value: 'F'
 
-[1;35m[5m    Clave: 20: Persona[0m
-    |---> Símbolo: Persona, Categoría: (4)STRUCT, Scope: 2, Informacion: Persona.nombre Persona.sexo Persona.edad 
+[1;35m[5m    Clave: 20: sexos[2][0m
+    |---> Símbolo: sexos[2], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: negro, Value: 'M'
 
-[1;35m[5m    Clave: 21: Persona.nombre[0m
-    |---> Símbolo: Persona.nombre, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: higuerote
+[1;35m[5m    Clave: 21: Persona.sexo[0m
+    |---> Símbolo: Persona.sexo, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 3, Type: negro
 
-[1;35m[5m    Clave: 22: manguangua[0m
-    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 22: el.sexo[0m
+    |---> Símbolo: el.sexo, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: negro, Value: 'M'
 
-[1;35m[5m    Clave: 23: ella.sexo[0m
-    |---> Símbolo: ella.sexo, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: negro, Value: 'F'
+[1;35m[5m    Clave: 23: manguita[0m
+    |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 24: sexos[2][0m
-    |---> Símbolo: sexos[2], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: negro, Value: 'M'
+[1;35m[5m    Clave: 24: mango[0m
+    |---> Símbolo: mango, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 25: Persona.sexo[0m
-    |---> Símbolo: Persona.sexo, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: negro
+[1;35m[5m    Clave: 25: Persona.edad[0m
+    |---> Símbolo: Persona.edad, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 3, Type: mango
 
-[1;35m[5m    Clave: 26: el.sexo[0m
-    |---> Símbolo: el.sexo, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: negro, Value: 'M'
+[1;35m[5m    Clave: 26: el[0m
+    |---> Símbolo: el, Categoría: (3)STRUCT, Declaración: (0)VARIABLE, Scope: 2, Type: Persona, Informacion: el.nombre el.sexo el.edad 
 
-[1;35m[5m    Clave: 27: manguita[0m
-    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 27: yo.nombre[0m
+    |---> Símbolo: yo.nombre, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Value: "Junior"
 
-[1;35m[5m    Clave: 28: mango[0m
-    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 28: edades[0][0m
+    |---> Símbolo: edades[0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 23
 
-[1;35m[5m    Clave: 29: Persona.edad[0m
-    |---> Símbolo: Persona.edad, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 3, Type: mango
+[1;35m[5m    Clave: 29: yo.sexo[0m
+    |---> Símbolo: yo.sexo, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: negro, Value: 'M'
 
-[1;35m[5m    Clave: 30: el[0m
-    |---> Símbolo: el, Categoría: (4)STRUCT, Scope: 2, Type: Persona, Informacion: el.nombre el.sexo el.edad 
+[1;35m[5m    Clave: 30: ella.nombre[0m
+    |---> Símbolo: ella.nombre, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Value: "Astrid"
 
-[1;35m[5m    Clave: 31: yo.nombre[0m
-    |---> Símbolo: yo.nombre, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: higuerote, Value: "Junior"
+[1;35m[5m    Clave: 31: ella.edad[0m
+    |---> Símbolo: ella.edad, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 23
 
-[1;35m[5m    Clave: 32: edades[0][0m
-    |---> Símbolo: edades[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: mango, Value: 23
+[1;35m[5m    Clave: 32: edades[0m
+    |---> Símbolo: edades, Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: edades[0] edades[1] edades[2] , Value: 3
 
-[1;35m[5m    Clave: 33: yo.sexo[0m
-    |---> Símbolo: yo.sexo, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: negro, Value: 'M'
+[1;35m[5m    Clave: 33: el.nombre[0m
+    |---> Símbolo: el.nombre, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Value: "Jhonaiker"
 
-[1;35m[5m    Clave: 34: ella.nombre[0m
-    |---> Símbolo: ella.nombre, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: higuerote, Value: "Astrid"
+[1;35m[5m    Clave: 34: el.edad[0m
+    |---> Símbolo: el.edad, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 25
 
-[1;35m[5m    Clave: 35: ella.edad[0m
-    |---> Símbolo: ella.edad, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: mango, Value: 23
+[1;35m[5m    Clave: 35: hablame[0m
+    |---> Símbolo: hablame, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 36: edades[0m
-    |---> Símbolo: edades, Categoría: (11)ARRAY, Scope: 2, Type: mango, Informacion: edades[0] edades[1] edades[2] , Value: 3
+[1;35m[5m    Clave: 36: nombres[0][0m
+    |---> Símbolo: nombres[0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 6 , Value: "Astrid"
 
-[1;35m[5m    Clave: 37: el.nombre[0m
-    |---> Símbolo: el.nombre, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: higuerote, Value: "Jhonaiker"
+[1;35m[5m    Clave: 37: nombres[2][0m
+    |---> Símbolo: nombres[2], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 6 , Value: "Junior"
 
-[1;35m[5m    Clave: 38: el.edad[0m
-    |---> Símbolo: el.edad, Categoría: (10)STRUCT_ATTRIBUTE, Scope: 2, Type: mango, Value: 25
+[1;35m[5m    Clave: 38: negro[0m
+    |---> Símbolo: negro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 39: hablame[0m
-    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
-
-[1;35m[5m    Clave: 40: nombres[0][0m
-    |---> Símbolo: nombres[0], Categoría: (12)ARRAY_ELEMENT, Scope: 2, Type: higuerote, Informacion: 6 , Value: "Astrid"
+[1;35m[5m    Clave: 39: nombres[1][0m
+    |---> Símbolo: nombres[1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 9 , Value: "Jhonaiker"
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
