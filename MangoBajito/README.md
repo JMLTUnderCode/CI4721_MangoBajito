@@ -63,9 +63,10 @@ Módulo desarrollados del proyecto Mango Bajito.
 	```
 
   - Para ejecutar la suit de pruebas automzatizada:
-	Actualmente hay dos suit de pruebas.
-	- Lenguajes_II  : Pruebas asociadas a Lexer, Parser, Tabla de Símbolos y AST.
-	- Lenguajes_III : TAC
+	Actualmente hay tres suit de pruebas.
+	- Lenguajes_3  : Pruebas asociadas a Lexer, Parser, Tabla de Símbolos y AST.
+	- Lenguajes_3 : TAC
+	- programas: Programas finales de proyecto.
 	
 	Para ejecutar la suit de pruebas de Lenguajes II:
 	```
@@ -75,9 +76,24 @@ Módulo desarrollados del proyecto Mango Bajito.
 	```
 	make unitest3
 	```
+    Para ejecutar la suit de pruebas de programas finales:
+    ```
+    make unitestfinal
+    ```
+
+  - Actualizacion de archivos de oro para suits de pruebas.
+    > [!IMPORTANT]
+    > Cuidado sobre la ejecucion de estos scripts. Antes de realizar la actualizacion de los archivos `.out` mediante estos scripts se deben verificar que no se hayan perjudicado otros tests mediante `make unitest` (2, 3 y final segun sea el caso).
+    - `lenguajes2_uptodate_tests.sh`: Encargado de actualizar los archivos `.out` asociados a Lenguajes 2.
+    - `lenguajes3_uptodate_tests.sh`: Encargado de actualizar los archivos `.out` asociados a Lenguajes 3.
+    - `final_uptodate_tests.sh`: Encargado de actualizar los archivos `.out` asociados a programas finales del proyecto.
+
+  - Script adicionales:
+    - `check_tac.sh`: Permite realizar verificaciones rápidas sobre el proyecto a nivel de TAC para un test especificado como argumento.
+    - `remove_zone_identifiers.sh`: Permite remover todos los archivos que tengan terminacion `:Zone.Identifier` del proyecto, regularmente estos archivos provienen de traer archivos directamente de windows hacia linux.
 
 	>[!NOTE]
-	> * Esto ejecutará todas las pruebas unitarias definidas en el proyecto, contenidas en la carpeta `tests/Lenguajes_II` y `tests/Lenguajes_III`.
+	> * Esto ejecutará todas las pruebas unitarias definidas en el proyecto, contenidas en la carpeta `tests/Lenguajes_3` y `tests/Lenguajes_3`.
 	> * El tipo de prueba es mediante `archivos de oro` contenidos en las subcarpetas 'expected' de cada sección de prueba en las subcarpetas  de `tests/`, estos `.out` representan la salida esperada de los archivos en la sección de prueba correspondiente.
 
   - Para realizar pruebas locales:
