@@ -1,0 +1,9 @@
+# Test 03: Error de operacion de division decimal.
+se_prende(){
+	culito n0 : manguita = 8.2 / 2;
+	culito n1 : manguita = 8.2 / 1.32e+200;
+	culito n2 : manguita = 8.2 / 'c';
+	culito n3 : manguita = 8.2 / "hola";
+	culito n4 : manguita = 8.2 / Sisa;
+	culito n5 : manguita = 8.2 / 2 / 1.2e+100;
+};

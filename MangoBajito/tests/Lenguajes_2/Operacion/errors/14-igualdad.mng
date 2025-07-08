@@ -1,0 +1,10 @@
+# Test 14: Error de pperador de igualdad (igualito)
+se_prende(){
+	echar_cuento fun1(p1 : tas_claro) lanza un_coño {
+		si_es_asi(p1){
+			rescata("Check");
+		};
+	};
+
+	culito n0 : tas_claro = fun1(Sisa) igualito Sisa;
+};

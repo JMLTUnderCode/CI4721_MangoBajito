@@ -1,0 +1,9 @@
+# Test 13: Error operador OR lógico (o_sea)
+se_prende(){
+    culito n0 : tas_claro = Sisa o_sea 2;
+	n0 = Sisa o_sea 3.2;
+	n0 = Sisa o_sea 123.2e+200;
+	n0 = Sisa o_sea 'c';
+	n0 = Sisa o_sea "hola";
+	n0 = Sisa o_sea "hola" o_sea 2;
+};

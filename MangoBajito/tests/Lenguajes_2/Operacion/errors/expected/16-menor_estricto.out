@@ -1,19 +1,19 @@
 | Acomódate que te lo estan analizando d:-)
 Error: INVALID_OPERATION
-  - Sendo peo en la linea 3, columna 37: Estas operando "menol" entre 'mango', que vaina es loca?
-  - Sendo peo en la linea 4, columna 40: Estas operando "menol" entre 'mango', que vaina es loca?
-  - Sendo peo en la linea 5, columna 38: Estas operando "menol" entre 'mango', que vaina es loca?
-  - Sendo peo en la linea 7, columna 40: Estas operando "menol" entre 'manguita', que vaina es loca?
-  - Sendo peo en la linea 8, columna 43: Estas operando "menol" entre 'manguita', que vaina es loca?
-  - Sendo peo en la linea 9, columna 41: Estas operando "menol" entre 'manguita', que vaina es loca?
-  - Sendo peo en la linea 11, columna 45: Estas operando "menol" entre 'manguangua', que vaina es loca?
-  - Sendo peo en la linea 12, columna 48: Estas operando "menol" entre 'manguangua', que vaina es loca?
-  - Sendo peo en la linea 13, columna 46: Estas operando "menol" entre 'manguangua', que vaina es loca?
-  - Sendo peo en la linea 15, columna 43: Estas operando "menol" entre 'negro', que vaina es loca?
-  - Sendo peo en la linea 16, columna 41: Estas operando "menol" entre 'negro', que vaina es loca?
-  - Sendo peo en la linea 18, columna 44: Estas operando "menol" entre 'higuerote', que vaina es loca?
-  - Sendo peo en la linea 20, columna 42: Estas operando "menol" entre 'tas_claro', que vaina es loca?
-  - Sendo peo en la linea 21, columna 43: Estas operando "menol" entre 'tas_claro', que vaina es loca?
+  - Sendo peo en la linea 3, columna 37: Estas operando "menol" entre 'mango' y 'negro', que vaina es loca?
+  - Sendo peo en la linea 4, columna 40: Estas operando "menol" entre 'mango' y 'higuerote', que vaina es loca?
+  - Sendo peo en la linea 5, columna 38: Estas operando "menol" entre 'mango' y 'tas_claro', que vaina es loca?
+  - Sendo peo en la linea 7, columna 40: Estas operando "menol" entre 'manguita' y 'negro', que vaina es loca?
+  - Sendo peo en la linea 8, columna 43: Estas operando "menol" entre 'manguita' y 'higuerote', que vaina es loca?
+  - Sendo peo en la linea 9, columna 41: Estas operando "menol" entre 'manguita' y 'tas_claro', que vaina es loca?
+  - Sendo peo en la linea 11, columna 45: Estas operando "menol" entre 'manguangua' y 'negro', que vaina es loca?
+  - Sendo peo en la linea 12, columna 48: Estas operando "menol" entre 'manguangua' y 'higuerote', que vaina es loca?
+  - Sendo peo en la linea 13, columna 46: Estas operando "menol" entre 'manguangua' y 'tas_claro', que vaina es loca?
+  - Sendo peo en la linea 15, columna 43: Estas operando "menol" entre 'negro' y 'higuerote', que vaina es loca?
+  - Sendo peo en la linea 16, columna 41: Estas operando "menol" entre 'negro' y 'tas_claro', que vaina es loca?
+  - Sendo peo en la linea 18, columna 44: Estas operando "menol" entre 'higuerote' y 'tas_claro', que vaina es loca?
+  - Sendo peo en la linea 20, columna 42: Estas operando "menol" entre 'tas_claro' y 'tas_claro', que vaina es loca?
+  - Sendo peo en la linea 21, columna 43: Estas operando "menol" entre 'tas_claro' y 'tas_claro', que vaina es loca?
 [1;31m[5m
                =======================================================
                        ---->        Error Program        <----        

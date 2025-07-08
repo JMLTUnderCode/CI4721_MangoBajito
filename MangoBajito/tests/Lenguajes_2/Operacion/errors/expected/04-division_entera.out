@@ -1,0 +1,15 @@
+| Acomódate que te lo estan analizando d:-)
+Error: INVALID_OPERATION
+  - Sendo peo en la linea 3, columna 30: Estas operando "//" entre 'mango' y 'manguita', que vaina es loca?
+  - Sendo peo en la linea 4, columna 36: Estas operando "//" entre 'mango' y 'manguangua', que vaina es loca?
+  - Sendo peo en la linea 5, columna 30: Estas operando "//" entre 'mango' y 'negro', que vaina es loca?
+  - Sendo peo en la linea 6, columna 33: Estas operando "//" entre 'mango' y 'higuerote', que vaina es loca?
+  - Sendo peo en la linea 7, columna 31: Estas operando "//" entre 'mango' y 'tas_claro', que vaina es loca?
+  - Sendo peo en la linea 8, columna 31: Estas operando "//" entre 'mango' y 'manguita', que vaina es loca?
+  - Sendo peo en la linea 8, columna 42: Estas operando "//" entre 'mango' y 'manguangua', que vaina es loca?
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

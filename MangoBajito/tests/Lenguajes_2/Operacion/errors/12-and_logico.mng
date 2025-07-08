@@ -1,0 +1,9 @@
+# Test 12: Error operador AND lógico (yunta)
+se_prende(){
+    culito n0 : tas_claro = Sisa yunta 2;
+	n0 = Sisa yunta 3.2;
+	n0 = Sisa yunta 123.2e+200;
+	n0 = Sisa yunta 'c';
+	n0 = Sisa yunta "hola";
+	n0 = Sisa yunta "hola" yunta 2;
+};
