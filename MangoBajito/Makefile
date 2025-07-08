@@ -23,7 +23,10 @@ unitest2: build/mango_bajito
 unitest3: build/mango_bajito
 	@bash lenguajes3_run_tests.sh
 
+unitestfinal: build/mango_bajito
+	@bash final_run_tests.sh
+
 clean:
 	@rm -rf build mango_bajito
 
-.PHONY: all run local unitest2 unitest3 clean
+.PHONY: all run local unitest2 unitest3 unitestfinal clean
