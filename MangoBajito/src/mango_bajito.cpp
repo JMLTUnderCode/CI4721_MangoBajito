@@ -376,11 +376,14 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 		return nullptr;
 	} else {
 		type = left_type;
-		if (kind == "Numérica" && left_type == right_type && left_type == "higuerote") {
-			kind = "Concatenación";	
+		if (left_type == "un_coño" || right_type == "un_coño") {
+			error_msg += "Cómo comparo 'un_coño' con otra vaina más? Definitivamente la droga pega.";
+			addError(INVALID_OPERATION, error_msg);
+		} else if (kind == "Numérica" && left_type == right_type && left_type == "higuerote") {
+			kind = "Concatenación";
 			if (op == "+") new_node->svalue = left->svalue + right->svalue;
 			else {
-				error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "', que vaina es loca?";
+				error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "' y '" + right_type + "', que vaina es loca?";
 				addError(INVALID_OPERATION, error_msg);
 			}
 		} else if (kind == "Numérica" && left_type == right_type) {
@@ -494,7 +497,7 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 					type = "manguangua";
 				}
 			} else {
-				error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "', que vaina es loca?";
+				error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "' y '" + right_type + "', que vaina es loca?";
 				addError(INVALID_OPERATION, error_msg);
 			}
 
@@ -513,7 +516,7 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 				} else if (op == "nie") {
 					new_node->bvalue = (left->bvalue != right->bvalue);
 				} else {
-					error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "', que vaina es loca?";
+					error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "' y '" + right_type + "', que vaina es loca?";
 					addError(INVALID_OPERATION, error_msg);
 				}
 
@@ -574,7 +577,7 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 					} else if (op == "nie") {
 						new_node->bvalue = true;
 					} else {
-						error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "', que vaina es loca?";
+						error_msg += "Estas operando \"" + op + "\"" + " entre '" + left_type + "' y '" + right_type + "', que vaina es loca?";
 						addError(INVALID_OPERATION, error_msg);
 					}
 				}
