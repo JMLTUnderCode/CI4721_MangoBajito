@@ -1,0 +1,158 @@
+# Test 6: Caso de Prueba Nro.6
+# Implementación del algoritmo de Kruskal, incluyendo implementación de cola de prioridades y conjuntos disjuntos.
+
+#Implementación de Priority Queue
+arroz_con_mango Edge {
+    culito src: mango;
+    culito dest: mango;
+    culito weight: mango;
+};
+
+arroz_con_mango Node {
+    culito edge: Edge;
+    ahi_ta culito next: Node;
+};
+
+arroz_con_mango PriorityQueue {
+    ahi_ta culito head: Node;
+};
+
+echar_cuento initialize_pq(aki_toy pq: PriorityQueue) lanza un_coño {
+    pq.head = pelabola;
+};
+
+echar_cuento insert(aki_toy pq: PriorityQueue, edge: Edge) lanza un_coño {
+    ahi_ta culito newNode: Node = nuevo Node();
+    newNode->edge = edge;
+    newNode->next = pelabola;
+    
+    si_es_asi (pq.head igualito pelabola o_sea pq.head->edge.weight lidel edge.weight) {
+    	newNode->next = pq.head;
+    	pq.head = newNode;
+    } nojoda {
+    	ahi_ta culito current: Node = pq.head;
+    	echale_bolas_si (current->next nie pelabola yunta current->next->edge.weight menol edge.weight) {
+    		current = current->next;
+    	}
+    	newNode->next = current->next;
+    	current->next = newNode;
+    };
+};
+
+echar_cuento extractMin(aki_toy pq: PriorityQueue) lanza Edge {
+    si_es_asi (pq.head igualito pelabola) {
+    	lanzate {-1, -1, -1};
+    };
+    
+    ahi_ta jeva temp: Node = pq.head;
+    jeva minEdge: Edge = pq.head->edge;
+    pq.head = pq.head->next;
+    borradol temp;
+    
+    lanzate minEdge;
+};
+
+echar_cuento isEmpty(aki_toy pq: PriorityQueue) lanza tas_claro {
+    lanzate pq.head igualito pelabola;
+};
+
+# Implementación de Disjoin Set Union
+arroz_con_mango DSU {
+    ahi_ta culito parent: mango;
+    ahi_ta culito rank: mango;
+    culito size: mango;
+};
+
+echar_cuento initialize_dsu(ta_prestao dsu: DSU, n: mango) lanza un_coño {
+    dsu.parent = cero_km mango[n];
+    dsu.rank = cero_km mango[n];
+    dsu.size = n;
+    rellenamelo(dsu.rank, 0);
+    repite_burda i desde 0 hasta n {
+    	dsu.parent[i] = i;
+    };
+};
+
+echar_cuento find(aki_toy dsu: DSU, x: mango) lanza mango {
+    si_es_asi (dsu.parent[x] nie x) {
+    	dsu.parent[x] = find(dsu, dsu.parent[x]);
+    };
+    lanzate dsu.parent[x];
+};
+
+echar_cuento unionSets(aki_toy dsu: DSU, x: mango, y: mango) lanza un_coño {
+    jeva rootX: mango = find(dsu, x);
+    jeva rootY: mango = find(dsu, y);
+    si_es_asi (rootX nie rootY) {
+    	si_es_asi (dsu.rank[rootX] mayol dsu.rank[rootY]) {
+    		dsu.parent[rootX] = rootY;
+    	} o_asi (dsu.rank[rootX] menol dsu.rank[rootY]) {
+    		dsu.parent[rootX] = rootY;
+    	} nojoda {
+    		dsu.parent[rootY] = rootX;
+    		dsu.rank[rootX]++;
+    	};
+    };
+};
+
+# Implementación de Grafo
+arroz_con_mango Graph {
+    ahi_ta culito edges: Edge;  # Se utiliza la misma estructura Edge usada en PriorityQueue
+    culito edgeCount: mango;
+    culito vertexCount: mango;
+};
+
+echar_cuento initialize(aki_toy g: Graph, vertices: mango, edges: mango) lanza un_coño {
+    g.vertexCount = vertices;
+    g.edgeCount = edges;
+    g.edges = cero_km Edge[edges];
+};
+
+# Algoritmo de Kruskal para encontrar el MST de un grafo
+echar_cuento kruskal(aki_toy g: Graph) lanza un_coño {
+    # Inicializar el DSU
+    culito dsu: DSU;
+    initialize_dsu(dsu, g.vertexCount);
+    
+    # Inicializar la PriorityQueue
+    culito pq: PriorityQueue;
+    initialize_pq(pq);
+    # Insertar todas las aristas en la PriorityQueue
+    repite_burda i desde 0 hasta g.edgeCount {
+    	insert(pq, e.edges[i]);
+    };
+
+    ahi_ta culito mst: Edge = cero_km Edge[g.vertexCount - 1];
+    culito mstSize: mango = 0;
+    culito totalWeight: mango = 0;
+    echale_bolas_si (nelson isEmpty(pq) yunta mstSize menol g.vertexCount - 1) {
+    	culito edge: Edge = extractMin(pq);
+    	culito rootSrc: mango = find(dsu, edge.src);
+    	culito rootDest: mango = find(dsu, edge.dest);
+    	si_es_asi (rootSrc nie rootDest) {
+    		mstSize++;
+    		mst[mstSize] = edge;
+    		totalWeight += edge.weight;
+    		unionSets(dsu, roootSrc, rootDest);
+    	};
+    };
+
+    meando {
+    	si_es_asi (mstSize nie g.vertexCount - 1) {
+    		ah_vaina("No se pudo encontrar un MST (el grafo no es conexo).");
+    	};
+    	rescata("MST encontrado:");
+    	repite_burda i desde 0 hasta mstSize {
+    		rescata("Arista: ", (higuerote)mst[i].src, " -> ", (higuerote)mst[i].dest, ", Peso: ", (higuerote)mst[i].weight);
+    	};
+    	rescata("Peso total de MST: ", (higuerote)totalWeight);
+    } fuera_del_perol como e{
+    	rescata(e.mensaje);
+    };
+    
+    borradol mst;
+};
+
+se_prende(){
+	# Manejar logica de llamado de funciones
+};
