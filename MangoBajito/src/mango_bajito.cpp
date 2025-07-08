@@ -208,6 +208,7 @@ void SymbolTable::print_table() {
 void SymbolTable::print_attribute(Attributes &attr){
 	cout << "    |---> Símbolo: " << attr.symbol_name;
 	cout << ", Categoría: (" << attr.category  << ")" << categoryToString(attr.category);
+	cout << ", Declaración: (" << attr.declare << ")" << declareToString(attr.declare);
 	cout << ", Scope: " << attr.scope;
 	if (attr.type) cout << ", Type: "<< attr.type->symbol_name;
 	if (!attr.info.empty()) {
@@ -266,15 +267,7 @@ void SymbolTable::print_values(Values x){
 			for (const auto& v : arg) cout << v << " ";
 			cout << "]";
 		}
-		else if constexpr (is_same_v<T, vector<RecursiveArray>>) {
-			cout << "[";
-			for (const auto& v : arg) {
-				cout << "{";
-				for (const auto& val : v.data) this->print_values(val);
-				cout << "} ";
-			}
-			cout << "]";
-		}
+		
 	}, x);
 }
 

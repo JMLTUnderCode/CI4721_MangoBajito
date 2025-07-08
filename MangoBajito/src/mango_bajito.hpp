@@ -22,7 +22,7 @@
 
 using namespace std;
 
-struct RecursiveArray; // Declaración adelantada
+//struct RecursiveArray; // Declaración adelantada
 class SymbolTable;
 
 // Definicion de tipo Information para almacenar la informacion de los atributos
@@ -32,78 +32,92 @@ typedef variant<string, int, bool, char> Information;
 typedef variant<
 	nullptr_t,
 	char,
-	int, 
-	bool, 
-	float, 
-	double, 
+	int,
+	bool,
+	float,
+	double,
 	string,
-	int*,                    // Puntero a int
-	double*,                 // Puntero a double
-	string*,                 // Puntero a string
-	vector<int>, 
-	vector<float>, 
-	vector<double>, 
-	vector<string>,
-	vector<RecursiveArray>   // Recursión para matrices anidadas
+	int*,
+	double*,
+	string*,
+	vector<int>,
+	vector<float>,
+	vector<double>,
+	vector<string>
+	//vector<RecursiveArray>   // Recursión para matrices anidadas
 > Values;
 
 // Estructura para representar arreglos anidados recursivos
-struct RecursiveArray {
+/*struct RecursiveArray {
 	vector<Values> data; // Puede contener cualquier tipo de Values
-};
+};*/
 
 // Definicion de Category para almancenar las categorias de los simbolos
 enum Category{
-	CONSTANT,
-	VARIABLE,
-	FUNCTION,
-	PARAMETERS,
-	STRUCT,
-	UNION,
-	FIELD,
-	TYPE,
-	POINTER_C, 
-	POINTER_V,
-	STRUCT_ATTRIBUTE,
-	ARRAY,
-	ARRAY_ELEMENT,
-	VAR_FOR,
-	ERROR_HANDLER,
-	UNKNOWN
+	TYPE,           // Tipos del lenguaje
+	FUNCTION,       // Funciones
+	PARAMETERS,     // Parametros de Funciones
+	STRUCT,         // Estructura
+	UNION,          // Variantes
+	ARRAY,          // Arreglos
+	ID,             // Identificador
+	VAR_FOR,        // Variable de ciclo for
+	ERROR_HANDLER,  // Manejo de Errores
+	UNKNOWN,        // Categoria desconocida
+};
+
+enum Declare{
+	VARIABLE,   // Variable
+	CONSTANT,   // Constante
+	POINTER_C,  // Puntero a constante
+	POINTER_V,  // Puntero a variable
 };
 
 inline string categoryToString(Category cat) {
-    switch (cat) {
-        case CONSTANT:          return "CONSTANT";
-        case VARIABLE:          return "VARIABLE";
-        case FUNCTION:          return "FUNCTION";
-        case PARAMETERS:        return "PARAMETERS";
-        case STRUCT:            return "STRUCT";
-        case UNION:             return "UNION";
-        case FIELD:             return "FIELD";
-        case TYPE:              return "TYPE";
-        case POINTER_C:         return "POINTER_C";
-        case POINTER_V:         return "POINTER_V";
-        case STRUCT_ATTRIBUTE:  return "STRUCT_ATTRIBUTE";
-        case ARRAY:             return "ARRAY";
-        case ARRAY_ELEMENT:     return "ARRAY_ELEMENT";
-		case VAR_FOR:           return "VAR_FOR";
-		case ERROR_HANDLER:     return "ERROR_HANDLER";
-        case UNKNOWN:           return "UNKNOWN";
-        default:                return "UNKNOWN";
-    }
+	switch (cat) {
+		case TYPE:          return "TYPE";
+		case FUNCTION:      return "FUNCTION";
+		case PARAMETERS:    return "PARAMETERS";
+		case STRUCT:        return "STRUCT";
+		case UNION:         return "UNION";
+		case ARRAY:         return "ARRAY";
+		case ID:            return "ID";
+		case VAR_FOR:       return "VAR_FOR";
+		case ERROR_HANDLER: return "ERROR_HANDLER";
+		case UNKNOWN:       return "UNKNOWN";
+		default:            return "UNKNOWN";
+	}
+}
+
+inline string declareToString(Declare decl) {
+	switch (decl) {
+		case CONSTANT:  return "CONSTANT";
+		case VARIABLE:  return "VARIABLE";
+		case POINTER_C: return "POINTER_C";
+		case POINTER_V: return "POINTER_V";
+		default:        return "UNKNOWN";
+	}
+}
+
+inline Declare stringToDeclare(string decl) {
+	if (decl == "POINTER_V") return POINTER_V;
+	else if (decl == "POINTER_C") return POINTER_C;
+	else if (decl == "VARIABLE") return VARIABLE;
+	else if (decl == "CONSTANTE") return CONSTANT;
+	return VARIABLE;
 }
 
 // Implementacion de la estructura de Atributos
 struct Attributes {
 	string symbol_name;
 	Category category;
+	Declare declare;
 	int scope;
 	Attributes *type;
 	Values value;
 	vector<pair<Information, Attributes*>> info; // Informacion de los atributos (depende de Category)
 
-	Attributes() : symbol_name(""), category(UNKNOWN), scope(0), type(nullptr), value(nullptr), info({}) {}
+	Attributes() : symbol_name(""), category(UNKNOWN), declare(CONSTANT), scope(0), type(nullptr), value(nullptr), info({}) {}
 };
 
 // ======================================================
@@ -176,7 +190,7 @@ class SymbolTable {
 		vector<pair<int, bool> > scopes;					//Pila de scopes
 		vector<string> predef_types = {
 			"mango", "manguita", "manguangua", "negro", "higuerote", "tas_claro", 
-			"un_coño", "funcion$", "caramba_ñero"
+			"un_coño", "caramba_ñero"
 		};
 		vector<string> predef_func = {"rescata", "hablame", "se_prende"};
 	public:
@@ -308,17 +322,17 @@ string valuesToString(const ASTNode* node);
  * @note - El método reset() restablece ambos contadores a cero.
 */
 class LabelGenerator {
-    int counter_label; 		 // Contador de etiquetas
+	int counter_label; 		 // Contador de etiquetas
 	int counter_temp;  		 // Contador de etiquetas temporales
 	int counter_temp_string; // Contador de etiquetas temporales para strings
 	int counter_temp_const;  // Contador de etiquetas temporales para constantes
 public:
-    LabelGenerator() : counter_label(0), counter_temp(0) {}
+	LabelGenerator() : counter_label(0), counter_temp(0) {}
 
-    string newLabel(const string& base = "L") {
+	string newLabel(const string& base = "L") {
 		if (base != "L") return base;
-        return base + to_string(counter_label++);
-    }
+		return base + to_string(counter_label++);
+	}
 
 	string newTemp(const string& base = "t") {
 		if (base != "t") return base;
@@ -403,17 +417,17 @@ struct BasicBlock {
 };
 
 struct FlowGraph {
-    vector<pair<string, BasicBlock*> > blocks;
+	vector<pair<string, BasicBlock*> > blocks;
 
-    FlowGraph();
-    ~FlowGraph() {
-        for (auto& p : blocks) delete p.second;
-    }
+	FlowGraph();
+	~FlowGraph() {
+		for (auto& p : blocks) delete p.second;
+	}
 
 	BasicBlock* getBlockByName(const string& name);
 	BasicBlock* getBlockByLabel(const string& label);
 	bool createBlock(const string& name, vector<string> code = {}, const string& label = "");
-    void addEdge(const string& from, const string& to);
+	void addEdge(const string& from, const string& to);
 	int len();
 	void generateFlowGraph(vector<string>& tac);
 	void print();

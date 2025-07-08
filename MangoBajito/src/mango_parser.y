@@ -365,7 +365,7 @@ instruccion:
 			if (var_attr->type != nullptr && isNumeric(var_attr->type->symbol_name)) { // Verificar si es de tipo numerico.		
 				new_node->type = var_attr->type->symbol_name;
 				if (var_attr->category != PARAMETERS){ // Si es parametro de una funcion no hay problema.
-					if(var_attr->category == CONSTANT || var_attr->category == POINTER_C) {
+					if(var_attr->declare == CONSTANT || var_attr->declare == POINTER_C) {
 						FLAG_ERROR = MODIFY_CONST;
 						yyerror($1->name.c_str());
 					} else {
@@ -502,7 +502,7 @@ declaracion:
 							Attributes *elem = new Attributes();
 							elem->symbol_name = elem_name;
 							elem->scope = symbolTable.current_scope;
-							elem->category = ARRAY_ELEMENT;
+							elem->category = ID; //REVISAR EN CASO MULTIDIMENSION, seria un ARRAY y no ID
 							elem->type = type_attr;
 							
 							string type = type_attr->symbol_name;
@@ -548,6 +548,7 @@ declaracion:
 					Attributes* struct_attr = new Attributes();
 					struct_attr->symbol_name = struct_name;
 					struct_attr->category = STRUCT;
+					struct_attr->declare = stringToDeclare($1->kind);
 					struct_attr->scope = symbolTable.current_scope;
 					struct_attr->type = type_attr;
 
@@ -572,9 +573,10 @@ declaracion:
 
 							Attributes* new_attr = new Attributes();
 							new_attr->symbol_name = new_field_name;
+							new_attr->category = ID;
+							new_attr->declare = stringToDeclare($1->kind);
 							new_attr->scope = symbolTable.current_scope;
 							new_attr->type = symbolTable.search_symbol(field_type);
-							new_attr->category = STRUCT_ATTRIBUTE;
 							
 							if (type_attr->category == STRUCT){
 								if (field_type == "mango") new_attr->value = 0;
@@ -610,9 +612,10 @@ declaracion:
 			} else {
 				Attributes* attribute = new Attributes();
 				attribute->symbol_name = $2;
+				attribute->category = ID;
+				attribute->declare = stringToDeclare($1->kind);
 				attribute->scope = symbolTable.current_scope;
 				attribute->type = type_attr;
-
 				string type = type_attr->symbol_name;
 				if (type == "mango") attribute->value = 0;
 				else if (type == "manguita") attribute->value = 0.0f;
@@ -622,11 +625,6 @@ declaracion:
 					attribute->value = "";
 					attribute->info.push_back({0, nullptr});
 				} else if (type == "tas_claro") attribute->value = false;
-
-				if ($1->kind == "POINTER_V") attribute->category = POINTER_V;
-				else if ($1->kind == "POINTER_C") attribute->category = POINTER_C;
-				else if ($1->kind == "VARIABLE") attribute->category = VARIABLE;
-				else if ($1->kind == "CONSTANTE") attribute->category = CONSTANT;
 
 				// Insertar en tabla de símbolos
 				if (!symbolTable.insert_symbol($2, *attribute)) {
@@ -690,6 +688,7 @@ declaracion:
 					Attributes* attribute = new Attributes();
 					attribute->symbol_name = $2;
 					attribute->category = ARRAY;
+					attribute->declare = stringToDeclare($1->kind);
 					attribute->scope = symbolTable.current_scope;
 					attribute->type = type_attr;
 					attribute->value = size_array;
@@ -709,8 +708,9 @@ declaracion:
 
 						Attributes *attr_elem = new Attributes();
 						attr_elem->symbol_name = string($2) + "[" + to_string(count_elems-1) + "]";
+						attr_elem->category = ID; // ANALIZAR LOGICA DE MULTIDIMENSION
+						attr_elem->declare = stringToDeclare($1->kind);
 						attr_elem->scope = symbolTable.current_scope;
-						attr_elem->category = ARRAY_ELEMENT;
 						attr_elem->type = type_attr;
 
 						if (left_type != elem->type && (left_type != "manguangua" || elem->type != "manguita")) {
@@ -814,6 +814,7 @@ declaracion:
 						Attributes* struct_attr = new Attributes();
 						struct_attr->symbol_name = struct_name;
 						struct_attr->category = STRUCT;
+						struct_attr->declare = stringToDeclare($1->kind);
 						struct_attr->scope = symbolTable.current_scope;
 						struct_attr->type = type_attr;
 
@@ -860,9 +861,11 @@ declaracion:
 
 									Attributes* new_attr = new Attributes();
 									new_attr->symbol_name = new_field_name;
+									new_attr->category = ID;
+									new_attr->declare = stringToDeclare($1->kind);
 									new_attr->scope = symbolTable.current_scope;
 									new_attr->type = symbolTable.search_symbol(field_type);
-									new_attr->category = STRUCT_ATTRIBUTE;
+									
 
 									if (field_type != elem->type && (field_type != "manguangua" || elem->type != "manguita")) {
 										FLAG_ERROR = TYPE_ERROR;
@@ -923,6 +926,8 @@ declaracion:
 			} else {
 				Attributes *attribute = new Attributes();
 				attribute->symbol_name = $2;
+				attribute->category = ID;
+				attribute->declare = stringToDeclare($1->kind);
 				attribute->scope = symbolTable.current_scope;
 				attribute->type = type_attr;
 
@@ -936,11 +941,6 @@ declaracion:
 					attribute->value = nullptr; // Asignar valor nulo en caso de error
 				} else {
 					
-					if ($1->kind == "POINTER_V") attribute->category = POINTER_V;
-					else if ($1->kind == "POINTER_C") attribute->category = POINTER_C;
-					else if ($1->kind == "VARIABLE") attribute->category = VARIABLE;
-					else if ($1->kind == "CONSTANTE") attribute->category = CONSTANT;
-
 					if (right_type == "mango") {
 						attribute->value = $6->ivalue;
 					} else if (right_type == "manguita") {
@@ -1118,7 +1118,7 @@ asignacion:
 				yyerror($1);
 			}
 			
-			if (attribute->category == CONSTANT || attribute->category == POINTER_C) {
+			if (attribute->declare == CONSTANT || attribute->declare == POINTER_C) {
 				FLAG_ERROR = MODIFY_CONST;
 				yyerror($1);
 			}
@@ -2094,7 +2094,7 @@ expresion:
 			if (var_attr->type != nullptr && isNumeric(var_attr->type->symbol_name)) { // Verificar si es de tipo numerico.		
 				new_node->type = var_attr->type->symbol_name;
 				if (var_attr->category != PARAMETERS){ // Si es parametro de una funcion no hay problema.
-					if(var_attr->category == CONSTANT || var_attr->category == POINTER_C) {
+					if(var_attr->declare == CONSTANT || var_attr->declare == POINTER_C) {
 						FLAG_ERROR = MODIFY_CONST;
 						yyerror($1->name.c_str());
 					} else {
@@ -2469,11 +2469,12 @@ var_ciclo_determinado:
 		} else {
 			Attributes* attribute = new Attributes();
 			attribute->symbol_name = $1;
+			attribute->category = VAR_FOR;
+			attribute->declare = VARIABLE;
 			attribute->scope = symbolTable.current_scope;
 			attribute->info.push_back({$3->ivalue, nullptr});
 			attribute->info.push_back({$5->ivalue, nullptr});
 			attribute->type = symbolTable.search_symbol("mango");
-			attribute->category = VAR_FOR;
 			attribute->value = $3->ivalue;
 
 			new_node->ivalue = $3->ivalue;
@@ -2677,8 +2678,8 @@ firma_estructura:
 		string class_struct = $1->name;
 		Attributes* struct_attr = new Attributes();
 		struct_attr->symbol_name = $2;
-		struct_attr->scope = symbolTable.current_scope;
 		struct_attr->category = class_struct== "arroz_con_mango" ? STRUCT : UNION;
+		struct_attr->scope = symbolTable.current_scope;
 		struct_attr->value = nullptr;
 
 		if (!symbolTable.insert_symbol($2, *struct_attr)) {
@@ -2725,30 +2726,20 @@ estructura:
 				for (auto attr : attr_nodes) {
 					field_name = struct_attr->symbol_name + "." + attr->name;
 					
-					Attributes* field_attr = symbolTable.search_symbol(field_name);
-					bool error = false;
-					if (field_attr != nullptr) {
-						if (field_attr->category == STRUCT_ATTRIBUTE && field_attr->scope == symbolTable.current_scope) {
-							FLAG_ERROR = ALREADY_DEF_ATTR;
-							yyerror(attr->name.c_str());
-							error = true;
-						}
+					Attributes* field_attr = new Attributes();
+					field_attr->symbol_name = field_name;
+					field_attr->category = ID;
+					field_attr->scope = symbolTable.current_scope;
+					field_attr->type = symbolTable.search_symbol(attr->type);
+					if (field_attr->type == nullptr){
+						FLAG_ERROR = NON_DEF_TYPE;
+						yyerror(attr->type.c_str());
 					}
-					
-					if (!error) {
-						field_attr = new Attributes();
-						field_attr->symbol_name = field_name;
-						field_attr->scope = symbolTable.current_scope;
-						field_attr->type = symbolTable.search_symbol(attr->type);
-						if (field_attr->type == nullptr) {
-							FLAG_ERROR = NON_DEF_TYPE;
-							yyerror(attr->type.c_str());
-						}
-						field_attr->category = STRUCT_ATTRIBUTE;
+					struct_attr->info.push_back({field_name, field_attr});
 
-						struct_attr->info.push_back({field_name, field_attr});
-
-						symbolTable.insert_symbol(field_name, *field_attr);
+					if (!symbolTable.insert_symbol(field_name, *field_attr)){
+						FLAG_ERROR = ALREADY_DEF_ATTR;
+						yyerror(field_name.c_str());
 					}
 				}
 			} else {
@@ -2787,10 +2778,11 @@ parametro:
 		Attributes* type_attr = symbolTable.search_symbol($3->type);
 		
 		param_attr->symbol_name = $1;
+		param_attr->category = PARAMETERS;
+		param_attr->declare = VARIABLE;
 		param_attr->scope = symbolTable.current_scope;
 		param_attr->type = type_attr;
-		param_attr->category = PARAMETERS;
-	
+		
 		string type = type_attr->symbol_name;
 		// En caso de ser una estructura.
 		if (type_attr->category == STRUCT) {
@@ -2838,7 +2830,7 @@ parametro:
 						new_attr->symbol_name = new_field_name;
 						new_attr->scope = symbolTable.current_scope;
 						new_attr->type = symbolTable.search_symbol(field_type);
-						new_attr->category = STRUCT_ATTRIBUTE;
+						new_attr->category = ID;
 						new_attr->value = nullptr;
 
 						if (field_type == "mango") new_attr->value = 0;
