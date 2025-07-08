@@ -1,0 +1,207 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print Symbol Table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 2: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 3: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 4: n[0m
+    |---> Símbolo: n, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 0
+
+[1;35m[5m    Clave: 5: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 6: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 7: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 8: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 9: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 10: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 11: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 12: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 13: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 14: suma[0m
+    |---> Símbolo: suma, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 0
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Asignación | Kind: =
+          |    |    |--> suma | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |--> Literal | Category: Numérico | Type: mango | Value: 0
+          |    |--> n | Category: Declaración | Type: mango | Kind: VARIABLE
+          |--> Bucle | Category: Indeterminado
+               |--> echale_bolas_si
+                    |--> Guardia
+                    |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+                    |--> Instrucción | Kind: ;
+                         |--> Instrucción | Kind: ;
+                         |    |--> Asignación | Type: mango | Kind: = | Value: 0
+                         |    |    |--> n | Category: Identificador | Type: mango | Value: 0
+                         |    |    |--> Literal | Category: Numérico | Type: mango | Kind: CAST(higuerote) | Value: 0
+                         |    |         |--> hablame | Category: input | Type: higuerote | Value: "0"
+                         |    |              |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: ""
+                         |    |--> Condición
+                         |         |--> si_es_asi
+                         |              |--> Guardia
+                         |              |    |--> igualito | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+                         |              |         |--> n | Category: Identificador | Type: mango | Value: 0
+                         |              |         |--> Literal | Category: Numérico | Type: mango | Value: 0
+                         |              |--> uy_kieto | Category: Control de Flujo
+                         |--> Suma Compuesta | Category: Operación | Type: mango | Kind: += | Value: 0
+                              |--> suma | Category: Identificador | Type: mango | Value: 0
+                              |--> n | Category: Identificador | Type: mango | Value: 0
+--> Print TAC? (s/n): [1;36m[5m
+               =======================================================
+                                   TAC Representation                 
+               =======================================================
+[0m
+[1;36m[5m
+.data:[0m
+str0 := ""
+[1;36m[5m
+.declaration:[0m
+[1;33m[5mScope 2:[0m
+suma: alloc 4
+n: alloc 4
+[1;36m[5m
+.code:[0m
+suma := 0
+L1: 
+param &str0
+t0 := call read, 1
+n := (int)t0
+ifnot n == 0 goto L0
+goto L2
+L0: 
+suma := suma + n
+goto L1
+L2: 
+--> Print Control Flow Graphs? (s/n): [1;36m[5m
+               =======================================================
+                                  Control Flow Graphs                 
+               =======================================================
+[0m
+----------------------------------------------------------
+[1;33m[5mName: ENTRY:[0m
+Childs: B1 
+In: int str0 t0 
+Out: int str0 t0 
+----------------------------------------------------------
+[1;33m[5mName: B1:[0m
+Lider Label: 
+Code:
+     | suma := 0
+Childs: B2 
+Fathers: ENTRY 
+In: int str0 t0 
+Out: int str0 t0 
+----------------------------------------------------------
+[1;33m[5mName: B2:[0m
+Lider Label: L1
+Code:
+     | L1: 
+     | param &str0
+     | t0 := call read, 1
+Childs: B3 
+Fathers: B1 B5 
+Use: str0 
+In: int str0 t0 
+Out: int str0 t0 
+----------------------------------------------------------
+[1;33m[5mName: B3:[0m
+Lider Label: 
+Code:
+     | n := (int)t0
+     | ifnot n == 0 goto L0
+Childs: B5 B4 
+Fathers: B2 
+Def: n 
+Use: int t0 
+In: int str0 t0 
+Out: int n str0 t0 
+----------------------------------------------------------
+[1;33m[5mName: B4:[0m
+Lider Label: 
+Code:
+     | goto L2
+Childs: B6 
+Fathers: B3 
+----------------------------------------------------------
+[1;33m[5mName: B5:[0m
+Lider Label: L0
+Code:
+     | L0: 
+     | suma := suma + n
+     | goto L1
+Childs: B2 
+Fathers: B3 
+Use: n 
+In: int n str0 t0 
+Out: int str0 t0 
+----------------------------------------------------------
+[1;33m[5mName: B6:[0m
+Lider Label: L2
+Code:
+     | L2: 
+Childs: EXIT 
+Fathers: B4 
+----------------------------------------------------------
+[1;33m[5mName: EXIT:[0m
+Fathers: B6 
+----------------------------------------------------------
+
+                  * | Matriz de Adyacencia | *                  
+   -   |ENTRY |  B1  |  B2  |  B3  |  B4  |  B5  |  B6  | EXIT |
+----------------------------------------------------------------
+ ENTRY |      |  o   |      |      |      |      |      |      |
+----------------------------------------------------------------
+  B1   |      |      |  o   |      |      |      |      |      |
+----------------------------------------------------------------
+  B2   |      |      |      |  o   |      |      |      |      |
+----------------------------------------------------------------
+  B3   |      |      |      |      |  o   |  o   |      |      |
+----------------------------------------------------------------
+  B4   |      |      |      |      |      |      |  o   |      |
+----------------------------------------------------------------
+  B5   |      |      |  o   |      |      |      |      |      |
+----------------------------------------------------------------
+  B6   |      |      |      |      |      |      |      |  o   |
+----------------------------------------------------------------
+ EXIT  |      |      |      |      |      |      |      |      |
+----------------------------------------------------------------
+[1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

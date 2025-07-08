@@ -1,0 +1,103 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print Symbol Table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 2: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 3: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 4: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 5: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 6: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 7: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 8: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 9: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 10: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 11: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 12: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> rescata | Category: Output | Type: higuerote | Value: "Hola mundo"
+          |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Hola mundo"
+--> Print TAC? (s/n): [1;36m[5m
+               =======================================================
+                                   TAC Representation                 
+               =======================================================
+[0m
+[1;36m[5m
+.data:[0m
+str0 := "Hola mundo"
+[1;36m[5m
+.code:[0m
+param &str0
+call print, 1
+--> Print Control Flow Graphs? (s/n): [1;36m[5m
+               =======================================================
+                                  Control Flow Graphs                 
+               =======================================================
+[0m
+----------------------------------------------------------
+[1;33m[5mName: ENTRY:[0m
+Childs: B1 
+In: str0 
+Out: str0 
+----------------------------------------------------------
+[1;33m[5mName: B1:[0m
+Lider Label: 
+Code:
+     | param &str0
+     | call print, 1
+Childs: EXIT 
+Fathers: ENTRY 
+Use: str0 
+In: str0 
+----------------------------------------------------------
+[1;33m[5mName: EXIT:[0m
+Fathers: B1 
+----------------------------------------------------------
+
+* | Matriz de Adyacencia | * 
+   -   |ENTRY |  B1  | EXIT |
+-----------------------------
+ ENTRY |      |  o   |      |
+-----------------------------
+  B1   |      |      |  o   |
+-----------------------------
+ EXIT  |      |      |      |
+-----------------------------
+[1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]
