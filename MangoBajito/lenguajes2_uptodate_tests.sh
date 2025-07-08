@@ -21,7 +21,7 @@ error_tests["Condicional"]="00 01"
 error_tests["Declaracion"]="00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15"
 error_tests["Entrada_Salida"]="00 01"
 error_tests["Funcion"]="00 01 02 03"
-error_tests["Operacion"]="07 08 16 17 18 19 20 21"
+error_tests["Operacion"]="00 01 02 03 04 05 06 07 08 09 10 11 12 12 13 14 15 16 17 18 19 20 21"
 error_tests["ManejoError"]=""
 
 # Ruta base de los tests
