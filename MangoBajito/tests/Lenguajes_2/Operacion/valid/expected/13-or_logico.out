@@ -4,49 +4,67 @@
                              Symbol Table Representation              
                =======================================================
 [0m
-[1;35m[5m    Clave: 1: resultado[0m
-    |---> Símbolo: resultado, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+[1;35m[5m    Clave: 1: case5[0m
+    |---> Símbolo: case5, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
 
-[1;35m[5m    Clave: 2: var_false[0m
+[1;35m[5m    Clave: 2: case4[0m
+    |---> Símbolo: case4, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
+
+[1;35m[5m    Clave: 3: var_false[0m
     |---> Símbolo: var_false, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
 
-[1;35m[5m    Clave: 3: mango[0m
+[1;35m[5m    Clave: 4: mango[0m
     |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 4: var_true[0m
+[1;35m[5m    Clave: 5: case1[0m
+    |---> Símbolo: case1, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+
+[1;35m[5m    Clave: 6: var_true[0m
     |---> Símbolo: var_true, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
 
-[1;35m[5m    Clave: 5: manguita[0m
+[1;35m[5m    Clave: 7: manguita[0m
     |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 6: manguangua[0m
+[1;35m[5m    Clave: 8: manguangua[0m
     |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 7: negro[0m
+[1;35m[5m    Clave: 9: negro[0m
     |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 8: tas_claro[0m
+[1;35m[5m    Clave: 10: tas_claro[0m
     |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 9: hablame[0m
+[1;35m[5m    Clave: 11: hablame[0m
     |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 10: un_coño[0m
+[1;35m[5m    Clave: 12: un_coño[0m
     |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 11: funcion$[0m
+[1;35m[5m    Clave: 13: funcion$[0m
     |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 12: caramba_ñero[0m
+[1;35m[5m    Clave: 14: case7[0m
+    |---> Símbolo: case7, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+
+[1;35m[5m    Clave: 15: caramba_ñero[0m
     |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 13: se_prende[0m
+[1;35m[5m    Clave: 16: case6[0m
+    |---> Símbolo: case6, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+
+[1;35m[5m    Clave: 17: se_prende[0m
     |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
 
-[1;35m[5m    Clave: 14: higuerote[0m
+[1;35m[5m    Clave: 18: case3[0m
+    |---> Símbolo: case3, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+
+[1;35m[5m    Clave: 19: case2[0m
+    |---> Símbolo: case2, Categoría: (1)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+
+[1;35m[5m    Clave: 20: higuerote[0m
     |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
 
-[1;35m[5m    Clave: 15: rescata[0m
+[1;35m[5m    Clave: 21: rescata[0m
     |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
@@ -64,46 +82,44 @@ Programa
           |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |--> Instrucción | Kind: ;
           |    |    |    |    |    |    |--> Instrucción | Kind: ;
-          |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
-          |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |    |    |    |--> var_true | Category: Declaración | Type: tas_claro | Kind: VARIABLE
-          |    |    |    |    |    |    |    |    |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
-          |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
-          |    |    |    |    |    |    |    |         |--> var_false | Category: Declaración | Type: tas_claro | Kind: VARIABLE
-          |    |    |    |    |    |    |    |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
-          |    |    |    |    |    |    |    |--> resultado | Category: Declaración | Type: tas_claro | Kind: VARIABLE
-          |    |    |    |    |    |    |--> Asignación | Type: tas_claro | Kind: = | Value: 1
-          |    |    |    |    |    |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 0
+          |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |--> var_true | Category: Declaración | Type: tas_claro | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+          |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |         |--> var_false | Category: Declaración | Type: tas_claro | Kind: VARIABLE
+          |    |    |    |    |    |    |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+          |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |         |--> case1 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
           |    |    |    |    |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
           |    |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
           |    |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
-          |    |    |    |    |    |--> Asignación | Type: tas_claro | Kind: = | Value: 1
-          |    |    |    |    |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 1
+          |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |         |--> case2 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
           |    |    |    |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
           |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
           |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
-          |    |    |    |    |--> Asignación | Type: tas_claro | Kind: = | Value: 1
-          |    |    |    |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 1
+          |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |         |--> case3 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
           |    |    |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
           |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
           |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
-          |    |    |    |--> Asignación | Type: tas_claro | Kind: = | Value: 0
-          |    |    |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 1
+          |    |    |    |--> Asignación | Kind: =
+          |    |    |         |--> case4 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
           |    |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
           |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
           |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
-          |    |    |--> Asignación | Type: tas_claro | Kind: = | Value: 1
-          |    |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 0
+          |    |    |--> Asignación | Kind: =
+          |    |         |--> case5 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
           |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
           |    |              |--> var_true | Category: Identificador | Type: tas_claro | Kind: Sisa | Value: 1
           |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
-          |    |--> Asignación | Type: tas_claro | Kind: = | Value: 1
-          |         |--> resultado | Category: Identificador | Type: tas_claro | Value: 1
+          |    |--> Asignación | Kind: =
+          |         |--> case6 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
           |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
           |              |--> var_false | Category: Identificador | Type: tas_claro | Kind: Nolsa | Value: 0
           |              |--> var_true | Category: Identificador | Type: tas_claro | Kind: Sisa | Value: 1
-          |--> Asignación | Type: tas_claro | Kind: = | Value: 1
-               |--> resultado | Category: Identificador | Type: tas_claro | Value: 1
+          |--> Asignación | Kind: =
+               |--> case7 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
                |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
                     |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
                     |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
