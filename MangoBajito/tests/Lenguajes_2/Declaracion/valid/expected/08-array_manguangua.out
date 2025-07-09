@@ -17,10 +17,10 @@
     |---> Símbolo: decl1[1], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 1.22
 
 [1;35m[5m    Clave: 5: decl0[1][0m
-    |---> Símbolo: decl0[1], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 3.22e+12
+    |---> Símbolo: decl0[1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: manguangua, Value: 3.22e+12
 
 [1;35m[5m    Clave: 6: decl0[0][0m
-    |---> Símbolo: decl0[0], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 123.12
+    |---> Símbolo: decl0[0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: manguangua, Value: 123.12
 
 [1;35m[5m    Clave: 7: decl2[0m
     |---> Símbolo: decl2, Categoría: (5)ARRAY, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Informacion: decl2[0] decl2[1] , Value: 2
@@ -32,7 +32,7 @@
     |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
 [1;35m[5m    Clave: 10: decl0[0m
-    |---> Símbolo: decl0, Categoría: (5)ARRAY, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Informacion: decl0[0] decl0[1] decl0[2] , Value: 3
+    |---> Símbolo: decl0, Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: manguangua, Informacion: decl0[0] decl0[1] decl0[2] , Value: 3
 
 [1;35m[5m    Clave: 11: manguangua[0m
     |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
@@ -71,7 +71,7 @@
     |---> Símbolo: n0, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 3.22e+12
 
 [1;35m[5m    Clave: 23: decl0[2][0m
-    |---> Símbolo: decl0[2], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: manguangua, Value: 2.22e+12
+    |---> Símbolo: decl0[2], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: manguangua, Value: 2.22e+12
 
 [1;35m[5m    Clave: 24: n1[0m
     |---> Símbolo: n1, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: manguangua, Value: 3.22e-12
@@ -97,10 +97,12 @@ Programa
           |    |    |    |    |    |         |--> n1 | Category: Declaración | Type: manguangua | Kind: VARIABLE
           |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: manguangua | Value: 3.22e-12
           |    |    |    |    |    |--> decl0 | Category: Declaración | Type: manguangua | Kind: VARIABLE
-          |    |    |    |    |         |--> Literal | Category: Array_Size | Type: mango | Value: 3
+          |    |    |    |    |         |--> Dimensiones
+          |    |    |    |    |              |--> Literal | Category: Array_Size | Type: mango | Value: 3
           |    |    |    |    |--> Asignación | Kind: =
           |    |    |    |         |--> decl1 | Category: Declaración | Type: manguangua | Kind: CONSTANTE
-          |    |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 3
+          |    |    |    |         |    |--> Dimensiones
+          |    |    |    |         |         |--> Literal | Category: Array_Size | Type: mango | Value: 3
           |    |    |    |         |--> Literal | Category: Array
           |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
           |    |    |    |                   |--> Secuencia | Category: Expresión | Kind: ,
@@ -109,7 +111,8 @@ Programa
           |    |    |    |                   |--> Literal | Category: Numérico | Type: manguangua | Value: 3.3e-15
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> decl2 | Category: Declaración | Type: manguangua | Kind: CONSTANTE
-          |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 2
+          |    |    |         |    |--> Dimensiones
+          |    |    |         |         |--> Literal | Category: Array_Size | Type: mango | Value: 2
           |    |    |         |--> Literal | Category: Array
           |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
           |    |    |                   |--> n0 | Category: Identificador | Type: manguangua | Value: 3.22e+12

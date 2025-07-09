@@ -23,10 +23,10 @@
     |---> Símbolo: decl1[1], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
 
 [1;35m[5m    Clave: 7: decl0[1][0m
-    |---> Símbolo: decl0[1], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+    |---> Símbolo: decl0[1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
 
 [1;35m[5m    Clave: 8: decl0[0][0m
-    |---> Símbolo: decl0[0], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
+    |---> Símbolo: decl0[0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
 
 [1;35m[5m    Clave: 9: decl2[0m
     |---> Símbolo: decl2, Categoría: (5)ARRAY, Declaración: (1)CONSTANT, Scope: 2, Type: tas_claro, Informacion: decl2[0] decl2[1] , Value: 2
@@ -38,7 +38,7 @@
     |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
 [1;35m[5m    Clave: 12: decl0[0m
-    |---> Símbolo: decl0, Categoría: (5)ARRAY, Declaración: (1)CONSTANT, Scope: 2, Type: tas_claro, Informacion: decl0[0] decl0[1] decl0[2] , Value: 3
+    |---> Símbolo: decl0, Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: decl0[0] decl0[1] decl0[2] , Value: 3
 
 [1;35m[5m    Clave: 13: manguangua[0m
     |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
@@ -77,7 +77,7 @@
     |---> Símbolo: n0, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
 
 [1;35m[5m    Clave: 25: decl0[2][0m
-    |---> Símbolo: decl0[2], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: tas_claro, Value: false
+    |---> Símbolo: decl0[2], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Value: false
 
 [1;35m[5m    Clave: 26: n1[0m
     |---> Símbolo: n1, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
@@ -102,10 +102,12 @@ Programa
           |    |    |    |    |         |--> n1 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
           |    |    |    |    |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
           |    |    |    |    |--> decl0 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
-          |    |    |    |         |--> Literal | Category: Array_Size | Type: mango | Value: 3
+          |    |    |    |         |--> Dimensiones
+          |    |    |    |              |--> Literal | Category: Array_Size | Type: mango | Value: 3
           |    |    |    |--> Asignación | Kind: =
           |    |    |         |--> decl1 | Category: Declaración | Type: tas_claro | Kind: CONSTANTE
-          |    |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 5
+          |    |    |         |    |--> Dimensiones
+          |    |    |         |         |--> Literal | Category: Array_Size | Type: mango | Value: 5
           |    |    |         |--> Literal | Category: Array
           |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
           |    |    |                   |--> Secuencia | Category: Expresión | Kind: ,
@@ -118,7 +120,8 @@ Programa
           |    |    |                   |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
           |    |    |--> Asignación | Kind: =
           |    |         |--> decl2 | Category: Declaración | Type: tas_claro | Kind: CONSTANTE
-          |    |         |    |--> Literal | Category: Array_Size | Type: mango | Value: 2
+          |    |         |    |--> Dimensiones
+          |    |         |         |--> Literal | Category: Array_Size | Type: mango | Value: 2
           |    |         |--> Literal | Category: Array
           |    |              |--> Secuencia | Category: Expresión | Kind: ,
           |    |                   |--> n0 | Category: Identificador | Type: tas_claro | Kind: Sisa | Value: 1
