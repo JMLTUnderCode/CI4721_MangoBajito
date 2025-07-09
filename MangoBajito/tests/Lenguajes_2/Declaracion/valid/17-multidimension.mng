@@ -10,7 +10,7 @@ se_prende(){
 	
 	tridi[row - 2][col - 3][row - 2] = -10; 
 
-	tridi[1][col - 3][row - 2] = tridi[1][col - 3][row - 2] + 9;
+	#tridi[1][col - 3][row - 2] = tridi[1][col - 3][row - 2] + 9;
 
 	#tridi[0] = tridi[1];
 };
