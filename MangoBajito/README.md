@@ -107,6 +107,31 @@ Módulo desarrollados del proyecto Mango Bajito.
 	make local e=1      // Se refiere a probar el archivo `1.mng`
 	```
 
+  - Para realizar ejecución de programas ASM en MARS.
+    
+    Actualizar su sistema de archivos e instalar JRE.
+    ```
+    sudo apt update
+    sudo apt install default-jre
+    ```
+    
+    Para ejecutar MARS con interfaz gráfica.
+    ```
+    java -jar Mars.jar
+    ```
+    > [!NOTE]
+    > Asegúrese de que `Mars.jar` esté dentro de la carpeta que se encuentra.
+    
+    En caso de ejecutar un programa especifico por consola
+    ```
+    java -jar Mars.jar nc sm we fibonacci.asm
+    ```
+    >[!NOTE]
+    > * `nc`: no GUI (modo consola)
+    > * `sm`: "simulate" (ejecuta el programa)
+    > * `we`: "wait for exit" (espera a que termine el programa antes de cerrar)
+    > * `fibonacci.asm`: Es el archivo a ejecutar.
+
   - Limpieza de archivos generados
 	```
 	make clean
