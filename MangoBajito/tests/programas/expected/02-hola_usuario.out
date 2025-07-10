@@ -5,43 +5,40 @@
                =======================================================
 [0m
 [1;35m[5m    Clave: 1: rescata[0m
-    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+    |---> Símbolo: rescata, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
 
 [1;35m[5m    Clave: 2: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+    |---> Símbolo: se_prende, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
 
 [1;35m[5m    Clave: 3: caramba_ñero[0m
-    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+    |---> Símbolo: caramba_ñero, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 4: funcion$[0m
-    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 4: nombre[0m
+    |---> Símbolo: nombre, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 1 , Value: "0"
 
-[1;35m[5m    Clave: 5: nombre[0m
-    |---> Símbolo: nombre, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Informacion: 1 , Value: "0"
+[1;35m[5m    Clave: 5: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 6: un_coño[0m
-    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 6: hablame[0m
+    |---> Símbolo: hablame, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 7: hablame[0m
-    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 7: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 8: tas_claro[0m
-    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 8: negro[0m
+    |---> Símbolo: negro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 9: negro[0m
-    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 9: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 10: higuerote[0m
-    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 10: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 11: manguangua[0m
-    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 11: manguita[0m
+    |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 12: manguita[0m
-    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
-
-[1;35m[5m    Clave: 13: mango[0m
-    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 12: mango[0m
+    |---> Símbolo: mango, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================

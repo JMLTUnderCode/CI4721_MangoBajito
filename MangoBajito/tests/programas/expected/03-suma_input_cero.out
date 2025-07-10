@@ -4,47 +4,44 @@
                              Symbol Table Representation              
                =======================================================
 [0m
-[1;35m[5m    Clave: 1: mango[0m
-    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 1: n[0m
+    |---> Símbolo: n, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 0
 
-[1;35m[5m    Clave: 2: manguita[0m
-    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 2: suma[0m
+    |---> Símbolo: suma, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 0
 
-[1;35m[5m    Clave: 3: manguangua[0m
-    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 3: rescata[0m
+    |---> Símbolo: rescata, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 4: n[0m
-    |---> Símbolo: n, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 0
+[1;35m[5m    Clave: 4: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 5: negro[0m
-    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 5: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 6: tas_claro[0m
-    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 6: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
 [1;35m[5m    Clave: 7: hablame[0m
-    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+    |---> Símbolo: hablame, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 8: un_coño[0m
-    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 8: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 9: funcion$[0m
-    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 9: negro[0m
+    |---> Símbolo: negro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 10: caramba_ñero[0m
-    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 10: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 11: higuerote[0m
-    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+[1;35m[5m    Clave: 11: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 12: rescata[0m
-    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+[1;35m[5m    Clave: 12: manguita[0m
+    |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
-[1;35m[5m    Clave: 13: se_prende[0m
-    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
-
-[1;35m[5m    Clave: 14: suma[0m
-    |---> Símbolo: suma, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 0
+[1;35m[5m    Clave: 13: mango[0m
+    |---> Símbolo: mango, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
 
 --> Print AST? (s/n): [1;36m[5m
                =======================================================
