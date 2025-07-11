@@ -584,7 +584,7 @@ ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int l
 	} 
 }
 
-// Construir arbol AST de una Estructura(Arroz Con Mango).
+// Construye arbol AST de una Estructura(Arroz Con Mango).
 void buildAST_by_struct(ASTNode* node, vector<pair<Information, Attributes*>> info, SymbolTable& symbolTable) {
 	if (info.empty()) return;
 	
@@ -600,6 +600,62 @@ void buildAST_by_struct(ASTNode* node, vector<pair<Information, Attributes*>> in
 		if (attr->category == STRUCT) {
 			child->category = "Estructura";
 			buildAST_by_struct(child, attr->info, symbolTable);
+		} else {
+			string type = attr->type ? attr->type->symbol_name : "Desconocido";
+			child->type = type;
+			child->show_value = !holds_alternative<nullptr_t>(attr->value);
+			if (type == "mango") {
+				if (child->show_value) child->ivalue = get<int>(attr->value);
+				else child->ivalue = 0; // Valor nulo para int
+			} else if (type == "manguita") {
+				if (child->show_value) child->fvalue = get<float>(attr->value);
+				else child->fvalue = 0.0f; // Valor nulo para float
+			} else if (type == "manguangua") {
+				if (child->show_value) child->dvalue = get<double>(attr->value);
+				else child->dvalue = 0.0; // Valor nulo para double
+			} else if (type == "negro") {
+				if (child->show_value) child->cvalue = get<char>(attr->value);
+				else child->cvalue = '\0'; // Valor nulo para char
+			} else if (type == "higuerote") {
+				if (child->show_value) child->svalue = get<string>(attr->value);
+				else child->svalue = ""; // Valor nulo para string
+			} else if (type == "tas_claro") {
+				if (child->show_value) child->bvalue = get<bool>(attr->value);
+				else child->bvalue = false; // Valor nulo para bool
+			}
+		}
+		children.push_back(child);
+	}
+	// Ahora construimos la secuencia anidada
+	ASTNode* secuencia = nullptr;
+	if (!children.empty()) {
+		secuencia = children[0];
+		for (size_t i = 1; i < children.size(); ++i) {
+			ASTNode* nuevo = makeASTNode("Secuencia", "Expresión", "", ",");
+			nuevo->children.push_back(secuencia);
+			nuevo->children.push_back(children[i]);
+			secuencia = nuevo;
+		}
+		node->children.push_back(secuencia);
+	}
+}
+
+// Construye arbol AST de un Arreglo.
+void buildAST_by_array(ASTNode* node, vector<pair<Information, Attributes*>> info, SymbolTable& symbolTable) {
+	if (info.empty()) return;
+	
+	// Vector para almacenar los hijos (subarreglos)
+	vector<ASTNode*> children;
+	for (size_t i = 0; i < info.size(); i++) {
+		Attributes* attr = symbolTable.search_symbol(get<string>(info[i].first));
+		if (attr == nullptr) continue; // Si el atributo es nulo, saltar.
+		
+		//ASTNode* secuence_node = makeASTNode("Secuencia", "Expresión", "", ",");
+		ASTNode* child = makeASTNode(attr->symbol_name, "Elemento_Array");
+
+		if (attr->category == ARRAY) {
+			child->category = "Array";
+			buildAST_by_array(child, attr->info, symbolTable);
 		} else {
 			string type = attr->type ? attr->type->symbol_name : "Desconocido";
 			child->type = type;

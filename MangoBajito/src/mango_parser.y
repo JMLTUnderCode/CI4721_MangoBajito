@@ -708,7 +708,7 @@ declaracion:
 	| tipo_declaracion T_ID T_DOSPUNTOS tipos T_ASIGNACION expresion {
 		string left_type = $4->type;
 		string right_type = $6->type;
-		
+
 		Attributes* type_attr = symbolTable.search_symbol(left_type);
 		if (type_attr == nullptr){
 			FLAG_ERROR = NON_DEF_TYPE;
@@ -716,7 +716,6 @@ declaracion:
 		} else {
 			// Declaracion de Arreglo con asignacion
 			if ($4->category == "Array" && $6->category == "Array") {
-
 				int size_array, current_dim = 0;
 				int lineal_total_size = 0;
 				ASTNode* size = nullptr;
@@ -818,7 +817,7 @@ declaracion:
 									ASTNode* elem_node = array_elements[count_elems++];
 									if (left_type != elem_node->type && (left_type != "manguangua" || elem_node->type != "manguita")) {
 										FLAG_ERROR = TYPE_ERROR;
-										string error_msg = "\"" + string($2) + "\" de tipo '" + left_type + 
+										string error_msg = "\"" + father + "\" de tipo '" + left_type + 
 											"[]' y le quieres meter un '" + elem_node->type + "[]', marbaa' bruja.";
 										yyerror(error_msg.c_str());
 										elem->value = nullptr;
@@ -874,7 +873,7 @@ declaracion:
 				FLAG_ERROR = TYPE_ERROR;
 				string type_right_update = $6->children[0]->name != "Secuencia" ? $6->children[0]->type : $6->children[0]->children[0]->type ;
 				string error_msg = "\"" + string($2) + "\" de tipo '" + left_type + 
-					"' y le quieres meter un elemento de tipo '" + $6->children[0]->type + "', marbaa' bruja.";
+					"' y le quieres meter un elemento de tipo '" + type_right_update + "', marbaa' bruja.";
 				yyerror(error_msg.c_str());
 			} else if ($4->category == "Array" && $6->category != "Array") {
 				FLAG_ERROR = TYPE_ERROR;
@@ -1226,11 +1225,127 @@ asignacion:
 				yyerror($1);
 			}
 			
+			left_type = attribute->type->symbol_name;
+			new_node->type = left_type;
+			$2->type = left_type; // Asignar el tipo al nodo del operador de asignación
+
+			// Asignacion de arreglos
+			if (attribute->category == ARRAY && $3->category == "Array" && op == "=") {
+				int size_array, current_dim = 0;
+				int total_dim = 1;
+				Attributes* size = attribute;
+
+				int lineal_total_size = get<int>(size->value);
+				while(true) {
+					size = symbolTable.search_symbol(get<string>(size->info[0].first));
+					if (size->category == ARRAY) {
+						lineal_total_size *= get<int>(size->value);
+						total_dim++;
+					} else break;
+				}
+
+				// Extraer los elementos a asignar en el array.
+				int count_elems = 0;
+				int total_elems = 0;
+				set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Elemento_String", "Atributo_Estructura"};
+				vector<ASTNode*> array_elements;
+				collect_nodes_by_categories($3, categories, array_elements);
+				total_elems = array_elements.size(); // Totalidad lineal de los elementos a la derecha.
+
+				// Verificar cantidad de elementos totales a declarar.
+				if (lineal_total_size > total_elems && lineal_total_size > 0) {
+					FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
+					string error_msg = "Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '" + to_string(total_elems) + "' de '" + to_string(lineal_total_size) + "'.";
+					yyerror(error_msg.c_str());
+				} else if (lineal_total_size < total_elems && lineal_total_size > 0) {
+					FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
+					string error_msg = "Ay vale! Te gusta meterte más cosas verdad?. Sólo te caben '" + to_string(lineal_total_size) + "' cositas.";
+					yyerror(error_msg.c_str());
+				} else if (lineal_total_size > 0 && total_elems > 0) {
+					// Creacion de elementos de un array en formato recursivo.
+					string father = "";
+					queue<string> fathers;
+					fathers.push($1);
+					
+					while (!fathers.empty()){
+						father = fathers.front();
+						fathers.pop();
+						
+						// Determinar la dimension actual segun la cantidad de '[' dentro de father.
+						current_dim = count(father.begin(), father.end(), '[');
+						
+						// Actualizacion de categoria, creacion de elementos tipo array o valor.
+						Category current_cat = current_dim < total_dim - 1 ? ARRAY : ID;
+						
+						Attributes* array = symbolTable.search_symbol(father);
+						size_array = get<int>(array->value);
+						string elem_name = "";
+						for (int i = 0; i < size_array; i++) {
+							elem_name = father + "[" + to_string(i) + "]";
+
+							Attributes* elem = symbolTable.search_symbol(elem_name);
+							if (elem == nullptr) {
+								FLAG_ERROR = NON_DEF_VAR;
+								yyerror(elem_name.c_str());
+							} else {
+								// Arreglo multidimension
+								if (current_cat == ARRAY) fathers.push(elem_name);
+								
+								// Valor por defecto en caso de ser categoria ID
+								if (current_cat == ID){
+									ASTNode* elem_node = array_elements[count_elems++];
+									if (left_type != elem_node->type && (left_type != "manguangua" || elem_node->type != "manguita")) {
+										FLAG_ERROR = TYPE_ERROR;
+										string error_msg = "\"" + elem_name + "\" de tipo '" + left_type + 
+											"[]' y le quieres meter un '" + elem_node->type + "[]', marbaa' bruja.";
+										yyerror(error_msg.c_str());
+										elem->value = nullptr;
+									} else {
+										if (elem_node->type == "mango") elem->value = elem_node->ivalue;
+										else if (elem_node->type == "manguita") elem->value = elem_node->fvalue;
+										else if (elem_node->type == "manguangua") elem->value = elem_node->dvalue;
+										else if (elem_node->type == "negro") elem->value = elem_node->cvalue;
+										else if (elem_node->type == "higuerote") {
+											elem->value = elem_node->svalue;
+											elem->info.push_back({static_cast<int>(elem_node->svalue.size()), nullptr});
+										} else if (elem_node->type == "tas_claro") {
+											elem->value = elem_node->bvalue;
+											if (!elem->info.empty()) elem->info[0].first = (elem_node->bvalue ? "Sisa" : "Nolsa");
+											else elem->info.push_back({(elem_node->bvalue ? "Sisa" : "Nolsa"), nullptr});
+										} else if (elem_node->type == "pointer"){
+											/* POR IMPLEMENTAR */
+											//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
+											elem->value = nullptr;
+										} else {
+											FLAG_ERROR = INTERNAL;
+											string error_msg = "TIPO DESCONOCIDO: Asignando 'nullptr' a: '" + father + "'.";
+											yyerror(error_msg.c_str());
+											elem->value = nullptr;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			} else if (attribute->category != ARRAY && $3->category == "Array"){
+				FLAG_ERROR = TYPE_ERROR;
+				string type_right_update = $3->children[0]->name != "Secuencia" ? $3->children[0]->type : $3->children[0]->children[0]->type ;
+				string error_msg = "\"" + string($1) + "\" de tipo '" + left_type + 
+					"' y le quieres meter un elemento de tipo '" + type_right_update + "', marbaa' bruja.";
+				yyerror(error_msg.c_str());
+			} else if (attribute->category == ARRAY && $3->category != "Array") {
+				FLAG_ERROR = TYPE_ERROR;
+				string error_msg = "\"" + string($1) + "\" de tipo '" + left_type + 
+					"[]' y le quieres meter un elemento de tipo '" + right_type + "', marbaa' bruja.";
+				yyerror(error_msg.c_str());
+			} else if (attribute->category == ARRAY && $3->category == "Array" && op != "=") {
+				FLAG_ERROR = TYPE_ERROR;
+				string error_msg = "\"" + id + "\" de tipo '" + left_type + 
+					"'[] y quieres operar con '" + op + "', solo se vale '=`, marbaa' bruja.";
+				yyerror(error_msg.c_str());
 			// Asignacion de estructuras
-			if (attribute->type->category == STRUCT && $3->category == "Estructura" && op == "=") {
-				left_type = attribute->type->symbol_name;
-				new_node->type = left_type;
-				
+			} else if (attribute->type->category == STRUCT && $3->category == "Estructura" && op == "=") {
 				queue<pair<vector<string>, ASTNode*> > queue_structs;
 				queue_structs.push({{string($1), left_type}, $3});
 				while(!queue_structs.empty()) {
@@ -1339,10 +1454,6 @@ asignacion:
 			
 			// Asignacion normal de variables
 			} else {
-				left_type = attribute->type->symbol_name;
-				new_node->type = left_type;
-				$2->type = left_type; // Asignar el tipo al nodo del operador de asignación
-
 				if (left_type != right_type && (left_type != "manguangua" || right_type != "manguita")) {
 					FLAG_ERROR = TYPE_ERROR;
 					string error_msg = "\"" + id + "\" de tipo '" + left_type + 
@@ -1552,12 +1663,12 @@ asignacion:
 						"' y le quieres meter un tipo '" + right_type + "', marbaa' bruja.";
 					yyerror(error_msg.c_str());
 				} else {
-					// Asignacion de valores para el elemento del array. CASO ID
-					if (elem_attr->category == ID) {
-						if (elem_attr->declare == CONSTANT || elem_attr->declare == POINTER_C) {
-							FLAG_ERROR = MODIFY_CONST;
-							yyerror(final_access.c_str());
-						} else {
+					if (elem_attr->declare == CONSTANT || elem_attr->declare == POINTER_C) {
+						FLAG_ERROR = MODIFY_CONST;
+						yyerror(final_access.c_str());
+					} else {
+						// Asignacion de valores para el elemento del array. CASO ID
+						if (elem_attr->category == ID) {
 							string op = $3->kind;
 							if (op != "=" && holds_alternative<nullptr_t>(elem_attr->value)) {
 								FLAG_ERROR = NON_VALUE;
@@ -1623,10 +1734,114 @@ asignacion:
 									elem_attr->value = nullptr;
 								}
 							}
+						} else if (elem_attr->category == ARRAY) { // CASO ARRAY
+							if ($4->category != "Array") {
+								FLAG_ERROR = TYPE_ERROR;
+								string error_msg = "\"" + final_access + "\" de tipo '" + left_type +
+									"[]' y le quieres meter un elemento de tipo '" + right_type + "', marbaa' bruja.";
+								yyerror(error_msg.c_str());
+							} else {
+								int size_array, current_dim = 0;
+								int total_dim = 1;
+								Attributes* size = elem_attr;
+
+								int lineal_total_size = get<int>(size->value);
+								while(true) {
+									size = symbolTable.search_symbol(get<string>(size->info[0].first));
+									if (size->category == ARRAY) {
+										lineal_total_size *= get<int>(size->value);
+										total_dim++;
+									} else break;
+								}
+
+								// Extraer los elementos a asignar en el array.
+								int count_elems = 0;
+								int total_elems = 0;
+								set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Elemento_String", "Atributo_Estructura"};
+								vector<ASTNode*> array_elements;
+								collect_nodes_by_categories($4, categories, array_elements);
+								total_elems = array_elements.size(); // Totalidad lineal de los elementos a la derecha.
+
+								// Verificar cantidad de elementos totales a declarar.
+								if (lineal_total_size > total_elems && lineal_total_size > 0) {
+									FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
+									string error_msg = "Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '" + to_string(total_elems) + "' de '" + to_string(lineal_total_size) + "'.";
+									yyerror(error_msg.c_str());
+								} else if (lineal_total_size < total_elems && lineal_total_size > 0) {
+									FLAG_ERROR = ARRAY_LITERAL_SIZE_MISMATCH;
+									string error_msg = "Ay vale! Te gusta meterte más cosas verdad?. Sólo te caben '" + to_string(lineal_total_size) + "' cositas.";
+									yyerror(error_msg.c_str());
+								} else if (lineal_total_size > 0 && total_elems > 0) {
+									// Creacion de elementos de un array en formato recursivo.
+									string father = "";
+									queue<string> fathers;
+									fathers.push(final_access);
+									
+									while (!fathers.empty()){
+										father = fathers.front();
+										fathers.pop();
+										
+										// Determinar la dimension actual segun la cantidad de '[' dentro de father.
+										current_dim = count(father.begin(), father.end(), '[');
+										
+										// Actualizacion de categoria, creacion de elementos tipo array o valor.
+										Category current_cat = current_dim < total_dim ? ARRAY : ID;
+										
+										Attributes* array = symbolTable.search_symbol(father);
+										size_array = get<int>(array->value);
+										string elem_name = "";
+										for (int i = 0; i < size_array; i++) {
+											elem_name = father + "[" + to_string(i) + "]";
+
+											Attributes* elem = symbolTable.search_symbol(elem_name);
+											if (elem == nullptr) {
+												FLAG_ERROR = NON_DEF_VAR;
+												yyerror(elem_name.c_str());
+											} else {
+												// Arreglo multidimension
+												if (current_cat == ARRAY) fathers.push(elem_name);
+												
+												// Valor por defecto en caso de ser categoria ID
+												if (current_cat == ID){
+													cout << "check assig: " << elem_name << endl;
+													ASTNode* elem_node = array_elements[count_elems++];
+													if (left_type != elem_node->type && (left_type != "manguangua" || elem_node->type != "manguita")) {
+														FLAG_ERROR = TYPE_ERROR;
+														string error_msg = "\"" + elem_name + "\" de tipo '" + left_type + 
+															"[]' y le quieres meter un '" + elem_node->type + "[]', marbaa' bruja.";
+														yyerror(error_msg.c_str());
+														elem->value = nullptr;
+													} else {
+														if (elem_node->type == "mango") elem->value = elem_node->ivalue;
+														else if (elem_node->type == "manguita") elem->value = elem_node->fvalue;
+														else if (elem_node->type == "manguangua") elem->value = elem_node->dvalue;
+														else if (elem_node->type == "negro") elem->value = elem_node->cvalue;
+														else if (elem_node->type == "higuerote") {
+															elem->value = elem_node->svalue;
+															elem->info.push_back({static_cast<int>(elem_node->svalue.size()), nullptr});
+														} else if (elem_node->type == "tas_claro") {
+															elem->value = elem_node->bvalue;
+															if (!elem->info.empty()) elem->info[0].first = (elem_node->bvalue ? "Sisa" : "Nolsa");
+															else elem->info.push_back({(elem_node->bvalue ? "Sisa" : "Nolsa"), nullptr});
+														} else if (elem_node->type == "pointer"){
+															/* POR IMPLEMENTAR */
+															//cout << "ASIGNANDO PUNTERO: valor = nullptr" << endl;
+															elem->value = nullptr;
+														} else {
+															FLAG_ERROR = INTERNAL;
+															string error_msg = "TIPO DESCONOCIDO: Asignando 'nullptr' a: '" + father + "'.";
+															yyerror(error_msg.c_str());
+															elem->value = nullptr;
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
 						}
-					} else if (elem_attr->category == ARRAY) { // CASO ARRAY
-						//IMPLEMENTAR
-					}
+					} 
 				}
 			}
 		}
@@ -1945,10 +2160,16 @@ expresion:
 			FLAG_ERROR = NON_DEF_VAR;
 			yyerror($1);
 		} else {
-			string type, kind = "";
-			if (!holds_alternative<nullptr_t>(attr->value)) {
-				type = attr->type->symbol_name;
-				new_node->type = type;
+			string type = attr->type->symbol_name;
+			new_node->type = type;
+			// Actualizacion de categoria para lado derecho de asignacion. Generacion de arbol AST.
+			if (attr->category == STRUCT || attr->category == UNION) {
+				new_node->category = "Estructura";
+				// No se construye el AST para Struct dado que la logica de asignacion es diferente.
+			} else if (attr->category == ARRAY) {
+				new_node->category = "Array";
+				buildAST_by_array(new_node, attr->info, symbolTable);
+			} else if (!holds_alternative<nullptr_t>(attr->value)) {
 				if (type == "mango") {
 					new_node->ivalue = get<int>(attr->value);
 				} else if (type == "manguita") {
@@ -2025,11 +2246,20 @@ expresion:
 		$$ = makeASTNode("Literal", "Estructura");
 		$$->children.push_back($2);
 	}
-	| T_ID T_IZQCORCHE expresion T_DERCORCHE { // Acceso a elementos de un array
+	| T_ID lista_dimensiones { // Acceso a elementos de un array
 		ASTNode* new_node = makeASTNode($1, "Elemento_Array");
+		
 		string left_type = "Desconocido_l";
-		string index_type = $3->type;
-		int size_array, index = 0;
+		string index_type = $2->children[0]->type;
+		int index = 0;
+		int size_array = 0;
+
+		if (index_type != "mango") {
+			FLAG_ERROR = INT_INDEX_ARRAY;
+			yyerror(index_type.c_str());
+		} else {
+			index = $2->children[0]->ivalue;
+		}
 
 		Attributes* array_attr = symbolTable.search_symbol($1);
 		if (array_attr == nullptr) {
@@ -2038,85 +2268,84 @@ expresion:
 		} else if (array_attr->category != ARRAY && array_attr->type->symbol_name != "higuerote") {
 			FLAG_ERROR = INVALID_ACCESS;
 			yyerror($1);
-		} else {
+		// En caso de higuerote
+		} else if (array_attr->type->symbol_name == "higuerote" && array_attr->info[0].second == nullptr) {
 			left_type = array_attr->type->symbol_name;
-			
-			if (index_type != "mango") {
-				FLAG_ERROR = INT_INDEX_ARRAY;
-				yyerror(index_type.c_str());
+			new_node->name = string($1) + "[" + to_string(index) + "]";
+			new_node->category = "Elemento_String";
+			size_array = get<int>(array_attr->info[0].first);
+			if (index < 0 || index >= size_array) {
+				FLAG_ERROR = SEGMENTATION_FAULT;
+				yyerror(to_string(index).c_str());
 			} else {
-				index = $3->ivalue;
+				left_type = "negro";
+				new_node->cvalue = get<string>(array_attr->value)[index];
 			}
-
-			if (array_attr->info.empty()) {
-				FLAG_ERROR = INTERNAL;
-				yyerror("ERROR INTERNO: El array no tiene elementos.");
-			} else {
-				if (holds_alternative<nullptr_t>(array_attr->value)) {
-					FLAG_ERROR = NON_VALUE;
-					yyerror($1);
-
-				// En caso de higuerote
-				} else if (array_attr->type->symbol_name == "higuerote" && array_attr->info[0].second == nullptr) {
-					new_node->name = string($1) + "[" + to_string(index) + "]";
-					new_node->category = "Elemento_String";
-					size_array = get<int>(array_attr->info[0].first);
-					if (index < 0 || index > size_array) {
-						FLAG_ERROR = SEGMENTATION_FAULT;
-						yyerror(to_string(index).c_str());
-					} else if (index == size_array) {
-						left_type = "negro";
-						new_node->cvalue = '\0';
-					} else {
-						left_type = "negro";
-						new_node->cvalue = get<string>(array_attr->value)[index];
-					}
-				
-				// En caso de arrays
-				} else {
-					size_array = get<int>(array_attr->value);
-					Attributes* elem_attr = nullptr;
+		// En caso de array
+		} else {
+			// Validar los indices de acceso a nivel multidimensional.
+			string final_access = string($1);
+			Attributes* current_access = nullptr;
+			for(auto index_node : $2->children) {
+				current_access = symbolTable.search_symbol(final_access);
+				if (current_access != nullptr) {
+					index_type = index_node->type;
+					index = 0;
+					// Verificar tipo de indice.
+					if (index_type != "mango") {
+						FLAG_ERROR = INT_INDEX_ARRAY;
+						yyerror(index_type.c_str());
+					} else index = index_node->ivalue;
+					
+					// Verificar rango de indice.
+					size_array = get<int>(current_access->value);
 					if (index < 0 || index >= size_array) {
 						FLAG_ERROR = SEGMENTATION_FAULT;
 						yyerror(to_string(index).c_str());
 					}
-					elem_attr = symbolTable.search_symbol(get<string>(array_attr->info[index].first));
 
-					string type_elem = "Desconocido";
-					if (elem_attr == nullptr) {
-						FLAG_ERROR = NON_DEF_VAR;
-						yyerror($1);
-					} else if (elem_attr->type->symbol_name != left_type) {
-						FLAG_ERROR = INTERNAL;
-						string error_msg = "ERROR: Tipos incompatibles: Array->'" + left_type + "' | Elem->'" + elem_attr->type->symbol_name + "'.";
-						yyerror(error_msg.c_str());
+					// Actualizar acceso.
+					final_access += "[" + to_string(index) + "]";
+				}
+			}
+
+			// Buscar el atributo del elemento del array.
+			Attributes* elem_attr = symbolTable.search_symbol(final_access);
+			if (elem_attr != nullptr) {
+				// Actualizacion general de AST
+				left_type = elem_attr->type->symbol_name;
+				new_node->name = elem_attr->symbol_name;
+
+				if (elem_attr->category == ARRAY) {
+					new_node->category = "Array";
+					if (elem_attr->info.empty()) {
+						FLAG_ERROR = EMPTY_STRUCT;
+						yyerror(final_access.c_str());
 					} else {
-						new_node->name = elem_attr->symbol_name;
-						// Extraer el valor
-						type_elem = elem_attr->type->symbol_name;
-						if (type_elem == "mango") {
-							new_node->ivalue = get<int>(elem_attr->value);
-						} else if (type_elem == "manguita") {
-							new_node->fvalue = get<float>(elem_attr->value);
-						} else if (type_elem == "manguangua") {
-							new_node->dvalue = get<double>(elem_attr->value);
-						} else if (type_elem == "negro") {
-							new_node->cvalue = get<char>(elem_attr->value);
-						} else if (type_elem == "higuerote") {
-							new_node->svalue = get<string>(elem_attr->value);
-						} else if (type_elem == "tas_claro") {
-							new_node->bvalue = get<bool>(elem_attr->value);
-							if (!elem_attr->info.empty()) elem_attr->info[0].first = (new_node->bvalue ? "Sisa" : "Nolsa");
-						} else if (type_elem == "pointer") {
-							/* POR IMPLEMENTAR */
-						} else {
-							FLAG_ERROR = INTERNAL;
-							yyerror("ERROR INTERNO: Lexer proporciona un tipo invalido.");
-						}		
+						buildAST_by_array(new_node, elem_attr->info, symbolTable);
+					}
+				} else {
+					if (holds_alternative<nullptr_t>(elem_attr->value)) {
+						FLAG_ERROR = NON_VALUE;
+						yyerror(final_access.c_str());
+					} else if (left_type == "mango") new_node->ivalue = get<int>(elem_attr->value);
+					else if (left_type == "manguita") new_node->fvalue = get<float>(elem_attr->value);
+					else if (left_type == "manguangua") new_node->dvalue = get<double>(elem_attr->value);
+					else if (left_type == "negro") new_node->cvalue = get<char>(elem_attr->value);
+					else if (left_type == "higuerote") new_node->svalue = get<string>(elem_attr->value);
+					else if (left_type == "tas_claro") {
+						new_node->bvalue = get<bool>(elem_attr->value);
+						if (!elem_attr->info.empty()) new_node->kind = (new_node->bvalue ? "Sisa" : "Nolsa");
+					} else if (left_type == "pointer") {
+						/* POR IMPLEMENTAR */
+					} else {
+						FLAG_ERROR = INTERNAL;
+						yyerror("ERROR INTERNO: Lexer proporciona un tipo invalido.");
 					}
 				}
 			}
 		}
+		// Actualizar el tipo del nodo
 		new_node->type = left_type;
 		$$ = new_node;
 
@@ -2124,7 +2353,7 @@ expresion:
 		if(array_attr != nullptr){
 			string temp_access = labelGen.newTemp(),
 				temp = labelGen.newTemp();
-			$$->tac.push_back(temp_access + " := " + $3->temp + " * " + to_string(strToSizeType(left_type)));
+			$$->tac.push_back(temp_access + " := " + $2->temp + " * " + to_string(strToSizeType(left_type)));
 			$$->tac.push_back(temp + " := " + string($1) + "[" + temp_access + "]");
 			$$->temp = temp;
 		}

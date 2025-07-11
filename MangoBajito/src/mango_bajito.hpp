@@ -289,8 +289,11 @@ bool isNumeric(const string& typeStr);
 // Retorna un puntero al nodo AST resultante de la operación.
 ASTNode* solver_operation(ASTNode* left, const string& op, ASTNode* right, int line_number, int column_number);
 
-// Construir arbol AST de una Estructura(Arroz Con Mango).
+// Construiye arbol AST de una Estructura(Arroz Con Mango).
 void buildAST_by_struct(ASTNode* node, vector<pair<Information, Attributes*>> info, SymbolTable& symbolTable);
+
+// Construye arbol AST de un Arreglo.
+void buildAST_by_array(ASTNode* node, vector<pair<Information, Attributes*>> info, SymbolTable& symbolTable);
 
 // Muestra el AST en consola de forma jerárquica.
 // node: nodo raíz a mostrar, depth: nivel de profundidad, prefix: prefijo para formato, isLast: indica si es el último hijo.
