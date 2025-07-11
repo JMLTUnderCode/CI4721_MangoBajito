@@ -155,7 +155,7 @@ Programa
           |    |    |    |    |    |         |--> yo.edad | Category: Atributo_Estructura | Type: mango | Value: 0
           |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 26
           |    |    |    |    |    |--> ella | Category: Declaración | Type: Persona | Kind: VARIABLE
-          |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |--> Asignación | Type: Persona | Kind: =
           |    |    |    |         |--> ella | Category: Identificador | Type: Persona
           |    |    |    |         |--> Literal | Category: Estructura
           |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,

@@ -219,7 +219,7 @@ Programa
           |    |    |    |    |    |    |    |    |                                       |    |--> Literal | Category: Numérico | Type: mango | Value: 6
           |    |    |    |    |    |    |    |    |                                       |--> Literal | Category: Numérico | Type: mango | Value: 1999
           |    |    |    |    |    |    |    |    |--> registro_2 | Category: Declaración | Type: Registro | Kind: VARIABLE
-          |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |--> Asignación | Type: Registro | Kind: =
           |    |    |    |    |    |    |         |--> registro_2 | Category: Identificador | Type: Registro
           |    |    |    |    |    |    |         |--> Literal | Category: Estructura
           |    |    |    |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,

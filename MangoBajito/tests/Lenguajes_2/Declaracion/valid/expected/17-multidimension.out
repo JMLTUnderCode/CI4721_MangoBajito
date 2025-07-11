@@ -1,0 +1,459 @@
+| Acomódate que te lo estan analizando d:-)
+check assig: tridi[0][0][0]
+check assig: tridi[0][0][1]
+check assig: tridi[0][1][0]
+check assig: tridi[0][1][1]
+check assig: tridi[0][2][0]
+check assig: tridi[0][2][1]
+--> Print Symbol Table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: tridi_copy[1][1][1][0m
+    |---> Símbolo: tridi_copy[1][1][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 4
+
+[1;35m[5m    Clave: 2: tridi_copy[1][1][0][0m
+    |---> Símbolo: tridi_copy[1][1][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 3
+
+[1;35m[5m    Clave: 3: tridi_copy[1][0][1][0m
+    |---> Símbolo: tridi_copy[1][0][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 2
+
+[1;35m[5m    Clave: 4: tridi_copy[0][2][0][0m
+    |---> Símbolo: tridi_copy[0][2][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 5
+
+[1;35m[5m    Clave: 5: tridi_copy[0][1][1][0m
+    |---> Símbolo: tridi_copy[0][1][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 4
+
+[1;35m[5m    Clave: 6: tridi_copy[1][2][1][0m
+    |---> Símbolo: tridi_copy[1][2][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 6
+
+[1;35m[5m    Clave: 7: tridi_copy[0][0][1][0m
+    |---> Símbolo: tridi_copy[0][0][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 2
+
+[1;35m[5m    Clave: 8: tridi_copy[0][0][0][0m
+    |---> Símbolo: tridi_copy[0][0][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 30
+
+[1;35m[5m    Clave: 9: tridi_copy[1][1][0m
+    |---> Símbolo: tridi_copy[1][1], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi_copy[1][1][0] tridi_copy[1][1][1] , Value: 2
+
+[1;35m[5m    Clave: 10: tridi_copy[0][1][0m
+    |---> Símbolo: tridi_copy[0][1], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi_copy[0][1][0] tridi_copy[0][1][1] , Value: 2
+
+[1;35m[5m    Clave: 11: tridi_copy[0][0][0m
+    |---> Símbolo: tridi_copy[0][0], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi_copy[0][0][0] tridi_copy[0][0][1] , Value: 2
+
+[1;35m[5m    Clave: 12: tridi_copy[1][0][0m
+    |---> Símbolo: tridi_copy[1][0], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi_copy[1][0][0] tridi_copy[1][0][1] , Value: 2
+
+[1;35m[5m    Clave: 13: tridi_copy[1][0m
+    |---> Símbolo: tridi_copy[1], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi_copy[1][0] tridi_copy[1][1] tridi_copy[1][2] , Value: 3
+
+[1;35m[5m    Clave: 14: tridi_copy[0][0m
+    |---> Símbolo: tridi_copy[0], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi_copy[0][0] tridi_copy[0][1] tridi_copy[0][2] , Value: 3
+
+[1;35m[5m    Clave: 15: tridi_copy[0m
+    |---> Símbolo: tridi_copy, Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi_copy[0] tridi_copy[1] , Value: 2
+
+[1;35m[5m    Clave: 16: tridi[1][2][1][0m
+    |---> Símbolo: tridi[1][2][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 6
+
+[1;35m[5m    Clave: 17: tridi[1][1][1][0m
+    |---> Símbolo: tridi[1][1][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 4
+
+[1;35m[5m    Clave: 18: bidi[2][0][0m
+    |---> Símbolo: bidi[2][0], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Value: 7
+
+[1;35m[5m    Clave: 19: bidi_copy[2][1][0m
+    |---> Símbolo: bidi_copy[2][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 8
+
+[1;35m[5m    Clave: 20: bidi[1][2][0m
+    |---> Símbolo: bidi[1][2], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Value: 6
+
+[1;35m[5m    Clave: 21: tridi_copy[1][2][0][0m
+    |---> Símbolo: tridi_copy[1][2][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 5
+
+[1;35m[5m    Clave: 22: bidi[2][2][0m
+    |---> Símbolo: bidi[2][2], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Value: 9
+
+[1;35m[5m    Clave: 23: bidi[0m
+    |---> Símbolo: bidi, Categoría: (5)ARRAY, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Informacion: bidi[0] bidi[1] bidi[2] , Value: 3
+
+[1;35m[5m    Clave: 24: bidi[1][1][0m
+    |---> Símbolo: bidi[1][1], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Value: 5
+
+[1;35m[5m    Clave: 25: bidi[0][0][0m
+    |---> Símbolo: bidi[0][0], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Value: 1
+
+[1;35m[5m    Clave: 26: bidi[0][0m
+    |---> Símbolo: bidi[0], Categoría: (5)ARRAY, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Informacion: bidi[0][0] bidi[0][1] bidi[0][2] , Value: 3
+
+[1;35m[5m    Clave: 27: bidi_copy[1][1][0m
+    |---> Símbolo: bidi_copy[1][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 5
+
+[1;35m[5m    Clave: 28: tridi_copy[0][2][1][0m
+    |---> Símbolo: tridi_copy[0][2][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 6
+
+[1;35m[5m    Clave: 29: mango[0m
+    |---> Símbolo: mango, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 30: manguita[0m
+    |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 31: bidi[2][1][0m
+    |---> Símbolo: bidi[2][1], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Value: 8
+
+[1;35m[5m    Clave: 32: tridi[1][0m
+    |---> Símbolo: tridi[1], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi[1][0] tridi[1][1] tridi[1][2] , Value: 3
+
+[1;35m[5m    Clave: 33: tridi_copy[1][0][0][0m
+    |---> Símbolo: tridi_copy[1][0][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 30
+
+[1;35m[5m    Clave: 34: tridi[0][1][0][0m
+    |---> Símbolo: tridi[0][1][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 3
+
+[1;35m[5m    Clave: 35: tridi_copy[1][2][0m
+    |---> Símbolo: tridi_copy[1][2], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi_copy[1][2][0] tridi_copy[1][2][1] , Value: 2
+
+[1;35m[5m    Clave: 36: tridi[1][0][0m
+    |---> Símbolo: tridi[1][0], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi[1][0][0] tridi[1][0][1] , Value: 2
+
+[1;35m[5m    Clave: 37: bidi_copy[0m
+    |---> Símbolo: bidi_copy, Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: bidi_copy[0] bidi_copy[1] bidi_copy[2] , Value: 3
+
+[1;35m[5m    Clave: 38: bidi_copy[2][0m
+    |---> Símbolo: bidi_copy[2], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: bidi_copy[2][0] bidi_copy[2][1] bidi_copy[2][2] , Value: 3
+
+[1;35m[5m    Clave: 39: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 40: bidi[1][0m
+    |---> Símbolo: bidi[1], Categoría: (5)ARRAY, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Informacion: bidi[1][0] bidi[1][1] bidi[1][2] , Value: 3
+
+[1;35m[5m    Clave: 41: bidi[0][2][0m
+    |---> Símbolo: bidi[0][2], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Value: 3
+
+[1;35m[5m    Clave: 42: tridi[0][1][1][0m
+    |---> Símbolo: tridi[0][1][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 4
+
+[1;35m[5m    Clave: 43: negro[0m
+    |---> Símbolo: negro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 44: tridi[1][2][0][0m
+    |---> Símbolo: tridi[1][2][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 5
+
+[1;35m[5m    Clave: 45: bidi_copy[1][0][0m
+    |---> Símbolo: bidi_copy[1][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 4
+
+[1;35m[5m    Clave: 46: uni[1][0m
+    |---> Símbolo: uni[1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 9
+
+[1;35m[5m    Clave: 47: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 48: hablame[0m
+    |---> Símbolo: hablame, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 49: bidi[2][0m
+    |---> Símbolo: bidi[2], Categoría: (5)ARRAY, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Informacion: bidi[2][0] bidi[2][1] bidi[2][2] , Value: 3
+
+[1;35m[5m    Clave: 50: bidi_copy[1][0m
+    |---> Símbolo: bidi_copy[1], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: bidi_copy[1][0] bidi_copy[1][1] bidi_copy[1][2] , Value: 3
+
+[1;35m[5m    Clave: 51: uni[0][0m
+    |---> Símbolo: uni[0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 9
+
+[1;35m[5m    Clave: 52: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 53: tridi[0][0][0m
+    |---> Símbolo: tridi[0][0], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi[0][0][0] tridi[0][0][1] , Value: 2
+
+[1;35m[5m    Clave: 54: tridi[1][1][0][0m
+    |---> Símbolo: tridi[1][1][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 3
+
+[1;35m[5m    Clave: 55: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 56: bidi_copy[2][2][0m
+    |---> Símbolo: bidi_copy[2][2], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 9
+
+[1;35m[5m    Clave: 57: tridi[0][0][1][0m
+    |---> Símbolo: tridi[0][0][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 2
+
+[1;35m[5m    Clave: 58: tridi_copy[0][2][0m
+    |---> Símbolo: tridi_copy[0][2], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi_copy[0][2][0] tridi_copy[0][2][1] , Value: 2
+
+[1;35m[5m    Clave: 59: bidi_copy[0][0m
+    |---> Símbolo: bidi_copy[0], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: bidi_copy[0][0] bidi_copy[0][1] bidi_copy[0][2] , Value: 3
+
+[1;35m[5m    Clave: 60: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 61: bidi[0][1][0m
+    |---> Símbolo: bidi[0][1], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Value: 2
+
+[1;35m[5m    Clave: 62: uni[0m
+    |---> Símbolo: uni, Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: uni[0] uni[1] , Value: 2
+
+[1;35m[5m    Clave: 63: col[0m
+    |---> Símbolo: col, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 3
+
+[1;35m[5m    Clave: 64: tridi[1][0][1][0m
+    |---> Símbolo: tridi[1][0][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 2
+
+[1;35m[5m    Clave: 65: bidi_copy[0][0][0m
+    |---> Símbolo: bidi_copy[0][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 1
+
+[1;35m[5m    Clave: 66: tridi_copy[0][1][0][0m
+    |---> Símbolo: tridi_copy[0][1][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 3
+
+[1;35m[5m    Clave: 67: tridi[1][2][0m
+    |---> Símbolo: tridi[1][2], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi[1][2][0] tridi[1][2][1] , Value: 2
+
+[1;35m[5m    Clave: 68: bidi_copy[0][2][0m
+    |---> Símbolo: bidi_copy[0][2], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 3
+
+[1;35m[5m    Clave: 69: row[0m
+    |---> Símbolo: row, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 2
+
+[1;35m[5m    Clave: 70: tridi[0][2][0m
+    |---> Símbolo: tridi[0][2], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi[0][2][0] tridi[0][2][1] , Value: 2
+
+[1;35m[5m    Clave: 71: tridi[0][2][0][0m
+    |---> Símbolo: tridi[0][2][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 5
+
+[1;35m[5m    Clave: 72: bidi_copy[1][2][0m
+    |---> Símbolo: bidi_copy[1][2], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 6
+
+[1;35m[5m    Clave: 73: tridi[1][0][0][0m
+    |---> Símbolo: tridi[1][0][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 30
+
+[1;35m[5m    Clave: 74: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 75: bidi_copy[2][0][0m
+    |---> Símbolo: bidi_copy[2][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 7
+
+[1;35m[5m    Clave: 76: bidi_copy[0][1][0m
+    |---> Símbolo: bidi_copy[0][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 2
+
+[1;35m[5m    Clave: 77: tridi[0m
+    |---> Símbolo: tridi, Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi[0] tridi[1] , Value: 2
+
+[1;35m[5m    Clave: 78: tridi[0][0m
+    |---> Símbolo: tridi[0], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi[0][0] tridi[0][1] tridi[0][2] , Value: 3
+
+[1;35m[5m    Clave: 79: rescata[0m
+    |---> Símbolo: rescata, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 80: tridi[0][1][0m
+    |---> Símbolo: tridi[0][1], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi[0][1][0] tridi[0][1][1] , Value: 2
+
+[1;35m[5m    Clave: 81: tridi[1][1][0m
+    |---> Símbolo: tridi[1][1], Categoría: (5)ARRAY, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Informacion: tridi[1][1][0] tridi[1][1][1] , Value: 2
+
+[1;35m[5m    Clave: 82: bidi[1][0][0m
+    |---> Símbolo: bidi[1][0], Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 2, Type: mango, Value: 4
+
+[1;35m[5m    Clave: 83: tridi[0][0][0][0m
+    |---> Símbolo: tridi[0][0][0], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 30
+
+[1;35m[5m    Clave: 84: tridi[0][2][1][0m
+    |---> Símbolo: tridi[0][2][1], Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 6
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Instrucción | Kind: ;
+          |    |    |--> Instrucción | Kind: ;
+          |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |    |    |--> uni | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |    |    |    |    |--> Dimensiones
+          |    |    |    |    |    |    |    |    |    |    |    |         |--> Literal | Category: Array_Size | Type: mango | Value: 2
+          |    |    |    |    |    |    |    |    |    |    |    |--> Literal | Category: Array
+          |    |    |    |    |    |    |    |    |    |    |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 9
+          |    |    |    |    |    |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 9
+          |    |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |    |         |--> bidi | Category: Declaración | Type: mango | Kind: CONSTANTE
+          |    |    |    |    |    |    |    |    |    |         |    |--> Dimensiones
+          |    |    |    |    |    |    |    |    |    |         |         |--> Literal | Category: Array_Size | Type: mango | Value: 3
+          |    |    |    |    |    |    |    |    |    |         |         |--> Literal | Category: Array_Size | Type: mango | Value: 3
+          |    |    |    |    |    |    |    |    |    |         |--> Literal | Category: Array
+          |    |    |    |    |    |    |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |    |                   |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |    |                   |    |--> Literal | Category: Array
+          |    |    |    |    |    |    |    |    |    |                   |    |    |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |    |                   |    |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |    |                   |    |         |    |--> Literal | Category: Numérico | Type: mango | Value: 1
+          |    |    |    |    |    |    |    |    |    |                   |    |         |    |--> Literal | Category: Numérico | Type: mango | Value: 2
+          |    |    |    |    |    |    |    |    |    |                   |    |         |--> Literal | Category: Numérico | Type: mango | Value: 3
+          |    |    |    |    |    |    |    |    |    |                   |    |--> Literal | Category: Array
+          |    |    |    |    |    |    |    |    |    |                   |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |    |                   |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |    |                   |              |    |--> Literal | Category: Numérico | Type: mango | Value: 4
+          |    |    |    |    |    |    |    |    |    |                   |              |    |--> Literal | Category: Numérico | Type: mango | Value: 5
+          |    |    |    |    |    |    |    |    |    |                   |              |--> Literal | Category: Numérico | Type: mango | Value: 6
+          |    |    |    |    |    |    |    |    |    |                   |--> Literal | Category: Array
+          |    |    |    |    |    |    |    |    |    |                        |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |    |                             |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |    |                             |    |--> Literal | Category: Numérico | Type: mango | Value: 7
+          |    |    |    |    |    |    |    |    |    |                             |    |--> Literal | Category: Numérico | Type: mango | Value: 8
+          |    |    |    |    |    |    |    |    |    |                             |--> Literal | Category: Numérico | Type: mango | Value: 9
+          |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |         |--> bidi_copy | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |         |    |--> Dimensiones
+          |    |    |    |    |    |    |    |    |         |         |--> Literal | Category: Array_Size | Type: mango | Value: 3
+          |    |    |    |    |    |    |    |    |         |         |--> Literal | Category: Array_Size | Type: mango | Value: 3
+          |    |    |    |    |    |    |    |    |         |--> bidi | Category: Array | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                   |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                   |    |--> bidi[0] | Category: Array
+          |    |    |    |    |    |    |    |    |                   |    |    |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                   |    |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                   |    |         |    |--> bidi[0][0] | Category: Elemento_Array | Type: mango | Value: 1
+          |    |    |    |    |    |    |    |    |                   |    |         |    |--> bidi[0][1] | Category: Elemento_Array | Type: mango | Value: 2
+          |    |    |    |    |    |    |    |    |                   |    |         |--> bidi[0][2] | Category: Elemento_Array | Type: mango | Value: 3
+          |    |    |    |    |    |    |    |    |                   |    |--> bidi[1] | Category: Array
+          |    |    |    |    |    |    |    |    |                   |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                   |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                   |              |    |--> bidi[1][0] | Category: Elemento_Array | Type: mango | Value: 4
+          |    |    |    |    |    |    |    |    |                   |              |    |--> bidi[1][1] | Category: Elemento_Array | Type: mango | Value: 5
+          |    |    |    |    |    |    |    |    |                   |              |--> bidi[1][2] | Category: Elemento_Array | Type: mango | Value: 6
+          |    |    |    |    |    |    |    |    |                   |--> bidi[2] | Category: Array
+          |    |    |    |    |    |    |    |    |                        |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                             |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                             |    |--> bidi[2][0] | Category: Elemento_Array | Type: mango | Value: 7
+          |    |    |    |    |    |    |    |    |                             |    |--> bidi[2][1] | Category: Elemento_Array | Type: mango | Value: 8
+          |    |    |    |    |    |    |    |    |                             |--> bidi[2][2] | Category: Elemento_Array | Type: mango | Value: 9
+          |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |         |--> row | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 2
+          |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |         |--> col | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 3
+          |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |         |--> tridi | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |    |    |         |    |--> Dimensiones
+          |    |    |    |    |    |         |         |--> Literal | Category: Array_Size | Type: mango | Value: 2
+          |    |    |    |    |    |         |         |--> col | Category: Array_Size | Type: mango | Value: 3
+          |    |    |    |    |    |         |         |--> row | Category: Array_Size | Type: mango | Value: 2
+          |    |    |    |    |    |         |--> Literal | Category: Array
+          |    |    |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |                   |--> Literal | Category: Array
+          |    |    |    |    |    |                   |    |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |                   |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |                   |         |    |--> Literal | Category: Array
+          |    |    |    |    |    |                   |         |    |    |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |                   |         |    |         |--> Literal | Category: Numérico | Type: mango | Value: -1
+          |    |    |    |    |    |                   |         |    |         |--> Literal | Category: Numérico | Type: mango | Value: -2
+          |    |    |    |    |    |                   |         |    |--> Literal | Category: Array
+          |    |    |    |    |    |                   |         |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |                   |         |              |--> Literal | Category: Numérico | Type: mango | Value: -3
+          |    |    |    |    |    |                   |         |              |--> Literal | Category: Numérico | Type: mango | Value: -4
+          |    |    |    |    |    |                   |         |--> Literal | Category: Array
+          |    |    |    |    |    |                   |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |                   |                   |--> Literal | Category: Numérico | Type: mango | Value: -5
+          |    |    |    |    |    |                   |                   |--> Literal | Category: Numérico | Type: mango | Value: -6
+          |    |    |    |    |    |                   |--> Literal | Category: Array
+          |    |    |    |    |    |                        |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |                             |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |                             |    |--> Literal | Category: Array
+          |    |    |    |    |    |                             |    |    |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |                             |    |         |--> Literal | Category: Numérico | Type: mango | Value: 1
+          |    |    |    |    |    |                             |    |         |--> Literal | Category: Numérico | Type: mango | Value: 2
+          |    |    |    |    |    |                             |    |--> Literal | Category: Array
+          |    |    |    |    |    |                             |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |                             |              |--> Literal | Category: Numérico | Type: mango | Value: 3
+          |    |    |    |    |    |                             |              |--> Literal | Category: Numérico | Type: mango | Value: 4
+          |    |    |    |    |    |                             |--> Literal | Category: Array
+          |    |    |    |    |    |                                  |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |                                       |--> Literal | Category: Numérico | Type: mango | Value: 5
+          |    |    |    |    |    |                                       |--> Literal | Category: Numérico | Type: mango | Value: 6
+          |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |         |--> tridi[1][0][0] | Category: Elemento_Array | Type: mango | Value: 0
+          |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 10
+          |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |         |--> tridi[1][0][0] | Category: Elemento_Array | Type: mango | Value: 0
+          |    |    |    |         |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 20
+          |    |    |    |              |--> tridi[1][0][0] | Category: Elemento_Array | Type: mango | Value: 10
+          |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: 10
+          |    |    |    |--> Suma Compuesta | Category: Operación | Kind: +=
+          |    |    |         |--> tridi[1][0][0] | Category: Elemento_Array | Type: mango | Value: 20
+          |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 10
+          |    |    |--> Asignación | Kind: =
+          |    |         |--> tridi[0] | Category: Array | Type: mango | Value: 0
+          |    |         |--> tridi[1] | Category: Array | Type: mango | Value: 0
+          |    |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |                   |--> Secuencia | Category: Expresión | Kind: ,
+          |    |                   |    |--> tridi[1][0] | Category: Array
+          |    |                   |    |    |--> Secuencia | Category: Expresión | Kind: ,
+          |    |                   |    |         |--> tridi[1][0][0] | Category: Elemento_Array | Type: mango | Value: 30
+          |    |                   |    |         |--> tridi[1][0][1] | Category: Elemento_Array | Type: mango | Value: 2
+          |    |                   |    |--> tridi[1][1] | Category: Array
+          |    |                   |         |--> Secuencia | Category: Expresión | Kind: ,
+          |    |                   |              |--> tridi[1][1][0] | Category: Elemento_Array | Type: mango | Value: 3
+          |    |                   |              |--> tridi[1][1][1] | Category: Elemento_Array | Type: mango | Value: 4
+          |    |                   |--> tridi[1][2] | Category: Array
+          |    |                        |--> Secuencia | Category: Expresión | Kind: ,
+          |    |                             |--> tridi[1][2][0] | Category: Elemento_Array | Type: mango | Value: 5
+          |    |                             |--> tridi[1][2][1] | Category: Elemento_Array | Type: mango | Value: 6
+          |    |--> tridi_copy | Category: Declaración | Type: mango | Kind: VARIABLE
+          |         |--> Dimensiones
+          |              |--> Literal | Category: Array_Size | Type: mango | Value: 2
+          |              |--> col | Category: Array_Size | Type: mango | Value: 3
+          |              |--> row | Category: Array_Size | Type: mango | Value: 2
+          |--> Asignación | Type: mango | Kind: = | Value: 0
+               |--> tridi_copy | Category: Identificador | Type: mango | Value: 0
+               |--> tridi | Category: Array | Type: mango | Value: 0
+                    |--> Secuencia | Category: Expresión | Kind: ,
+                         |--> tridi[0] | Category: Array
+                         |    |--> Secuencia | Category: Expresión | Kind: ,
+                         |         |--> Secuencia | Category: Expresión | Kind: ,
+                         |         |    |--> tridi[0][0] | Category: Array
+                         |         |    |    |--> Secuencia | Category: Expresión | Kind: ,
+                         |         |    |         |--> tridi[0][0][0] | Category: Elemento_Array | Type: mango | Value: 30
+                         |         |    |         |--> tridi[0][0][1] | Category: Elemento_Array | Type: mango | Value: 2
+                         |         |    |--> tridi[0][1] | Category: Array
+                         |         |         |--> Secuencia | Category: Expresión | Kind: ,
+                         |         |              |--> tridi[0][1][0] | Category: Elemento_Array | Type: mango | Value: 3
+                         |         |              |--> tridi[0][1][1] | Category: Elemento_Array | Type: mango | Value: 4
+                         |         |--> tridi[0][2] | Category: Array
+                         |              |--> Secuencia | Category: Expresión | Kind: ,
+                         |                   |--> tridi[0][2][0] | Category: Elemento_Array | Type: mango | Value: 5
+                         |                   |--> tridi[0][2][1] | Category: Elemento_Array | Type: mango | Value: 6
+                         |--> tridi[1] | Category: Array
+                              |--> Secuencia | Category: Expresión | Kind: ,
+                                   |--> Secuencia | Category: Expresión | Kind: ,
+                                   |    |--> tridi[1][0] | Category: Array
+                                   |    |    |--> Secuencia | Category: Expresión | Kind: ,
+                                   |    |         |--> tridi[1][0][0] | Category: Elemento_Array | Type: mango | Value: 30
+                                   |    |         |--> tridi[1][0][1] | Category: Elemento_Array | Type: mango | Value: 2
+                                   |    |--> tridi[1][1] | Category: Array
+                                   |         |--> Secuencia | Category: Expresión | Kind: ,
+                                   |              |--> tridi[1][1][0] | Category: Elemento_Array | Type: mango | Value: 3
+                                   |              |--> tridi[1][1][1] | Category: Elemento_Array | Type: mango | Value: 4
+                                   |--> tridi[1][2] | Category: Array
+                                        |--> Secuencia | Category: Expresión | Kind: ,
+                                             |--> tridi[1][2][0] | Category: Elemento_Array | Type: mango | Value: 5
+                                             |--> tridi[1][2][1] | Category: Elemento_Array | Type: mango | Value: 6
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]
