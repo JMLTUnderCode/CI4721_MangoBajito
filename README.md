@@ -725,9 +725,25 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	ah_vaina("texto personalizado");
 	```
 #### Librería Estándar: `mango_adobao`
-Mango Bajito cuenta con la librería `mango_adobao`, la cual consta de las siguientes funciones para la manejo y manipulación de los `arreglos` e `higuerotes`.
+Mango Bajito cuenta con la librería `mango_adobao`, la cual consta de varias funciones para uso del usuario:
+> [!IMPORTANT]
+> Para su uso, dentro del programa debe hacer uso de la palabra clave `.me_pide` seguido del nombre de la libreria.
+> ```
+> .me_pide mango_adobao;
+> ```
+
+Las funciones contempladas son:
+* `ah_vaina`
+	Genera un error con un mensaje personalizado y detiene el programa.
+	**Definición:**
+	```
+	ah_vaina (param : higuerote) lanza un_coño;
+	```
+	**Sintaxis:**
+	```
+	ah_vaina("texto personalizado");
+	```
 * `maelo`
-	
 	Repite una cadena de caracteres (`higuerote`) un número de veces indicado. (Referencia a 'Otra vez Maelo Ruiz').
 	
 	**Definición:**
@@ -749,25 +765,7 @@ Mango Bajito cuenta con la librería `mango_adobao`, la cual consta de las sigui
 	```
 	<culito o jeva> <nombre de la variable> : mango = me_mide(cadena);
 	```
-* `rellenamelo`
-	
-	Inicializa un arreglo con elementos de un valor determinado.
-	
-	**Definición**
-	```
-	rellenamelo(aki_toy arreglo: <tipo>[tamaño], valor: <tipo>) lanza un_coño;
-	```
-	**Sintaxis**
-	```
-	# Todos los elementos del arreglo serán inicializados como <valor>
-	culito <nombre_arreglo> : <tipo>[tamaño]; 
-	
-	rellenamelo(<nombre_arreglo>, <valor>);
-	```
-> [!IMPORTANT]
-> Consideraciones
-> * Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
-> * El `<valor>` para inicializar debe ser correspondiente con el `<tipo>` declarado del arreglo.
+
 
 ## 🥭**Manejo de Errores**
 En Mango Bajito, el manejo de errores se implementa mediante la instrucción `meando`/`fuera_del_perol`, que permiten capturar y gestionar excepciones de manera estructurada. 
