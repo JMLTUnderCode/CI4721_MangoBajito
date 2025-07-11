@@ -1463,7 +1463,7 @@ asignacion:
 					if (op != "=" && holds_alternative<nullptr_t>(attribute->value) && attribute->category != PARAMETERS) {
 						FLAG_ERROR = NON_VALUE;
 						yyerror($1);
-					} else {
+					} else if ($3->category != "Llamada_Funcion") {
 						new_node->show_value = !holds_alternative<nullptr_t>(attribute->value);
 						if (left_type == "mango") {
 							if (new_node->show_value) new_node->ivalue = get<int>(attribute->value);
@@ -1673,7 +1673,7 @@ asignacion:
 							if (op != "=" && holds_alternative<nullptr_t>(elem_attr->value)) {
 								FLAG_ERROR = NON_VALUE;
 								yyerror(final_access.c_str());
-							} else {
+							} else if ($4->category != "Llamada_Funcion") {
 								new_node->show_value = !holds_alternative<nullptr_t>(elem_attr->value);
 								if (left_type == "mango") {
 									int r_ivalue = $4->ivalue;
@@ -2040,7 +2040,7 @@ asignacion:
 						if (op != "=" && holds_alternative<nullptr_t>(field_attr->value)) {
 							FLAG_ERROR = NON_VALUE;
 							yyerror(field_name.c_str());
-						} else {
+						} else if ($5->category != "Llamada_Funcion") {
 							new_node->show_value = !holds_alternative<nullptr_t>(field_attr->value);
 							if (type_field == "mango") {
 								if (new_node->show_value) new_node->ivalue = get<int>(field_attr->value);
