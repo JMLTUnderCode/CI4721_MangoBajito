@@ -201,7 +201,7 @@ LabelGenerator labelGen;
 %token T_IZQPAREN T_DERPAREN T_IZQLLAVE T_DERLLAVE T_IZQCORCHE T_DERCORCHE
 
 // Declaracion de tipos de retorno para las producciones 
-%type <ast> programa librerias main
+%type <ast> programa libreria main
 %type <ast> asignacion operadores_asignacion operaciones_unitarias
 %type <ast> instruccion secuencia_instrucciones instrucciones bloque_instrucciones
 %type <ast> declaracion tipo_declaracion declaracion_aputador 
@@ -248,24 +248,19 @@ cerrar_scope:
 	;
 
 programa:
-	abrir_scope librerias instrucciones main cerrar_scope {
+	abrir_scope instrucciones main cerrar_scope {
 		ast_root = makeASTNode("Programa");
 		if ($2) {
-			ASTNode* encabezado_node = makeASTNode("Encabezado");
-			encabezado_node->children.push_back($2);
-			ast_root->children.push_back(encabezado_node);
-		}
-		if ($3) {
 			ASTNode* global_node = makeASTNode("Global");
-			global_node->children.push_back($3);
+			global_node->children.push_back($2);
 			ast_root->children.push_back(global_node);
 		}
-		if ($4) {
+		if ($3) {
 			ASTNode* main_node = makeASTNode("Main");
-			main_node->children.push_back($4);
+			main_node->children.push_back($3);
 			ast_root->children.push_back(main_node);
 		}
-		concat_TAC(ast_root, $3, $4);
+		concat_TAC(ast_root, $2, $3);
 		$$ = ast_root;
 		if (FIRST_ERROR) printErrors();
 		else {
@@ -293,14 +288,6 @@ programa:
 	}
 	;
 
-librerias: 
-	{ $$ = nullptr; }
-	| T_MEPIDE T_ID T_PUNTOCOMA librerias {
-		$$ = makeASTNode("me_pide", "Libreria");
-		if ($4) $$->children.push_back($4->children[0]);
-	}
-	;
-
 main:
 	T_SE_PRENDE abrir_scope T_IZQPAREN T_DERPAREN bloque_instrucciones T_PUNTOCOMA cerrar_scope { $$ = $5; }
 	;
@@ -323,7 +310,8 @@ secuencia_instrucciones:
 	;
 
 instruccion:
-	declaracion { $$ = $1; }
+	libreria { $$ = $1; }
+	| declaracion { $$ = $1; }
 	| asignacion { $$ = $1; }
 	| llamada_funcion { $$ = $1; }
 	| condicion { $$ = $1; }
@@ -457,6 +445,10 @@ instruccion:
 
 		$$->tac.push_back("call print, " + to_string(arg_nodes.size()));
 	}
+	;
+
+libreria: 
+	T_MEPIDE T_ID { $$ = makeASTNode($2, "Libreria"); }
 	;
 
 declaracion:
@@ -2274,12 +2266,13 @@ expresion:
 			new_node->name = string($1) + "[" + to_string(index) + "]";
 			new_node->category = "Elemento_String";
 			size_array = get<int>(array_attr->info[0].first);
-			if (index < 0 || index >= size_array) {
+			if ((index < 0 || index >= size_array) && array_attr->category != PARAMETERS) {
 				FLAG_ERROR = SEGMENTATION_FAULT;
 				yyerror(to_string(index).c_str());
 			} else {
 				left_type = "negro";
-				new_node->cvalue = get<string>(array_attr->value)[index];
+				if (array_attr->category != PARAMETERS)
+					new_node->cvalue = get<string>(array_attr->value)[index];
 			}
 		// En caso de array
 		} else {
