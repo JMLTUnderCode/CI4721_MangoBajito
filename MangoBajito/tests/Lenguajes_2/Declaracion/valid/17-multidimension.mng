@@ -1,16 +1,21 @@
-# Test 17: Declaracion de arreglos multidimensionales.
+# Test 17: Declaracion y uso de de arreglos multidimensionales.
 se_prende(){
 	culito uni : mango[2] = [9, 9];
 
 	jeva bidi : mango [3][3] = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+	culito bidi_copy : mango[3][3] = bidi;
 
 	culito row : mango = 2;
 	culito col : mango = 3;
 	culito tridi : mango[2][col][row] = [[[-1, -2], [-3, -4], [-5, -6]], [[1, 2], [3, 4], [5, 6]]];
 	
-	tridi[row - 2][col - 3][row - 2] = -10; 
+	tridi[row - 1][col - 3][row - 2] = 10;
 
-	#tridi[1][col - 3][row - 2] = tridi[1][col - 3][row - 2] + 9;
+	tridi[1][col - 3][row - 2] = tridi[1][col - 3][row - 2] + 10;
+	tridi[1][col - 3][row - 2] += 10;
 
-	#tridi[0] = tridi[1];
+	tridi[0] = tridi[1];
+
+	culito tridi_copy : mango[2][col][row];
+	tridi_copy = tridi;
 };
