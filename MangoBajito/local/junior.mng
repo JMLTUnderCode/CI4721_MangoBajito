@@ -1,18 +1,9 @@
+.me_pide mango_adobao;
+
 se_prende(){
 	culito a : higuerote = "¡Hola, MangoBajito!";
-	culito char : negro = a[20];
-	echar_cuento me_mide(cadena : higuerote) lanza mango {
-		culito longitud : mango = 0;
-		echale_bolas_si (Sisa) {
-			si_es_asi (cadena[longitud] nie '\0'){
-				longitud += 1;
-			} nojoda {
-				uy_kieto;
-			};
-		};
-		lanzate longitud;
-	};
+	culito char : negro = a[19];
+
 	culito len : mango = me_mide(a);
 	a += " Esto es un string.";
-	culito multi : mango[2][3][4];
 };
