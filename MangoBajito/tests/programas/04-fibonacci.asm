@@ -8,6 +8,7 @@ res: .word 0
 a: .word 0
 b: .word 0
 temp: .word 0
+i: .word 0
 
 .text
 main:
