@@ -853,6 +853,13 @@ SizeType strToSizeType(string type){
 	return ERROR;
 }
 
+void collect_dimensions(Attributes* array, vector<int> &all_dimensions){
+	all_dimensions.push_back(get<int>(array->value));
+	if(array->info.size() > 0 && array->info[0].second->category == ARRAY){
+		collect_dimensions(array->info[0].second, all_dimensions);
+	}
+}
+
 int sumOfSizeTypes(vector<pair<Information, Attributes*>> info){
 	int result = 0;
 	for (auto node : info){

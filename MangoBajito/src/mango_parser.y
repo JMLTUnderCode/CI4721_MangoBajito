@@ -688,7 +688,14 @@ declaracion:
 				if (attr_type->category == STRUCT) size_to_reserve = sumOfSizeTypes(attr_type->info);
 				if (attr_type->category == UNION) size_to_reserve = maxOfSizeType(attr_type->info);
 			} else if($4->category == "Array"){ // arrays
-				int size_array = $4->children[0]->ivalue;
+				int size_array = 1;
+				if ($4->children.size() > 0) {
+					for (auto & child : $4->children[0]->children) {
+						if (child->category == "Array_Size" && child->type == "mango" && child->ivalue > 0) {
+							size_array *= child->ivalue;
+						}
+					}
+				}
 				int size_type = strToSizeType($4->type);
 				size_to_reserve = size_type * size_array;
 			}else if($4->category == "Type"){ // tipos definidos
@@ -1090,14 +1097,19 @@ declaracion:
 				set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Atributo_Estructura"};
 				vector<ASTNode*> array_elements;
 				collect_nodes_by_categories($6, categories, array_elements);
-				int size_array = $4->children[0]->ivalue;
+				int size_array = 1;
+				if ($4->children.size() > 0) {
+					for (auto & child : $4->children[0]->children) {
+						if (child->category == "Array_Size" && child->type == "mango" && child->ivalue > 0) {
+							size_array *= child->ivalue;
+						}
+					}
+				}
 				int size_type = strToSizeType($4->type);
 				size_to_reserve = size_type * size_array;
 
 				for (int i = 0; i < size_array; i++) {
-					string temp = labelGen.newTemp();
-					$$->tac.push_back(temp + " := " + to_string(i)+ " * " + to_string(size_type));
-					$$->tac.push_back(string($2) + "[" + temp + "] := " + array_elements[i]->temp);
+					$$->tac.push_back(string($2) + "[" + to_string(i*size_type) + "] := " + array_elements[i]->temp);
 				}
 			}else if ($4->category == "Identificador" && attr_var != nullptr){ // Estructuras
 				/* por implementar */
@@ -1110,11 +1122,18 @@ declaracion:
 			if($6->category == "Cadena de Caracteres"){
 				$$->tac_data.emplace_back(string($2), $6->temp);
 			} else if ($4->category == "Array") {
-				// Agregar cada elemento del array a .
+				// Agregar cada elemento del array a .data
 				set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Atributo_Estructura"};
 				vector<ASTNode*> array_elements;
 				collect_nodes_by_categories($6, categories, array_elements);
-				int size_array = $4->children[0]->ivalue;
+				int size_array = 1;
+				if ($4->children.size() > 0) {
+					for (auto & child : $4->children[0]->children) {
+						if (child->category == "Array_Size" && child->type == "mango" && child->ivalue > 0) {
+							size_array *= child->ivalue;
+						}
+					}
+				}
 				for (int i = 0; i < size_array; i++) {
 					string elem_name = string($2) + "[" + to_string(i*strToSizeType($4->type)) + "]";
 					$$->tac_data.emplace_back(elem_name, array_elements[i]->temp);
@@ -1171,10 +1190,12 @@ lista_dimensiones:
 	dimension {
 		$$ = makeASTNode("Dimension");
 		$$->children.push_back($1);
+		concat_TAC($$, $1);
 	}
 	| lista_dimensiones dimension {
 		$$ = $1;
 		$$->children.push_back($2);
+		concat_TAC($$, $2);
 	}
 	;
 
@@ -1186,6 +1207,8 @@ dimension:
 			yyerror($2->type.c_str());
 		}
 		$$->ivalue = $2->ivalue;
+		concat_TAC($$, $2);
+		$$->temp = $2->temp;
 	}
 	;
 
@@ -2296,7 +2319,7 @@ expresion:
 						FLAG_ERROR = SEGMENTATION_FAULT;
 						yyerror(to_string(index).c_str());
 					}
-
+					
 					// Actualizar acceso.
 					final_access += "[" + to_string(index) + "]";
 				}
@@ -2342,13 +2365,71 @@ expresion:
 		new_node->type = left_type;
 		$$ = new_node;
 
+		// Verificar si todos los índices son literales
+		bool all_indexes_are_literals = true;
+		for (auto& child : $2->children) {
+			if (child->name != "Literal") {
+				all_indexes_are_literals = false;
+				break;
+			}
+		}
 		//Agregar TAC de indexacion
 		if(array_attr != nullptr){
-			string temp_access = labelGen.newTemp(),
-				temp = labelGen.newTemp();
-			$$->tac.push_back(temp_access + " := " + $2->temp + " * " + to_string(strToSizeType(left_type)));
-			$$->tac.push_back(temp + " := " + string($1) + "[" + temp_access + "]");
-			$$->temp = temp;
+			concat_TAC($$, $2);
+			// obtener las dimensiones del array
+			vector<int> dimensions;
+			vector<int> offsets;
+			int size_element = strToSizeType(left_type);	// w
+			int access = 1;
+			collect_dimensions(array_attr, dimensions);		// n_k
+			int dimensions_size = dimensions.size();
+			string actual_temp_access = "";
+			string last_temp_access = "";
+			// iterar por lo accesos de los indices
+			if(!all_indexes_are_literals) { 
+				for(auto& child : $2->children) {	// i_k
+					actual_temp_access = labelGen.newTemp();
+					// cacular los n_k
+					for (int i = dimensions_size - 1; i > 0; i--) {
+						access *= dimensions[i]; // Π n_k
+					}
+					if(child->name == "Literal"){ // caso literales
+						access *= child->ivalue * size_element; // i_k * w
+						$$->tac.push_back(actual_temp_access + " := " + to_string(access));
+					}else{ // caso variables 
+						access *= size_element; // Π n_k * w
+						$$->tac.push_back(actual_temp_access + " := " + child->temp + " * " + to_string(access));
+					}
+
+					if (!last_temp_access.empty() && !actual_temp_access.empty()){
+						string temp = labelGen.newTemp();
+						$$->tac.push_back(temp + " := " + actual_temp_access + " + " + last_temp_access);
+						actual_temp_access = temp;
+					}
+					last_temp_access = actual_temp_access;
+					dimensions_size--;
+					access = 1;
+				}
+				string temp = labelGen.newTemp();
+				$$->tac.push_back(temp + " := " + string($1) + "[" + last_temp_access + "]");
+				$$->temp = temp;
+			} else {
+				int total_access = 0;
+				for (auto& child : $2->children) { // i_k
+					actual_temp_access = labelGen.newTemp();
+					// cacular los n_k
+					for (int i = dimensions_size - 1; i > 0; i--) {
+						access *= dimensions[i]; // Π n_k
+					}
+					access *= child->ivalue * size_element; // i_k * w
+					total_access += access;
+					dimensions_size--;
+					access = 1;
+				}
+				string temp = labelGen.newTemp();
+				$$->tac.push_back(temp + " := " + string($1) + "[" + to_string(total_access) + "]");
+				$$->temp = temp;
+			}
 		}
 	}
 	| T_ID T_PUNTO acceso_struct { // Acceso a atributos de una struct/variant

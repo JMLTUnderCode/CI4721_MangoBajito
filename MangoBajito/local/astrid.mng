@@ -2,17 +2,13 @@
 jeva pi: manguita = 3.14;
 jeva index: mango = 3;
 se_prende(){
-	culito a: mango = 5;
-	culito b: mango = a + 1;
-	
-	si_es_asi(a + b igualito 100){
-		a = a + 2;
-		culito w : mango = b + 2;
-		a = w + 1; 
-	};
+	culito a: mango[index];
+	culito b: mango[5][index];
+	culito c: manguita[4][2][index];
 
-	repite_burda i entre 0 hasta 10{
-		culito s: mango = i + a;
-		s = s + 1;
-	};
+	culito d: mango[4][2] = [[1,2],[3,4],[5,6],[7,8]];
+	culito e: mango[4] = [1,2,3,4];
+	a[0] = e[index-1];
+	a[1] = d[2][1];
+	culito z: mango = d[1][1]; 
 };

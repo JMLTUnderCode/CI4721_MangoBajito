@@ -376,6 +376,8 @@ void print_TAC(const ASTNode* node);
 void concat_TAC(ASTNode* node, ASTNode* n1, ASTNode* n2 = nullptr);
 // Convierte un string a un tipo de tamaño (SizeType).
 SizeType strToSizeType(string type);
+// Recolecta las dimensiones de un arreglo
+void collect_dimensions(Attributes* array, vector<int> &all_dimensions);
 // Suma los tamaños de los tipos de datos en la información de los atributos.
 int sumOfSizeTypes(vector<pair<Information, Attributes*>> info);
 // Obtiene el tamaño máximo de los tipos de datos en la información de los atributos.
