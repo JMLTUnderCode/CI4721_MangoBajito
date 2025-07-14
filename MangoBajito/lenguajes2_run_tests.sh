@@ -30,7 +30,7 @@ for valid_dir in $(find "$ROOT" -type d \( -iname "valid" \) | sort); do
 		base=$(basename "$file" .mng)
 		expected="$valid_dir/expected/$base.out"
 		TOTAL_VALID=$((TOTAL_VALID+1))
-		OUTPUT=$(echo -e "s\ns\nn\nn" | $BIN "$file" 2>&1)
+		OUTPUT=$(echo -e "s\ns\nn\nn\nn" | $BIN "$file" 2>&1)
 		if [ -f "$expected" ]; then
 			diff -u <(echo "$OUTPUT") "$expected" > /dev/null
 			if [ $? -eq 0 ]; then
@@ -76,7 +76,7 @@ for error_dir in $(find "$ROOT" -type d \( -iname "errors" \) | sort); do
 		base=$(basename "$file" .mng)
 		expected="$error_dir/expected/$base.out"
 		TOTAL_ERROR=$((TOTAL_ERROR+1))
-		OUTPUT=$(echo -e "s\ns\nn" | $BIN "$file" 2>&1)
+		OUTPUT=$(echo -e "s\ns\nn\nn\nn" | $BIN "$file" 2>&1)
 		
 		# --- Control: ¿El test es realmente un programa correcto? ---
         if echo "$OUTPUT" | grep -q -- "--> Print table? (s/n):"; then

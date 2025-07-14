@@ -41,7 +41,7 @@ for section in "${!valid_tests[@]}"; do
             mkdir -p "$outdir"
             outfile="$outdir/$base.out"
             echo "Actualizando $outfile"
-            echo -e "s\ns\nn\nn" | $BIN "$mngfile" > "$outfile"
+            echo -e "s\ns\nn\nn\nn" | $BIN "$mngfile" > "$outfile"
         done
     done
 done

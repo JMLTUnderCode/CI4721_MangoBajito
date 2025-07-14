@@ -13,7 +13,7 @@ for file in $(ls "$TEST_DIR" | grep -E '^[0-9]{2}.*\.mng$' | sort); do
 			[sS])
 				tmp_out=$(mktemp)
 				# Ejecutar el programa, mostrar salida en pantalla y guardar en archivo temporal
-				(echo -e "s\ns\ns\ns" | $PROG "$TEST_DIR/$file" | tee "$tmp_out")
+				(echo -e "s\ns\ns\ns\nn" | $PROG "$TEST_DIR/$file" | tee "$tmp_out")
 				expected_file="$EXPECTED_DIR/$prog_name.out"
 				if [ -f "$expected_file" ]; then
 					if diff -q "$tmp_out" "$expected_file" > /dev/null; then
