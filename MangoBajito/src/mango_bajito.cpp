@@ -1492,8 +1492,54 @@ string search_type(ASTNode* node, string var) {
 	return "";
 }
 
+// Cola circular para temporales internos de MIPS
+class MipsTempQueue {
+	queue<string> temps;
+	set<string> reserved; // temporales usados por TAC
+public:
+	MipsTempQueue() = default;
+
+	// Inicializa la cola con los temporales disponibles, excluyendo los usados por TAC
+	void init(const set<string>& tac_temps) {
+		reserved = tac_temps;
+		vector<string> all = {"$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7", "$t8", "$t9"};
+		for (const auto& t : all) {
+			if (reserved.find(t) == reserved.end()) {
+				temps.push(t);
+			}
+		}
+	}
+
+	// Obtiene el siguiente temporal disponible y lo vuelve a poner al final de la cola
+	string next() {
+		if (temps.empty()) return "$t9"; // fallback
+		string t = temps.front();
+		temps.pop();
+		temps.push(t);
+		return t;
+	}
+};
+
+set<string> collect_TAC_temporals(const vector<string>& tac) {
+	set<string> temps;
+	regex temp_regex(R"(\bt(\d+)\b)");
+	for (const auto& line : tac) {
+		auto words_begin = sregex_iterator(line.begin(), line.end(), temp_regex);
+		auto words_end = sregex_iterator();
+		for (auto it = words_begin; it != words_end; ++it) {
+			temps.insert("$" + it->str());
+		}
+	}
+	return temps;
+}
+
 // Traduce una instrucción TAC a MIPS Assembly (por línea)
 vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, ASTNode* node) {
+	// 1. Recolecta temporales TAC y prepara la cola de temporales internos MIPS
+	set<string> tac_temps = collect_TAC_temporals(node->tac);
+	MipsTempQueue mipsTemps;
+	mipsTemps.init(tac_temps);
+
 	vector<string> mips;
 	vector<string> params;
 	smatch m;
@@ -1549,7 +1595,6 @@ vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, 
 
 			// call read, 1 (generalizado usando SymbolTable y bloques)
 			if (regex_match(line, regex(R"(^t(\d+)\s*:=\s*call read, 1$)"))) {
-				// Imprime el prompt si hay param acumulado
 				if (!params.empty()) {
 					string param = params.front();
 					string reg = "$a0";
@@ -1574,14 +1619,12 @@ vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, 
 				string var_dest;
 				string pat_assign = "^([a-zA-Z_][a-zA-Z0-9_]*)\\s*:=\\s*(\\([a-zA-Z_][a-zA-Z0-9_]*\\))?t" + tnum + "$";
 				smatch m2;
-				// 1. Busca en el bloque actual
 				for (size_t j = i + 1; j < tac_lines.size(); ++j) {
 					if (regex_match(tac_lines[j], m2, regex(pat_assign))) {
 						var_dest = m2[1];
 						break;
 					}
 				}
-				// 2. Si no está en el bloque actual, busca en el siguiente bloque (si existe)
 				if (var_dest.empty() && b + 1 < blocks.size()) {
 					const vector<string>& next_block_lines = blocks[b + 1].second->TAC_code;
 					for (const string& next_line : next_block_lines) {
@@ -1616,7 +1659,6 @@ vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, 
 						mips.push_back("    # [TODO] Lectura de tipo compuesto o no soportado: " + type);
 					}
 				} else {
-					// Si no se encuentra la variable destino, por defecto leer entero
 					mips.push_back("    # [TODO] No se encontró variable destino.");
 				}
 				continue;
@@ -1628,14 +1670,17 @@ vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, 
 				string tnum = m[2];
 				string type = search_type(node, var);
 				if (type == "higuerote") {
-					mips.push_back("    move $t1, $t" + tnum);
-					mips.push_back("    la $t2, " + var);
+					string tmp1 = mipsTemps.next();
+					string tmp2 = mipsTemps.next();
+					string tmp3 = mipsTemps.next();
+					mips.push_back("    move " + tmp1 + ", $t" + tnum);
+					mips.push_back("    la " + tmp2 + ", " + var);
 					mips.push_back("copy_" + var + ":");
-					mips.push_back("    lb $t3, 0($t1)");
-					mips.push_back("    sb $t3, 0($t2)");
-					mips.push_back("    addiu $t1, $t1, 1");
-					mips.push_back("    addiu $t2, $t2, 1");
-					mips.push_back("    bnez $t3, copy_" + var);
+					mips.push_back("    lb " + tmp3 + ", 0(" + tmp1 + ")");
+					mips.push_back("    sb " + tmp3 + ", 0(" + tmp2 + ")");
+					mips.push_back("    addiu " + tmp1 + ", " + tmp1 + ", 1");
+					mips.push_back("    addiu " + tmp2 + ", " + tmp2 + ", 1");
+					mips.push_back("    bnez " + tmp3 + ", copy_" + var);
 				} else {
 					mips.push_back("    sw $t" + tnum + ", " + var);
 				}
@@ -1646,18 +1691,70 @@ vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, 
 			if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*(\d+)$)"))) {
 				string var = m[1];
 				string val = m[2];
-				mips.push_back("    li $t0, " + val);
-				mips.push_back("    sw $t0, " + var);
+				string tmp = mipsTemps.next();
+				mips.push_back("    li " + tmp + ", " + val);
+				mips.push_back("    sw " + tmp + ", " + var);
+				continue;
+			}
+
+			// Suma con constante: x := x + c
+			if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\+\s*(\d+)$)"))) {
+				string left = m[1], op1 = m[2], val = m[3];
+				bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
+				bool op1_is_temp = regex_match(op1, regex(R"(^t\d+$)"));
+				string tmp0 = mipsTemps.next();
+				string tmp1 = mipsTemps.next();
+				string tmp2 = mipsTemps.next();
+
+				if (op1_is_temp) mips.push_back("    move " + tmp0 + ", $" + op1);
+				else mips.push_back("    lw " + tmp0 + ", " + op1);
+				mips.push_back("    li " + tmp1 + ", " + val);
+				mips.push_back("    add " + tmp2 + ", " + tmp0 + ", " + tmp1);
+
+				if (left_is_temp) mips.push_back("    move $" + left + ", " + tmp2);
+				else mips.push_back("    sw " + tmp2 + ", " + left);
 				continue;
 			}
 
 			// Suma: suma := suma + n
 			if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\+\s*([a-zA-Z_][a-zA-Z0-9_]*)$)"))) {
 				string left = m[1], op1 = m[2], op2 = m[3];
-				mips.push_back("    lw $t0, " + op1);
-				mips.push_back("    lw $t1, " + op2);
-				mips.push_back("    add $t2, $t0, $t1");
-				mips.push_back("    sw $t2, " + left);
+				bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
+				bool op1_is_temp = regex_match(op1, regex(R"(^t\d+$)"));
+				bool op2_is_temp = regex_match(op2, regex(R"(^t\d+$)"));
+				string tmp0 = mipsTemps.next();
+				string tmp1 = mipsTemps.next();
+				string tmp2 = mipsTemps.next();
+
+				if (op1_is_temp) mips.push_back("    move " + tmp0 + ", $" + op1);
+				else mips.push_back("    lw " + tmp0 + ", " + op1);
+				if (op2_is_temp) mips.push_back("    move " + tmp1 + ", $" + op2);
+				else mips.push_back("    lw " + tmp1 + ", " + op2);
+
+				mips.push_back("    add " + tmp2 + ", " + tmp0 + ", " + tmp1);
+
+				if (left_is_temp) mips.push_back("    move $" + left + ", " + tmp2);
+				else mips.push_back("    sw " + tmp2 + ", " + left);
+				continue;
+			}
+			
+			// Asignación simple: x := y
+			string pat_assign_simple = "^([a-zA-Z_][a-zA-Z0-9_]*)\\s*:=\\s*([a-zA-Z_][a-zA-Z0-9_]*)$";
+			if (regex_match(line, m, regex(pat_assign_simple))) {
+				string left = m[1], right = m[2];
+				bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
+				bool right_is_temp = regex_match(right, regex(R"(^t\d+$)"));
+				string tmp = mipsTemps.next();
+				if (right_is_temp) {
+					mips.push_back("    move " + tmp + ", $" + right);
+				} else {
+					mips.push_back("    lw " + tmp + ", " + right);
+				}
+				if (left_is_temp) {
+					mips.push_back("    move $" + left + ", " + tmp);
+				} else {
+					mips.push_back("    sw " + tmp + ", " + left);
+				}
 				continue;
 			}
 
@@ -1680,17 +1777,25 @@ vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, 
 				smatch cmp;
 				if (regex_match(cond, cmp, regex(R"((\w+)\s*([=!<>]+)\s*(\w+))"))) {
 					string left = cmp[1], op = cmp[2], right = cmp[3];
+					bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
+					bool right_is_temp = regex_match(right, regex(R"(^t\d+$)"));
 					bool right_is_const = regex_match(right, regex(R"(^\d+$)"));
-					if (op == "==") {
-						mips.push_back("    lw $t0, " + left);
-						if (right_is_const) mips.push_back("    li $t1, " + right);
-						else mips.push_back("    lw $t1, " + right);
-						mips.push_back("    bne $t0, $t1, " + label);
-					} else if (op == "!=") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    beq $t0, $t1, " + label);
-					else if (op == "<") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    bge $t0, $t1, " + label);
-					else if (op == "<=") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    bgt $t0, $t1, " + label);
-					else if (op == ">") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    ble $t0, $t1, " + label);
-					else if (op == ">=") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    blt $t0, $t1, " + label);
+					string tmp0 = mipsTemps.next();
+					string tmp1 = mipsTemps.next();
+					// Carga left
+					if (left_is_temp) mips.push_back("    move " + tmp0 + ", $" + left);
+					else mips.push_back("    lw " + tmp0 + ", " + left);
+					// Carga right
+					if (right_is_temp) mips.push_back("    move " + tmp1 + ", $" + right);
+					else if (right_is_const) mips.push_back("    li " + tmp1 + ", " + right);
+					else mips.push_back("    lw " + tmp1 + ", " + right);
+					// Condición
+					if (op == "==") mips.push_back("    bne " + tmp0 + ", " + tmp1 + ", " + label);
+					else if (op == "!=") mips.push_back("    beq " + tmp0 + ", " + tmp1 + ", " + label);
+					else if (op == "<") mips.push_back("    bge " + tmp0 + ", " + tmp1 + ", " + label);
+					else if (op == "<=") mips.push_back("    bgt " + tmp0 + ", " + tmp1 + ", " + label);
+					else if (op == ">") mips.push_back("    ble " + tmp0 + ", " + tmp1 + ", " + label);
+					else if (op == ">=") mips.push_back("    blt " + tmp0 + ", " + tmp1 + ", " + label);
 				}
 				continue;
 			}
@@ -1702,13 +1807,33 @@ vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, 
 				smatch cmp;
 				if (regex_match(cond, cmp, regex(R"((\w+)\s*([=!<>]+)\s*(\w+))"))) {
 					string left = cmp[1], op = cmp[2], right = cmp[3];
-					if (op == "==") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    beq $t0, $t1, " + label);
-					else if (op == "!=") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    bne $t0, $t1, " + label);
-					else if (op == "<") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    blt $t0, $t1, " + label);
-					else if (op == "<=") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    ble $t0, $t1, " + label);
-					else if (op == ">") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    bgt $t0, $t1, " + label);
-					else if (op == ">=") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    bge $t0, $t1, " + label);
+					bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
+					bool right_is_temp = regex_match(right, regex(R"(^t\d+$)"));
+					bool right_is_const = regex_match(right, regex(R"(^\d+$)"));
+					string tmp0 = mipsTemps.next();
+					string tmp1 = mipsTemps.next();
+					// Carga left
+					if (left_is_temp) mips.push_back("    move " + tmp0 + ", $" + left);
+					else mips.push_back("    lw " + tmp0 + ", " + left);
+					// Carga right
+					if (right_is_temp) mips.push_back("    move " + tmp1 + ", $" + right);
+					else if (right_is_const) mips.push_back("    li " + tmp1 + ", " + right);
+					else mips.push_back("    lw " + tmp1 + ", " + right);
+					// Condición
+					if (op == "==") mips.push_back("    beq " + tmp0 + ", " + tmp1 + ", " + label);
+					else if (op == "!=") mips.push_back("    bne " + tmp0 + ", " + tmp1 + ", " + label);
+					else if (op == "<") mips.push_back("    blt " + tmp0 + ", " + tmp1 + ", " + label);
+					else if (op == "<=") mips.push_back("    ble " + tmp0 + ", " + tmp1 + ", " + label);
+					else if (op == ">") mips.push_back("    bgt " + tmp0 + ", " + tmp1 + ", " + label);
+					else if (op == ">=") mips.push_back("    bge " + tmp0 + ", " + tmp1 + ", " + label);
 				}
+				continue;
+			}
+
+			// Concatenación: tX := call concat, N
+			if (regex_match(line, m, regex(R"(^t(\d+)\s*:=\s*call concat, \d+$)"))) {
+				string tnum = m[1];
+				mips.push_back("    la $t" + tnum + ", buffer # [TODO] concat no implementado");
 				continue;
 			}
 
@@ -1743,7 +1868,7 @@ void generateAssemblyCode(ASTNode* node, vector<pair<string, BasicBlock*> > bloc
 	for (const auto& tac_decl : node->tac_declaraciones) {
 		asm_code.push_back(tac_decl.second.first + ": .word 0");
 	}
-	//asm_code.push_back("buffer: .space 32");
+	asm_code.push_back("buffer: .space 64");
 	asm_code.push_back("");
 	asm_code.push_back(".text");
 	asm_code.push_back("main:");
