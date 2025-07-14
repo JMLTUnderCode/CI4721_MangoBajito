@@ -1,6 +1,7 @@
 .data
 .align 2
 str0: .asciiz "Hola mundo"
+buffer: .space 64
 
 .text
 main:
