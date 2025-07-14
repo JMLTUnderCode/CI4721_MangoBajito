@@ -3,6 +3,7 @@
 str0: .asciiz "nombre de usuario: "
 str1: .asciiz "Hola "
 nombre: .word 0
+buffer: .space 64
 
 .text
 main:
