@@ -2843,6 +2843,12 @@ var_ciclo_determinado:
 		new_node->children.push_back(node_hasta);
 
 		$$ = new_node;
+		Attributes* attr_var = symbolTable.search_symbol($1);
+		if (attr_var != nullptr) {
+			int scope_level = attr_var->scope;
+			int size_to_reserve = strToSizeType(attr_var->type->symbol_name);
+			if (size_to_reserve != -1) $$->tac_declaraciones.push_back({scope_level, {string($1), size_to_reserve}});
+		}
 	}
 	;
 
@@ -2864,7 +2870,7 @@ determinado:
 		string var = $3->name, 
 			   init = $3->children[0]->children[0]->temp,
 			   finish = $3->children[1]->children[0]->temp;
-
+		concat_TAC($$, $3);
 		concat_TAC($$, $3->children[0]->children[0]);
 		$$->tac.push_back(var + " := " + init);
 		concat_TAC($$, $3->children[1]->children[0]);
@@ -2969,6 +2975,7 @@ determinado:
 			   init = $3->children[0]->children[0]->temp,
 			   finish = $3->children[1]->children[0]->temp;
 
+		concat_TAC($$, $3);
 		concat_TAC($$, $3->children[0]->children[0]);
 		$$->tac.push_back(var + " := " + init);
 		concat_TAC($$, $3->children[1]->children[0], $5);
