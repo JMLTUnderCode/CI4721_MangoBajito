@@ -1472,3 +1472,292 @@ void SolverFlowGraphProblem::solver_data_flow_problem(FlowGraph& flow_graph){
 		}
 	}
 }
+
+// ======================================================
+// =                 Assembly Code                      =
+// ======================================================
+
+// Busca el tipo de una variable en las declaraciones TAC del nodo AST.
+string search_type(ASTNode* node, string var) {
+	for (const auto& tac_decl : node->tac_declaraciones) {
+		if (tac_decl.second.first == var) {
+			if (tac_decl.second.second == 1) return "tas_claro";
+			else if (tac_decl.second.second == 2) return "negro";
+			else if (tac_decl.second.second == 4) return "mango";
+			else if (tac_decl.second.second == 8) return "manguita";
+			else if (tac_decl.second.second == 16) return "manguangua";
+			else if (tac_decl.second.second == 32) return "higuerote";
+		}
+	}
+	return "";
+}
+
+// Traduce una instrucción TAC a MIPS Assembly (por línea)
+vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, ASTNode* node) {
+	vector<string> mips;
+	vector<string> params;
+	smatch m;
+
+	for (size_t b = 0; b < blocks.size(); ++b) {
+		const string& block_name = blocks[b].first;
+		BasicBlock* bb = blocks[b].second;
+		if (block_name == "ENTRY" || block_name == "EXIT") continue;
+
+		const vector<string>& tac_lines = bb->TAC_code;
+		for (size_t i = 0; i < tac_lines.size(); ++i) {
+			string line = tac_lines[i];
+			line.erase(0, line.find_first_not_of(" \t"));
+			line.erase(line.find_last_not_of(" \t") + 1);
+
+			// Acumula parámetros
+			if (regex_match(line, regex(R"(^param\s+(.+)$)"))) {
+				string param = line.substr(6);
+				params.push_back(param);
+				continue;
+			}
+
+			// call print, N
+			if (regex_match(line, regex(R"(^call print, (\d+)$)"))) {
+				for (const string& param : params) {
+					string reg = "$a0";
+					string param_trim = param;
+					param_trim.erase(0, param_trim.find_first_not_of(" \t"));
+					param_trim.erase(param_trim.find_last_not_of(" \t") + 1);
+
+					if (regex_match(param_trim, regex(R"(^\(string\)([a-zA-Z_][a-zA-Z0-9_]*)$)"))) {
+						string var = param_trim.substr(8);
+						mips.push_back("    lw $a0, " + var);
+						mips.push_back("    li $v0, 1");
+						mips.push_back("    syscall");
+					} else if (param_trim[0] == '&') {
+						mips.push_back("    la " + reg + ", " + param_trim.substr(1));
+						mips.push_back("    li $v0, 4");
+						mips.push_back("    syscall");
+					} else if (regex_match(param_trim, regex(R"(^t\d+$)"))) {
+						mips.push_back("    move " + reg + ", $" + param_trim);
+						mips.push_back("    li $v0, 4");
+						mips.push_back("    syscall");
+					} else {
+						mips.push_back("    la " + reg + ", " + param_trim);
+						mips.push_back("    li $v0, 4");
+						mips.push_back("    syscall");
+					}
+				}
+				params.clear();
+				continue;
+			}
+
+			// call read, 1 (generalizado usando SymbolTable y bloques)
+			if (regex_match(line, regex(R"(^t(\d+)\s*:=\s*call read, 1$)"))) {
+				// Imprime el prompt si hay param acumulado
+				if (!params.empty()) {
+					string param = params.front();
+					string reg = "$a0";
+					string param_trim = param;
+					param_trim.erase(0, param_trim.find_first_not_of(" \t"));
+					param_trim.erase(param_trim.find_last_not_of(" \t") + 1);
+
+					if (param_trim[0] == '&') {
+						mips.push_back("    la " + reg + ", " + param_trim.substr(1));
+					} else if (regex_match(param_trim, regex(R"(^t\d+$)"))) {
+						mips.push_back("    move " + reg + ", $" + param_trim);
+					} else {
+						mips.push_back("    la " + reg + ", " + param_trim);
+					}
+					mips.push_back("    li $v0, 4");
+					mips.push_back("    syscall");
+					params.clear();
+				}
+				string tnum = regex_replace(line, regex(R"(^t(\d+)\s*:=\s*call read, 1$)"), "$1");
+
+				// Busca la asignación siguiente en el bloque actual o el siguiente
+				string var_dest;
+				string pat_assign = "^([a-zA-Z_][a-zA-Z0-9_]*)\\s*:=\\s*(\\([a-zA-Z_][a-zA-Z0-9_]*\\))?t" + tnum + "$";
+				smatch m2;
+				// 1. Busca en el bloque actual
+				for (size_t j = i + 1; j < tac_lines.size(); ++j) {
+					if (regex_match(tac_lines[j], m2, regex(pat_assign))) {
+						var_dest = m2[1];
+						break;
+					}
+				}
+				// 2. Si no está en el bloque actual, busca en el siguiente bloque (si existe)
+				if (var_dest.empty() && b + 1 < blocks.size()) {
+					const vector<string>& next_block_lines = blocks[b + 1].second->TAC_code;
+					for (const string& next_line : next_block_lines) {
+						if (regex_match(next_line, m2, regex(pat_assign))) {
+							var_dest = m2[1];
+							break;
+						}
+					}
+				}
+
+				if (!var_dest.empty()) {
+					string type = search_type(node, var_dest);
+					if (type == "higuerote") {
+						mips.push_back("    la $a0, " + var_dest);
+						mips.push_back("    li $a1, 32");
+						mips.push_back("    li $v0, 8");
+						mips.push_back("    syscall");
+						mips.push_back("    move $t" + tnum + ", $a0");
+					} else if (type == "mango" || type == "tas_claro" || type == "negro") {
+						mips.push_back("    li $v0, 5");
+						mips.push_back("    syscall");
+						mips.push_back("    move $t" + tnum + ", $v0");
+					} else if (type == "manguita") {
+						mips.push_back("    li $v0, 6");
+						mips.push_back("    syscall");
+						mips.push_back("    mov.s $f0, $f0");
+					} else if (type == "manguangua") {
+						mips.push_back("    li $v0, 7");
+						mips.push_back("    syscall");
+						mips.push_back("    mov.d $f0, $f0");
+					} else {
+						mips.push_back("    # [TODO] Lectura de tipo compuesto o no soportado: " + type);
+					}
+				} else {
+					// Si no se encuentra la variable destino, por defecto leer entero
+					mips.push_back("    # [TODO] No se encontró variable destino.");
+				}
+				continue;
+			}
+
+			// Asignar temporal a variable (con o sin cast): var := tX o var := (cast)tX
+			if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*(?:\([a-zA-Z_][a-zA-Z0-9_]*\))?t(\d+)$)"))) {
+				string var = m[1];
+				string tnum = m[2];
+				string type = search_type(node, var);
+				if (type == "higuerote") {
+					mips.push_back("    move $t1, $t" + tnum);
+					mips.push_back("    la $t2, " + var);
+					mips.push_back("copy_" + var + ":");
+					mips.push_back("    lb $t3, 0($t1)");
+					mips.push_back("    sb $t3, 0($t2)");
+					mips.push_back("    addiu $t1, $t1, 1");
+					mips.push_back("    addiu $t2, $t2, 1");
+					mips.push_back("    bnez $t3, copy_" + var);
+				} else {
+					mips.push_back("    sw $t" + tnum + ", " + var);
+				}
+				continue;
+			}
+
+			// nombre := 0 (asignación constante)
+			if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*(\d+)$)"))) {
+				string var = m[1];
+				string val = m[2];
+				mips.push_back("    li $t0, " + val);
+				mips.push_back("    sw $t0, " + var);
+				continue;
+			}
+
+			// Suma: suma := suma + n
+			if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\+\s*([a-zA-Z_][a-zA-Z0-9_]*)$)"))) {
+				string left = m[1], op1 = m[2], op2 = m[3];
+				mips.push_back("    lw $t0, " + op1);
+				mips.push_back("    lw $t1, " + op2);
+				mips.push_back("    add $t2, $t0, $t1");
+				mips.push_back("    sw $t2, " + left);
+				continue;
+			}
+
+			// Etiquetas
+			if (regex_match(line, regex(R"(^L\d+:$)"))) {
+				mips.push_back(line);
+				continue;
+			}
+
+			// Goto
+			if (regex_match(line, m, regex(R"(^goto\s+(L\d+)$)"))) {
+				mips.push_back("    j " + string(m[1]));
+				continue;
+			}
+
+			// Ifnot cond goto Lx
+			if (regex_match(line, m, regex(R"(^ifnot\s+(.+)\s+goto\s+(L\d+)$)"))) {
+				string cond = m[1];
+				string label = m[2];
+				smatch cmp;
+				if (regex_match(cond, cmp, regex(R"((\w+)\s*([=!<>]+)\s*(\w+))"))) {
+					string left = cmp[1], op = cmp[2], right = cmp[3];
+					bool right_is_const = regex_match(right, regex(R"(^\d+$)"));
+					if (op == "==") {
+						mips.push_back("    lw $t0, " + left);
+						if (right_is_const) mips.push_back("    li $t1, " + right);
+						else mips.push_back("    lw $t1, " + right);
+						mips.push_back("    bne $t0, $t1, " + label);
+					} else if (op == "!=") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    beq $t0, $t1, " + label);
+					else if (op == "<") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    bge $t0, $t1, " + label);
+					else if (op == "<=") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    bgt $t0, $t1, " + label);
+					else if (op == ">") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    ble $t0, $t1, " + label);
+					else if (op == ">=") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    blt $t0, $t1, " + label);
+				}
+				continue;
+			}
+
+			// If cond goto Lx
+			if (regex_match(line, m, regex(R"(^if\s+(.+)\s+goto\s+(L\d+)$)"))) {
+				string cond = m[1];
+				string label = m[2];
+				smatch cmp;
+				if (regex_match(cond, cmp, regex(R"((\w+)\s*([=!<>]+)\s*(\w+))"))) {
+					string left = cmp[1], op = cmp[2], right = cmp[3];
+					if (op == "==") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    beq $t0, $t1, " + label);
+					else if (op == "!=") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    bne $t0, $t1, " + label);
+					else if (op == "<") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    blt $t0, $t1, " + label);
+					else if (op == "<=") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    ble $t0, $t1, " + label);
+					else if (op == ">") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    bgt $t0, $t1, " + label);
+					else if (op == ">=") mips.push_back("    lw $t0, " + left + "\n    lw $t1, " + right + "\n    bge $t0, $t1, " + label);
+				}
+				continue;
+			}
+
+			// Otros casos: dejar como comentario
+			mips.push_back("    # " + line);
+		}
+	}
+	return mips;
+}
+
+// Genera el código ensamblador a partir del TAC y los bloques de flujo
+void generateAssemblyCode(ASTNode* node, vector<pair<string, BasicBlock*> > blocks) {
+	if (!node) {
+		cout << "TAC is empty." << endl;
+		return;
+	}
+
+	string ss;
+	cout << "--> Generate Assemble Code? (s/n): "; cin >> ss;
+	while (ss != "s" && ss != "n") { cout << "Key Error. Generate Assemble Code? (s/n): "; cin >> ss; }
+	if (ss == "n") return;
+
+	vector<string> asm_code;
+	asm_code.push_back(".data");
+	asm_code.push_back(".align 2");
+	// 1. Sección de datos (strings, etc.)
+	for (const auto& tac_data : node->tac_data) {
+		asm_code.push_back(tac_data.first + ": .asciiz " + tac_data.second);
+	}
+
+	// 2. Sección de declaraciones (espacio para variables)
+	for (const auto& tac_decl : node->tac_declaraciones) {
+		asm_code.push_back(tac_decl.second.first + ": .word 0");
+	}
+	//asm_code.push_back("buffer: .space 32");
+	asm_code.push_back("");
+	asm_code.push_back(".text");
+	asm_code.push_back("main:");
+
+	// 3. Sección de código (por bloques)
+	vector<string> mips_block = translate_TAC_to_MIPS(blocks, node);
+	asm_code.insert(asm_code.end(), mips_block.begin(), mips_block.end());
+
+	// 4. Escribir el código ensamblador a un archivo
+	ofstream fout("output.asm");
+	for (const auto& line : asm_code) {
+		fout << line << endl;
+	}
+	fout.close();
+
+	cout << "\033[1;32m[OK]\033[0m Código ensamblador generado en output.asm" << endl;
+}

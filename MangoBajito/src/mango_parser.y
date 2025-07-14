@@ -273,8 +273,8 @@ programa:
 				solver_problem.set_direction(BACKWARD);
 				solver_problem.solver_data_flow_problem(flow_graph);
 				flow_graph.print();
+				generateAssemblyCode(ast_root, flow_graph.blocks);
 			}
-			
 		}
 		if (FIRST_ERROR) {
 			cout << "\033[1;31m\033[5m\n               =======================================================\n";
@@ -2853,7 +2853,7 @@ determinado:
 		string kind_range = "Creciente";
 		int entre_val = $3->children[0]->children[0]->ivalue;
 		int hasta_val = $3->children[1]->children[0]->ivalue;
-		if (entre_val > hasta_val) kind_range = "Decreciente";
+		//if (entre_val > hasta_val) kind_range = "Decreciente";
 
 		new_node->children.push_back($3);
 		new_node->children.push_back($4);

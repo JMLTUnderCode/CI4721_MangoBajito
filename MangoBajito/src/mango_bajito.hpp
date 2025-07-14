@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <string>
 #include <cstring>
+#include <fstream>
 #include <sstream>
 #include <vector>
 #include <unordered_map>
@@ -220,8 +221,8 @@ class SymbolTable {
 
 // Definición de tipos de tamaño para los tipos de datos
 enum SizeType {
-	NEGRO = 1, 		// Tamaño de negro (char)
 	TAS_CLARO = 1,	// Tamaño de tas_claro (bool)
+	NEGRO = 2, 		// Tamaño de negro (char)
 	MANGO = 4,		// Tamaño de mango (int)
 	MANGUITA = 8,	// Tamaño de manguita (float)
 	MANGUANGUA = 16,// Tamaño de manguangua (double)
@@ -471,4 +472,17 @@ struct SolverFlowGraphProblem{
 	void set_direction(Direction dir); // Inicializa la direccion del algoritmo.
 	void solver_data_flow_problem(FlowGraph& flow_graph); // Método para resolver el problema de flujo de datos
 };
+
+// ======================================================
+// =                 Assembly Code                      =
+// ======================================================
+
+// Busca el tipo de una variable en las declaraciones TAC del nodo AST.
+string search_type(ASTNode* node, string var);
+
+// Traduce una instrucción TAC a MIPS Assembly (por línea)
+vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, ASTNode* node);
+
+// Genera el código ensamblador a partir del TAC y los bloques de flujo
+void generateAssemblyCode(ASTNode* node, vector<pair<string, BasicBlock*> > blocks);
 #endif
