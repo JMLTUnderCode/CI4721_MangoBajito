@@ -73,7 +73,7 @@ Programa
           |--> Asignación | Type: manguangua | Kind: = | Value: -1.79769e-307
                |--> decl3 | Category: Identificador | Type: manguangua | Value: 0
                |--> decl1 | Category: Identificador | Type: manguangua | Value: -1.79769e-307
---> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

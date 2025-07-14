@@ -73,7 +73,7 @@ Programa
           |--> Asignación | Type: negro | Kind: = | Value: '$'
                |--> decl3 | Category: Identificador | Type: negro | Value: ''
                |--> decl1 | Category: Identificador | Type: negro | Value: '$'
---> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

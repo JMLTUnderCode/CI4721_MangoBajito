@@ -91,7 +91,7 @@ Programa
                |--> n5 | Category: Declaración | Type: manguita | Kind: VARIABLE
                |--> Literal | Category: Numérico | Type: manguita | Kind: CAST(higuerote) | Value: -4321.32
                     |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "-4321.321"
---> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

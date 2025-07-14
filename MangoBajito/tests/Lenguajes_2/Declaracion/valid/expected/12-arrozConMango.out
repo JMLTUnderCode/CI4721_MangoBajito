@@ -201,7 +201,7 @@ Programa
                          |    |--> ella.edad | Category: Atributo_Estructura | Type: mango | Value: 23
                          |    |--> el.edad | Category: Atributo_Estructura | Type: mango | Value: 25
                          |--> yo.edad | Category: Atributo_Estructura | Type: mango | Value: 26
---> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

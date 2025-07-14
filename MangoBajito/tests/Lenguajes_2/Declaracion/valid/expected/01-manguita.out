@@ -73,7 +73,7 @@ Programa
           |--> Asignación | Type: manguita | Kind: = | Value: -2.03216
                |--> decl3 | Category: Identificador | Type: manguita | Value: 0
                |--> decl1 | Category: Identificador | Type: manguita | Value: -2.03216
---> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

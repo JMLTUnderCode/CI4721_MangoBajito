@@ -77,7 +77,7 @@ Programa
                          |--> Suma Compuesta | Category: Operación | Type: mango | Kind: += | Value: 0
                               |--> suma | Category: Identificador | Type: mango | Value: 0
                               |--> n | Category: Identificador | Type: mango | Value: 0
---> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

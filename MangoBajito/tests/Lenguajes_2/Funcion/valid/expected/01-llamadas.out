@@ -90,7 +90,7 @@ Programa
                     |    |--> p | Category: Identificador | Type: mango | Value: 23
                     |    |--> Literal | Category: Numérico | Type: manguita | Value: 2.3
                     |--> p | Category: Identificador | Type: mango | Value: 23
---> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

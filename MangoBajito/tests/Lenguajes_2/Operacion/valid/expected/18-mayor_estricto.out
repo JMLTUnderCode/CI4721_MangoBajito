@@ -169,7 +169,7 @@ Programa
                |--> mayol | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
                     |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "hola"
                     |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "hola"
---> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

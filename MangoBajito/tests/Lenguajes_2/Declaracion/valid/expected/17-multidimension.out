@@ -451,7 +451,7 @@ Programa
                                         |--> Secuencia | Category: Expresión | Kind: ,
                                              |--> tridi[1][2][0] | Category: Elemento_Array | Type: mango | Value: 5
                                              |--> tridi[1][2][1] | Category: Elemento_Array | Type: mango | Value: 6
---> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

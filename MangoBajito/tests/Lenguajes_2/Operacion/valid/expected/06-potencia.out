@@ -232,7 +232,7 @@ Programa
                |--> ** | Category: Operación | Type: manguangua | Kind: Numérica | Value: inf
                     |--> Literal | Category: Numérico | Type: manguangua | Value: 0
                     |--> Literal | Category: Numérico | Type: manguangua | Value: -20
---> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================

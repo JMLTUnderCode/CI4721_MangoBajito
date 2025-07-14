@@ -295,7 +295,7 @@ Programa
                |--> nie | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
                     |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
                     |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
---> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): [1;32m[5m
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
                =======================================================
                        ---->       Correct Program       <----        
                =======================================================
