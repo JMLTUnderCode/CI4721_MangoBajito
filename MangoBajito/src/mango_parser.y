@@ -2360,7 +2360,7 @@ expresion:
 			}
 		}
 		//Agregar TAC de indexacion
-		if(array_attr != nullptr){
+		if(array_attr != nullptr && array_attr->category == ARRAY){
 			concat_TAC($$, $2);
 			// obtener las dimensiones del array
 			vector<int> dimensions;
