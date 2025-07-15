@@ -878,22 +878,22 @@ void write_TAC_array(ASTNode* padre, const string& name, ASTNode* lista_dimensio
 	// iterar por lo accesos de los indices
 	if(!all_indexes_are_literals) { 
 		for(auto& child : lista_dimensiones->children) {	// i_k
-			actual_temp_access = newLabelFunc();
 			// cacular los n_k
 			for (int i = dimensions_size - 1; i > 0; i--) {
 				access *= dimensions[i]; // Π n_k
 			}
 			if(child->name == "Literal"){ // caso literales
 				access *= child->ivalue * size_element; // i_k * w
-				padre->tac.push_back(actual_temp_access + " := " + to_string(access));
-			}else{ // caso variables 
+				actual_temp_access = to_string(access);
+			}else{ // caso variables
+				actual_temp_access = newLabelFunc();
 				access *= size_element; // Π n_k * w
 				padre->tac.push_back(actual_temp_access + " := " + child->temp + " * " + to_string(access));
 			}
 
 			if (!last_temp_access.empty() && !actual_temp_access.empty()){
 				string temp = newLabelFunc();
-				padre->tac.push_back(temp + " := " + actual_temp_access + " + " + last_temp_access);
+				padre->tac.push_back(temp + " := " + last_temp_access + " + " + actual_temp_access);
 				actual_temp_access = temp;
 			}
 			last_temp_access = actual_temp_access;
@@ -918,7 +918,6 @@ void write_TAC_array(ASTNode* padre, const string& name, ASTNode* lista_dimensio
 	} else {
 		int total_access = 0;
 		for (auto& child : lista_dimensiones->children) { // i_k
-			actual_temp_access = newLabelFunc();
 			// cacular los n_k
 			for (int i = dimensions_size - 1; i > 0; i--) {
 				access *= dimensions[i]; // Π n_k
