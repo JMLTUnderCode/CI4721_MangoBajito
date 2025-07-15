@@ -860,7 +860,7 @@ void collect_dimensions(Attributes* array, vector<int> &all_dimensions){
 	}
 }
 
-void write_TAC_array(ASTNode* padre, const string& name, ASTNode* lista_dimensiones, const vector<int>& dimensions, const string& type, function<string()> newLabelFunc){
+void write_TAC_array(ASTNode* padre, const string& name, ASTNode* lista_dimensiones, const vector<int>& dimensions, const string& type, string op_tac, ASTNode* expr, function<string()> newLabelFunc){
 	// Verificar si todos los índices son literales
 	bool all_indexes_are_literals = true;
 	for (auto& child : lista_dimensiones->children) {
@@ -900,9 +900,21 @@ void write_TAC_array(ASTNode* padre, const string& name, ASTNode* lista_dimensio
 			dimensions_size--;
 			access = 1;
 		}
-		string temp = newLabelFunc();
-		padre->tac.push_back(temp + " := " + name + "[" + last_temp_access + "]");
-		padre->temp = temp;
+		if(op_tac == "" && expr == nullptr) {
+			string temp = newLabelFunc();
+			padre->tac.push_back(temp + " := " + name + "[" + last_temp_access + "]");
+			padre->temp = temp;
+		} else if (op_tac == " := "){
+			concat_TAC(padre, expr);
+			padre->tac.push_back(name + "[" + last_temp_access + "]" + " := " + expr->temp);
+		} else {
+			concat_TAC(padre, expr);
+			string temp_addr = newLabelFunc(),
+					temp = newLabelFunc();
+			padre->tac.push_back(temp_addr + " := " + name + "[" + last_temp_access + "]");
+			padre->tac.push_back(temp + " := " + temp_addr + op_tac + expr->temp);
+			padre->tac.push_back(name + "[" + last_temp_access + "]" + " := " + temp);
+		}
 	} else {
 		int total_access = 0;
 		for (auto& child : lista_dimensiones->children) { // i_k
@@ -916,9 +928,21 @@ void write_TAC_array(ASTNode* padre, const string& name, ASTNode* lista_dimensio
 			dimensions_size--;
 			access = 1;
 		}
-		string temp = newLabelFunc();
-		padre->tac.push_back(temp + " := " + name + "[" + to_string(total_access) + "]");
-		padre->temp = temp;
+		if(op_tac == "" && expr == nullptr) {
+			string temp = newLabelFunc();
+			padre->tac.push_back(temp + " := " + name + "[" + to_string(total_access) + "]");
+			padre->temp = temp;
+		} else if (op_tac == " := "){
+			concat_TAC(padre, expr);
+			padre->tac.push_back(name + "[" + to_string(total_access) + "]" + " := " + expr->temp);
+		} else {
+			concat_TAC(padre, expr);
+			string temp_addr = newLabelFunc(),
+					temp = newLabelFunc();
+			padre->tac.push_back(temp_addr + " := " + name + "[" + to_string(total_access) + "]");
+			padre->tac.push_back(temp + " := " + temp_addr + op_tac + expr->temp);
+			padre->tac.push_back(name + "[" + to_string(total_access) + "]" + " := " + temp);
+		}
 	}
 }
 

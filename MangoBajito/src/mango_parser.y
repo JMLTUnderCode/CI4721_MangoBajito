@@ -1869,24 +1869,11 @@ asignacion:
 			else if ($3->kind == "-=") op_tac = " - ";
 			else if ($3->kind == "*=") op_tac = " * ";
 			else if ($3->kind == "=") op_tac = " := ";
-			// Agregar instrucciones de la expresion
-			string temp_access = "";
-			for (auto& child : $2->children) {
-				concat_TAC($$, child);
-				temp_access = labelGen.newTemp();
-				$$->tac.push_back(temp_access + " := " + child->temp + " * " + to_string(strToSizeType(left_type)));
-			}
-			concat_TAC($$, $4);
-			
-			if(op_tac == " := "){
-				$$->tac.push_back(string($1) + "[" + temp_access + "]" + op_tac + $4->temp);
-			}else{
-				string temp_addr = labelGen.newTemp(),
-					temp = labelGen.newTemp();
-				$$->tac.push_back(temp_addr + " := " + string($1) + "[" + temp_access + "]");
-				$$->tac.push_back(temp + " := " + temp_addr + op_tac + $3->temp);
-				$$->tac.push_back(string($1) + "[" + temp_access + "]" + " := " + temp);
-			}
+			concat_TAC($$, $2);
+			// obtener las dimensiones del array
+			vector<int> dimensions;
+			collect_dimensions(array_attr, dimensions);		// n_k
+			write_TAC_array($$, string($1), $2, dimensions, left_type, op_tac, $4, [&](){ return labelGen.newTemp(); });
 		}
 		$$->children.push_back(new_node);
 		$$->children.push_back($4);
@@ -2379,7 +2366,7 @@ expresion:
 			// obtener las dimensiones del array
 			vector<int> dimensions;
 			collect_dimensions(array_attr, dimensions);		// n_k
-			write_TAC_array($$, string($1), $2, dimensions, left_type, [&](){ return labelGen.newTemp(); });
+			write_TAC_array($$, string($1), $2, dimensions, left_type, "", nullptr, [&](){ return labelGen.newTemp(); });
 		}
 	}
 	| T_ID T_PUNTO acceso_struct { // Acceso a atributos de una struct/variant

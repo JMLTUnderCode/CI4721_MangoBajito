@@ -4,11 +4,19 @@ jeva index: mango = 3;
 se_prende(){
 	culito a: mango[index];
 	culito b: mango[5][index];
-	culito c: manguita[4][2][index];
+	culito c: mango[4][2][index];
 
 	culito d: mango[4][2] = [[1,2],[3,4],[5,6],[7,8]];
 	culito e: mango[4] = [1,2,3,4];
 	a[0] = e[index-1];
 	a[1] = d[index][1];
-	culito z: mango = d[1][1]; 
+	culito z: mango = d[1][1];
+
+	repite_burda i entre 0 hasta 4{
+		repite_burda j entre 0 hasta 2{
+			repite_burda k entre 0 hasta index{
+				c[i][j][k] = e[i] + d[i][j];
+			};
+		};
+	};
 };
