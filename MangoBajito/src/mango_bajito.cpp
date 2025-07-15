@@ -1957,8 +1957,12 @@ void generateAssemblyCode(ASTNode* node, vector<pair<string, BasicBlock*> > bloc
 	}
 
 	// 2. Sección de declaraciones (espacio para variables)
+	set<string> declared;
 	for (const auto& tac_decl : node->tac_declaraciones) {
-		asm_code.push_back(tac_decl.second.first + ": .word 0");
+		const string& var = tac_decl.second.first;
+		if (declared.count(var)) continue;
+		declared.insert(var);
+		asm_code.push_back(var + ": .word 0");
 	}
 	asm_code.push_back("buffer: .space 64");
 	asm_code.push_back("");
