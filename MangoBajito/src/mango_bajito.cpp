@@ -860,6 +860,68 @@ void collect_dimensions(Attributes* array, vector<int> &all_dimensions){
 	}
 }
 
+void write_TAC_array(ASTNode* padre, const string& name, ASTNode* lista_dimensiones, const vector<int>& dimensions, const string& type, function<string()> newLabelFunc){
+	// Verificar si todos los índices son literales
+	bool all_indexes_are_literals = true;
+	for (auto& child : lista_dimensiones->children) {
+		if (child->name != "Literal") {
+			all_indexes_are_literals = false;
+			break;
+		}
+	}
+
+	int size_element = strToSizeType(type);	// w
+	int access = 1;
+	int dimensions_size = dimensions.size();
+	string actual_temp_access = "";
+	string last_temp_access = "";
+	// iterar por lo accesos de los indices
+	if(!all_indexes_are_literals) { 
+		for(auto& child : lista_dimensiones->children) {	// i_k
+			actual_temp_access = newLabelFunc();
+			// cacular los n_k
+			for (int i = dimensions_size - 1; i > 0; i--) {
+				access *= dimensions[i]; // Π n_k
+			}
+			if(child->name == "Literal"){ // caso literales
+				access *= child->ivalue * size_element; // i_k * w
+				padre->tac.push_back(actual_temp_access + " := " + to_string(access));
+			}else{ // caso variables 
+				access *= size_element; // Π n_k * w
+				padre->tac.push_back(actual_temp_access + " := " + child->temp + " * " + to_string(access));
+			}
+
+			if (!last_temp_access.empty() && !actual_temp_access.empty()){
+				string temp = newLabelFunc();
+				padre->tac.push_back(temp + " := " + actual_temp_access + " + " + last_temp_access);
+				actual_temp_access = temp;
+			}
+			last_temp_access = actual_temp_access;
+			dimensions_size--;
+			access = 1;
+		}
+		string temp = newLabelFunc();
+		padre->tac.push_back(temp + " := " + name + "[" + last_temp_access + "]");
+		padre->temp = temp;
+	} else {
+		int total_access = 0;
+		for (auto& child : lista_dimensiones->children) { // i_k
+			actual_temp_access = newLabelFunc();
+			// cacular los n_k
+			for (int i = dimensions_size - 1; i > 0; i--) {
+				access *= dimensions[i]; // Π n_k
+			}
+			access *= child->ivalue * size_element; // i_k * w
+			total_access += access;
+			dimensions_size--;
+			access = 1;
+		}
+		string temp = newLabelFunc();
+		padre->tac.push_back(temp + " := " + name + "[" + to_string(total_access) + "]");
+		padre->temp = temp;
+	}
+}
+
 int sumOfSizeTypes(vector<pair<Information, Attributes*>> info){
 	int result = 0;
 	for (auto node : info){

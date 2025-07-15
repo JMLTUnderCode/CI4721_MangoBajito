@@ -2378,58 +2378,8 @@ expresion:
 			concat_TAC($$, $2);
 			// obtener las dimensiones del array
 			vector<int> dimensions;
-			vector<int> offsets;
-			int size_element = strToSizeType(left_type);	// w
-			int access = 1;
 			collect_dimensions(array_attr, dimensions);		// n_k
-			int dimensions_size = dimensions.size();
-			string actual_temp_access = "";
-			string last_temp_access = "";
-			// iterar por lo accesos de los indices
-			if(!all_indexes_are_literals) { 
-				for(auto& child : $2->children) {	// i_k
-					actual_temp_access = labelGen.newTemp();
-					// cacular los n_k
-					for (int i = dimensions_size - 1; i > 0; i--) {
-						access *= dimensions[i]; // Π n_k
-					}
-					if(child->name == "Literal"){ // caso literales
-						access *= child->ivalue * size_element; // i_k * w
-						$$->tac.push_back(actual_temp_access + " := " + to_string(access));
-					}else{ // caso variables 
-						access *= size_element; // Π n_k * w
-						$$->tac.push_back(actual_temp_access + " := " + child->temp + " * " + to_string(access));
-					}
-
-					if (!last_temp_access.empty() && !actual_temp_access.empty()){
-						string temp = labelGen.newTemp();
-						$$->tac.push_back(temp + " := " + actual_temp_access + " + " + last_temp_access);
-						actual_temp_access = temp;
-					}
-					last_temp_access = actual_temp_access;
-					dimensions_size--;
-					access = 1;
-				}
-				string temp = labelGen.newTemp();
-				$$->tac.push_back(temp + " := " + string($1) + "[" + last_temp_access + "]");
-				$$->temp = temp;
-			} else {
-				int total_access = 0;
-				for (auto& child : $2->children) { // i_k
-					actual_temp_access = labelGen.newTemp();
-					// cacular los n_k
-					for (int i = dimensions_size - 1; i > 0; i--) {
-						access *= dimensions[i]; // Π n_k
-					}
-					access *= child->ivalue * size_element; // i_k * w
-					total_access += access;
-					dimensions_size--;
-					access = 1;
-				}
-				string temp = labelGen.newTemp();
-				$$->tac.push_back(temp + " := " + string($1) + "[" + to_string(total_access) + "]");
-				$$->temp = temp;
-			}
+			write_TAC_array($$, string($1), $2, dimensions, left_type, [&](){ return labelGen.newTemp(); });
 		}
 	}
 	| T_ID T_PUNTO acceso_struct { // Acceso a atributos de una struct/variant
