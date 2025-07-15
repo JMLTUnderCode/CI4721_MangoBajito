@@ -1028,10 +1028,8 @@ void generateJumpingCode(ASTNode* guardia, vector<string>& out, function<string(
 			out.insert(out.end(), expr->tac.begin(), expr->tac.end());
 
 			if (expr->trueLabel != "fall" && expr->falseLabel != "fall"){
-				out.push_back(
-				"if " + expr->temp + " goto " + expr->trueLabel +
-				"\ngoto " + expr->falseLabel
-				);
+				out.push_back("if " + expr->temp + " goto " + expr->trueLabel);
+				out.push_back("goto " + expr->falseLabel);
 			} else if (expr->trueLabel != "fall"){
 				out.push_back(
 				"if " + expr->temp + " goto " + expr->trueLabel
@@ -1044,7 +1042,6 @@ void generateJumpingCode(ASTNode* guardia, vector<string>& out, function<string(
 		}
 	}
 }
-
 // ======================================================
 // =                    Flow Graph                      =
 // ======================================================
@@ -1142,7 +1139,7 @@ void FlowGraph::generateFlowGraph(vector<string>& tac) {
 	int block_count = 1;
 	regex b(R"(^\s*L[0-9]+:)");
 	regex c(R"(^\s*[a-zA-Z_][a-zA-Z0-9_]*:)");
-
+	
 	// Iterar sobre las líneas de TAC
 	vector<size_t> lider_index; // Conjunto para almacenar los índices de los líderes
 	for (size_t i = 0; i < tac.size(); i++) {
@@ -1220,7 +1217,7 @@ void FlowGraph::generateFlowGraph(vector<string>& tac) {
 	this->createBlock("EXIT");
 
 	this->computeDefAndUseSets();
-
+	
 	// Creacion de aristas entre Bloques Basicos
 	BasicBlock* fatherBlock;
 	string currentBlockName, currentBlockLabel;
@@ -1232,7 +1229,6 @@ void FlowGraph::generateFlowGraph(vector<string>& tac) {
 		currentBlockName = block.first;
 		currentBlockLabel = block.second->lider_label;
 		BasicBlock* currentBlock = block.second;
-
 		if(currentBlockName == "ENTRY"){
 			fatherBlock = currentBlock;
 		}else if (currentBlockName == "EXIT"){
@@ -1247,7 +1243,6 @@ void FlowGraph::generateFlowGraph(vector<string>& tac) {
 					BasicBlock* nodo = this->getBlockByLabel(label);
 					this->addEdge(currentBlockName, nodo->name); // Arista del flujo 'goto Label'
 				}
-
 				// Inclusion de conexion por llamadas de funciones.
 				string func_name = extractCallLabel(line);
 				if (func_name != "") {

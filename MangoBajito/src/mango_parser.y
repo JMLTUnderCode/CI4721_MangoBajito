@@ -1075,6 +1075,7 @@ declaracion:
 		}
 		
 		// Actualizamos AST
+		cout << "llega aqui" << endl;
 		$$ = makeASTNode("Asignación", "", "", "=");
 		auto declarationNode = makeASTNode($2, "Declaración", left_type, $1->kind);
 		declarationNode->show_value = false;
@@ -1093,23 +1094,27 @@ declaracion:
 			// Agregar variable a .declaration
 			int scope_level = attr_var->scope;
 			int size_to_reserve = -1;
-			if($4->category == "Array"){
+			if($4 != nullptr && $4->category == "Array"){
 				set<string> categories = {"Identificador", "Numérico", "Caracter", "Cadena de Caracteres", "Bool", "Elemento_Array", "Atributo_Estructura"};
 				vector<ASTNode*> array_elements;
-				collect_nodes_by_categories($6, categories, array_elements);
+				if($6 != nullptr) collect_nodes_by_categories($6, categories, array_elements);
 				int size_array = 1;
+				cout << "auxilio" << endl;
 				if ($4->children.size() > 0) {
+					cout << "auxilio 2" << endl;
 					for (auto & child : $4->children[0]->children) {
 						if (child->category == "Array_Size" && child->type == "mango" && child->ivalue > 0) {
 							size_array *= child->ivalue;
 						}
 					}
+					cout << "auxilio 3" << endl;
 				}
+				cout << "auxilio 4" << endl;
 				int size_type = strToSizeType($4->type);
 				size_to_reserve = size_type * size_array;
-
+				cout << "auxilio 5" << endl;
 				for (int i = 0; i < size_array; i++) {
-					$$->tac.push_back(string($2) + "[" + to_string(i*size_type) + "] := " + array_elements[i]->temp);
+					if ($$ != nullptr && i < array_elements.size()) $$->tac.push_back(string($2) + "[" + to_string(i*size_type) + "] := " + array_elements[i]->temp);
 				}
 			}else if ($4->category == "Identificador" && attr_var != nullptr){ // Estructuras
 				/* por implementar */
@@ -1136,7 +1141,7 @@ declaracion:
 				}
 				for (int i = 0; i < size_array; i++) {
 					string elem_name = string($2) + "[" + to_string(i*strToSizeType($4->type)) + "]";
-					$$->tac_data.emplace_back(elem_name, array_elements[i]->temp);
+					($$ != nullptr && i < array_elements.size()) $$->tac_data.emplace_back(elem_name, array_elements[i]->temp);
 				}
 			}else{
 				$$->tac_data.emplace_back(string($2), valuesToString($6));
