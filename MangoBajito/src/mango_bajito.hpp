@@ -487,6 +487,19 @@ string search_type(ASTNode* node, string var);
 // Traduce una instrucción TAC a MIPS Assembly (por línea)
 vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, ASTNode* node);
 
+class RegisterAllocator {
+public:
+    map<string, set<string>> adj;
+    map<string, string> allocation;
+    set<string> spilled_vars;
+
+    void build(vector<pair<string, BasicBlock*>>& blocks, set<string>& all_vars);
+    void colorGraph(const vector<string>& registers);
+
+private:
+    map<string, int> getSaturationDegrees(const set<string>& uncolored_nodes);
+};
+
 // Genera el código ensamblador a partir del TAC y los bloques de flujo
 void generateAssemblyCode(ASTNode* node, vector<pair<string, BasicBlock*> > blocks);
 #endif

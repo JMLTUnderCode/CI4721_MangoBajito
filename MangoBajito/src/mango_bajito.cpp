@@ -1563,6 +1563,130 @@ void SolverFlowGraphProblem::solver_data_flow_problem(FlowGraph& flow_graph){
 // ======================================================
 // =                 Assembly Code                      =
 // ======================================================
+void RegisterAllocator::build(vector<pair<string, BasicBlock*>>& blocks, set<string>& all_vars) {
+    // Inicializar nodos para todas las variables y temporales
+    for (const auto& var : all_vars) {
+        adj[var] = set<string>();
+    }
+
+    for (const auto& block_pair : blocks) {
+        BasicBlock* block = block_pair.second;
+        set<string> live = block->out;
+
+        for (auto it = block->TAC_code.rbegin(); it != block->TAC_code.rend(); ++it) {
+            const string& line = *it;
+            smatch match;
+            regex def_regex(R"(^\s*([a-zA-Z_t][a-zA-Z0-9_]*)\s*:=)");
+            regex use_regex(R"(\b([a-zA-Z_t][a-zA-Z0-9_]*)\b)");
+
+            string def_var;
+            set<string> use_vars;
+
+            // Encontrar la variable definida (si la hay)
+            if (regex_search(line, match, def_regex)) {
+                def_var = match[1].str();
+            }
+
+            // Encontrar variables usadas
+            auto words_begin = sregex_iterator(line.begin(), line.end(), use_regex);
+            auto words_end = sregex_iterator();
+            for (sregex_iterator i = words_begin; i != words_end; ++i) {
+                string var = (*i)[0].str();
+                if (var != def_var) {
+                    use_vars.insert(var);
+                }
+            }
+
+            if (!def_var.empty()) {
+                // La variable definida interfiere con todas las demás variables vivas
+                for (const auto& live_var : live) {
+                    if (def_var != live_var) {
+                        adj[def_var].insert(live_var);
+                        adj[live_var].insert(def_var);
+                    }
+                }
+                // La variable definida ya no está viva "antes" de esta línea
+                live.erase(def_var);
+            }
+            // Las variables usadas en esta línea se vuelven vivas
+            for (const auto& use_var : use_vars) {
+                live.insert(use_var);
+            }
+        }
+    }
+}
+
+map<string, int> RegisterAllocator::getSaturationDegrees(const set<string>& uncolored_nodes) {
+    map<string, int> saturation_degrees;
+    for (const auto& node : uncolored_nodes) {
+        set<string> neighbor_colors;
+        for (const auto& neighbor : adj[node]) {
+            if (allocation.count(neighbor)) {
+                neighbor_colors.insert(allocation[neighbor]);
+            }
+        }
+        saturation_degrees[node] = neighbor_colors.size();
+    }
+    return saturation_degrees;
+}
+
+void RegisterAllocator::colorGraph(const vector<string>& registers) {
+    set<string> uncolored_nodes;
+    for (const auto& pair : adj) {
+        uncolored_nodes.insert(pair.first);
+    }
+
+    while (!uncolored_nodes.empty()) {
+        // Encontrar el nodo con el máximo grado de saturación
+        map<string, int> saturation_degrees = getSaturationDegrees(uncolored_nodes);
+        string node_to_color;
+        int max_sat = -1;
+
+        for (const auto& node : uncolored_nodes) {
+            if (saturation_degrees[node] > max_sat) {
+                max_sat = saturation_degrees[node];
+                node_to_color = node;
+            } else if (saturation_degrees[node] == max_sat) {
+                // Desempate: mayor grado en el subgrafo de no coloreados
+                int current_degree = 0;
+                for (const auto& neighbor : adj[node_to_color]) {
+                    if (uncolored_nodes.count(neighbor)) current_degree++;
+                }
+                int new_degree = 0;
+                for (const auto& neighbor : adj[node]) {
+                    if (uncolored_nodes.count(neighbor)) new_degree++;
+                }
+                if (new_degree > current_degree) {
+                    node_to_color = node;
+                }
+            }
+        }
+
+        // Encontrar el color (registro) más pequeño disponible
+        set<string> used_colors;
+        for (const auto& neighbor : adj[node_to_color]) {
+            if (allocation.count(neighbor)) {
+                used_colors.insert(allocation[neighbor]);
+            }
+        }
+
+        string assigned_color = "";
+        for (const auto& reg : registers) {
+            if (used_colors.find(reg) == used_colors.end()) {
+                assigned_color = reg;
+                break;
+            }
+        }
+
+        if (!assigned_color.empty()) {
+            allocation[node_to_color] = assigned_color;
+        } else {
+            // No hay colores disponibles, la variable debe ser "spilled"
+            spilled_vars.insert(node_to_color);
+        }
+        uncolored_nodes.erase(node_to_color);
+    }
+}
 
 // Busca el tipo de una variable en las declaraciones TAC del nodo AST.
 string search_type(ASTNode* node, string var) {
@@ -1597,14 +1721,18 @@ public:
 		}
 	}
 
-	// Obtiene el siguiente temporal disponible y lo vuelve a poner al final de la cola
 	string next() {
-		if (temps.empty()) return "$t9"; // fallback
+		if (temps.empty()) return "$t9";
 		string t = temps.front();
 		temps.pop();
 		temps.push(t);
 		return t;
 	}
+
+    string peek() const {
+        if (temps.empty()) return "$t9";
+        return temps.front();
+    }
 };
 
 set<string> collect_TAC_temporals(const vector<string>& tac) {
@@ -1620,360 +1748,704 @@ set<string> collect_TAC_temporals(const vector<string>& tac) {
 	return temps;
 }
 
-// Traduce una instrucción TAC a MIPS Assembly (por línea)
-vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, ASTNode* node) {
-	// 1. Recolecta temporales TAC y prepara la cola de temporales internos MIPS
-	set<string> tac_temps = collect_TAC_temporals(node->tac);
-	MipsTempQueue mipsTemps;
-	mipsTemps.init(tac_temps);
-
-	vector<string> mips;
-	vector<string> params;
-	smatch m;
-
-	for (size_t b = 0; b < blocks.size(); ++b) {
-		const string& block_name = blocks[b].first;
-		BasicBlock* bb = blocks[b].second;
-		if (block_name == "ENTRY" || block_name == "EXIT") continue;
-
-		const vector<string>& tac_lines = bb->TAC_code;
-		for (size_t i = 0; i < tac_lines.size(); ++i) {
-			string line = tac_lines[i];
-			line.erase(0, line.find_first_not_of(" \t"));
-			line.erase(line.find_last_not_of(" \t") + 1);
-
-			// Acumula parámetros
-			if (regex_match(line, regex(R"(^param\s+(.+)$)"))) {
-				string param = line.substr(6);
-				params.push_back(param);
-				continue;
-			}
-
-			// call print, N
-			if (regex_match(line, regex(R"(^call print, (\d+)$)"))) {
-				for (const string& param : params) {
-					string reg = "$a0";
-					string param_trim = param;
-					param_trim.erase(0, param_trim.find_first_not_of(" \t"));
-					param_trim.erase(param_trim.find_last_not_of(" \t") + 1);
-
-					if (regex_match(param_trim, regex(R"(^\(string\)([a-zA-Z_][a-zA-Z0-9_]*)$)"))) {
-						string var = param_trim.substr(8);
-						mips.push_back("    lw $a0, " + var);
-						mips.push_back("    li $v0, 1");
-						mips.push_back("    syscall");
-					} else if (param_trim[0] == '&') {
-						mips.push_back("    la " + reg + ", " + param_trim.substr(1));
-						mips.push_back("    li $v0, 4");
-						mips.push_back("    syscall");
-					} else if (regex_match(param_trim, regex(R"(^t\d+$)"))) {
-						mips.push_back("    move " + reg + ", $" + param_trim);
-						mips.push_back("    li $v0, 4");
-						mips.push_back("    syscall");
-					} else {
-						mips.push_back("    la " + reg + ", " + param_trim);
-						mips.push_back("    li $v0, 4");
-						mips.push_back("    syscall");
-					}
-				}
-				params.clear();
-				continue;
-			}
-
-			// call read, 1 (generalizado usando SymbolTable y bloques)
-			if (regex_match(line, regex(R"(^t(\d+)\s*:=\s*call read, 1$)"))) {
-				if (!params.empty()) {
-					string param = params.front();
-					string reg = "$a0";
-					string param_trim = param;
-					param_trim.erase(0, param_trim.find_first_not_of(" \t"));
-					param_trim.erase(param_trim.find_last_not_of(" \t") + 1);
-
-					if (param_trim[0] == '&') {
-						mips.push_back("    la " + reg + ", " + param_trim.substr(1));
-					} else if (regex_match(param_trim, regex(R"(^t\d+$)"))) {
-						mips.push_back("    move " + reg + ", $" + param_trim);
-					} else {
-						mips.push_back("    la " + reg + ", " + param_trim);
-					}
-					mips.push_back("    li $v0, 4");
-					mips.push_back("    syscall");
-					params.clear();
-				}
-				string tnum = regex_replace(line, regex(R"(^t(\d+)\s*:=\s*call read, 1$)"), "$1");
-
-				// Busca la asignación siguiente en el bloque actual o el siguiente
-				string var_dest;
-				string pat_assign = "^([a-zA-Z_][a-zA-Z0-9_]*)\\s*:=\\s*(\\([a-zA-Z_][a-zA-Z0-9_]*\\))?t" + tnum + "$";
-				smatch m2;
-				for (size_t j = i + 1; j < tac_lines.size(); ++j) {
-					if (regex_match(tac_lines[j], m2, regex(pat_assign))) {
-						var_dest = m2[1];
-						break;
-					}
-				}
-				if (var_dest.empty() && b + 1 < blocks.size()) {
-					const vector<string>& next_block_lines = blocks[b + 1].second->TAC_code;
-					for (const string& next_line : next_block_lines) {
-						if (regex_match(next_line, m2, regex(pat_assign))) {
-							var_dest = m2[1];
-							break;
-						}
-					}
-				}
-
-				if (!var_dest.empty()) {
-					string type = search_type(node, var_dest);
-					if (type == "higuerote") {
-						mips.push_back("    la $a0, " + var_dest);
-						mips.push_back("    li $a1, 32");
-						mips.push_back("    li $v0, 8");
-						mips.push_back("    syscall");
-						mips.push_back("    move $t" + tnum + ", $a0");
-					} else if (type == "mango" || type == "tas_claro" || type == "negro") {
-						mips.push_back("    li $v0, 5");
-						mips.push_back("    syscall");
-						mips.push_back("    move $t" + tnum + ", $v0");
-					} else if (type == "manguita") {
-						mips.push_back("    li $v0, 6");
-						mips.push_back("    syscall");
-						mips.push_back("    mov.s $f0, $f0");
-					} else if (type == "manguangua") {
-						mips.push_back("    li $v0, 7");
-						mips.push_back("    syscall");
-						mips.push_back("    mov.d $f0, $f0");
-					} else {
-						mips.push_back("    # [TODO] Lectura de tipo compuesto o no soportado: " + type);
-					}
-				} else {
-					mips.push_back("    # [TODO] No se encontró variable destino.");
-				}
-				continue;
-			}
-
-			// Asignar temporal a variable (con o sin cast): var := tX o var := (cast)tX
-			if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*(?:\([a-zA-Z_][a-zA-Z0-9_]*\))?t(\d+)$)"))) {
-				string var = m[1];
-				string tnum = m[2];
-				string type = search_type(node, var);
-				if (type == "higuerote") {
-					string tmp1 = mipsTemps.next();
-					string tmp2 = mipsTemps.next();
-					string tmp3 = mipsTemps.next();
-					mips.push_back("    move " + tmp1 + ", $t" + tnum);
-					mips.push_back("    la " + tmp2 + ", " + var);
-					mips.push_back("copy_" + var + ":");
-					mips.push_back("    lb " + tmp3 + ", 0(" + tmp1 + ")");
-					mips.push_back("    sb " + tmp3 + ", 0(" + tmp2 + ")");
-					mips.push_back("    addiu " + tmp1 + ", " + tmp1 + ", 1");
-					mips.push_back("    addiu " + tmp2 + ", " + tmp2 + ", 1");
-					mips.push_back("    bnez " + tmp3 + ", copy_" + var);
-				} else {
-					mips.push_back("    sw $t" + tnum + ", " + var);
-				}
-				continue;
-			}
-
-			// nombre := 0 (asignación constante)
-			if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*(\d+)$)"))) {
-				string var = m[1];
-				string val = m[2];
-				string tmp = mipsTemps.next();
-				mips.push_back("    li " + tmp + ", " + val);
-				mips.push_back("    sw " + tmp + ", " + var);
-				continue;
-			}
-
-			// Suma con constante: x := x + c
-			if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\+\s*(\d+)$)"))) {
-				string left = m[1], op1 = m[2], val = m[3];
-				bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
-				bool op1_is_temp = regex_match(op1, regex(R"(^t\d+$)"));
-				string tmp0 = mipsTemps.next();
-				string tmp1 = mipsTemps.next();
-				string tmp2 = mipsTemps.next();
-
-				if (op1_is_temp) mips.push_back("    move " + tmp0 + ", $" + op1);
-				else mips.push_back("    lw " + tmp0 + ", " + op1);
-				mips.push_back("    li " + tmp1 + ", " + val);
-				mips.push_back("    add " + tmp2 + ", " + tmp0 + ", " + tmp1);
-
-				if (left_is_temp) mips.push_back("    move $" + left + ", " + tmp2);
-				else mips.push_back("    sw " + tmp2 + ", " + left);
-				continue;
-			}
-
-			// Suma: suma := suma + n
-			if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\+\s*([a-zA-Z_][a-zA-Z0-9_]*)$)"))) {
-				string left = m[1], op1 = m[2], op2 = m[3];
-				bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
-				bool op1_is_temp = regex_match(op1, regex(R"(^t\d+$)"));
-				bool op2_is_temp = regex_match(op2, regex(R"(^t\d+$)"));
-				string tmp0 = mipsTemps.next();
-				string tmp1 = mipsTemps.next();
-				string tmp2 = mipsTemps.next();
-
-				if (op1_is_temp) mips.push_back("    move " + tmp0 + ", $" + op1);
-				else mips.push_back("    lw " + tmp0 + ", " + op1);
-				if (op2_is_temp) mips.push_back("    move " + tmp1 + ", $" + op2);
-				else mips.push_back("    lw " + tmp1 + ", " + op2);
-
-				mips.push_back("    add " + tmp2 + ", " + tmp0 + ", " + tmp1);
-
-				if (left_is_temp) mips.push_back("    move $" + left + ", " + tmp2);
-				else mips.push_back("    sw " + tmp2 + ", " + left);
-				continue;
-			}
-			
-			// Asignación simple: x := y
-			string pat_assign_simple = "^([a-zA-Z_][a-zA-Z0-9_]*)\\s*:=\\s*([a-zA-Z_][a-zA-Z0-9_]*)$";
-			if (regex_match(line, m, regex(pat_assign_simple))) {
-				string left = m[1], right = m[2];
-				bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
-				bool right_is_temp = regex_match(right, regex(R"(^t\d+$)"));
-				string tmp = mipsTemps.next();
-				if (right_is_temp) {
-					mips.push_back("    move " + tmp + ", $" + right);
-				} else {
-					mips.push_back("    lw " + tmp + ", " + right);
-				}
-				if (left_is_temp) {
-					mips.push_back("    move $" + left + ", " + tmp);
-				} else {
-					mips.push_back("    sw " + tmp + ", " + left);
-				}
-				continue;
-			}
-
-			// Etiquetas
-			if (regex_match(line, regex(R"(^L\d+:$)"))) {
-				mips.push_back(line);
-				continue;
-			}
-
-			// Goto
-			if (regex_match(line, m, regex(R"(^goto\s+(L\d+)$)"))) {
-				mips.push_back("    j " + string(m[1]));
-				continue;
-			}
-
-			// Ifnot cond goto Lx
-			if (regex_match(line, m, regex(R"(^ifnot\s+(.+)\s+goto\s+(L\d+)$)"))) {
-				string cond = m[1];
-				string label = m[2];
-				smatch cmp;
-				if (regex_match(cond, cmp, regex(R"((\w+)\s*([=!<>]+)\s*(\w+))"))) {
-					string left = cmp[1], op = cmp[2], right = cmp[3];
-					bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
-					bool right_is_temp = regex_match(right, regex(R"(^t\d+$)"));
-					bool right_is_const = regex_match(right, regex(R"(^\d+$)"));
-					string tmp0 = mipsTemps.next();
-					string tmp1 = mipsTemps.next();
-					// Carga left
-					if (left_is_temp) mips.push_back("    move " + tmp0 + ", $" + left);
-					else mips.push_back("    lw " + tmp0 + ", " + left);
-					// Carga right
-					if (right_is_temp) mips.push_back("    move " + tmp1 + ", $" + right);
-					else if (right_is_const) mips.push_back("    li " + tmp1 + ", " + right);
-					else mips.push_back("    lw " + tmp1 + ", " + right);
-					// Condición
-					if (op == "==") mips.push_back("    bne " + tmp0 + ", " + tmp1 + ", " + label);
-					else if (op == "!=") mips.push_back("    beq " + tmp0 + ", " + tmp1 + ", " + label);
-					else if (op == "<") mips.push_back("    bge " + tmp0 + ", " + tmp1 + ", " + label);
-					else if (op == "<=") mips.push_back("    bgt " + tmp0 + ", " + tmp1 + ", " + label);
-					else if (op == ">") mips.push_back("    ble " + tmp0 + ", " + tmp1 + ", " + label);
-					else if (op == ">=") mips.push_back("    blt " + tmp0 + ", " + tmp1 + ", " + label);
-				}
-				continue;
-			}
-
-			// If cond goto Lx
-			if (regex_match(line, m, regex(R"(^if\s+(.+)\s+goto\s+(L\d+)$)"))) {
-				string cond = m[1];
-				string label = m[2];
-				smatch cmp;
-				if (regex_match(cond, cmp, regex(R"((\w+)\s*([=!<>]+)\s*(\w+))"))) {
-					string left = cmp[1], op = cmp[2], right = cmp[3];
-					bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
-					bool right_is_temp = regex_match(right, regex(R"(^t\d+$)"));
-					bool right_is_const = regex_match(right, regex(R"(^\d+$)"));
-					string tmp0 = mipsTemps.next();
-					string tmp1 = mipsTemps.next();
-					// Carga left
-					if (left_is_temp) mips.push_back("    move " + tmp0 + ", $" + left);
-					else mips.push_back("    lw " + tmp0 + ", " + left);
-					// Carga right
-					if (right_is_temp) mips.push_back("    move " + tmp1 + ", $" + right);
-					else if (right_is_const) mips.push_back("    li " + tmp1 + ", " + right);
-					else mips.push_back("    lw " + tmp1 + ", " + right);
-					// Condición
-					if (op == "==") mips.push_back("    beq " + tmp0 + ", " + tmp1 + ", " + label);
-					else if (op == "!=") mips.push_back("    bne " + tmp0 + ", " + tmp1 + ", " + label);
-					else if (op == "<") mips.push_back("    blt " + tmp0 + ", " + tmp1 + ", " + label);
-					else if (op == "<=") mips.push_back("    ble " + tmp0 + ", " + tmp1 + ", " + label);
-					else if (op == ">") mips.push_back("    bgt " + tmp0 + ", " + tmp1 + ", " + label);
-					else if (op == ">=") mips.push_back("    bge " + tmp0 + ", " + tmp1 + ", " + label);
-				}
-				continue;
-			}
-
-			// Concatenación: tX := call concat, N
-			if (regex_match(line, m, regex(R"(^t(\d+)\s*:=\s*call concat, \d+$)"))) {
-				string tnum = m[1];
-				mips.push_back("    la $t" + tnum + ", buffer # [TODO] concat no implementado");
-				continue;
-			}
-
-			// Otros casos: dejar como comentario
-			mips.push_back("    # " + line);
-		}
-	}
-	return mips;
+string get_reg(const string& var, const RegisterAllocator& reg_alloc, MipsTempQueue& mips_temps) {
+    if (reg_alloc.allocation.count(var)) {
+        return reg_alloc.allocation.at(var);
+    }
+    // Para variables derramadas (spilled) o no asignadas (globales), 
+    // usamos un registro temporal de MIPS para la operación.
+    return mips_temps.next();
 }
 
-// Genera el código ensamblador a partir del TAC y los bloques de flujo
+vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*>>& blocks, ASTNode* node, RegisterAllocator& reg_alloc) {
+    // 1. Prepara la cola de temporales internos MIPS para operaciones
+    MipsTempQueue mipsTemps;
+    mipsTemps.init({}); // Inicializa con todos los temporales ($t0-$t9) disponibles
+
+    vector<string> mips;
+    vector<string> params;
+    smatch m;
+
+    map<string, int> local_var_offsets;
+    int current_offset = 0;
+    int current_frame_size = 0;
+
+    for (size_t b = 0; b < blocks.size(); ++b) {
+        const string& block_name = blocks[b].first;
+        BasicBlock* bb = blocks[b].second;
+        if (block_name == "ENTRY" || block_name == "EXIT") continue;
+
+        const vector<string>& tac_lines = bb->TAC_code;
+        for (size_t i = 0; i < tac_lines.size(); ++i) {
+            string line = tac_lines[i];
+            line.erase(0, line.find_first_not_of(" \t"));
+            line.erase(line.find_last_not_of(" \t") + 1);
+
+            if (line.empty()) continue;
+            mips.push_back("# " + line); // Comentario para depuración
+
+            if (line == "begin_func:") {
+                mips.push_back("    # Function Prologue");
+                mips.push_back("    subu $sp, $sp, 8      # Save space for $fp and $ra");
+                mips.push_back("    sw $fp, 4($sp)        # Save old frame pointer");
+                mips.push_back("    sw $ra, 0($sp)        # Save return address");
+                mips.push_back("    addiu $fp, $sp, 4     # Set up new frame pointer");
+
+                // Calcular espacio para variables locales
+                current_frame_size = 0;
+                for (const auto& decl : node->tac_declaraciones) {
+                    if (decl.first > 0) { // Locales
+                        current_frame_size += decl.second.second;
+                    }
+                }
+                 // Añadir espacio para variables derramadas (spilled)
+                current_frame_size += reg_alloc.spilled_vars.size() * 4;
+
+                if (current_frame_size > 0) {
+                    mips.push_back("    subu $sp, $sp, " + to_string(current_frame_size) + " # Allocate space for locals and spills");
+                }
+                current_offset = 0;
+                local_var_offsets.clear();
+                // Asignar offsets a locales y derramadas
+                for (const auto& decl : node->tac_declaraciones) {
+                    if (decl.first > 0) {
+                        current_offset -= decl.second.second;
+                        local_var_offsets[decl.second.first] = current_offset;
+                    }
+                }
+                for (const auto& var : reg_alloc.spilled_vars) {
+                    if (local_var_offsets.find(var) == local_var_offsets.end()) {
+                        current_offset -= 4;
+                        local_var_offsets[var] = current_offset;
+                    }
+                }
+                continue;
+            }
+
+            if (line == "end_func:") {
+                mips.push_back("    # Function Epilogue");
+                if (current_frame_size > 0) {
+                    mips.push_back("    addu $sp, $sp, " + to_string(current_frame_size) + " # Deallocate locals and spills");
+                }
+                mips.push_back("    lw $ra, -4($fp)       # Restore return address");
+                mips.push_back("    lw $fp, 0($fp)        # Restore old frame pointer");
+                mips.push_back("    addiu $sp, $sp, 8     # Pop $fp and $ra space");
+                mips.push_back("    jr $ra");
+                continue;
+            }
+
+            // Acumula parámetros
+            if (regex_match(line, m, regex(R"(^param\s+(.+)$)"))) {
+                params.push_back(m[1].str());
+                continue;
+            }
+
+            // call print, N
+            if (regex_match(line, m, regex(R"(^call print, (\d+)$)"))) {
+                for (const string& param : params) {
+                    string param_trim = param;
+                    param_trim.erase(0, param_trim.find_first_not_of(" \t"));
+                    param_trim.erase(param_trim.find_last_not_of(" \t") + 1);
+                    
+                    string reg_param = get_reg(param_trim, reg_alloc, mipsTemps);
+
+                    if (regex_match(param_trim, regex(R"(^\(string\)([a-zA-Z_][a-zA-Z0-9_]*)$)"))) {
+                        string var = regex_replace(param_trim, regex(R"(^\(string\)([a-zA-Z_][a-zA-Z0-9_]*)$)"), "$1");
+                        string reg_var = get_reg(var, reg_alloc, mipsTemps);
+                        if (!reg_alloc.allocation.count(var)) {
+                            if (local_var_offsets.count(var)) mips.push_back("    lw " + reg_var + ", " + to_string(local_var_offsets[var]) + "($fp)");
+                            else mips.push_back("    lw " + reg_var + ", " + var);
+                        }
+                        mips.push_back("    move $a0, " + reg_var);
+                        mips.push_back("    li $v0, 1");
+                        mips.push_back("    syscall");
+                    } else if (param_trim[0] == '&') {
+                        mips.push_back("    la $a0, " + param_trim.substr(1));
+                        mips.push_back("    li $v0, 4");
+                        mips.push_back("    syscall");
+                    } else { // Es un temporal o variable
+                        if (!reg_alloc.allocation.count(param_trim)) {
+                             if (local_var_offsets.count(param_trim)) mips.push_back("    lw " + reg_param + ", " + to_string(local_var_offsets[param_trim]) + "($fp)");
+                             else if (regex_match(param_trim, regex(R"(^t\d+$)"))) {
+                                // Es un temporal de una concatenación, el registro ya tiene la dirección del string
+                             }
+                             else mips.push_back("    lw " + reg_param + ", " + param_trim);
+                        }
+                        
+                        // Determinar si imprimir como string (4) o entero (1)
+                        string type = search_type(node, param_trim);
+                        if (regex_match(param_trim, regex(R"(^t\d+$)")) || type == "higuerote") {
+                            mips.push_back("    move $a0, " + reg_param);
+                            mips.push_back("    li $v0, 4"); // Imprimir string
+                        } else {
+                            mips.push_back("    move $a0, " + reg_param);
+                            mips.push_back("    li $v0, 1"); // Imprimir entero
+                        }
+                        mips.push_back("    syscall");
+                    }
+                }
+                params.clear();
+                continue;
+            }
+            
+            // Asignación simple: x := y
+            if (regex_match(line, m, regex(R"(^([a-zA-Z_t][a-zA-Z0-9_]*)\s*:=\s*([a-zA-Z_t][a-zA-Z0-9_]*)$)"))) {
+                string left = m[1], right = m[2];
+                string reg_left = get_reg(left, reg_alloc, mipsTemps);
+                string reg_right = get_reg(right, reg_alloc, mipsTemps);
+
+                // Cargar 'right' si no está en un registro
+                if (!reg_alloc.allocation.count(right)) {
+                    if (local_var_offsets.count(right)) mips.push_back("    lw " + reg_right + ", " + to_string(local_var_offsets[right]) + "($fp)");
+                    else mips.push_back("    lw " + reg_right + ", " + right);
+                }
+                
+                mips.push_back("    move " + reg_left + ", " + reg_right);
+
+                // Guardar 'left' si no está en un registro
+                if (!reg_alloc.allocation.count(left)) {
+                    if (local_var_offsets.count(left)) mips.push_back("    sw " + reg_left + ", " + to_string(local_var_offsets[left]) + "($fp)");
+                    else mips.push_back("    sw " + reg_left + ", " + left);
+                }
+                continue;
+            }
+
+            // Suma: x := y + z
+            if (regex_match(line, m, regex(R"(^([a-zA-Z_t][a-zA-Z0-9_]*)\s*:=\s*([a-zA-Z_t][a-zA-Z0-9_]*)\s*\+\s*([a-zA-Z_t][a-zA-Z0-9_]*)$)"))) {
+                string left = m[1], op1 = m[2], op2 = m[3];
+                string reg_left = get_reg(left, reg_alloc, mipsTemps);
+                string reg_op1 = get_reg(op1, reg_alloc, mipsTemps);
+                string reg_op2 = get_reg(op2, reg_alloc, mipsTemps);
+
+                if (!reg_alloc.allocation.count(op1)) {
+                    if(local_var_offsets.count(op1)) mips.push_back("    lw " + reg_op1 + ", " + to_string(local_var_offsets[op1]) + "($fp)");
+                    else mips.push_back("    lw " + reg_op1 + ", " + op1);
+                }
+                if (!reg_alloc.allocation.count(op2)) {
+                    if(local_var_offsets.count(op2)) mips.push_back("    lw " + reg_op2 + ", " + to_string(local_var_offsets[op2]) + "($fp)");
+                    else mips.push_back("    lw " + reg_op2 + ", " + op2);
+                }
+
+                mips.push_back("    add " + reg_left + ", " + reg_op1 + ", " + reg_op2);
+
+                if(!reg_alloc.allocation.count(left)) {
+                    if(local_var_offsets.count(left)) mips.push_back("    sw " + reg_left + ", " + to_string(local_var_offsets[left]) + "($fp)");
+                    else mips.push_back("    sw " + reg_left + ", " + left);
+                }
+                continue;
+            }
+
+            // Etiquetas
+            if (regex_match(line, regex(R"(^L\d+:$)"))) {
+                mips.push_back(line);
+                continue;
+            }
+
+            // Goto
+            if (regex_match(line, m, regex(R"(^goto\s+(L\d+)$)"))) {
+                mips.push_back("    j " + string(m[1]));
+                continue;
+            }
+
+            // If cond goto Lx
+            if (regex_match(line, m, regex(R"(^if\s+(.+)\s+goto\s+(L\d+)$)"))) {
+                string cond = m[1];
+                string label = m[2];
+                smatch cmp;
+                if (regex_match(cond, cmp, regex(R"(([a-zA-Z_t][a-zA-Z0-9_]*)\s*([=!<>]+)\s*([a-zA-Z_t][a-zA-Z0-9_]*|\d+))"))) {
+                    string left = cmp[1], op = cmp[2], right = cmp[3];
+                    string reg_left = get_reg(left, reg_alloc, mipsTemps);
+                    string reg_right = get_reg(right, reg_alloc, mipsTemps);
+                    
+                    if (!reg_alloc.allocation.count(left)) {
+                        if (local_var_offsets.count(left)) mips.push_back("    lw " + reg_left + ", " + to_string(local_var_offsets[left]) + "($fp)");
+                        else mips.push_back("    lw " + reg_left + ", " + left);
+                    }
+                    
+                    if (isdigit(right[0])) {
+                        mips.push_back("    li " + reg_right + ", " + right);
+                    } else if (!reg_alloc.allocation.count(right)) {
+                        if (local_var_offsets.count(right)) mips.push_back("    lw " + reg_right + ", " + to_string(local_var_offsets[right]) + "($fp)");
+                        else mips.push_back("    lw " + reg_right + ", " + right);
+                    }
+
+                    if (op == "==") mips.push_back("    beq " + reg_left + ", " + reg_right + ", " + label);
+                    else if (op == "!=") mips.push_back("    bne " + reg_left + ", " + reg_right + ", " + label);
+                    else if (op == "<") mips.push_back("    blt " + reg_left + ", " + reg_right + ", " + label);
+                    else if (op == "<=") mips.push_back("    ble " + reg_left + ", " + reg_right + ", " + label);
+                    else if (op == ">") mips.push_back("    bgt " + reg_left + ", " + reg_right + ", " + label);
+                    else if (op == ">=") mips.push_back("    bge " + reg_left + ", " + reg_right + ", " + label);
+                }
+                continue;
+            }
+            
+            // Si ninguna regla coincide, se mantiene el comentario original
+            mips.back() = "    # [UNHANDLED] " + line;
+        }
+    }
+    return mips;
+}
+
+// Traduce una instrucción TAC a MIPS Assembly (por línea)
+/*vector<string> translate_TAC_to_MIPS(vector<pair<string, BasicBlock*> > blocks, ASTNode* node) {
+    // 1. Recolecta temporales TAC y prepara la cola de temporales internos MIPS
+    set<string> tac_temps = collect_TAC_temporals(node->tac);
+    MipsTempQueue mipsTemps;
+    mipsTemps.init(tac_temps);
+
+    vector<string> mips;
+    vector<string> params;
+    smatch m;
+
+    map<string, int> local_var_offsets;
+    int current_offset = 0;
+    int current_frame_size = 0;
+
+    for (size_t b = 0; b < blocks.size(); ++b) {
+        const string& block_name = blocks[b].first;
+        BasicBlock* bb = blocks[b].second;
+        if (block_name == "ENTRY" || block_name == "EXIT") continue;
+
+        const vector<string>& tac_lines = bb->TAC_code;
+        for (size_t i = 0; i < tac_lines.size(); ++i) {
+            string line = tac_lines[i];
+            line.erase(0, line.find_first_not_of(" \t"));
+            line.erase(line.find_last_not_of(" \t") + 1);
+
+            if (line == "begin_func:") {
+                mips.push_back("    # Function Prologue");
+                mips.push_back("    subu $sp, $sp, 8      # Save space for $fp and $ra");
+                mips.push_back("    sw $fp, 4($sp)        # Save old frame pointer");
+                mips.push_back("    sw $ra, 0($sp)        # Save return address");
+                mips.push_back("    addiu $fp, $sp, 4     # Set up new frame pointer");
+
+                // Calcular espacio para variables locales
+                current_frame_size = 0;
+                for (const auto& decl : node->tac_declaraciones) {
+                    // Asumimos que las declaraciones con scope > 0 son locales
+                    if (decl.first > 0) {
+                        current_frame_size += decl.second.second;
+                    }
+                }
+                if (current_frame_size > 0) {
+                    mips.push_back("    subu $sp, $sp, " + to_string(current_frame_size) + " # Allocate space for locals");
+                }
+                current_offset = 0;
+                local_var_offsets.clear();
+                continue;
+            }
+
+            if (line == "end_func:") {
+                mips.push_back("    # Function Epilogue");
+                if (current_frame_size > 0) {
+                    mips.push_back("    addu $sp, $sp, " + to_string(current_frame_size) + " # Deallocate locals");
+                }
+                mips.push_back("    lw $ra, -4($fp)       # Restore return address");
+                mips.push_back("    lw $fp, 0($fp)        # Restore old frame pointer");
+                mips.push_back("    addiu $sp, $sp, 8     # Pop $fp and $ra space");
+                mips.push_back("    jr $ra");
+                continue;
+            }
+
+            // Acumula parámetros
+            if (regex_match(line, regex(R"(^param\s+(.+)$)"))) {
+                string param = line.substr(6);
+                params.push_back(param);
+                continue;
+            }
+
+            // call print, N
+            if (regex_match(line, regex(R"(^call print, (\d+)$)"))) {
+                for (const string& param : params) {
+                    string reg = "$a0";
+                    string param_trim = param;
+                    param_trim.erase(0, param_trim.find_first_not_of(" \t"));
+                    param_trim.erase(param_trim.find_last_not_of(" \t") + 1);
+
+                    if (regex_match(param_trim, regex(R"(^\(string\)([a-zA-Z_][a-zA-Z0-9_]*)$)"))) {
+                        string var = param_trim.substr(8);
+                        if (local_var_offsets.count(var)) {
+                            mips.push_back("    lw $a0, " + to_string(local_var_offsets[var]) + "($fp)");
+                        } else {
+                            mips.push_back("    lw $a0, " + var);
+                        }
+                        mips.push_back("    li $v0, 1");
+                        mips.push_back("    syscall");
+                    } else if (param_trim[0] == '&') {
+                        mips.push_back("    la " + reg + ", " + param_trim.substr(1));
+                        mips.push_back("    li $v0, 4");
+                        mips.push_back("    syscall");
+                    } else if (regex_match(param_trim, regex(R"(^t\d+$)"))) {
+                        mips.push_back("    move " + reg + ", $" + param_trim);
+                        mips.push_back("    li $v0, 4");
+                        mips.push_back("    syscall");
+                    } else {
+                        mips.push_back("    la " + reg + ", " + param_trim);
+                        mips.push_back("    li $v0, 4");
+                        mips.push_back("    syscall");
+                    }
+                }
+                params.clear();
+                continue;
+            }
+
+            // call read, 1 (generalizado usando SymbolTable y bloques)
+            if (regex_match(line, regex(R"(^t(\d+)\s*:=\s*call read, 1$)"))) {
+                if (!params.empty()) {
+                    string param = params.front();
+                    string reg = "$a0";
+                    string param_trim = param;
+                    param_trim.erase(0, param_trim.find_first_not_of(" \t"));
+                    param_trim.erase(param_trim.find_last_not_of(" \t") + 1);
+
+                    if (param_trim[0] == '&') {
+                        mips.push_back("    la " + reg + ", " + param_trim.substr(1));
+                    } else if (regex_match(param_trim, regex(R"(^t\d+$)"))) {
+                        mips.push_back("    move " + reg + ", $" + param_trim);
+                    } else {
+                        mips.push_back("    la " + reg + ", " + param_trim);
+                    }
+                    mips.push_back("    li $v0, 4");
+                    mips.push_back("    syscall");
+                    params.clear();
+                }
+                string tnum = regex_replace(line, regex(R"(^t(\d+)\s*:=\s*call read, 1$)"), "$1");
+
+                // Busca la asignación siguiente en el bloque actual o el siguiente
+                string var_dest;
+                string pat_assign = "^([a-zA-Z_][a-zA-Z0-9_]*)\\s*:=\\s*(\\([a-zA-Z_][a-zA-Z0-9_]*\\))?t" + tnum + "$";
+                smatch m2;
+                for (size_t j = i + 1; j < tac_lines.size(); ++j) {
+                    if (regex_match(tac_lines[j], m2, regex(pat_assign))) {
+                        var_dest = m2[1];
+                        break;
+                    }
+                }
+                if (var_dest.empty() && b + 1 < blocks.size()) {
+                    const vector<string>& next_block_lines = blocks[b + 1].second->TAC_code;
+                    for (const string& next_line : next_block_lines) {
+                        if (regex_match(next_line, m2, regex(pat_assign))) {
+                            var_dest = m2[1];
+                            break;
+                        }
+                    }
+                }
+
+                if (!var_dest.empty()) {
+                    string type = search_type(node, var_dest);
+                    if (type == "higuerote") {
+                        mips.push_back("    la $a0, " + var_dest);
+                        mips.push_back("    li $a1, 32");
+                        mips.push_back("    li $v0, 8");
+                        mips.push_back("    syscall");
+                        mips.push_back("    move $t" + tnum + ", $a0");
+                    } else if (type == "mango" || type == "tas_claro" || type == "negro") {
+                        mips.push_back("    li $v0, 5");
+                        mips.push_back("    syscall");
+                        mips.push_back("    move $t" + tnum + ", $v0");
+                    } else if (type == "manguita") {
+                        mips.push_back("    li $v0, 6");
+                        mips.push_back("    syscall");
+                        mips.push_back("    mov.s $f0, $f0");
+                    } else if (type == "manguangua") {
+                        mips.push_back("    li $v0, 7");
+                        mips.push_back("    syscall");
+                        mips.push_back("    mov.d $f0, $f0");
+                    } else {
+                        mips.push_back("    # [TODO] Lectura de tipo compuesto o no soportado: " + type);
+                    }
+                } else {
+                    mips.push_back("    # [TODO] No se encontró variable destino.");
+                }
+                continue;
+            }
+
+            // Asignar temporal a variable (con o sin cast): var := tX o var := (cast)tX
+            if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*(?:\([a-zA-Z_][a-zA-Z0-9_]*\))?t(\d+)$)"))) {
+                string var = m[1];
+                string tnum = m[2];
+                string type = search_type(node, var);
+                if (local_var_offsets.find(var) == local_var_offsets.end()) {
+                    int size = 4; // Simplificación, debería ser el tamaño real
+                    current_offset -= size;
+                    local_var_offsets[var] = current_offset;
+                }
+                int offset = local_var_offsets[var];
+
+                if (type == "higuerote") {
+                    string tmp1 = mipsTemps.next();
+                    string tmp2 = mipsTemps.next();
+                    string tmp3 = mipsTemps.next();
+                    mips.push_back("    move " + tmp1 + ", $t" + tnum);
+                    mips.push_back("    la " + tmp2 + ", " + to_string(offset) + "($fp)");
+                    mips.push_back("copy_" + var + ":");
+                    mips.push_back("    lb " + tmp3 + ", 0(" + tmp1 + ")");
+                    mips.push_back("    sb " + tmp3 + ", 0(" + tmp2 + ")");
+                    mips.push_back("    addiu " + tmp1 + ", " + tmp1 + ", 1");
+                    mips.push_back("    addiu " + tmp2 + ", " + tmp2 + ", 1");
+                    mips.push_back("    bnez " + tmp3 + ", copy_" + var);
+                } else {
+                    mips.push_back("    sw $t" + tnum + ", " + to_string(offset) + "($fp)");
+                }
+                continue;
+            }
+
+            // nombre := 0 (asignación constante)
+            if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*(\d+)$)"))) {
+                string var = m[1];
+                string val = m[2];
+                string tmp = mipsTemps.next();
+                mips.push_back("    li " + tmp + ", " + val);
+                if (local_var_offsets.find(var) == local_var_offsets.end()) {
+                    current_offset -= 4;
+                    local_var_offsets[var] = current_offset;
+                }
+                mips.push_back("    sw " + tmp + ", " + to_string(local_var_offsets[var]) + "($fp)");
+                continue;
+            }
+
+            // Suma con constante: x := x + c
+            if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\+\s*(\d+)$)"))) {
+                string left = m[1], op1 = m[2], val = m[3];
+                bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
+                bool op1_is_temp = regex_match(op1, regex(R"(^t\d+$)"));
+                string tmp0 = mipsTemps.next();
+                string tmp1 = mipsTemps.next();
+                string tmp2 = mipsTemps.next();
+
+                if (op1_is_temp) mips.push_back("    move " + tmp0 + ", $" + op1);
+                else if (local_var_offsets.count(op1)) mips.push_back("    lw " + tmp0 + ", " + to_string(local_var_offsets[op1]) + "($fp)");
+                else mips.push_back("    lw " + tmp0 + ", " + op1);
+
+                mips.push_back("    li " + tmp1 + ", " + val);
+                mips.push_back("    add " + tmp2 + ", " + tmp0 + ", " + tmp1);
+
+                if (left_is_temp) mips.push_back("    move $" + left + ", " + tmp2);
+                else if (local_var_offsets.count(left)) mips.push_back("    sw " + tmp2 + ", " + to_string(local_var_offsets[left]) + "($fp)");
+                else mips.push_back("    sw " + tmp2 + ", " + left);
+                continue;
+            }
+
+            // Suma: suma := suma + n
+            if (regex_match(line, m, regex(R"(^([a-zA-Z_][a-zA-Z0-9_]*)\s*:=\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\+\s*([a-zA-Z_][a-zA-Z0-9_]*)$)"))) {
+                string left = m[1], op1 = m[2], op2 = m[3];
+                bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
+                bool op1_is_temp = regex_match(op1, regex(R"(^t\d+$)"));
+                bool op2_is_temp = regex_match(op2, regex(R"(^t\d+$)"));
+                string tmp0 = mipsTemps.next();
+                string tmp1 = mipsTemps.next();
+                string tmp2 = mipsTemps.next();
+
+                if (op1_is_temp) mips.push_back("    move " + tmp0 + ", $" + op1);
+                else if(local_var_offsets.count(op1)) mips.push_back("    lw " + tmp0 + ", " + to_string(local_var_offsets[op1]) + "($fp)");
+                else mips.push_back("    lw " + tmp0 + ", " + op1);
+
+                if (op2_is_temp) mips.push_back("    move " + tmp1 + ", $" + op2);
+                else if(local_var_offsets.count(op2)) mips.push_back("    lw " + tmp1 + ", " + to_string(local_var_offsets[op2]) + "($fp)");
+                else mips.push_back("    lw " + tmp1 + ", " + op2);
+
+                mips.push_back("    add " + tmp2 + ", " + tmp0 + ", " + tmp1);
+
+                if (left_is_temp) mips.push_back("    move $" + left + ", " + tmp2);
+                else if(local_var_offsets.count(left)) mips.push_back("    sw " + tmp2 + ", " + to_string(local_var_offsets[left]) + "($fp)");
+                else mips.push_back("    sw " + tmp2 + ", " + left);
+                continue;
+            }
+            
+            // Asignación simple: x := y
+            string pat_assign_simple = "^([a-zA-Z_][a-zA-Z0-9_]*)\\s*:=\\s*([a-zA-Z_][a-zA-Z0-9_]*)$";
+            if (regex_match(line, m, regex(pat_assign_simple))) {
+                string left = m[1], right = m[2];
+                bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
+                bool right_is_temp = regex_match(right, regex(R"(^t\d+$)"));
+                string tmp = mipsTemps.next();
+                if (right_is_temp) {
+                    mips.push_back("    move " + tmp + ", $" + right);
+                } else if (local_var_offsets.count(right)) {
+                    mips.push_back("    lw " + tmp + ", " + to_string(local_var_offsets[right]) + "($fp)");
+                } else {
+                    mips.push_back("    lw " + tmp + ", " + right);
+                }
+                if (left_is_temp) {
+                    mips.push_back("    move $" + left + ", " + tmp);
+                } else if (local_var_offsets.count(left)) {
+                    mips.push_back("    sw " + tmp + ", " + to_string(local_var_offsets[left]) + "($fp)");
+                } else {
+                    mips.push_back("    sw " + tmp + ", " + left);
+                }
+                continue;
+            }
+
+            // Etiquetas
+            if (regex_match(line, regex(R"(^L\d+:$)"))) {
+                mips.push_back(line);
+                continue;
+            }
+
+            // Goto
+            if (regex_match(line, m, regex(R"(^goto\s+(L\d+)$)"))) {
+                mips.push_back("    j " + string(m[1]));
+                continue;
+            }
+
+            // Ifnot cond goto Lx
+            if (regex_match(line, m, regex(R"(^ifnot\s+(.+)\s+goto\s+(L\d+)$)"))) {
+                string cond = m[1];
+                string label = m[2];
+                smatch cmp;
+                if (regex_match(cond, cmp, regex(R"((\w+)\s*([=!<>]+)\s*(\w+))"))) {
+                    string left = cmp[1], op = cmp[2], right = cmp[3];
+                    bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
+                    bool right_is_temp = regex_match(right, regex(R"(^t\d+$)"));
+                    bool right_is_const = regex_match(right, regex(R"(^\d+$)"));
+                    string tmp0 = mipsTemps.next();
+                    string tmp1 = mipsTemps.next();
+                    // Carga left
+                    if (left_is_temp) mips.push_back("    move " + tmp0 + ", $" + left);
+                    else if (local_var_offsets.count(left)) mips.push_back("    lw " + tmp0 + ", " + to_string(local_var_offsets[left]) + "($fp)");
+                    else mips.push_back("    lw " + tmp0 + ", " + left);
+                    // Carga right
+                    if (right_is_temp) mips.push_back("    move " + tmp1 + ", $" + right);
+                    else if (right_is_const) mips.push_back("    li " + tmp1 + ", " + right);
+                    else if (local_var_offsets.count(right)) mips.push_back("    lw " + tmp1 + ", " + to_string(local_var_offsets[right]) + "($fp)");
+                    else mips.push_back("    lw " + tmp1 + ", " + right);
+                    // Condición
+                    if (op == "==") mips.push_back("    bne " + tmp0 + ", " + tmp1 + ", " + label);
+                    else if (op == "!=") mips.push_back("    beq " + tmp0 + ", " + tmp1 + ", " + label);
+                    else if (op == "<") mips.push_back("    bge " + tmp0 + ", " + tmp1 + ", " + label);
+                    else if (op == "<=") mips.push_back("    bgt " + tmp0 + ", " + tmp1 + ", " + label);
+                    else if (op == ">") mips.push_back("    ble " + tmp0 + ", " + tmp1 + ", " + label);
+                    else if (op == ">=") mips.push_back("    blt " + tmp0 + ", " + tmp1 + ", " + label);
+                }
+                continue;
+            }
+
+            // If cond goto Lx
+            if (regex_match(line, m, regex(R"(^if\s+(.+)\s+goto\s+(L\d+)$)"))) {
+                string cond = m[1];
+                string label = m[2];
+                smatch cmp;
+                if (regex_match(cond, cmp, regex(R"((\w+)\s*([=!<>]+)\s*(\w+))"))) {
+                    string left = cmp[1], op = cmp[2], right = cmp[3];
+                    bool left_is_temp = regex_match(left, regex(R"(^t\d+$)"));
+                    bool right_is_temp = regex_match(right, regex(R"(^t\d+$)"));
+                    bool right_is_const = regex_match(right, regex(R"(^\d+$)"));
+                    string tmp0 = mipsTemps.next();
+                    string tmp1 = mipsTemps.next();
+                    // Carga left
+                    if (left_is_temp) mips.push_back("    move " + tmp0 + ", $" + left);
+                    else if (local_var_offsets.count(left)) mips.push_back("    lw " + tmp0 + ", " + to_string(local_var_offsets[left]) + "($fp)");
+                    else mips.push_back("    lw " + tmp0 + ", " + left);
+                    // Carga right
+                    if (right_is_temp) mips.push_back("    move " + tmp1 + ", $" + right);
+                    else if (right_is_const) mips.push_back("    li " + tmp1 + ", " + right);
+                    else if (local_var_offsets.count(right)) mips.push_back("    lw " + tmp1 + ", " + to_string(local_var_offsets[right]) + "($fp)");
+                    else mips.push_back("    lw " + tmp1 + ", " + right);
+                    // Condición
+                    if (op == "==") mips.push_back("    beq " + tmp0 + ", " + tmp1 + ", " + label);
+                    else if (op == "!=") mips.push_back("    bne " + tmp0 + ", " + tmp1 + ", " + label);
+                    else if (op == "<") mips.push_back("    blt " + tmp0 + ", " + tmp1 + ", " + label);
+                    else if (op == "<=") mips.push_back("    ble " + tmp0 + ", " + tmp1 + ", " + label);
+                    else if (op == ">") mips.push_back("    bgt " + tmp0 + ", " + tmp1 + ", " + label);
+                    else if (op == ">=") mips.push_back("    bge " + tmp0 + ", " + tmp1 + ", " + label);
+                }
+                continue;
+            }
+
+            // Concatenación: tX := call concat, N
+            if (regex_match(line, m, regex(R"(^t(\d+)\s*:=\s*call concat, \d+$)"))) {
+                string tnum = m[1];
+                mips.push_back("    la $t" + tnum + ", buffer # [TODO] concat no implementado");
+                continue;
+            }
+
+            // Otros casos: dejar como comentario
+            mips.push_back("    # " + line);
+        }
+    }
+    return mips;
+}*/
+
 void generateAssemblyCode(ASTNode* node, vector<pair<string, BasicBlock*> > blocks) {
-	if (!node) {
-		cout << "TAC is empty." << endl;
-		return;
-	}
+    if (!node) {
+        cout << "TAC is empty." << endl;
+        return;
+    }
 
-	string ss;
-	cout << "--> Generate Assemble Code? (s/n): "; cin >> ss;
-	while (ss != "s" && ss != "n") { cout << "Key Error. Generate Assemble Code? (s/n): "; cin >> ss; }
-	if (ss == "n") return;
+    string ss;
+    cout << "--> Generate Assemble Code? (s/n): "; cin >> ss;
+    while (ss != "s" && ss != "n") { cout << "Key Error. Generate Assemble Code? (s/n): "; cin >> ss; }
+    if (ss == "n") return;
 
-	vector<string> asm_code;
-	asm_code.push_back(".data");
-	asm_code.push_back(".align 2");
-	// 1. Sección de datos (strings, etc.)
-	for (const auto& tac_data : node->tac_data) {
-		asm_code.push_back(tac_data.first + ": .asciiz " + tac_data.second);
-	}
+    // --- Integración del Optimizador de Registros ---
+    // 1. Recolectar todas las variables y temporales del TAC
+    set<string> all_vars;
+    regex var_regex(R"(\b([a-zA-Z_t][a-zA-Z0-9_]*)\b)");
+    for(const auto& line : node->tac) {
+        auto words_begin = sregex_iterator(line.begin(), line.end(), var_regex);
+        auto words_end = sregex_iterator();
+        for (auto it = words_begin; it != words_end; ++it) {
+            all_vars.insert(it->str());
+        }
+    }
 
-	// 2. Sección de declaraciones (espacio para variables)
-	set<string> declared;
-	for (const auto& tac_decl : node->tac_declaraciones) {
-		const string& var = tac_decl.second.first;
-		if (declared.count(var)) continue;
-		declared.insert(var);
-		asm_code.push_back(var + ": .word 0");
-	}
-	asm_code.push_back("buffer: .space 64");
-	asm_code.push_back("");
-	asm_code.push_back(".text");
-	asm_code.push_back("main:");
+    // 2. Construir grafo de interferencia y colorearlo usando DSatur
+    RegisterAllocator reg_alloc;
+    reg_alloc.build(blocks, all_vars);
+    vector<string> available_registers = {
+        "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7", 
+        "$s0", "$s1", "$s2", "$s3", "$s4", "$s5", "$s6", "$s7"
+    };
+    reg_alloc.colorGraph(available_registers);
 
-	// 3. Sección de código (por bloques)
-	vector<string> mips_block = translate_TAC_to_MIPS(blocks, node);
-	asm_code.insert(asm_code.end(), mips_block.begin(), mips_block.end());
+    // (Opcional) Imprimir la asignación de registros para depuración
+    cout << "\n--- Register Allocation ---" << endl;
+    for(const auto& pair : reg_alloc.allocation) {
+        cout << pair.first << " -> " << pair.second << endl;
+    }
+    if (!reg_alloc.spilled_vars.empty()) {
+        cout << "Spilled variables: ";
+        for(const auto& var : reg_alloc.spilled_vars) cout << var << " ";
+        cout << endl;
+    }
+    cout << "-------------------------\n" << endl;
+    // --- Fin de la Integración ---
 
-	// 4. Escribir el código ensamblador a un archivo
-	ofstream fout("output.asm");
-	for (const auto& line : asm_code) {
-		fout << line << endl;
-	}
-	fout.close();
+    vector<string> asm_code;
+    asm_code.push_back(".data");
+    asm_code.push_back(".align 2");
+    // 1. Sección de datos (strings, etc.)
+    for (const auto& tac_data : node->tac_data) {
+        asm_code.push_back(tac_data.first + ": .asciiz " + tac_data.second);
+    }
 
-	cout << "\033[1;32m[OK]\033[0m Código ensamblador generado en output.asm" << endl;
+    // 2. Sección de declaraciones (espacio para variables globales)
+    set<string> declared;
+    for (const auto& tac_decl : node->tac_declaraciones) {
+        // Solo variables globales (scope 0) en .data
+        if (tac_decl.first == 0) {
+            const string& var = tac_decl.second.first;
+            if (declared.count(var)) continue;
+            declared.insert(var);
+            asm_code.push_back(var + ": .space " + to_string(tac_decl.second.second));
+        }
+    }
+    asm_code.push_back("buffer: .space 64");
+    asm_code.push_back("");
+    asm_code.push_back(".text");
+    asm_code.push_back(".globl main");
+    asm_code.push_back("main:");
+
+    // 3. Sección de código (por bloques)
+    vector<string> mips_block = translate_TAC_to_MIPS(blocks, node, reg_alloc);
+    asm_code.insert(asm_code.end(), mips_block.begin(), mips_block.end());
+
+    // 4. Escribir el código ensamblador a un archivo
+    ofstream fout("output.asm");
+    for (const auto& line : asm_code) {
+        fout << line << endl;
+    }
+    fout.close();
+
+    cout << "\033[1;32m[OK]\033[0m Código ensamblador generado en output.asm" << endl;
 }
