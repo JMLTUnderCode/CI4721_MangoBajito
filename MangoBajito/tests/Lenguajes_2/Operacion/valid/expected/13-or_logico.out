@@ -1,0 +1,132 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print Symbol Table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: case5[0m
+    |---> Símbolo: case5, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+
+[1;35m[5m    Clave: 2: case4[0m
+    |---> Símbolo: case4, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
+
+[1;35m[5m    Clave: 3: mango[0m
+    |---> Símbolo: mango, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 4: case1[0m
+    |---> Símbolo: case1, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+
+[1;35m[5m    Clave: 5: var_true[0m
+    |---> Símbolo: var_true, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+
+[1;35m[5m    Clave: 6: manguita[0m
+    |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 7: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 8: negro[0m
+    |---> Símbolo: negro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 9: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 10: hablame[0m
+    |---> Símbolo: hablame, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 11: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 12: case7[0m
+    |---> Símbolo: case7, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+
+[1;35m[5m    Clave: 13: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 14: case6[0m
+    |---> Símbolo: case6, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+
+[1;35m[5m    Clave: 15: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 16: case3[0m
+    |---> Símbolo: case3, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+
+[1;35m[5m    Clave: 17: case2[0m
+    |---> Símbolo: case2, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Sisa , Value: true
+
+[1;35m[5m    Clave: 18: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 19: rescata[0m
+    |---> Símbolo: rescata, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 20: var_false[0m
+    |---> Símbolo: var_false, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: tas_claro, Informacion: Nolsa , Value: false
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Instrucción | Kind: ;
+          |    |    |--> Instrucción | Kind: ;
+          |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |--> var_true | Category: Declaración | Type: tas_claro | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+          |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |         |--> var_false | Category: Declaración | Type: tas_claro | Kind: VARIABLE
+          |    |    |    |    |    |    |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+          |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |         |--> case1 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
+          |    |    |    |    |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+          |    |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+          |    |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+          |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |         |--> case2 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
+          |    |    |    |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+          |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+          |    |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+          |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |         |--> case3 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
+          |    |    |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+          |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+          |    |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+          |    |    |    |--> Asignación | Kind: =
+          |    |    |         |--> case4 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
+          |    |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
+          |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+          |    |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+          |    |    |--> Asignación | Kind: =
+          |    |         |--> case5 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
+          |    |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+          |    |              |--> var_true | Category: Identificador | Type: tas_claro | Kind: Sisa | Value: 1
+          |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+          |    |--> Asignación | Kind: =
+          |         |--> case6 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
+          |         |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+          |              |--> var_false | Category: Identificador | Type: tas_claro | Kind: Nolsa | Value: 0
+          |              |--> var_true | Category: Identificador | Type: tas_claro | Kind: Sisa | Value: 1
+          |--> Asignación | Kind: =
+               |--> case7 | Category: Declaración | Type: tas_claro | Kind: VARIABLE
+               |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+                    |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+                    |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+                    |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+                    |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
+                         |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+                         |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

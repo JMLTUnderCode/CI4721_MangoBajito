@@ -1,0 +1,22 @@
+jeva value: mango = 10;
+culito result: mango = 0;
+se_prende(){
+	culito a: mango = 5;
+	culito b: mango = 6;
+	culito c: mango = 7;
+	si_es_asi (a + b + c mayol value o_sea a * b menol c) {
+		result = a + b + c;
+	} o_asi (Sisa) {
+		si_es_asi (Sisa yunta Nolsa o_sea nelson (c // 2 mayol a)) {
+			result = a * b;
+		} o_asi (Sisa o_sea Nolsa yunta Sisa) {
+			result = a - b;
+		} nojoda {
+			result = a // b + c - 1;
+		};
+	} o_asi (a nie -1 yunta nelson (b igualito value)) {
+		result = a * b + c;
+	} nojoda {
+		result = (a + b - c) + value;
+	};
+};

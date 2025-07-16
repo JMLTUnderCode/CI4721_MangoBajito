@@ -1,0 +1,10 @@
+| Acomódate que te lo estan analizando d:-)
+Error: NON_DEF_TYPE
+  - Sendo peo en la linea 3, columna 21: Al tipo este "Persona" lo tienes adentro debe ser. Nadie lo ve.
+  - Sendo peo en la linea 10, columna 2: Al tipo este "Fecha" lo tienes adentro debe ser. Nadie lo ve.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

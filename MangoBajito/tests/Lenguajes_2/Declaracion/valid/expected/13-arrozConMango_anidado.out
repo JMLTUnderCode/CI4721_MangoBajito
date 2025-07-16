@@ -1,0 +1,298 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print Symbol Table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: registro_3.usuario.nacimiento[0m
+    |---> Símbolo: registro_3.usuario.nacimiento, Categoría: (3)STRUCT, Declaración: (0)VARIABLE, Scope: 2, Type: Fecha, Informacion: registro_3.usuario.nacimiento.dia registro_3.usuario.nacimiento.mes registro_3.usuario.nacimiento.anio 
+
+[1;35m[5m    Clave: 2: registro_3.usuario.nacimiento.mes[0m
+    |---> Símbolo: registro_3.usuario.nacimiento.mes, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 5
+
+[1;35m[5m    Clave: 3: registro_3.usuario[0m
+    |---> Símbolo: registro_3.usuario, Categoría: (3)STRUCT, Declaración: (0)VARIABLE, Scope: 2, Type: Persona, Informacion: registro_3.usuario.nombre registro_3.usuario.sexo registro_3.usuario.edad registro_3.usuario.nacimiento 
+
+[1;35m[5m    Clave: 4: registro_3.usuario.edad[0m
+    |---> Símbolo: registro_3.usuario.edad, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 23
+
+[1;35m[5m    Clave: 5: registro_2.usuario.nacimiento[0m
+    |---> Símbolo: registro_2.usuario.nacimiento, Categoría: (3)STRUCT, Declaración: (0)VARIABLE, Scope: 2, Type: Fecha, Informacion: registro_2.usuario.nacimiento.dia registro_2.usuario.nacimiento.mes registro_2.usuario.nacimiento.anio 
+
+[1;35m[5m    Clave: 6: registro_2.usuario.nacimiento.anio[0m
+    |---> Símbolo: registro_2.usuario.nacimiento.anio, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 2002
+
+[1;35m[5m    Clave: 7: registro_3.usuario.nombre[0m
+    |---> Símbolo: registro_3.usuario.nombre, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Value: "Astrid"
+
+[1;35m[5m    Clave: 8: registro_2.usuario[0m
+    |---> Símbolo: registro_2.usuario, Categoría: (3)STRUCT, Declaración: (0)VARIABLE, Scope: 2, Type: Persona, Informacion: registro_2.usuario.nombre registro_2.usuario.sexo registro_2.usuario.edad registro_2.usuario.nacimiento 
+
+[1;35m[5m    Clave: 9: registro_2.usuario.sexo[0m
+    |---> Símbolo: registro_2.usuario.sexo, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: negro, Value: 'F'
+
+[1;35m[5m    Clave: 10: registro_3.usuario.nacimiento.dia[0m
+    |---> Símbolo: registro_3.usuario.nacimiento.dia, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 7
+
+[1;35m[5m    Clave: 11: registro_2.usuario.edad[0m
+    |---> Símbolo: registro_2.usuario.edad, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 23
+
+[1;35m[5m    Clave: 12: registro_1.usuario.nacimiento[0m
+    |---> Símbolo: registro_1.usuario.nacimiento, Categoría: (3)STRUCT, Declaración: (0)VARIABLE, Scope: 2, Type: Fecha, Informacion: registro_1.usuario.nacimiento.dia registro_1.usuario.nacimiento.mes registro_1.usuario.nacimiento.anio 
+
+[1;35m[5m    Clave: 13: registro_1.usuario.nacimiento.mes[0m
+    |---> Símbolo: registro_1.usuario.nacimiento.mes, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 6
+
+[1;35m[5m    Clave: 14: registro_1.usuario.nacimiento.dia[0m
+    |---> Símbolo: registro_1.usuario.nacimiento.dia, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 8
+
+[1;35m[5m    Clave: 15: Fecha.dia[0m
+    |---> Símbolo: Fecha.dia, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 3, Type: mango
+
+[1;35m[5m    Clave: 16: Persona[0m
+    |---> Símbolo: Persona, Categoría: (3)STRUCT, Declaración: (1)CONSTANT, Scope: 2, Informacion: Persona.nombre Persona.sexo Persona.edad Persona.nacimiento 
+
+[1;35m[5m    Clave: 17: registro_2.codigo[0m
+    |---> Símbolo: registro_2.codigo, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 1
+
+[1;35m[5m    Clave: 18: Persona.nombre[0m
+    |---> Símbolo: Persona.nombre, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 4, Type: higuerote
+
+[1;35m[5m    Clave: 19: rescata[0m
+    |---> Símbolo: rescata, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 20: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 21: Persona.sexo[0m
+    |---> Símbolo: Persona.sexo, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 4, Type: negro
+
+[1;35m[5m    Clave: 22: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 23: registro_3.usuario.nacimiento.anio[0m
+    |---> Símbolo: registro_3.usuario.nacimiento.anio, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 2002
+
+[1;35m[5m    Clave: 24: registro_2[0m
+    |---> Símbolo: registro_2, Categoría: (3)STRUCT, Declaración: (0)VARIABLE, Scope: 2, Type: Registro, Informacion: registro_2.codigo registro_2.usuario 
+
+[1;35m[5m    Clave: 25: registro_1[0m
+    |---> Símbolo: registro_1, Categoría: (3)STRUCT, Declaración: (0)VARIABLE, Scope: 2, Type: Registro, Informacion: registro_1.codigo registro_1.usuario 
+
+[1;35m[5m    Clave: 26: Fecha[0m
+    |---> Símbolo: Fecha, Categoría: (3)STRUCT, Declaración: (1)CONSTANT, Scope: 2, Informacion: Fecha.dia Fecha.mes Fecha.anio 
+
+[1;35m[5m    Clave: 27: Persona.edad[0m
+    |---> Símbolo: Persona.edad, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 4, Type: mango
+
+[1;35m[5m    Clave: 28: registro_3.codigo[0m
+    |---> Símbolo: registro_3.codigo, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 2
+
+[1;35m[5m    Clave: 29: hablame[0m
+    |---> Símbolo: hablame, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 30: registro_2.usuario.nombre[0m
+    |---> Símbolo: registro_2.usuario.nombre, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Value: "Astrid"
+
+[1;35m[5m    Clave: 31: registro_1.usuario[0m
+    |---> Símbolo: registro_1.usuario, Categoría: (3)STRUCT, Declaración: (0)VARIABLE, Scope: 2, Type: Persona, Informacion: registro_1.usuario.nombre registro_1.usuario.sexo registro_1.usuario.edad registro_1.usuario.nacimiento 
+
+[1;35m[5m    Clave: 32: registro_1.usuario.sexo[0m
+    |---> Símbolo: registro_1.usuario.sexo, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: negro, Value: 'M'
+
+[1;35m[5m    Clave: 33: registro_3[0m
+    |---> Símbolo: registro_3, Categoría: (3)STRUCT, Declaración: (0)VARIABLE, Scope: 2, Type: Registro, Informacion: registro_3.codigo registro_3.usuario 
+
+[1;35m[5m    Clave: 34: negro[0m
+    |---> Símbolo: negro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 35: Fecha.mes[0m
+    |---> Símbolo: Fecha.mes, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 3, Type: mango
+
+[1;35m[5m    Clave: 36: Persona.nacimiento[0m
+    |---> Símbolo: Persona.nacimiento, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 4, Type: Fecha
+
+[1;35m[5m    Clave: 37: registro_1.usuario.nacimiento.anio[0m
+    |---> Símbolo: registro_1.usuario.nacimiento.anio, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 1999
+
+[1;35m[5m    Clave: 38: mango[0m
+    |---> Símbolo: mango, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 39: registro_3.usuario.sexo[0m
+    |---> Símbolo: registro_3.usuario.sexo, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: negro, Value: 'F'
+
+[1;35m[5m    Clave: 40: manguita[0m
+    |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 41: Fecha.anio[0m
+    |---> Símbolo: Fecha.anio, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 3, Type: mango
+
+[1;35m[5m    Clave: 42: registro_2.usuario.nacimiento.mes[0m
+    |---> Símbolo: registro_2.usuario.nacimiento.mes, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 5
+
+[1;35m[5m    Clave: 43: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 44: Registro.codigo[0m
+    |---> Símbolo: Registro.codigo, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 5, Type: mango
+
+[1;35m[5m    Clave: 45: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 46: Registro[0m
+    |---> Símbolo: Registro, Categoría: (3)STRUCT, Declaración: (1)CONSTANT, Scope: 2, Informacion: Registro.codigo Registro.usuario 
+
+[1;35m[5m    Clave: 47: registro_2.usuario.nacimiento.dia[0m
+    |---> Símbolo: registro_2.usuario.nacimiento.dia, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 7
+
+[1;35m[5m    Clave: 48: Registro.usuario[0m
+    |---> Símbolo: Registro.usuario, Categoría: (6)ID, Declaración: (1)CONSTANT, Scope: 5, Type: Persona
+
+[1;35m[5m    Clave: 49: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 50: registro_1.codigo[0m
+    |---> Símbolo: registro_1.codigo, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 0
+
+[1;35m[5m    Clave: 51: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 52: registro_1.usuario.nombre[0m
+    |---> Símbolo: registro_1.usuario.nombre, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Value: "Junior"
+
+[1;35m[5m    Clave: 53: registro_1.usuario.edad[0m
+    |---> Símbolo: registro_1.usuario.edad, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 26
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Instrucción | Kind: ;
+          |    |    |--> Instrucción | Kind: ;
+          |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |    |--> Fecha | Category: Declaración | Type: arroz_con_mango | Kind: Estructura
+          |    |    |    |    |    |    |    |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |    |         |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |    |         |    |--> dia | Category: Atributo_Estructura | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |    |    |    |         |    |--> mes | Category: Atributo_Estructura | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |    |    |    |         |--> anio | Category: Atributo_Estructura | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |    |    |    |--> Persona | Category: Declaración | Type: arroz_con_mango | Kind: Estructura
+          |    |    |    |    |    |    |    |    |    |    |         |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |              |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |              |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |    |              |    |    |--> nombre | Category: Atributo_Estructura | Type: higuerote | Value: ""
+          |    |    |    |    |    |    |    |    |    |    |              |    |    |--> sexo | Category: Atributo_Estructura | Type: negro | Value: ''
+          |    |    |    |    |    |    |    |    |    |    |              |    |--> edad | Category: Atributo_Estructura | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |    |    |              |--> nacimiento | Category: Atributo_Estructura | Type: Fecha
+          |    |    |    |    |    |    |    |    |    |    |--> Registro | Category: Declaración | Type: arroz_con_mango | Kind: Estructura
+          |    |    |    |    |    |    |    |    |    |         |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |    |    |    |              |--> codigo | Category: Atributo_Estructura | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |    |              |--> usuario | Category: Atributo_Estructura | Type: Persona
+          |    |    |    |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |    |         |--> registro_1 | Category: Declaración | Type: Registro | Kind: VARIABLE
+          |    |    |    |    |    |    |    |    |         |--> Literal | Category: Estructura
+          |    |    |    |    |    |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                   |--> Literal | Category: Numérico | Type: mango | Value: 0
+          |    |    |    |    |    |    |    |    |                   |--> Literal | Category: Estructura
+          |    |    |    |    |    |    |    |    |                        |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                             |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                             |    |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                             |    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Junior"
+          |    |    |    |    |    |    |    |    |                             |    |    |--> Literal | Category: Caracter | Type: negro | Value: 'M'
+          |    |    |    |    |    |    |    |    |                             |    |--> Literal | Category: Numérico | Type: mango | Value: 26
+          |    |    |    |    |    |    |    |    |                             |--> Literal | Category: Estructura
+          |    |    |    |    |    |    |    |    |                                  |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                                       |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |    |    |                                       |    |--> Literal | Category: Numérico | Type: mango | Value: 8
+          |    |    |    |    |    |    |    |    |                                       |    |--> Literal | Category: Numérico | Type: mango | Value: 6
+          |    |    |    |    |    |    |    |    |                                       |--> Literal | Category: Numérico | Type: mango | Value: 1999
+          |    |    |    |    |    |    |    |    |--> registro_2 | Category: Declaración | Type: Registro | Kind: VARIABLE
+          |    |    |    |    |    |    |    |--> Asignación | Type: Registro | Kind: =
+          |    |    |    |    |    |    |         |--> registro_2 | Category: Identificador | Type: Registro
+          |    |    |    |    |    |    |         |--> Literal | Category: Estructura
+          |    |    |    |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |                   |--> Literal | Category: Numérico | Type: mango | Value: 1
+          |    |    |    |    |    |    |                   |--> Literal | Category: Estructura
+          |    |    |    |    |    |    |                        |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |                             |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |                             |    |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |                             |    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Astrid"
+          |    |    |    |    |    |    |                             |    |    |--> Literal | Category: Caracter | Type: negro | Value: 'F'
+          |    |    |    |    |    |    |                             |    |--> Literal | Category: Numérico | Type: mango | Value: 23
+          |    |    |    |    |    |    |                             |--> Literal | Category: Estructura
+          |    |    |    |    |    |    |                                  |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |                                       |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |    |    |    |                                       |    |--> Literal | Category: Numérico | Type: mango | Value: 7
+          |    |    |    |    |    |    |                                       |    |--> Literal | Category: Numérico | Type: mango | Value: 5
+          |    |    |    |    |    |    |                                       |--> Literal | Category: Numérico | Type: mango | Value: 2002
+          |    |    |    |    |    |    |--> registro_3 | Category: Declaración | Type: Registro | Kind: VARIABLE
+          |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |         |--> registro_3.codigo | Category: Atributo_Estructura | Type: mango | Value: 0
+          |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 2
+          |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |         |--> registro_3.usuario | Category: Estructura | Type: Persona
+          |    |    |    |         |--> Literal | Category: Estructura
+          |    |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |                   |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |                   |    |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |                   |    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Jhonaiker"
+          |    |    |    |                   |    |    |--> Literal | Category: Caracter | Type: negro | Value: 'M'
+          |    |    |    |                   |    |--> Literal | Category: Numérico | Type: mango | Value: 25
+          |    |    |    |                   |--> Literal | Category: Estructura
+          |    |    |    |                        |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |                             |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |    |                             |    |--> Literal | Category: Numérico | Type: mango | Value: 5
+          |    |    |    |                             |    |--> Literal | Category: Numérico | Type: mango | Value: 5
+          |    |    |    |                             |--> Literal | Category: Numérico | Type: mango | Value: 2000
+          |    |    |    |--> Asignación | Kind: =
+          |    |    |         |--> registro_3.usuario.nacimiento | Category: Estructura | Type: Fecha
+          |    |    |         |--> Literal | Category: Estructura
+          |    |    |              |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |                   |--> Secuencia | Category: Expresión | Kind: ,
+          |    |    |                   |    |--> Literal | Category: Numérico | Type: mango | Value: 10
+          |    |    |                   |    |--> Literal | Category: Numérico | Type: mango | Value: 10
+          |    |    |                   |--> Literal | Category: Numérico | Type: mango | Value: 2001
+          |    |    |--> Asignación | Kind: =
+          |    |         |--> registro_3.usuario.nacimiento.anio | Category: Atributo_Estructura | Type: mango | Value: 2001
+          |    |         |--> Literal | Category: Numérico | Type: mango | Value: 2002
+          |    |--> Asignación | Kind: =
+          |         |--> registro_3.usuario.nacimiento | Category: Estructura | Type: Fecha
+          |         |--> registro_2.usuario.nacimiento | Category: Estructura | Type: Fecha
+          |              |--> Secuencia | Category: Expresión | Kind: ,
+          |                   |--> Secuencia | Category: Expresión | Kind: ,
+          |                   |    |--> registro_2.usuario.nacimiento.dia | Category: Atributo_Estructura | Type: mango | Value: 7
+          |                   |    |--> registro_2.usuario.nacimiento.mes | Category: Atributo_Estructura | Type: mango | Value: 5
+          |                   |--> registro_2.usuario.nacimiento.anio | Category: Atributo_Estructura | Type: mango | Value: 2002
+          |--> Asignación | Kind: =
+               |--> registro_3.usuario | Category: Estructura | Type: Persona
+               |--> registro_2.usuario | Category: Estructura | Type: Persona
+                    |--> Secuencia | Category: Expresión | Kind: ,
+                         |--> Secuencia | Category: Expresión | Kind: ,
+                         |    |--> Secuencia | Category: Expresión | Kind: ,
+                         |    |    |--> registro_2.usuario.nombre | Category: Atributo_Estructura | Type: higuerote | Value: "Astrid"
+                         |    |    |--> registro_2.usuario.sexo | Category: Atributo_Estructura | Type: negro | Value: 'F'
+                         |    |--> registro_2.usuario.edad | Category: Atributo_Estructura | Type: mango | Value: 23
+                         |--> registro_2.usuario.nacimiento | Category: Estructura
+                              |--> Secuencia | Category: Expresión | Kind: ,
+                                   |--> Secuencia | Category: Expresión | Kind: ,
+                                   |    |--> registro_2.usuario.nacimiento.dia | Category: Atributo_Estructura | Type: mango | Value: 7
+                                   |    |--> registro_2.usuario.nacimiento.mes | Category: Atributo_Estructura | Type: mango | Value: 5
+                                   |--> registro_2.usuario.nacimiento.anio | Category: Atributo_Estructura | Type: mango | Value: 2002
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

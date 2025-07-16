@@ -1,0 +1,10 @@
+# Test 11: Error de Tipo array tas_claro.
+se_prende(){
+	culito decl0: tas_claro[1] = [2];
+	culito decl1: tas_claro[1] = [1.79];
+	culito decl2: tas_claro[1] = [1.79769e+308];
+	culito decl3: tas_claro[1] = ['c'];
+	culito decl4: tas_claro[1] = ["hola"];
+	culito decl5: tas_claro[2] = [Sisa, 2];
+	culito decl6: tas_claro[1] = Sisa;
+};

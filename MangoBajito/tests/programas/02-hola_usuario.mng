@@ -1,0 +1,7 @@
+# Test 2: Caso de Prueba Nro.2
+# Mostrar un "Hola usuario"
+
+se_prende(){
+    culito nombre: higuerote = hablame("nombre de usuario: ");
+    rescata("Hola ", nombre);
+};

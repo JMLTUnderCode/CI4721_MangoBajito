@@ -1,0 +1,26 @@
+# Test 12: Operador AND lógico (yunta)
+se_prende(){
+    culito var_true: tas_claro = Sisa;
+    culito var_false: tas_claro = Nolsa;
+
+    # Caso 1: Sisa yunta Sisa -> Sisa
+    culito case1 : tas_claro = Sisa yunta Sisa;
+
+    # Caso 2: Sisa yunta Nolsa -> Nolsa
+    culito case2 : tas_claro = Sisa yunta Nolsa;
+
+    # Caso 3: Nolsa yunta Sisa -> Nolsa
+    culito case3 : tas_claro = Nolsa yunta Sisa;
+
+    # Caso 4: Nolsa yunta Nolsa -> Nolsa
+    culito case4 : tas_claro = Nolsa yunta Nolsa;
+
+    # Caso 5: var_true yunta Sisa -> Sisa
+    culito case5 : tas_claro = var_true yunta Sisa;
+
+    # Caso 6: var_true yunta var_false -> Nolsa
+    culito case6 : tas_claro = var_true yunta var_false;
+
+    # Caso 7: (Sisa yunta Sisa) yunta (Nolsa yunta Sisa) -> Sisa yunta Nolsa -> Nolsa
+    culito case7 : tas_claro = (Sisa yunta Sisa) yunta (Nolsa yunta Sisa);
+};

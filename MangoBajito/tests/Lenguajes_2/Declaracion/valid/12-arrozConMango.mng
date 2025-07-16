@@ -1,0 +1,22 @@
+# Test 12: Definicion y uso del tipo arroz_con_mango.
+se_prende(){
+	arroz_con_mango Persona {
+		nombre : higuerote;
+		sexo : negro;
+		edad : mango;
+	};
+
+	culito yo : Persona;
+	yo.nombre = "Junior";
+	yo.sexo = 'M';
+	yo.edad = 26;
+
+	culito ella : Persona;
+	ella = {"Astrid", 'F', 23};
+
+	culito el : Persona = {"Jhonaiker", 'M', 25};
+	
+	culito nombres : higuerote[3] = [ella.nombre, el.nombre, yo.nombre];
+	culito sexos : negro[3] = [ella.sexo, el.sexo, yo.sexo];
+	culito edades : mango[3] = [ella.edad, el.edad, yo.edad];
+};

@@ -1,0 +1,9 @@
+# Test 04: Tipo higuerote
+culito decl0: higuerote = "hola";
+se_prende(){
+	jeva decl1: higuerote = " mundo";
+	culito decl2: higuerote = decl0;
+	culito decl3: higuerote;
+	decl3 = decl1;
+	culito n0: negro = decl3[0];
+};

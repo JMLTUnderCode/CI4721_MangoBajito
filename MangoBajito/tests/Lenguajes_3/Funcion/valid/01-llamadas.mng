@@ -1,0 +1,11 @@
+# Test 01: Llamadas a funciones.
+se_prende(){
+	culito p : mango = 23;
+	echar_cuento fun1(p1 : mango, p2 : manguita, p3 : mango) lanza un_coño {
+		p1 = 2;
+		p2 = 3.1;
+	};
+	
+	fun1(p, 2.2, 3);
+	fun1(p, 2.3, p);
+};

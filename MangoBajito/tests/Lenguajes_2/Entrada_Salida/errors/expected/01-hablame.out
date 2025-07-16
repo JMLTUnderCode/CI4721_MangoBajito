@@ -1,0 +1,18 @@
+| Acomódate que te lo estan analizando d:-)
+Error: TYPE_ERROR
+  - Sendo peo en la linea 3, columna 41: Tas en droga?. Tienes "n0" de tipo 'mango' y le quieres meter un tipo 'higuerote', marbaa' bruja.
+  - Sendo peo en la linea 4, columna 44: Tas en droga?. Tienes "n1" de tipo 'manguita' y le quieres meter un tipo 'higuerote', marbaa' bruja.
+  - Sendo peo en la linea 5, columna 46: Tas en droga?. Tienes "n2" de tipo 'manguangua' y le quieres meter un tipo 'higuerote', marbaa' bruja.
+  - Sendo peo en la linea 6, columna 41: Tas en droga?. Tienes "n3" de tipo 'negro' y le quieres meter un tipo 'higuerote', marbaa' bruja.
+  - Sendo peo en la linea 7, columna 45: Tas en droga?. Tienes "n4" de tipo 'tas_claro' y le quieres meter un tipo 'higuerote', marbaa' bruja.
+  - Sendo peo en la linea 9, columna 36: Tas en droga?. Tienes el tipo 'mango' en vez de 'higuerote', hablas con higuerotes no vainas raras.
+  - Sendo peo en la linea 10, columna 38: Tas en droga?. Tienes el tipo 'manguita' en vez de 'higuerote', hablas con higuerotes no vainas raras.
+  - Sendo peo en la linea 11, columna 42: Tas en droga?. Tienes el tipo 'manguangua' en vez de 'higuerote', hablas con higuerotes no vainas raras.
+  - Sendo peo en la linea 12, columna 37: Tas en droga?. Tienes el tipo 'negro' en vez de 'higuerote', hablas con higuerotes no vainas raras.
+  - Sendo peo en la linea 13, columna 38: Tas en droga?. Tienes el tipo 'tas_claro' en vez de 'higuerote', hablas con higuerotes no vainas raras.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

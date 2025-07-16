@@ -1,0 +1,22 @@
+# Test 11: Error de operacion de asignacion multiplicacion.
+se_prende(){
+	culito n0: mango = -8;
+	n0 *= 16.2;
+	n0 *= 1.2e+100;
+	n0 *= 'c';
+	n0 *= "hola";
+	n0 *= Sisa;
+
+	culito n1: manguita = -8.5;
+	n1 *= 16;
+	n1 *= 1.32e+200;
+	n1 *= 'c';
+	n1 *= "hola";
+	n1 *= Sisa;
+
+	culito n2: manguangua = -8.541231e+3;
+	n2 *= 8;
+	n2 *= 'c';
+	n2 *= "hola";
+	n2 *= Sisa;
+};

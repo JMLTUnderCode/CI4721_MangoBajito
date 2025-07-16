@@ -1,0 +1,250 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 2: b[0m
+    |---> Símbolo: b, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 6
+
+[1;35m[5m    Clave: 3: result[0m
+    |---> Símbolo: result, Categoría: (1)VARIABLE, Scope: 1, Type: mango, Value: 14
+
+[1;35m[5m    Clave: 4: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 5: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 6: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 7: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 8: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 9: c[0m
+    |---> Símbolo: c, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 7
+
+[1;35m[5m    Clave: 10: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 11: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 12: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 13: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 14: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 15: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 16: a[0m
+    |---> Símbolo: a, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 5
+
+[1;35m[5m    Clave: 17: value[0m
+    |---> Símbolo: value, Categoría: (0)CONSTANT, Scope: 1, Type: mango, Value: 10
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Global
+|    |--> Instrucción | Kind: ;
+|         |--> Asignación | Kind: =
+|         |    |--> value | Category: Declaración | Type: mango | Kind: CONSTANTE
+|         |    |--> Literal | Category: Numérico | Type: mango | Value: 10
+|         |--> Asignación | Kind: =
+|              |--> result | Category: Declaración | Type: mango | Kind: VARIABLE
+|              |--> Literal | Category: Numérico | Type: mango | Value: 0
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Instrucción | Kind: ;
+          |    |    |--> Asignación | Kind: =
+          |    |    |    |--> a | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |    |--> Literal | Category: Numérico | Type: mango | Value: 5
+          |    |    |--> Asignación | Kind: =
+          |    |         |--> b | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |         |--> Literal | Category: Numérico | Type: mango | Value: 6
+          |    |--> Asignación | Kind: =
+          |         |--> c | Category: Declaración | Type: mango | Kind: VARIABLE
+          |         |--> Literal | Category: Numérico | Type: mango | Value: 7
+          |--> Condición
+               |--> si_es_asi
+               |    |--> Guardia
+               |    |    |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+               |    |         |--> mayol | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+               |    |         |    |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 18
+               |    |         |    |    |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 11
+               |    |         |    |    |    |--> a | Category: Identificador | Type: mango | Value: 5
+               |    |         |    |    |    |--> b | Category: Identificador | Type: mango | Value: 6
+               |    |         |    |    |--> c | Category: Identificador | Type: mango | Value: 7
+               |    |         |    |--> value | Category: Identificador | Type: mango | Value: 10
+               |    |         |--> menol | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
+               |    |              |--> * | Category: Operación | Type: mango | Kind: Numérica | Value: 30
+               |    |              |    |--> a | Category: Identificador | Type: mango | Value: 5
+               |    |              |    |--> b | Category: Identificador | Type: mango | Value: 6
+               |    |              |--> c | Category: Identificador | Type: mango | Value: 7
+               |    |--> Asignación | Type: mango | Kind: = | Value: 18
+               |         |--> result | Category: Identificador | Type: mango | Value: 0
+               |         |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 18
+               |              |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 11
+               |              |    |--> a | Category: Identificador | Type: mango | Value: 5
+               |              |    |--> b | Category: Identificador | Type: mango | Value: 6
+               |              |--> c | Category: Identificador | Type: mango | Value: 7
+               |--> o_asi
+               |    |--> Guardia
+               |    |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+               |    |--> Condición
+               |         |--> si_es_asi
+               |         |    |--> Guardia
+               |         |    |    |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+               |         |    |         |--> yunta | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
+               |         |    |         |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+               |         |    |         |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+               |         |    |         |--> nelson | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+               |         |    |              |--> mayol | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
+               |         |    |                   |--> // | Category: Operación | Type: mango | Kind: Numérica | Value: 3
+               |         |    |                   |    |--> c | Category: Identificador | Type: mango | Value: 7
+               |         |    |                   |    |--> Literal | Category: Numérico | Type: mango | Value: 2
+               |         |    |                   |--> a | Category: Identificador | Type: mango | Value: 5
+               |         |    |--> Asignación | Type: mango | Kind: = | Value: 30
+               |         |         |--> result | Category: Identificador | Type: mango | Value: 18
+               |         |         |--> * | Category: Operación | Type: mango | Kind: Numérica | Value: 30
+               |         |              |--> a | Category: Identificador | Type: mango | Value: 5
+               |         |              |--> b | Category: Identificador | Type: mango | Value: 6
+               |         |--> o_asi
+               |         |    |--> Guardia
+               |         |    |    |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+               |         |    |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+               |         |    |         |--> yunta | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
+               |         |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+               |         |    |              |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+               |         |    |--> Asignación | Type: mango | Kind: = | Value: -1
+               |         |         |--> result | Category: Identificador | Type: mango | Value: 30
+               |         |         |--> - | Category: Operación | Type: mango | Kind: Numérica | Value: -1
+               |         |              |--> a | Category: Identificador | Type: mango | Value: 5
+               |         |              |--> b | Category: Identificador | Type: mango | Value: 6
+               |         |--> nojoda
+               |              |--> Asignación | Type: mango | Kind: = | Value: 6
+               |                   |--> result | Category: Identificador | Type: mango | Value: -1
+               |                   |--> - | Category: Operación | Type: mango | Kind: Numérica | Value: 6
+               |                        |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 7
+               |                        |    |--> // | Category: Operación | Type: mango | Kind: Numérica | Value: 0
+               |                        |    |    |--> a | Category: Identificador | Type: mango | Value: 5
+               |                        |    |    |--> b | Category: Identificador | Type: mango | Value: 6
+               |                        |    |--> c | Category: Identificador | Type: mango | Value: 7
+               |                        |--> Literal | Category: Numérico | Type: mango | Value: 1
+               |--> o_asi
+               |    |--> Guardia
+               |    |    |--> yunta | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+               |    |         |--> nie | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+               |    |         |    |--> a | Category: Identificador | Type: mango | Value: 5
+               |    |         |    |--> Literal | Category: Numérico | Type: mango | Value: -1
+               |    |         |--> nelson | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+               |    |              |--> igualito | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
+               |    |                   |--> b | Category: Identificador | Type: mango | Value: 6
+               |    |                   |--> value | Category: Identificador | Type: mango | Value: 10
+               |    |--> Asignación | Type: mango | Kind: = | Value: 37
+               |         |--> result | Category: Identificador | Type: mango | Value: 6
+               |         |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 37
+               |              |--> * | Category: Operación | Type: mango | Kind: Numérica | Value: 30
+               |              |    |--> a | Category: Identificador | Type: mango | Value: 5
+               |              |    |--> b | Category: Identificador | Type: mango | Value: 6
+               |              |--> c | Category: Identificador | Type: mango | Value: 7
+               |--> nojoda
+                    |--> Asignación | Type: mango | Kind: = | Value: 14
+                         |--> result | Category: Identificador | Type: mango | Value: 37
+                         |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 14
+                              |--> - | Category: Operación | Type: mango | Kind: Numérica | Value: 4
+                              |    |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 11
+                              |    |    |--> a | Category: Identificador | Type: mango | Value: 5
+                              |    |    |--> b | Category: Identificador | Type: mango | Value: 6
+                              |    |--> c | Category: Identificador | Type: mango | Value: 7
+                              |--> value | Category: Identificador | Type: mango | Value: 10
+--> Print TAC? (s/n): [1;36m[5m
+               =======================================================
+                                   TAC Representation                 
+               =======================================================
+[0m
+.data:
+value := 10
+
+.declaration:
+Scope 1: 
+result: alloc 4
+
+Scope 2: 
+a: alloc 4
+b: alloc 4
+c: alloc 4
+
+.code:
+result := 0
+a := 5
+b := 6
+c := 7
+t0 := a + b
+t1 := t0 + c
+if t1 > value goto L8
+t2 := a * b
+ifnot t2 < c goto L7
+L8: 
+t3 := a + b
+t4 := t3 + c
+result := t4
+goto L6
+L7: 
+L3: 
+t5 := c // 2
+if t5 > a goto L1
+L2: 
+t6 := a * b
+result := t6
+goto L0
+L1: 
+goto L5
+goto L4
+L5: 
+t7 := a - b
+result := t7
+goto L0
+L4: 
+t8 := a // b
+t9 := t8 + c
+t10 := t9 - 1
+result := t10
+L0: 
+goto L6
+L9: 
+ifnot a != -1 goto L10
+if b == value goto L10
+t11 := a * b
+t12 := t11 + c
+result := t12
+goto L6
+L10: 
+t13 := a + b
+t14 := t13 - c
+t15 := t14 + value
+result := t15
+L6: 
+[1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

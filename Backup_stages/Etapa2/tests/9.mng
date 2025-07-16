@@ -1,0 +1,4 @@
+# Test 06: Error de Tipo array mango.
+se_prende(){
+	culito decl6: mango[1] = 2;
+};

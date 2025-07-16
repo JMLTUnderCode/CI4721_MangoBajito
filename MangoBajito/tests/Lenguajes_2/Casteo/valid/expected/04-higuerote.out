@@ -1,0 +1,115 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print Symbol Table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: n7[0m
+    |---> Símbolo: n7, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 0 , Value: ""
+
+[1;35m[5m    Clave: 2: n6[0m
+    |---> Símbolo: n6, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 1 , Value: "b"
+
+[1;35m[5m    Clave: 3: n2[0m
+    |---> Símbolo: n2, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 8 , Value: "3.200000"
+
+[1;35m[5m    Clave: 4: n5[0m
+    |---> Símbolo: n5, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 22 , Value: "-12331230000000.000000"
+
+[1;35m[5m    Clave: 5: mango[0m
+    |---> Símbolo: mango, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 6: manguita[0m
+    |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 7: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 8: negro[0m
+    |---> Símbolo: negro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 9: n4[0m
+    |---> Símbolo: n4, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 21 , Value: "12331230000000.000000"
+
+[1;35m[5m    Clave: 10: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 11: n3[0m
+    |---> Símbolo: n3, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 9 , Value: "-3.200000"
+
+[1;35m[5m    Clave: 12: hablame[0m
+    |---> Símbolo: hablame, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 13: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 14: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 15: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 16: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 17: rescata[0m
+    |---> Símbolo: rescata, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 18: n0[0m
+    |---> Símbolo: n0, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 1 , Value: "5"
+
+[1;35m[5m    Clave: 19: n1[0m
+    |---> Símbolo: n1, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 2 , Value: "-5"
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Instrucción | Kind: ;
+          |    |    |--> Instrucción | Kind: ;
+          |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |--> Instrucción | Kind: ;
+          |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |    |    |--> n0 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |    |    |    |    |    |    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Kind: CAST(mango) | Value: "5"
+          |    |    |    |    |    |    |         |--> Literal | Category: Numérico | Type: mango | Value: 5
+          |    |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |    |         |--> n1 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |    |    |    |    |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Kind: CAST(mango) | Value: "-5"
+          |    |    |    |    |    |              |--> Literal | Category: Numérico | Type: mango | Value: -5
+          |    |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |         |--> n2 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |    |    |    |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Kind: CAST(manguita) | Value: "3.200000"
+          |    |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: 3.2
+          |    |    |    |    |--> Asignación | Kind: =
+          |    |    |    |         |--> n3 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |    |    |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Kind: CAST(manguita) | Value: "-3.200000"
+          |    |    |    |              |--> Literal | Category: Numérico | Type: manguita | Value: -3.2
+          |    |    |    |--> Asignación | Kind: =
+          |    |    |         |--> n4 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |    |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Kind: CAST(manguangua) | Value: "12331230000000.000000"
+          |    |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: 1.23312e+13
+          |    |    |--> Asignación | Kind: =
+          |    |         |--> n5 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Kind: CAST(manguangua) | Value: "-12331230000000.000000"
+          |    |              |--> Literal | Category: Numérico | Type: manguangua | Value: -1.23312e+13
+          |    |--> Asignación | Kind: =
+          |         |--> n6 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Kind: CAST(negro) | Value: "b"
+          |              |--> Literal | Category: Caracter | Type: negro | Value: 'b'
+          |--> Asignación | Kind: =
+               |--> n7 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+               |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Kind: CAST(negro) | Value: ""
+                    |--> Literal | Category: Caracter | Type: negro | Value: ''
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

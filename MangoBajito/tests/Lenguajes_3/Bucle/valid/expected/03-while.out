@@ -1,0 +1,91 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 2: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 3: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 4: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 5: a[0m
+    |---> Símbolo: a, Categoría: (1)VARIABLE, Scope: 2, Type: mango, Value: 2
+
+[1;35m[5m    Clave: 6: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 7: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 8: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 9: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 10: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 11: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 12: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 13: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Asignación | Kind: =
+          |    |--> a | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |--> Literal | Category: Numérico | Type: mango | Value: 0
+          |--> Bucle | Category: Indeterminado
+               |--> echale_bolas_si
+                    |--> Guardia
+                    |    |--> menol | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+                    |         |--> a | Category: Identificador | Type: mango | Value: 0
+                    |         |--> Literal | Category: Numérico | Type: mango | Value: 10
+                    |--> Asignación | Type: mango | Kind: = | Value: 2
+                         |--> a | Category: Identificador | Type: mango | Value: 0
+                         |--> + | Category: Operación | Type: mango | Kind: Numérica | Value: 2
+                              |--> a | Category: Identificador | Type: mango | Value: 0
+                              |--> Literal | Category: Numérico | Type: mango | Value: 2
+--> Print TAC? (s/n): [1;36m[5m
+               =======================================================
+                                   TAC Representation                 
+               =======================================================
+[0m
+
+.declaration:
+Scope 2: 
+a: alloc 4
+
+.code:
+a := 0
+L0: 
+ifnot a < 10 goto L1
+t0 := a + 2
+a := t0
+goto L0
+L1: 
+[1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

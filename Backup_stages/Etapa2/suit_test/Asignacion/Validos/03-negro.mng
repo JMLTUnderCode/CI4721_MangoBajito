@@ -1,0 +1,5 @@
+# Test 03: Tipo negro.
+se_prende(){
+	culito decl0: negro = 'c';
+	jeva decl1: negro = '$';
+};

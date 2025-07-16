@@ -1,0 +1,12 @@
+# Test 00: Llamadas a funciones con tipo incorrento.
+se_prende(){
+	culito p : mango = 23;
+	echar_cuento fun1(p1 : mango, p2 : manguita, p3 : mango) lanza mango {
+		p1 = 2;
+		p2 = 3.0;
+		lanzate p1;
+	};
+	
+	culito value : manguita = 1.0;
+	value = fun1(p, 2.0, 3);
+};

@@ -1,0 +1,31 @@
+# Test 16: Anidamiento de Arroz Con Mango y Coliao
+se_prende(){
+	coliao Informacion {
+		apellido : higuerote;
+		edad : mango;
+	};
+	arroz_con_mango Persona {
+		nombre : higuerote;
+		status : tas_claro;
+		datos : Informacion;
+	};
+
+	culito yo : Persona = {"Junior", Sisa, {"Lara"}};
+	culito ella : Persona = {"Astrid", Nolsa, {"Alvarado"}};
+	culito el : Persona = {"Jhonaiker", Sisa, {"Blanco"}};
+
+	coliao Informacion2 {
+		registro : mango;
+		dato : Persona1;
+	};
+
+	culito data1 : Informacion2;
+	culito data2 : Informacion2;
+	
+	data1.registro = 123456;
+	data2.registro = 654321;
+	culito regs : mango[2] = [data1.registro, data2.registro];
+
+	data1.dato = yo;
+	data2.dato = ella;
+};

@@ -1,0 +1,23 @@
+# Test 06: Operacion de errores en incremento.
+se_prende(){
+	culito decl0: negro = 'c';
+	decl0++;
+
+	culito decl1: higuerote = "hola";
+	decl1++;
+
+	culito decl2: tas_claro = Sisa;
+	decl2++;
+
+    echar_cuento bar0(x: negro) lanza un_coño{
+		x++;
+	};
+
+	echar_cuento bar1(x: higuerote) lanza un_coño{
+		x++;
+	};
+
+	echar_cuento bar2(x: tas_claro) lanza un_coño{
+		x++;
+	};
+};

@@ -1,0 +1,85 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print Symbol Table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: n[0m
+    |---> Símbolo: n, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 0
+
+[1;35m[5m    Clave: 2: suma[0m
+    |---> Símbolo: suma, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: mango, Value: 0
+
+[1;35m[5m    Clave: 3: rescata[0m
+    |---> Símbolo: rescata, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 4: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 5: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 6: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 7: hablame[0m
+    |---> Símbolo: hablame, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 8: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 9: negro[0m
+    |---> Símbolo: negro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 10: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 11: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 12: manguita[0m
+    |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 13: mango[0m
+    |---> Símbolo: mango, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Asignación | Kind: =
+          |    |    |--> suma | Category: Declaración | Type: mango | Kind: VARIABLE
+          |    |    |--> Literal | Category: Numérico | Type: mango | Value: 0
+          |    |--> n | Category: Declaración | Type: mango | Kind: VARIABLE
+          |--> Bucle | Category: Indeterminado
+               |--> echale_bolas_si
+                    |--> Guardia
+                    |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+                    |--> Instrucción | Kind: ;
+                         |--> Instrucción | Kind: ;
+                         |    |--> Asignación | Type: mango | Kind: = | Value: 0
+                         |    |    |--> n | Category: Identificador | Type: mango | Value: 0
+                         |    |    |--> Literal | Category: Numérico | Type: mango | Kind: CAST(higuerote) | Value: 0
+                         |    |         |--> hablame | Category: input | Type: higuerote | Value: "0"
+                         |    |              |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: ""
+                         |    |--> Condición
+                         |         |--> si_es_asi
+                         |              |--> Guardia
+                         |              |    |--> igualito | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+                         |              |         |--> n | Category: Identificador | Type: mango | Value: 0
+                         |              |         |--> Literal | Category: Numérico | Type: mango | Value: 0
+                         |              |--> uy_kieto | Category: Control de Flujo
+                         |--> Suma Compuesta | Category: Operación | Type: mango | Kind: += | Value: 0
+                              |--> suma | Category: Identificador | Type: mango | Value: 0
+                              |--> n | Category: Identificador | Type: mango | Value: 0
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

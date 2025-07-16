@@ -1,0 +1,10 @@
+# Test 01: Uso de hablame
+se_prende(){
+	culito p : mango = 23;
+	echar_cuento fun1(p1 : mango, p2 : manguita, p3 : mango) lanza un_coño {
+		p1 = 2;
+		culito num : higuerote = hablame("Dame un mango: ");
+		p2 = (manguita)num;
+	};
+	culito num : mango = (mango)hablame("Entrada num " + (higuerote)p + ": ");
+};

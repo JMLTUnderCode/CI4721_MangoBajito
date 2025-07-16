@@ -1,0 +1,157 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: n2[0m
+    |---> Símbolo: n2, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Informacion: 0 , Value: ""
+
+[1;35m[5m    Clave: 2: n1[0m
+    |---> Símbolo: n1, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Informacion: 5 , Value: "hola "
+
+[1;35m[5m    Clave: 3: mango[0m
+    |---> Símbolo: mango, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 4: manguita[0m
+    |---> Símbolo: manguita, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 5: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 6: negro[0m
+    |---> Símbolo: negro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 7: n4[0m
+    |---> Símbolo: n4, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Informacion: 10 , Value: "hola mundo"
+
+[1;35m[5m    Clave: 8: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 9: n3[0m
+    |---> Símbolo: n3, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Informacion: 10 , Value: "holamundo!"
+
+[1;35m[5m    Clave: 10: hablame[0m
+    |---> Símbolo: hablame, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 11: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 12: funcion$[0m
+    |---> Símbolo: funcion$, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 13: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 14: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 15: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (7)TYPE, Scope: 0
+
+[1;35m[5m    Clave: 16: rescata[0m
+    |---> Símbolo: rescata, Categoría: (2)FUNCTION, Scope: 0
+
+[1;35m[5m    Clave: 17: n0[0m
+    |---> Símbolo: n0, Categoría: (1)VARIABLE, Scope: 2, Type: higuerote, Informacion: 10 , Value: "hola mundo"
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Instrucción | Kind: ;
+          |    |--> Instrucción | Kind: ;
+          |    |    |--> Instrucción | Kind: ;
+          |    |    |    |--> Asignación | Kind: =
+          |    |    |    |    |--> n0 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |    |    |    |    |--> + | Category: Operación | Type: higuerote | Kind: Concatenación | Value: "hola mundo"
+          |    |    |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "hola "
+          |    |    |    |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "mundo"
+          |    |    |    |--> Asignación | Kind: =
+          |    |    |         |--> n1 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |    |    |         |--> + | Category: Operación | Type: higuerote | Kind: Concatenación | Value: "hola "
+          |    |    |              |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "hola "
+          |    |    |              |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: ""
+          |    |    |--> Asignación | Kind: =
+          |    |         |--> n2 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |    |         |--> + | Category: Operación | Type: higuerote | Kind: Concatenación | Value: ""
+          |    |              |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: ""
+          |    |              |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: ""
+          |    |--> Asignación | Kind: =
+          |         |--> n3 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |         |--> + | Category: Operación | Type: higuerote | Kind: Concatenación | Value: "holamundo!"
+          |              |--> + | Category: Operación | Type: higuerote | Kind: Concatenación | Value: "holamundo"
+          |              |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "hola"
+          |              |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "mundo"
+          |              |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "!"
+          |--> Asignación | Kind: =
+               |--> n4 | Category: Declaración | Type: higuerote | Kind: VARIABLE
+               |--> + | Category: Operación | Type: higuerote | Kind: Concatenación | Value: "hola mundo"
+                    |--> + | Category: Operación | Type: higuerote | Kind: Concatenación | Value: "hola "
+                    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "hola"
+                    |    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: " "
+                    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "mundo"
+--> Print TAC? (s/n): [1;36m[5m
+               =======================================================
+                                   TAC Representation                 
+               =======================================================
+[0m
+.data:
+str0 := "hola "
+str1 := "mundo"
+str2 := "hola "
+str3 := ""
+str4 := ""
+str5 := ""
+str6 := "hola"
+str7 := "mundo"
+str8 := "!"
+str9 := "hola"
+str10 := " "
+str11 := "mundo"
+
+.declaration:
+Scope 2: 
+n0: alloc 32
+n1: alloc 32
+n2: alloc 32
+n3: alloc 32
+n4: alloc 32
+
+.code:
+param &str0
+param &str1
+t0 := call concat, 2
+n0 := t0
+param &str2
+param &str3
+t1 := call concat, 2
+n1 := t1
+param &str4
+param &str5
+t2 := call concat, 2
+n2 := t2
+param &str6
+param &str7
+t3 := call concat, 2
+param t3
+param &str8
+t4 := call concat, 2
+n3 := t4
+param &str9
+param &str10
+t5 := call concat, 2
+param t5
+param &str11
+t6 := call concat, 2
+n4 := t6
+[1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

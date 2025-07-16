@@ -1,0 +1,16 @@
+# Test 00: Bucle FOR sin flow.
+se_prende(){
+	culito n: mango = 5;
+	repite_burda i entre 1 hasta 10 {
+		n = n + i;
+	};
+	repite_burda i entre -20 hasta -1 {
+		n = n + i;
+	};
+	repite_burda i entre 20 hasta 0 {
+		n = n + i;
+	};
+	repite_burda i entre -1 hasta -20 {
+		n = n + i;
+	};
+};

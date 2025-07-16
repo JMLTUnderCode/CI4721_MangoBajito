@@ -1,0 +1,22 @@
+# Test 4: Caso de Prueba Nro.4
+# Cálculo del n-ésimo fibonacci (leyendo el entero de la entrada estándar)
+
+se_prende(){
+    culito n: mango = (mango)hablame("Ingrese numero: ");
+    culito res : mango;
+    si_es_asi(n menol 2) {
+        res = n;
+    } nojoda {
+        culito a: mango = 0;
+        culito b: mango = 1;
+        culito temp: mango;
+
+        repite_burda i entre 2 hasta (n+1) {
+            temp = a + b;
+            a = b;
+            b = temp;
+        };
+        res = b;
+    };
+    rescata("Fibonacci(" + (higuerote)n + ") = " + (higuerote)res);
+};

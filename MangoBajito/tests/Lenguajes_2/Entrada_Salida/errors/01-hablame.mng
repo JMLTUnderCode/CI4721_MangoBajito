@@ -1,0 +1,14 @@
+# Test 01: Error de uso para hablame
+se_prende(){
+	culito n0 : mango = hablame("input 0:");
+	culito n1 : manguita = hablame("input 1:");
+	culito n2 : manguangua = hablame("input 2:");
+	culito n3 : negro = hablame("input 3:");
+	culito n4 : tas_claro = hablame("input 4:");
+
+	culito n5 : higuerote = hablame(12);
+	culito n6 : higuerote = hablame(12.3);
+	culito n7 : higuerote = hablame(302e+123);
+	culito n8 : higuerote = hablame('c');
+	culito n9 : higuerote = hablame(Sisa);
+};

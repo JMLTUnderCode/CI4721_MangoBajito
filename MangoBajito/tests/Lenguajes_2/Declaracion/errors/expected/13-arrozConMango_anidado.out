@@ -1,0 +1,12 @@
+| Acomódate que te lo estan analizando d:-)
+Error: ARRAY_LITERAL_SIZE_MISMATCH
+  - Sendo peo en la linea 14, columna 54: Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '1' de '2'.
+  - Sendo peo en la linea 16, columna 71: Ay vale! Te gusta meterte más cosas verdad?. Sólo te caben '2' cositas.
+  - Sendo peo en la linea 18, columna 53: Dale que te caben más! Te faltan cositas que meterte. Sólo llevas '2' de '3'.
+  - Sendo peo en la linea 20, columna 63: Ay vale! Te gusta meterte más cosas verdad?. Sólo te caben '3' cositas.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

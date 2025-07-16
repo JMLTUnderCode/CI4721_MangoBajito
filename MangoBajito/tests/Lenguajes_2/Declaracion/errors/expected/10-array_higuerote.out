@@ -1,0 +1,15 @@
+| Acomódate que te lo estan analizando d:-)
+Error: TYPE_ERROR
+  - Sendo peo en la linea 3, columna 34: Tas en droga?. Tienes "decl0" de tipo 'higuerote[]' y le quieres meter un 'mango[]', marbaa' bruja.
+  - Sendo peo en la linea 4, columna 37: Tas en droga?. Tienes "decl1" de tipo 'higuerote[]' y le quieres meter un 'manguita[]', marbaa' bruja.
+  - Sendo peo en la linea 5, columna 45: Tas en droga?. Tienes "decl2" de tipo 'higuerote[]' y le quieres meter un 'manguangua[]', marbaa' bruja.
+  - Sendo peo en la linea 6, columna 36: Tas en droga?. Tienes "decl3" de tipo 'higuerote[]' y le quieres meter un 'negro[]', marbaa' bruja.
+  - Sendo peo en la linea 7, columna 38: Tas en droga?. Tienes "decl4" de tipo 'higuerote[]' y le quieres meter un 'tas_claro[]', marbaa' bruja.
+  - Sendo peo en la linea 8, columna 42: Tas en droga?. Tienes "decl5" de tipo 'higuerote[]' y le quieres meter un 'mango[]', marbaa' bruja.
+  - Sendo peo en la linea 9, columna 37: Tas en droga?. Tienes "decl6" de tipo 'higuerote[]' y le quieres meter un elemento de tipo 'higuerote', marbaa' bruja.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

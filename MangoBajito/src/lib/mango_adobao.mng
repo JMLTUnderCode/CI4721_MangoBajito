@@ -1,0 +1,45 @@
+# --- INICIO LIBRERIA: mango_adobao ---
+# `ah_vaina`
+#	Genera un error con un mensaje personalizado y detiene el programa.
+#	**Definición:**
+#	ah_vaina (param : higuerote) lanza un_coño;
+#	**Sintaxis:**
+#	ah_vaina("texto personalizado");
+echar_cuento ah_vaina(param : higuerote) lanza un_coño {
+	rescata("Sendo error, vacila:");
+	rescata("  - Code: 13 (ay vale)");
+	rescata("Mensaje: " + param);
+};
+
+# `maelo`
+#	Repite una cadena de caracteres (`higuerote`) un número de veces indicado. (Referencia a 'Otra vez Maelo Ruiz').
+#	**Definición:**
+#	maelo(cadena : higuerote, repetidor : mango) lanza higuerote;
+#	**Sintaxis:**
+#	<culito o jeva> <nombre de variable> : higuerote = maelo(cadena, repetidor);
+echar_cuento maelo(cadena : higuerote, repetidor : mango) lanza higuerote {
+	culito resultado : higuerote = cadena;
+	repite_burda i entre 0 hasta repetidor {
+		resultado = resultado + cadena;
+	};
+	lanzate resultado;
+};
+
+# `me_mide`
+#	Devuelve la longitud de una cadena de caracteres (`higuerote`).
+#	**Definición**
+#	me_mide(cadena: higuerote) lanza mango;
+#	**Sintaxis**
+#	<culito o jeva> <nombre de la variable> : mango = me_mide(cadena);
+echar_cuento me_mide(cadena : higuerote) lanza mango {
+	culito longitud : mango = 0;
+	echale_bolas_si (Sisa) {
+		si_es_asi (cadena[longitud] nie '\0'){
+			longitud += 1;
+		} nojoda {
+			uy_kieto;
+		};
+	};
+	lanzate longitud;
+};
+# --- FIN LIBRERIA: mango_adobao ---

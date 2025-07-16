@@ -1,0 +1,19 @@
+# Test 01: Error de rangos de iteracion.
+se_prende(){
+	culito n : mango = 0;
+	repite_burda i entre 1 hasta 4.2 {
+		n = n + 1;
+	};
+	repite_burda i entre -10 hasta 4.2e+207 {
+		n = n + 1;
+	};
+	repite_burda i entre -10 hasta 's' {
+		n = n + 1;
+	};
+	repite_burda i entre -10 hasta "20" {
+		n = n + 1;
+	};
+	repite_burda i entre -10 hasta Sisa {
+		n = n + 1;
+	};
+};

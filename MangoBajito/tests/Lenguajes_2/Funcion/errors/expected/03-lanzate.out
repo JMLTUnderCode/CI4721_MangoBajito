@@ -1,0 +1,14 @@
+| Acomódate que te lo estan analizando d:-)
+Error: TYPE_ERROR
+  - Sendo peo en la linea 8, columna 2: Tas en droga?. Tienes el tipo de retorno 'manguita' no coincide con el tipo de la función 'fun1' que es 'mango'.
+  - Sendo peo en la linea 28, columna 2: Tas en droga?. Tienes el tipo de retorno 'manguita' no coincide con el tipo de la función 'fun4' que es 'mango'.
+Error: FUNC_RETURN_VALUE
+  - Sendo peo en la linea 14, columna 2: El cuento "fun2" no debería lanzar algo, pero tas lanzando algo, locota.
+Error: FUNC_NO_RETURN
+  - Sendo peo en la linea 19, columna 2: El cuento "fun3" debería lanzar algo, pero no lo haces, marbao'.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

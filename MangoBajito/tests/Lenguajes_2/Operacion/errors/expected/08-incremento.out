@@ -1,0 +1,11 @@
+| Acomódate que te lo estan analizando d:-)
+Error: TYPE_ERROR
+  - Sendo peo en la linea 4, columna 9: Tas en droga?. Tienes "decl0" de tipo 'negro' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.
+  - Sendo peo en la linea 7, columna 9: Tas en droga?. Tienes "decl1" de tipo 'higuerote' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.
+  - Sendo peo en la linea 10, columna 9: Tas en droga?. Tienes "decl2" de tipo 'tas_claro' y debe ser de tipo 'mango' | 'manguita' | 'manguangua', locota.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

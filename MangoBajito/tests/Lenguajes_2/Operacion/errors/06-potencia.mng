@@ -1,0 +1,9 @@
+# Test 06: Error de operacion potencia.
+se_prende(){
+	culito n0 : mango = 8 ** 2.3;
+	culito n1 : mango = 8 ** 1.32e+200;
+	culito n2 : mango = 8 ** 'c';
+	culito n3 : mango = 8 ** "hola";
+	culito n4 : mango = 8 ** Sisa;
+	culito n5 : mango = 8 ** 2.3 ** 1.2e+100;
+};

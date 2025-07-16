@@ -1,0 +1,8 @@
+# Test 00: Error de uso para rescata
+se_prende(){
+	culito a : mango = 23;
+	echar_cuento fun1() lanza un_coño {
+		a++;
+	};
+	rescata(fun1());
+};

@@ -1,0 +1,107 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print Symbol Table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: z[0m
+    |---> Símbolo: z, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 5, Type: manguita, Value: 33.421
+
+[1;35m[5m    Clave: 2: mango[0m
+    |---> Símbolo: mango, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 3: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 4: manguita[0m
+    |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 5: b[0m
+    |---> Símbolo: b, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 4, Type: mango, Value: 12
+
+[1;35m[5m    Clave: 6: negro[0m
+    |---> Símbolo: negro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 7: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 8: hablame[0m
+    |---> Símbolo: hablame, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 9: c[0m
+    |---> Símbolo: c, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 6, Type: mango, Value: 11
+
+[1;35m[5m    Clave: 10: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 11: a[0m
+    |---> Símbolo: a, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 3, Type: mango, Value: 100
+
+    |---> Símbolo: a, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 6, Type: mango, Value: 1155
+
+[1;35m[5m    Clave: 12: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 13: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 14: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 15: rescata[0m
+    |---> Símbolo: rescata, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Condición
+          |--> si_es_asi
+          |    |--> Guardia
+          |    |    |--> o_sea | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+          |    |         |--> yunta | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
+          |    |         |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+          |    |         |    |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+          |    |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+          |    |--> Instrucción | Kind: ;
+          |         |--> a | Category: Declaración | Type: mango | Kind: VARIABLE
+          |         |--> Asignación | Type: mango | Kind: = | Value: 100
+          |              |--> a | Category: Identificador | Type: mango | Value: 0
+          |              |--> Literal | Category: Numérico | Type: mango | Value: 100
+          |--> o_asi
+          |    |--> Guardia
+          |    |    |--> yunta | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 1
+          |    |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+          |    |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+          |    |--> Asignación | Kind: =
+          |         |--> b | Category: Declaración | Type: mango | Kind: VARIABLE
+          |         |--> Literal | Category: Numérico | Type: mango | Value: 12
+          |--> o_asi
+          |    |--> Guardia
+          |    |    |--> yunta | Category: Operación | Type: tas_claro | Kind: Booleana | Value: 0
+          |    |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Sisa | Value: 1
+          |    |         |--> Literal | Category: Bool | Type: tas_claro | Kind: Nolsa | Value: 0
+          |    |--> Instrucción | Kind: ;
+          |         |--> Asignación | Kind: =
+          |         |    |--> z | Category: Declaración | Type: manguita | Kind: VARIABLE
+          |         |    |--> Literal | Category: Numérico | Type: manguita | Value: 12.321
+          |         |--> Suma Compuesta | Category: Operación | Type: manguita | Kind: += | Value: 33.421
+          |              |--> z | Category: Identificador | Type: manguita | Value: 12.321
+          |              |--> Literal | Category: Numérico | Type: manguita | Value: 21.1
+          |--> nojoda
+               |--> Instrucción | Kind: ;
+                    |--> Asignación | Kind: =
+                    |    |--> a | Category: Declaración | Type: mango | Kind: VARIABLE
+                    |    |--> Literal | Category: Numérico | Type: mango | Value: 1155
+                    |--> Asignación | Kind: =
+                         |--> c | Category: Declaración | Type: mango | Kind: VARIABLE
+                         |--> Literal | Category: Numérico | Type: mango | Value: 11
+--> Print TAC? (s/n): --> Print Control Flow Graphs? (s/n): --> Generate Assemble Code? (s/n): [1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

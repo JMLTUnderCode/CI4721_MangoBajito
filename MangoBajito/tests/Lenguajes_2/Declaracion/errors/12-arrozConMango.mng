@@ -1,0 +1,17 @@
+# Test 12: Errores de uso del tipo arroz_con_mango.
+se_prende(){
+	culito p1 : Persona;
+
+	arroz_con_mango Persona {
+		nombre : higuerote;
+		sexo : negro;
+		edad : mango;
+		nacimiento : Fecha;
+	};
+
+	arroz_con_mango Fecha {
+		dia : mango;
+		mes : mango;
+		anio : mango;
+	};
+};

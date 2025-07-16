@@ -1,0 +1,5 @@
+# Test 07: Operacion de asignacion suma.
+se_prende(){
+	culito n: mango = -8;
+	n += 16;
+};

@@ -1,0 +1,22 @@
+| Acomódate que te lo estan analizando d:-)
+Error: TYPE_ERROR
+  - Sendo peo en la linea 4, columna 12: Tas en droga?. Tienes "n0" de tipo 'mango' y le quieres meter un tipo 'manguita', marbaa' bruja.
+  - Sendo peo en la linea 5, columna 16: Tas en droga?. Tienes "n0" de tipo 'mango' y le quieres meter un tipo 'manguangua', marbaa' bruja.
+  - Sendo peo en la linea 6, columna 11: Tas en droga?. Tienes "n0" de tipo 'mango' y le quieres meter un tipo 'negro', marbaa' bruja.
+  - Sendo peo en la linea 7, columna 14: Tas en droga?. Tienes "n0" de tipo 'mango' y le quieres meter un tipo 'higuerote', marbaa' bruja.
+  - Sendo peo en la linea 8, columna 12: Tas en droga?. Tienes "n0" de tipo 'mango' y le quieres meter un tipo 'tas_claro', marbaa' bruja.
+  - Sendo peo en la linea 11, columna 10: Tas en droga?. Tienes "n1" de tipo 'manguita' y le quieres meter un tipo 'mango', marbaa' bruja.
+  - Sendo peo en la linea 12, columna 17: Tas en droga?. Tienes "n1" de tipo 'manguita' y le quieres meter un tipo 'manguangua', marbaa' bruja.
+  - Sendo peo en la linea 13, columna 11: Tas en droga?. Tienes "n1" de tipo 'manguita' y le quieres meter un tipo 'negro', marbaa' bruja.
+  - Sendo peo en la linea 14, columna 14: Tas en droga?. Tienes "n1" de tipo 'manguita' y le quieres meter un tipo 'higuerote', marbaa' bruja.
+  - Sendo peo en la linea 15, columna 12: Tas en droga?. Tienes "n1" de tipo 'manguita' y le quieres meter un tipo 'tas_claro', marbaa' bruja.
+  - Sendo peo en la linea 18, columna 9: Tas en droga?. Tienes "n2" de tipo 'manguangua' y le quieres meter un tipo 'mango', marbaa' bruja.
+  - Sendo peo en la linea 19, columna 11: Tas en droga?. Tienes "n2" de tipo 'manguangua' y le quieres meter un tipo 'negro', marbaa' bruja.
+  - Sendo peo en la linea 20, columna 14: Tas en droga?. Tienes "n2" de tipo 'manguangua' y le quieres meter un tipo 'higuerote', marbaa' bruja.
+  - Sendo peo en la linea 21, columna 12: Tas en droga?. Tienes "n2" de tipo 'manguangua' y le quieres meter un tipo 'tas_claro', marbaa' bruja.
+[1;31m[5m
+               =======================================================
+                       ---->        Error Program        <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

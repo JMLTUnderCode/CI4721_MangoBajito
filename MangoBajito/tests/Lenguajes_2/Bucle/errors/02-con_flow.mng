@@ -1,0 +1,10 @@
+# Test 02: Error de rangos de iteracion con flow contrario.
+se_prende(){
+	culito n : mango = 0;
+	repite_burda i entre 0 hasta 10 con_flow -2 {
+		n = n + 1;
+	};
+	repite_burda i entre 0 hasta -10 con_flow 2 {
+		n = n + 1;
+	};
+};

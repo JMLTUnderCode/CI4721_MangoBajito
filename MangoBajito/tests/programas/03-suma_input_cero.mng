@@ -1,0 +1,16 @@
+# Test 3: Caso de Prueba Nro.3
+# Sumar todos los números de la entrada hasta que se ingrese cero (0)
+
+se_prende(){
+    culito suma: mango = 0;
+    culito n: mango;
+
+    echale_bolas_si (Sisa) {
+        n = (mango)hablame("Ingrese numero: ");
+        si_es_asi (n igualito 0) {
+            uy_kieto;
+        };
+        suma += n;
+    };
+    rescata("La suma es: " + (higuerote)suma);
+};

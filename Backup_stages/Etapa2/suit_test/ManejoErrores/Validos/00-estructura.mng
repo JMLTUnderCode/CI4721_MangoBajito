@@ -1,0 +1,10 @@
+# Test 00: Control de errores
+se_prende(){
+	culito miau: mango;
+	miau = 32;
+	meando{
+		culito ayuda: higuerote;
+	} fuera_del_perol como e{
+		miau = 50;
+	};
+};

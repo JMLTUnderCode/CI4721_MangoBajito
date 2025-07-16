@@ -1,0 +1,135 @@
+| Acomódate que te lo estan analizando d:-)
+--> Print Symbol Table? (s/n): [1;36m[5m
+               =======================================================
+                             Symbol Table Representation              
+               =======================================================
+[0m
+[1;35m[5m    Clave: 1: rescata[0m
+    |---> Símbolo: rescata, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 2: se_prende[0m
+    |---> Símbolo: se_prende, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 3: caramba_ñero[0m
+    |---> Símbolo: caramba_ñero, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 4: nombre[0m
+    |---> Símbolo: nombre, Categoría: (6)ID, Declaración: (0)VARIABLE, Scope: 2, Type: higuerote, Informacion: 1 , Value: "0"
+
+[1;35m[5m    Clave: 5: un_coño[0m
+    |---> Símbolo: un_coño, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 6: hablame[0m
+    |---> Símbolo: hablame, Categoría: (1)FUNCTION, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 7: tas_claro[0m
+    |---> Símbolo: tas_claro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 8: negro[0m
+    |---> Símbolo: negro, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 9: higuerote[0m
+    |---> Símbolo: higuerote, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 10: manguangua[0m
+    |---> Símbolo: manguangua, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 11: manguita[0m
+    |---> Símbolo: manguita, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+[1;35m[5m    Clave: 12: mango[0m
+    |---> Símbolo: mango, Categoría: (0)TYPE, Declaración: (1)CONSTANT, Scope: 0
+
+--> Print AST? (s/n): [1;36m[5m
+               =======================================================
+                                   AST Representation                 
+               =======================================================
+[0m
+Programa
+|--> Main
+     |--> Instrucción | Kind: ;
+          |--> Asignación | Kind: =
+          |    |--> nombre | Category: Declaración | Type: higuerote | Kind: VARIABLE
+          |    |--> hablame | Category: input | Type: higuerote | Value: "0"
+          |         |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "nombre de usuario: "
+          |--> rescata | Category: Output | Type: higuerote | Value: "Hola 0"
+               |--> Secuencia | Category: Expresión | Kind: ,
+                    |--> Literal | Category: Cadena de Caracteres | Type: higuerote | Value: "Hola "
+                    |--> nombre | Category: Identificador | Type: higuerote | Value: "0"
+--> Print TAC? (s/n): [1;36m[5m
+               =======================================================
+                                   TAC Representation                 
+               =======================================================
+[0m
+[1;36m[5m
+.data:[0m
+str0 := "nombre de usuario: "
+str1 := "Hola "
+[1;36m[5m
+.declaration:[0m
+[1;33m[5mScope 2:[0m
+nombre: alloc 32
+[1;36m[5m
+.code:[0m
+param &str0
+t0 := call read, 1
+nombre := t0
+param &str1
+param nombre
+call print, 2
+--> Print Control Flow Graphs? (s/n): [1;36m[5m
+               =======================================================
+                                  Control Flow Graphs                 
+               =======================================================
+[0m
+----------------------------------------------------------
+[1;33m[5mName: ENTRY:[0m
+Childs: B1 
+In: str0 str1 t0 
+Out: str0 str1 t0 
+----------------------------------------------------------
+[1;33m[5mName: B1:[0m
+Lider Label: 
+Code:
+     | param &str0
+     | t0 := call read, 1
+Childs: B2 
+Fathers: ENTRY 
+Use: str0 
+In: str0 str1 t0 
+Out: str1 t0 
+----------------------------------------------------------
+[1;33m[5mName: B2:[0m
+Lider Label: 
+Code:
+     | nombre := t0
+     | param &str1
+     | param nombre
+     | call print, 2
+Childs: EXIT 
+Fathers: B1 
+Def: nombre 
+Use: str1 t0 
+In: str1 t0 
+----------------------------------------------------------
+[1;33m[5mName: EXIT:[0m
+Fathers: B2 
+----------------------------------------------------------
+
+    * | Matriz de Adyacencia | *    
+   -   |ENTRY |  B1  |  B2  | EXIT |
+------------------------------------
+ ENTRY |      |  o   |      |      |
+------------------------------------
+  B1   |      |      |  o   |      |
+------------------------------------
+  B2   |      |      |      |  o   |
+------------------------------------
+ EXIT  |      |      |      |      |
+------------------------------------
+--> Generate Assemble Code? (s/n): [1;32m[5m
+               =======================================================
+                       ---->       Correct Program       <----        
+               =======================================================
+[0m
+| Hay un poquito de código en tu marihuana d:-]

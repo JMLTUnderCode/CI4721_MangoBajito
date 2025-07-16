@@ -58,10 +58,10 @@
 			- [*Control del flujo en Bucles*](#control-del-flujo-en-bucles)
 	- [🥭**Tipos de Datos**](#tipos-de-datos)
 		- [**Escalares**](#escalares)
-			- [*Caracteres* (`negro`)](#caracteres-negro)
 			- [*Enteros* (`mango`)](#enteros-mango)
 			- [*Flotantes* (`manguita`)](#flotantes-manguita)
 			- [*Doubles* (`manguangua`)](#doubles-manguangua)
+			- [*Caracteres* (`negro`)](#caracteres-negro)
 			- [*Booleanos* (`tas_claro`)](#booleanos-tas_claro)
 		- [**Compuestos**](#compuestos)
 			- [*Cadena de Caracteres* (`higuerote`)](#cadena-de-caracteres-higuerote)
@@ -340,15 +340,6 @@ Mango Bajito proporciona dos palabras clave para controlar el flujo de ejecució
 
 ### **Escalares**
 
-#### *Caracteres* (`negro`)
-El tipo `negro` se utiliza para almacenar caracteres individuales, como letras, dígitos o símbolos. Es equivalente al tipo `char` en otros lenguajes de programación.
-
-**Ejemplo:**
-```
-jeva letra : negro = 'A';
-culito simbolo : negro = '$';
-```
-
 #### *Enteros* (`mango`)
 El tipo `mango` representa números enteros, positivos o negativos, dentro de un rango de 32 bits (números entre -2.147.483.648 y 2.147.483.647). Es ideal para contadores, índices y cálculos discretos.
 
@@ -374,6 +365,15 @@ El tipo `manguangua` se utiliza para números en coma flotante con doble precisi
 ```
 jeva pi : manguangua = 3.14159265359;
 culito distancia : manguangua = 1.989e30;
+```
+
+#### *Caracteres* (`negro`)
+El tipo `negro` se utiliza para almacenar caracteres individuales, como letras, dígitos o símbolos. Es equivalente al tipo `char` en otros lenguajes de programación.
+
+**Ejemplo:**
+```
+jeva letra : negro = 'A';
+culito simbolo : negro = '$';
 ```
 
 #### *Booleanos* (`tas_claro`)
@@ -725,26 +725,30 @@ Mango Bajito proporciona varias funciones y procedimientos predefinidos para fac
 	ah_vaina("texto personalizado");
 	```
 #### Librería Estándar: `mango_adobao`
-Mango Bajito cuenta con la librería `mango_adobao`, la cual consta de las siguientes funciones para la manejo y manipulación de los `arreglos` e `higuerotes`.
-* `pegao`
-  
-	Concatena dos o mas cadenas de caracteres (`higuerote`), esta función recibe una lista de `higuerotes` separada por coma y forma una nueva.
-	
+Mango Bajito cuenta con la librería `mango_adobao`, la cual consta de varias funciones para uso del usuario:
+> [!IMPORTANT]
+> Para su uso, dentro del programa debe hacer uso de la palabra clave `.me_pide` seguido del nombre de la libreria.
+> ```
+> .me_pide mango_adobao;
+> ```
+
+Las funciones contempladas son:
+* `ah_vaina`
+	Genera un error con un mensaje personalizado y detiene el programa.
 	**Definición:**
 	```
-	pegao(aki_toy cadena_1 : higuerote, aki_toy cadena_2 : higuerote, ...) lanza higuerote;
+	ah_vaina (param : higuerote) lanza un_coño;
 	```
 	**Sintaxis:**
 	```
-	<culito o jeva> <nombre de variable> : higuerote = pegao(cadena_1, cadena_2, ...);
+	ah_vaina("texto personalizado");
 	```
 * `maelo`
-	
 	Repite una cadena de caracteres (`higuerote`) un número de veces indicado. (Referencia a 'Otra vez Maelo Ruiz').
 	
 	**Definición:**
 	```
-	maelo(aki_toy cadena : higuerote, repetidor : mango) lanza higuerote;
+	maelo(cadena : higuerote, repetidor : mango) lanza higuerote;
 	```
 	**Sintaxis:**
 	```
@@ -755,31 +759,13 @@ Mango Bajito cuenta con la librería `mango_adobao`, la cual consta de las sigui
 	
 	**Definición**
 	```
-	me_mide(aki_toy cadena: higuerote) lanza mango;
+	me_mide(cadena: higuerote) lanza mango;
 	```
 	**Sintaxis**
 	```
 	<culito o jeva> <nombre de la variable> : mango = me_mide(cadena);
 	```
-* `rellenamelo`
-	
-	Inicializa un arreglo con elementos de un valor determinado.
-	
-	**Definición**
-	```
-	rellenamelo(aki_toy arreglo: <tipo>[tamaño], valor: <tipo>) lanza un_coño;
-	```
-	**Sintaxis**
-	```
-	# Todos los elementos del arreglo serán inicializados como <valor>
-	culito <nombre_arreglo> : <tipo>[tamaño]; 
-	
-	rellenamelo(<nombre_arreglo>, <valor>);
-	```
-> [!IMPORTANT]
-> Consideraciones
-> * Solo los arreglos declarados como `culito` pueden ser inicializados con esta función.
-> * El `<valor>` para inicializar debe ser correspondiente con el `<tipo>` declarado del arreglo.
+
 
 ## 🥭**Manejo de Errores**
 En Mango Bajito, el manejo de errores se implementa mediante la instrucción `meando`/`fuera_del_perol`, que permiten capturar y gestionar excepciones de manera estructurada. 
@@ -1038,21 +1024,23 @@ Mango Bajito permite conversiones explícitas entre tipos para garantizar que la
 
 Conversiones soportadas:
 * **De `negro` hacia:** 
-  * `mango`: Se tomara la representación ASCII del `negro`.
+  * `mango`: Se tomara la representación ASCII del `negro`. (Ej. 'a' equivale a 97)
+  * `higuerote`
 * **De `mango` hacia:**
   * `manguita`
   * `manguangua`
   * `higuerote`
-  * `negro`: Se retornara el `negro` relacionado con el valor ASCII del `mango`.
+  * `negro`: Se retornara el `negro` relacionado con el valor ASCII del `mango`.(Ej. 98 equivale a 'b')
 * **De `manguita` hacia:**
   * `mango`
   * `manguangua`
   * `higuerote`
 * **De `manguangua` hacia:**
-  * `mango`
-  * `manguita`
+  * `mango`: Siempre y cuando el espacio de memoria ocupado por `manguangua` sea válido para `mango`.
+  * `manguita`: Siempre y cuando el espacio de memoria ocupado por `manguangua` sea válido para `manguita`.
   * `higuerote`
 * **De `higuerote` hacia:**
   * `mango`: Siempre y cuando la cadena sea el formato del número esperado. (Ej. "123")
   * `manguita`: Siempre y cuando la cadena sea el formato del número esperado. (Ej. "1.23")
-  * `manguangua`: Simpre y cuando la cadena sea el formato del numero esperado. (Ej. "1.23e-10")
+  * `manguangua`: Simpre y cuando la cadena sea el formato del numero esperado. (Ej. "1.23e-100")
+  * `negro`: Siempre y cuando la representacion del `higuerote` sea de tamaño 0 o 1. (Se admite caracter vacio, es decir "" representa '\0')

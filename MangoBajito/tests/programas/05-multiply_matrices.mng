@@ -1,0 +1,81 @@
+# Test 5: Caso de Prueba Nro.5
+# Multiplicación de dos matrices, no necesariamente cuadradas
+
+echar_cuento read_rows() lanza mango {
+    culito filas : mango = 0;
+    echale_bolas_si (filas menol 1) {
+        filas = (mango)hablame("Ingrese el número de filas: ");
+        si_es_asi (filas menol 1) {
+            rescata("El número de filas debe ser mayor que 0.");
+            filas = 0; # Reiniciar si la entrada es inválida
+        };
+    };
+    lanzate filas;
+};
+
+echar_cuento read_columns() lanza mango {
+    culito columnas : mango = 0;
+    echale_bolas_si (columnas menol 1) {
+        columnas = (mango)hablame("Ingrese el número de columnas: ");
+        si_es_asi (columnas menol 1) {
+            rescata("El número de columnas debe ser mayor que 0.");
+            columnas = 0; # Reiniciar si la entrada es inválida
+        };
+    };
+    lanzate columnas;
+};
+
+se_prende(){
+    rescata("Multiplicación de matrices A y B");
+
+    rescata("Definición de matrices A:");
+    culito filas_A : mango = 1;
+    filas_A = read_rows();
+    culito columnas_A: mango = 1;
+    columnas_A = read_columns();
+    culito A : mango[filas_A][columnas_A];
+    repite_burda i entre 0 hasta filas_A {
+        repite_burda j entre 0 hasta columnas_A {
+            A[i][j] = (mango)hablame("Ingrese el elemento A[" + (higuerote)i + "][" + (higuerote)j + "]: ");
+        };
+    };
+
+    rescata("Definición de matrices B:");
+    culito filas_B: mango = 1;
+    filas_B = read_rows();
+    culito columnas_B: mango = 1;
+    columnas_B = read_columns();
+    culito B: mango[filas_B][columnas_B];
+    repite_burda i entre 0 hasta filas_B {
+        repite_burda j entre 0 hasta columnas_B {
+            B[i][j] = (mango)hablame("Ingrese el elemento B[" + (higuerote)i + "][" + (higuerote)j + "]: ");
+        };
+    };
+
+    si_es_asi (columnas_A nie filas_B) {
+    	rescata("El número de columnas de A debe ser igual al número de filas de B.");
+    } nojoda {
+        culito C: mango[filas_A][columnas_B];
+    
+        repite_burda i entre 0 hasta filas_A {
+        	repite_burda j entre 0 hasta columnas_B {
+        		C[i][j] = 0;
+        	};
+        };
+        
+        repite_burda i entre 0 hasta filas_A {
+        	repite_burda j entre 0 hasta columnas_B {
+        		repite_burda k entre 0 hasta columnas_A {
+        			C[i][j] += A[i][k] * B[k][j];
+        		};
+        	};
+        };
+
+        rescata("Resultado de la multiplicación de matrices A y B:");
+        repite_burda i entre 0 hasta filas_A {
+            repite_burda j entre 0 hasta columnas_B {
+                rescata("C[" + (higuerote)i + "][" + (higuerote)j + "] = " + (higuerote)C[i][j]);
+            };
+        };
+    };
+};

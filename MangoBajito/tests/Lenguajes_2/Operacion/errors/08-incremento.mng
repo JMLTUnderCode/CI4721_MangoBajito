@@ -1,0 +1,11 @@
+# Test 08: Operacion de errores en incremento.
+se_prende(){
+	culito decl0 : negro;
+	decl0++;
+
+	culito decl1 : higuerote;
+	decl1++;
+
+	culito decl2 : tas_claro;
+	decl2++;
+};

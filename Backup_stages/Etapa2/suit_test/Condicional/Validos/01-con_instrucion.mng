@@ -1,0 +1,12 @@
+# Test 01: Definicion de estructura condicional con instrucciones.
+se_prende(){
+	si_es_asi (Sisa) {
+		culito a: mango;
+		a = 100;
+	} o_asi (Sisa) {
+		culito b: mango;
+	} nojoda {
+		culito a: mango;
+		culito c: mango;
+	};
+};

@@ -1,0 +1,8 @@
+# Test 01: Errores de guardias
+se_prende(){
+	si_es_asi (12) {}
+	o_asi (1.23) {}
+	o_asi (12.4e+230) {}
+	o_asi ('c') {}
+	o_asi ("cadena") {};
+};
