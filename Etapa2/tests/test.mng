@@ -1,9 +1,0 @@
-# Test 5: Caso de Prueba Nro.5
-# Multiplicación de dos matrices, no necesariamente cuadradas
-
-se_prende(){
-    culito A: negro[3];
-    A[0] = 'a';
-    A[1] = A[0];
-    A[0] = 'B';
-};

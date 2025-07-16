@@ -1,6 +1,0 @@
-# Test 1: Caso de prueba Nro.1
-# Mostrar "Hola mundo"
-
-se_prende(){
-    rescata("Hola mundo");
-};
